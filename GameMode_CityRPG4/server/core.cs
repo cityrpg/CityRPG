@@ -292,6 +292,11 @@ function GameConnection::doCityHungerStatus(%client)
 	}
 
 	messageClient(%client, '', "\c6 - " @ %msg);
+
+	if(%data.valueHunger < 5)
+	{
+		%client.centerPrint("\c6" @ %msg, 3);
+	}
 }
 
 function GameConnection::doCityHungerEffects(%client) {
