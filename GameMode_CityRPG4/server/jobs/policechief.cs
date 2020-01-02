@@ -3,7 +3,7 @@ $CityRPG::jobs::initialInvestment = 100;
 $CityRPG::jobs::pay = 85;
 $CityRPG::jobs::tools = "CityRPGBatonItem gunItem taserItem TacticalVestItem DoughnutItem";
 $CityRPG::jobs::datablock = Player9SlotPlayer;
-$CityRPG::jobs::education = 6;
+$CityRPG::jobs::education = 8;
 
 $CityRPG::jobs::sellItems = false;
 $CityRPG::jobs::sellFood = false;
