@@ -1,0 +1,80 @@
+//add-ons to load
+ADDON Brick_Large_Cubes
+ADDON Brick_Arch
+ADDON Brick_ModTer_BasicPack
+ADDON Brick_V15
+ADDON Emote_Alarm
+ADDON Emote_Confusion
+ADDON Emote_Hate
+ADDON Emote_Love
+ADDON Event_DayNightCycle
+ADDON Item_Skis
+ADDON Light_Animated
+ADDON Light_Basic
+ADDON Particle_Basic
+ADDON Particle_FX_Cans
+ADDON Particle_Grass
+ADDON Particle_Player
+ADDON Particle_Tools
+ADDON Print_ModTer_Default
+ADDON Player_Leap_Jet
+ADDON Player_No_Jet
+ADDON Player_Quake
+ADDON Projectile_GravityRocket
+ADDON Projectile_Pinball
+ADDON Projectile_Pong
+ADDON Projectile_Radio_Wave
+ADDON Sound_Synth4
+ADDON Sound_Beeps
+ADDON Sound_Phone
+ADDON Vehicle_Horse
+ADDON Vehicle_Jeep
+
+ADDON Weapon_Bow
+ADDON Weapon_Gun
+ADDON Weapon_Guns_Akimbo
+ADDON Weapon_Push_Broom
+ADDON Weapon_Rocket_Launcher
+ADDON Weapon_Shotgun
+ADDON Weapon_Sniper_Rifle
+ADDON Weapon_Spear
+ADDON Weapon_Sword
+
+ADDON Print_1x2f_Default
+ADDON Print_2x2f_Default
+ADDON Print_2x2r_Default
+ADDON Print_Letters_Default
+
+ADDON Print_2x2r_Monitor3
+ADDON Print_1x2f_BLPRemote
+
+ADDON Item_Key
+
+ADDON Brick_Teledoor
+
+ADDON Support_Doors
+ADDON Brick_Doors
+
+ADDON Item_Sports
+
+ADDON Tool_ChangeOwnership
+
+ADDON GameMode_CityRPG4
+
+//music
+
+//environment
+$EnvGuiServer::SimpleMode 1
+$EnvGuiServer::SkyFile Add-Ons/Sky_Blank/defaultDayCycle.dml
+$EnvGuiServer::WaterFile None
+$EnvGuiServer::GroundFile Add-Ons/Ground_Plate/plate.ground
+
+//minigame rules
+// No minigame needed since the game-mode creates one separately
+$MiniGame::Enabled 0
+
+//config settings
+$Server::WelcomeMessage \c2Welcome to CityRPG, %1. Type /help for info.
+
+//save settings
+$GameMode::BrickOwnership Host
