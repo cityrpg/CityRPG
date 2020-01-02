@@ -157,6 +157,12 @@ function CityMenu_LotSetName(%client, %input)
 		return;
 	}
 
+	if(strlen(%input) > 40)
+	{
+		messageClient(%client, '', "\c6Sorry, that name exceeds the length limit. Please try again.");
+		return;
+	}
+
 	%brick.setCityLotName(%input);
 	messageClient(%client, '', "\c6Lot name changed to \c3" @ %brick.getCityLotName() @ "\c6.");
 
@@ -189,6 +195,12 @@ function CityMenu_LotAdmin_SetNamePrompt(%client)
 
 function CityMenu_LotAdmin_SetName(%client, %input)
 {
+	if(strlen(%input) > 40)
+	{
+		messageClient(%client, '', "\c6Sorry, that name exceeds the length limit. Please try again.");
+		return;
+	}
+
 	%client.cityMenuID.setCityLotName(%input);
 	messageClient(%client, '', "\c6Lot name changed to \c3" @ %client.cityMenuID.getCityLotName() @ "\c6.");
 
@@ -335,7 +347,7 @@ function fxDTSBrick::getCityLotRuleStr(%brick)
 
 function fxDTSBrick::setCityLotName(%brick, %value)
 {
-	%valueNew = CityRPGLotRegistry.getData(%brick.getCityLotID()).valueName = %value;
+	%valueNew = CityRPGLotRegistry.getData(%brick.getCityLotID()).valueName = getSubStr(%value, 0, 40);
 	CityRPGLotRegistry.saveData();
 
 	return %valueNew;
