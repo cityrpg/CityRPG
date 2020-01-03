@@ -98,6 +98,8 @@ function CityMenu_LotPurchasePrompt(%client)
 {
 	%lot = %client.cityMenuID;
 
+	%client.cityLog("Lot " @ %lot.getCityLotID() @ " purchase prompt");
+
 	if(CityRPGData.getData(%client.bl_id).valueMoney >= %lot.dataBlock.initialPrice)
 	{
 		messageClient(%client, '', "\c6You are purchasing this lot for \c3$" @ %lot.dataBlock.initialPrice @ "\c6. Make sure you have read the lot rules. Lot sales are final!");
@@ -122,12 +124,16 @@ function CityLots_PurchaseLot(%client, %input, %lot)
 
 	if(%lot.getCityLotOwnerID() != -1 || CityRPGData.getData(%client.bl_id).valueMoney < %lot.dataBlock.initialPrice)
 	{
+		%client.cityLog("(!!!) Lot " @ %lot.getCityLotID() @ " purchase fell through");
+
 		// Security check falls through
 		messageClient(%client, '', "\c0Sorry, you are no-longer able to purchase this lot at this time.");
 		%client.cityMenuClose();
 	}
 	else if(CityRPGData.getData(%client.bl_id).valueMoney >= %lot.dataBlock.initialPrice)
 	{
+		%client.cityLog("Lot " @ %lot.getCityLotID() @ " purchase success");
+		
 		CityRPGData.getData(%client.bl_id).valueMoney -= %lot.dataBlock.initialPrice;
 		messageClient(%client, '', "\c6You have purchased this lot for \c3$" @ %lot.dataBlock.initialPrice @ "\c6!");
 
@@ -144,6 +150,8 @@ function CityLots_PurchaseLot(%client, %input, %lot)
 // ## Functions for lot owners ## //
 function CityMenu_LotSetNamePrompt(%client)
 {
+	%client.cityLog("Lot " @ %client.cityMenuID.getCityLotID() @ " rename prompt");
+
 	messageClient(%client, '', "\c6Enter a new name for your lot.");
 	%client.cityMenuFunction = CityMenu_LotSetName;
 }
@@ -151,6 +159,8 @@ function CityMenu_LotSetNamePrompt(%client)
 function CityMenu_LotSetName(%client, %input)
 {
 	%brick = %client.cityMenuID;
+
+	%client.cityLog("Lot " @ %brick.getCityLotID() @ " rename '" @ %input @ "'");
 
 	if(%brick.getCityLotOwnerID() != %client.bl_id)
 	{
@@ -189,12 +199,15 @@ function CityMenu_LotAdmin(%client)
 
 function CityMenu_LotAdmin_SetNamePrompt(%client)
 {
+	%client.cityLog("Lot MOD " @ %client.cityMenuID.getCityLotID() @ " rename prompt");
 	messageClient(%client, '', "\c6Enter a new name for the lot \c3" @ %client.cityMenuID.getCityLotName() @ "\c6.");
 	%client.cityMenuFunction = CityMenu_LotAdmin_SetName;
 }
 
 function CityMenu_LotAdmin_SetName(%client, %input)
 {
+	%client.cityLog("Lot MOD " @ %client.cityMenuID.getCityLotID() @ " rename '" @ %input @ "'");
+
 	if(strlen(%input) > 40)
 	{
 		messageClient(%client, '', "\c6Sorry, that name exceeds the length limit. Please try again.");
@@ -213,6 +226,8 @@ function CityMenu_LotAdmin_TransferCity(%client)
 
 	%brick = %client.cityMenuID;
 
+	%client.cityLog("Lot MOD " @ %brick.getCityLotID() @ " transfer city");
+
 	CityLots_TransferLot(%brick, %hostID);
 
 	%brick.setCityLotName("Unclaimed Lot");
@@ -224,12 +239,16 @@ function CityMenu_LotAdmin_TransferCity(%client)
 
 function CityMenu_LotAdmin_TransferPlayerPrompt(%client)
 {
+	%client.cityLog("Lot MOD " @ %client.cityMenuID.getCityLotID() @ " transfer pl prompt");
+
 	messageClient(%client, '', "\c6Enter a Blockland ID of the player to transfer the lot to.");
 	%client.cityMenuFunction = CityMenu_LotAdmin_TransferPlayer;
 }
 
 function CityMenu_LotAdmin_TransferPlayer(%client, %input)
 {
+	%client.cityLog("Lot MOD " @ %client.cityMenuID.getCityLotID() @ " transfer pl '" @ %input @ "'");
+
 	%target = findClientByBL_ID(%input);
 
 	// Hacky workaround to detect if a non-number is passed to avoid pain.
