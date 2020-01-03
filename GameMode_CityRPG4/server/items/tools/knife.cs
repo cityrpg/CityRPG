@@ -6,7 +6,7 @@ datablock AudioProfile(knifeDrawSound)
 };
 datablock AudioProfile(knifeHitSound)
 {
-	filename    = "./swordHit.wav";
+	filename    = "Add-Ons/Weapon_Sword/swordHit.wav";
 	description = AudioClosest3d;
 	preload = true;
 };
