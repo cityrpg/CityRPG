@@ -42,6 +42,14 @@ package CityRPG_MainPackage
 	function ND_Selection::plantBrick(%this, %i, %position, %angleID, %brickGroup, %client, %bl_id)
 	{
 		%brick = Parent::plantBrick(%this, %i, %position, %angleID, %brickGroup, %client, %bl_id);
+
+		if(%brick.getDataBlock().CityRPGBrickType == $CityBrick_Lot)
+		{
+			// Force init as a new lot
+			%brick.initializeCityLot();
+			%brick.assignCityLotName();
+		}
+
 		City_OnPlant(%brick);
 	}
 
