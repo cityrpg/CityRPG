@@ -296,6 +296,11 @@ function fxDTSBrick::initializeCityLot(%brick)
 
 	%newIndex = CityLots_GetLotCount()+1;
 
+	if(CityRPGLotRegistry.getData(%newIndex) != 0)
+	{
+		error("CityRPG Lot Registry - Attempting to initialize the lot '" @ %newIndex @ "' but the ID already exists! This lot may not have registered correctly.");
+	}
+
 	CityRPGLotRegistry.addData(%newIndex);
 	CityRPGLotRegistry.saveData();
 
