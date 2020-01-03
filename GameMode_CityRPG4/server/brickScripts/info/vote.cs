@@ -32,9 +32,9 @@ function CityRPGVoteBrickData::parseData(%this, %brick, %client, %triggerStatus,
 			{
 				messageClient(%client, '', "\c6Type a number in chat:");
 				messageClient(%client, '', "\c31 \c6- Apply for Mayor. (Costs: $" @ $Pref::Server::City::Mayor::Cost @ ")");
-				messageClient(%client, '', "\c32 \c6- Vote!");
-				messageClient(%client, '', "\c33 \c6- Get Candidate list!");
-				messageClient(%client, '', "\c34 \c6- View Score!");
+				messageClient(%client, '', "\c32 \c6- Vote");
+				messageClient(%client, '', "\c33 \c6- View candidates");
+				messageClient(%client, '', "\c34 \c6- View scores");
 			} else {
 				if($City::Mayor::ID != -1) {
 					messageClient(%client, '', "\c6City mayor: " @ $City::Mayor::String);
