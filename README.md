@@ -12,7 +12,8 @@ In CityRPG 4, you can explore a range of jobs and opportunities as you work your
 - The classic gameplay that has been shaped by thousands of players within the Blockland community
 - A variety of jobs and roles to partake in
 - Shops that are built and run entirely by players
-- A dynamic, highly configurable system for handling player-created builds and in-game real estate
+- A dynamic real estate system for player-created buildings
+- [More on the way](https://trello.com/b/36wGp6ow/cityrpg-4-roadmap)
 
 ## Created by the CityRPG 4 Team
 Development: Lake
