@@ -66,6 +66,8 @@ package CityRPG_MainPackage
 			return;
 		}
 
+		%client = %brick.getGroup().client;
+
 		if(%brick == $LastLoadedBrick && %brick.getDatablock().CityRPGBrickType !$= $CityBrick_Lot) {
 			switch(%brick.getDatablock().CityRPGBrickType) {
 				case $CityBrick_Info:
@@ -92,12 +94,21 @@ package CityRPG_MainPackage
 
 			return;
 		}
+		else if(%brick.getDataBlock().CityRPGBrickType $= $CityBrick_Lot)
+		{
+			if(!%client.isAdmin)
+			{
+				commandToClient(%client, 'centerPrint', "\c6Only admins can create new lot bricks.<br>\c6To purchase a lot, you must find an unclaimed lot and type \c3/lot\c6 over it.", 3);
+				%brick.schedule(0, "delete");
+				return -1;
+			}
+		}
 
 		if(%brick.getDatablock().CityRPGBrickType && isObject(%brick.client)) {
 			%brick.client.cityLog("Attempt to plant " @ %brick.getDatablock().getName());
 		}
 
-		if(isObject(%client = %brick.getGroup().client) || %brick.getDatablock().CityRPGBrickType == $CityBrick_Lot) {
+		if(isObject(%client) || %brick.getDatablock().CityRPGBrickType == $CityBrick_Lot) {
 			if(mFloor(getWord(%brick.rotation, 3)) == 90) {
 				%boxSize = getWord(%brick.getDatablock().brickSizeY, 1) / 2.5 SPC getWord(%brick.getDatablock().brickSizeX, 0) / 2.5 SPC getWord(%brick.getDatablock().brickSizeZ, 2) / 2.5;
 			}
@@ -336,12 +347,6 @@ package CityRPG_MainPackage
 						}
 					}
 				}
-			}
-			else if(!%client.isAdmin)
-			{
-				commandToClient(%client, 'centerPrint', "\c6Only admins can create new lot bricks.<br>\c6To purchase a lot, you must find an unclaimed lot and type \c3/lot\c6 over it.", 3);
-				%brick.schedule(0, "delete");
-				return -1;
 			}
 			else {
 				error("City_OnPlant() - Brick fell through tests!");
