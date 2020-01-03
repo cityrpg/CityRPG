@@ -133,7 +133,7 @@ function CityLots_PurchaseLot(%client, %input, %lot)
 	else if(CityRPGData.getData(%client.bl_id).valueMoney >= %lot.dataBlock.initialPrice)
 	{
 		%client.cityLog("Lot " @ %lot.getCityLotID() @ " purchase success");
-		
+
 		CityRPGData.getData(%client.bl_id).valueMoney -= %lot.dataBlock.initialPrice;
 		messageClient(%client, '', "\c6You have purchased this lot for \c3$" @ %lot.dataBlock.initialPrice @ "\c6!");
 
@@ -510,7 +510,7 @@ package CityRPG_LotRegistry
 
 		if(%brick.dataBlock !$= "" && %brick.dataBlock.CityRPGBrickType == $CityBrick_Lot)
 		{
-			%brick.assignCityLotName();
+			%brick.schedule(0,assignCityLotName);
 		}
 	}
 
