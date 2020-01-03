@@ -82,6 +82,8 @@ function City_Init()
 	{
 		City_Init_Minigame();
 	}
+
+	CityMayor_refresh();
 }
 
 function CityRPGHostClient::onBottomPrint(%this, %message)
