@@ -52,6 +52,7 @@ package CityRPG_MainPackage
 		City_OnPlant(%brick);
 	}
 
+	// TODO: Rewrite this
 	function City_OnPlant(%brick) {
 		if(!isObject(%brick)) {
 			return;
@@ -88,7 +89,7 @@ package CityRPG_MainPackage
 			%brick.client.cityLog("Attempt to plant " @ %brick.getDatablock().getName());
 		}
 
-		if(isObject(%client = %brick.getGroup().client)) {
+		if(isObject(%client = %brick.getGroup().client) || %brick.getDatablock().CityRPGBrickType == $CityBrick_Lot) {
 			if(mFloor(getWord(%brick.rotation, 3)) == 90) {
 				%boxSize = getWord(%brick.getDatablock().brickSizeY, 1) / 2.5 SPC getWord(%brick.getDatablock().brickSizeX, 0) / 2.5 SPC getWord(%brick.getDatablock().brickSizeZ, 2) / 2.5;
 			}
@@ -340,9 +341,6 @@ package CityRPG_MainPackage
 		}
 		else {
 			switch(%brick.getDatablock().CityRPGBrickType) {
-				case $CityBrick_Lot:
-					%brick.schedule(0, "delete");
-					return -1;
 				case $CityBrick_Info:
 					%brick.schedule(0, "createCityTrigger");
 				case $CityBrick_Spawn:
