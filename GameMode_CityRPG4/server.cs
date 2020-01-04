@@ -120,7 +120,7 @@ exec($City::ScriptPath @ "items/weapons/baton.cs");
 exec($City::ScriptPath @ "items/weapons/limitedbaton.cs");
 
 // Modules
-exec($City::ScriptPath @ "/cityModules/lotRegistry.cs");
+exec($City::ScriptPath @ "cityModules/lotRegistry.cs");
 exec($City::ScriptPath @ "cityModules/cash.cs");
 exec($City::ScriptPath @ "cityModules/voteImpeach.cs");
 exec($City::ScriptPath @ "cityModules/rep.cs");
