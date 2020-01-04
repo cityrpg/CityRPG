@@ -26,7 +26,7 @@ function fxDTSBrick::adjustColorOnOreContent(%this, %case)
 		{
 			if(%case == 0)
 			{
-				%this.schedule(getRandom(60000, 120000), "adjustColorOnOreContent", 1);
+				%this.schedule(getRandom(45000, 90000), "adjustColorOnOreContent", 1);
 				%this.color = getClosestPaintColor("0 0 0 1");
 				%this.setColor(%this.color);
 			}
