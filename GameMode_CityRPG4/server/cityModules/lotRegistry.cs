@@ -122,7 +122,12 @@ function CityLots_PurchaseLot(%client, %input, %lot)
 		%lot = %client.cityMenuID;
 	}
 
-	if(%lot.getCityLotOwnerID() != -1 || CityRPGData.getData(%client.bl_id).valueMoney < %lot.dataBlock.initialPrice)
+	if(%input !$= "1")
+	{
+		messageClient(%client, '', "\c0Lot purchase cancelled.");
+		%client.cityMenuClose();
+	}
+	else if(%lot.getCityLotOwnerID() != -1 || CityRPGData.getData(%client.bl_id).valueMoney < %lot.dataBlock.initialPrice)
 	{
 		%client.cityLog("(!!!) Lot " @ %lot.getCityLotID() @ " purchase fell through");
 
