@@ -506,10 +506,13 @@ package CityRPG_LotRegistry
 	// In case the above check falls through, we'll also package these with a warning.
 	function SimObject::ClearNTObjectName(%obj)
 	{
-		if(!%obj.cityLotOverride && !%obj.cityLotOverrideReset && %obj.dataBlock !$= "" && %obj.dataBlock.CityRPGBrickType == $CityBrick_Lot)
+		// Throw an error if the following conditions are met:
+		// %obj.cityLotOverride and cityLotOverrideReset are not true, the datablock exists and is a lot, and the name isn't already empty.
+		if(!%obj.cityLotOverride && !%obj.cityLotOverrideReset && %obj.dataBlock !$= "" && %obj.dataBlock.CityRPGBrickType == $CityBrick_Lot && %obj.getName() !$= "")
 		{
 			warn("CityRPG 4 - Attempt to call ClearNTObjectName on a lot brick!");
 			backtrace();
+			return;
 		}
 
 		Parent::ClearNTObjectName(%obj);
@@ -541,7 +544,6 @@ package CityRPG_LotRegistry
 		%brick.cityLotInit = 0;
 		%brick.cityLotOverride = 1;
 		%brick.setNTObjectName(%lotID);
-		%brick.cityLotOverride = 1; // One more for the ClearNTObjectName call
 
 		// If this falls through, the lot is an existing lot and can be left alone.
 	}
