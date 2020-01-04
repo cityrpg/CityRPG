@@ -13,6 +13,7 @@ function City_InitPrefs() {
 	$Pref::Server::City::realestate::maxLots						= 5;
 	$Pref::Server::City::prices::reset									= 100;
 	$Pref::Server::City::tick::speed										= 5;
+	$Pref::Server::City::LotRules												= "No spam. No excessive FX, emitters, or lights.";
 
 	// Crime
 	$Pref::Server::City::demerits::minBounty						= 100;
@@ -53,6 +54,7 @@ if(!isFile("Add-Ons/System_ReturnToBlockland/server.cs"))
 	RTB_registerPref("Max Lots", "CityRPG 4|Game", "$Pref::Server::City::realestate::maxLots", "int 0 999", "GameMode_CityRPG4", 5, 0, 0);
 	RTB_registerPref("Account Reset Cost (/reset)", "CityRPG 4|Game", "$Pref::Server::City::prices::reset", "int 0 5000", "GameMode_CityRPG4", 100, 0, 0);
 	RTB_registerPref("Tick Length (minutes)", "CityRPG 4|Game", "$Pref::Server::City::tick::speed", "int 0 10", "GameMode_CityRPG4", 5, 0, 0);
+	RTB_registerPref("Lot Rules", "CityRPG 4|Game", "$Pref::Server::City::LotRules", "string 256", "GameMode_CityRPG4", "No spam. No excessive FX, emitters, or lights.", 0, 0);
 
 	RTB_registerPref("Min Bounty", "CityRPG 4|Crime", "$Pref::Server::City::demerits::minBounty", "int 0 1000", "GameMode_CityRPG4", 100, 0, 0);
 	RTB_registerPref("Max Bounty", "CityRPG 4|Crime", "$Pref::Server::City::demerits::maxBounty", "int 0 1000000", "GameMode_CityRPG4", 7500, 0, 0);

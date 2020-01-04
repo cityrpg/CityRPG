@@ -97,7 +97,7 @@ function CityMenu_LotRules(%client)
 {
 	messageClient(%client, '', "\c3Code enforcement requires following restrictions on this lot:");
 
-	%lotRules = %client.cityMenuID.getCityLotRuleStr();
+	%lotRules = $Pref::Server::City::LotRules;
 	messageClient(%client, '', "\c6" @ %lotRules);
 }
 
