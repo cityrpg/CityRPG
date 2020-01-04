@@ -1,3 +1,11 @@
 <version:0.1.0>
 	<b>CityRPG 4 Alpha 1 - Initial Release</b>
+	<b>Features</b>
+	<ul>
+		<li>The classic gameplay that has been shaped by thousands of players within the Blockland community</li>
+		<li>A variety of jobs and roles to partake in</li>
+		<li>Shops that are built and run entirely by players</li>
+		<li>A dynamic real estate system for player-created buildings</li>
+		<li><a:trello.com/b/36wGp6ow/cityrpg-4-roadmap>More on the way! View our update progress on Trello.</a></li>
+	</ul>
 </version>
