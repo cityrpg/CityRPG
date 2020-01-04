@@ -34,6 +34,14 @@ function CityMenu_Lot(%client, %notitle)
 		return;
 	}
 
+	if(%brick.getCityLotID() == -1)
+	{
+		error("Attempting to access a blank lot! Re-initializing it...");
+
+		%brick.initializeCityLot();
+		%brick.assignCityLotName();
+	}
+
 	// ## Initial display ## //
 	%brick = %client.CityRPGLotBrick;
 	%price = %brick.dataBlock.initialPrice;
