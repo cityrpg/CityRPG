@@ -18,11 +18,11 @@ function JobSO::populateJobs(%so)
 	%so.addJobFromFile("armsdealer");             // 5
 	%so.addJobFromFile("shopowner");							// 6
 	%so.addJobFromFile("shopceo");           		  // 7
-	%so.addJobFromFile("bountyhunter");           // 11
-	%so.addJobFromFile("bountyhunterpro");        // 12
-	%so.addJobFromFile("policeasst");             // 8
-	%so.addJobFromFile("policeman");              // 9
-	%so.addJobFromFile("policechief");            // 10
+	%so.addJobFromFile("bountyhunter");           // 8
+	%so.addJobFromFile("bountyhunterpro");        // 9
+	%so.addJobFromFile("policeasst");             // 10
+	%so.addJobFromFile("policeman");              // 11
+	%so.addJobFromFile("policechief");            // 12
 	%so.addJobFromFile("councilmember");          // 13
 	%so.addJobFromFile("mayor");		  						// 14
 }
