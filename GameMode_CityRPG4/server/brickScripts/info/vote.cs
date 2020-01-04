@@ -36,7 +36,7 @@ function CityRPGVoteBrickData::parseData(%this, %brick, %client, %triggerStatus,
 				messageClient(%client, '', "\c33 \c6- View candidates");
 				messageClient(%client, '', "\c34 \c6- View scores");
 			} else {
-				if($City::Mayor::ID != -1) {
+				if($City::Mayor::ID != -1 && $City::Mayor::ID !$= "") {
 					messageClient(%client, '', "\c6City mayor: " @ $City::Mayor::String);
 					messageClient(%client, '', "\c6Type a number in chat:");
 					messageClient(%client, '', "\c31 \c6- Vote to remove the Mayor from office! \c3($" @ $Pref::Server::City::Mayor::ImpeachCost @ ")");
