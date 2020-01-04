@@ -339,7 +339,6 @@ function fxDTSBrick::initializeCityLot(%brick)
 }
 
 // Returns the lot's ID number.
-// Initializes the lot if it does not already exist.
 function fxDTSBrick::getCityLotID(%brick)
 {
 	%nameRaw = %brick.getName();
@@ -351,6 +350,12 @@ function fxDTSBrick::getCityLotID(%brick)
 	}
 
 	%lotID = getSubStr(%nameRaw, 1, strlen(%nameRaw));
+
+	if(CityRPGLotRegistry.getData(%lotID) == 0)
+	{
+		// Doesn't exist in the registry
+		return -1;
+	}
 
 	return %lotID;
 }
