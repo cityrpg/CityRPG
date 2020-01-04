@@ -2,6 +2,12 @@
 // Purpose:	Saves a user's data.
 //--------------------
 
+
+if(!isObject(SassyGroup))
+{
+	new simGroup(SassyGroup) {};
+}
+
 function Sassy::onAdd(%this)
 {
 	if(%this.getName() $= "")
@@ -379,6 +385,8 @@ function SassyData::onAdd(%this)
 
 		return false;
 	}
+
+	SassyGroup.add(%this);
 
 	for(%a = 1; %a <= %this.parent.valueCount; %a++)
 	{
