@@ -60,6 +60,8 @@ function Sassy::onRemove(%this)
 
 function Sassy::saveData(%this)
 {
+	fileCopy(%this.dataFile, %this.dataFile @ ".bak");
+
 	%file = new fileObject();
 	%file.openForWrite(%this.dataFile);
 
