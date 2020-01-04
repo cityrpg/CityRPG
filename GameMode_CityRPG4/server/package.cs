@@ -1101,6 +1101,17 @@ package CityRPG_MainPackage
 		// There is no useful information that the game could derive from UpdateBodyParts. Simply returning.
 		return;
 	}
+
+	function serverCmdForcePlant(%client)
+	{
+		if(!%client.isAdmin)
+		{
+			messageClient(%client, '', "\c6Force Plant is admin only in CityRPG. Ask an admin for help.");
+			return;
+		}
+
+		Parent::serverCmdForcePlant(%client);
+	}
 };
 deactivatePackage(CityRPG_MainPackage);
 activatepackage(CityRPG_MainPackage);
