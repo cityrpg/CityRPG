@@ -319,8 +319,10 @@ function fxDTSBrick::initializeCityLot(%brick)
 {
 	if(CityRPGLotRegistry.getData(%brick.getCityLotID()) != 0)
 	{
-		error("Lot registry - Attempting to initialize a lot that already exists. Aborting.");
-		return -1;
+		warn("Lot registry - Attempting to initialize a lot that already exists. Re-initializing as a new lot.");
+		backtrace();
+		%brick.cityLotOverride = 1;
+		%brick.setNTObjectName("");
 	}
 
 	// 1. Initialize lot data with default values
