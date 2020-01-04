@@ -117,7 +117,7 @@ function serverCmdMeMayor(%client)
 
 	if(%client.name $= $City::Mayor::String)
 	{
-		jobset(%client, 12);
+		jobset(%client, 14);
 	}
 }
 

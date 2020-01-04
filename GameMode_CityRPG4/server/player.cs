@@ -552,7 +552,7 @@ function jobset(%client, %job, %name)
 		%client.applyForcedBodyColors();
 		%client.applyForcedBodyParts();
 
-		if(%job == 12)
+		if(%job == 14)
 		{
 			$City::Mayor::String = %client.name;
 			$City::Mayor::Enabled = 0;
@@ -569,7 +569,7 @@ function jobset(%client, %job, %name)
 		%target.applyForcedBodyColors();
 		%target.applyForcedBodyParts();
 
-		if(%job == 12)
+		if(%job == 14)
 			$City::Mayor::String = %target.name;
 
 		%target.SetInfo();
