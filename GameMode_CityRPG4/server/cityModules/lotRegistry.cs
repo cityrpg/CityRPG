@@ -326,7 +326,15 @@ function fxDTSBrick::initializeCityLot(%brick)
 	}
 
 	CityRPGLotRegistry.addData(%newIndex);
-	CityRPGLotRegistry.saveData();
+
+	if(CityRPGLotRegistry.dataCount > 0)
+	{
+		CityRPGLotRegistry.saveData();
+	}
+	else
+	{
+		error("Lot registry is blank or missing! Will not export.");
+	}
 
 	%publicID = getNumKeyID();
 
@@ -382,7 +390,15 @@ function fxDTSBrick::getCityLotRuleStr(%brick)
 function fxDTSBrick::setCityLotName(%brick, %value)
 {
 	%valueNew = CityRPGLotRegistry.getData(%brick.getCityLotID()).valueName = getSubStr(%value, 0, 40);
-	CityRPGLotRegistry.saveData();
+
+	if(CityRPGLotRegistry.dataCount > 0)
+	{
+		CityRPGLotRegistry.saveData();
+	}
+	else
+	{
+		error("Lot registry is blank or missing! Will not export.");
+	}
 
 	return %valueNew;
 }
@@ -399,7 +415,15 @@ function fxDTSBrick::setCityLotOwnerID(%brick, %value)
 	}
 
 	%valueNew = %data.valueOwnerID = %value;
-	CityRPGLotRegistry.saveData();
+
+	if(CityRPGLotRegistry.dataCount > 0)
+	{
+		CityRPGLotRegistry.saveData();
+	}
+	else
+	{
+		error("Lot registry is blank or missing! Will not export.");
+	}
 
 	return %valueNew;
 }

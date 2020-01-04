@@ -264,7 +264,17 @@ function City_Tick(%brick)
 	City_Init_Spawns();
 	City_TickLoop(0);
 	CityRPGData.scheduleTick = schedule((60000 * $Pref::Server::City::tick::speed), false, "City_Tick");
-	CityRPGData.saveData();
+
+	if(CityRPGData.datacount > 0)
+	{
+		CityRPGData.saveData();
+	}
+	else
+	{
+		CityRPGData.dump();
+		error("CityRPG data is blank or missing! Will not attempt to export. Data object has been dumped.");
+	}
+
 	CalendarSO.saveData();
 	CitySO.saveData();
 
