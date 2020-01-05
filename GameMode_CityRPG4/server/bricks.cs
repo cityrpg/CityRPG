@@ -278,6 +278,11 @@ datablock fxDTSBrickData(CityRPGCrimeVehicleData : brickVehicleSpawnData)
 	CityRPGBrickAdmin = true;
 };
 
+if(isObject(brickTempStoreData))
+	brickTempStoreData.category = "";//We don't want this ugly thing appearing in our brick menu.
+exec($City::ScriptPath @ "brickScripts/storage/KeypadSafe.cs");
+exec($City::ScriptPath @ "brickScripts/storage/RotorSafe.cs");
+
 // ============================================================
 // Functions
 // ============================================================

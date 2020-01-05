@@ -58,6 +58,7 @@ ADDON Brick_Doors
 ADDON Item_Sports
 
 ADDON Tool_ChangeOwnership
+ADDON Brick_Storage
 
 ADDON GameMode_CityRPG4
 
