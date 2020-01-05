@@ -633,6 +633,9 @@ package CityRPG_MainPackage
 
 		parent::spawnPlayer(%client);
 
+		if(!CityRPGData.getData(%client.bl_id))
+			return;
+
 		if(%client.moneyOnSuicide > 0)
 		{
 			CityRPGData.getData(%client.bl_id).valueMoney = %client.moneyOnSuicide;
