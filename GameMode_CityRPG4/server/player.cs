@@ -582,6 +582,8 @@ function resetFree(%client)
 	CityRPGData.removeData(%client.bl_id);
 	CityRPGData.addData(%client.bl_id);
 
+	CityRPGData.getData(%client.bl_id).valueBank = 250;
+
 	if(isObject(%client.player))
 	{
 		%client.spawnPlayer();
