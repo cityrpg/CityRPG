@@ -580,7 +580,8 @@ function jobset(%client, %job, %name)
 function resetFree(%client)
 {
 	%client.cityLog("***Account auto-reset***");
-	CityRPGData.removeData(%client.bl_id);
+	if(CityRPGData.getData(%client.bl_id))
+		CityRPGData.removeData(%client.bl_id);
 	CityRPGData.addData(%client.bl_id);
 
 	CityRPGData.getData(%client.bl_id).valueBank = 250;
