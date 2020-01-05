@@ -50,6 +50,7 @@ function serverCmdforceImpeach(%client)
 		CityMayor_resetCandidates();
 		$City::Mayor::String = "";
 		messageAll('',"\c6>>\c0THE MAYOR HAS BEEN REMOVED FROM OFFICE!\c6 Forced by:" SPC %client.name);
+		schedule(10000,0,CityMayor_refresh);
 	}
 }
 function CityMayor_resetImpeachVotes()
