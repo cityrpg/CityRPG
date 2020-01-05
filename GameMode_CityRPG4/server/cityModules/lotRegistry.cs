@@ -33,6 +33,10 @@ function CityMenu_Lot(%client, %notitle)
 		messageClient(%client, '', "\c6You are currently not on a lot.");
 		return;
 	}
+	
+	// ## Initial display ## //
+	%brick = %client.CityRPGLotBrick;
+	%price = %brick.dataBlock.initialPrice;
 
 	if(%brick.getCityLotID() == -1)
 	{
@@ -41,10 +45,6 @@ function CityMenu_Lot(%client, %notitle)
 		%brick.initializeCityLot();
 		%brick.assignCityLotName();
 	}
-
-	// ## Initial display ## //
-	%brick = %client.CityRPGLotBrick;
-	%price = %brick.dataBlock.initialPrice;
 
 	if(!%notitle)
 	{
