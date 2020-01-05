@@ -124,7 +124,7 @@ exec($City::ScriptPath @ "cityModules/lotRegistry.cs");
 exec($City::ScriptPath @ "cityModules/cash.cs");
 exec($City::ScriptPath @ "cityModules/voteImpeach.cs");
 exec($City::ScriptPath @ "cityModules/rep.cs");
-exec($City::ScriptPath @ "cityModules/trade.cs");
+//exec($City::ScriptPath @ "cityModules/trade.cs");
 exec($City::ScriptPath @ "cityModules/mayor.cs");
 exec($City::ScriptPath @ "cityModules/security.cs");
 exec($City::ScriptPath @ "support/spacecasts.cs");
