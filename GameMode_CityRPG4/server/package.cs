@@ -793,7 +793,7 @@ package CityRPG_MainPackage
 		if(isObject(%client = %this.client) && isObject(%client.player) && %this.getState() !$= "dead")
 		{
 			if(%client.getWantedLevel())
-				%color = "1 1 1 1";
+				%color = "1 0 0 1";
 			else if(CityRPGData.getData(%client.bl_id).valueReincarnated)
 				%color = "1 1 0 1";
 		}

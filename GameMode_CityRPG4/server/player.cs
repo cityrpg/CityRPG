@@ -112,6 +112,7 @@ function gameConnection::setInfo(%client)
 	if(isObject(%client.player))
 	{
 		%client.player.setShapeNameDistance(24);
+		%client.player.setShapeNameColor(24);
 
 		%client.setGameBottomPrint();
 	}
