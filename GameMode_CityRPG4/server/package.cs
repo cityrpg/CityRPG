@@ -1112,6 +1112,15 @@ package CityRPG_MainPackage
 
 		Parent::serverCmdForcePlant(%client);
 	}
+
+	function WandImage::onHitObject(%this, %player, %slot, %hitObj, %hitPos, %hitNormal)
+	{
+		if(getWord(%hitPos,2)<10)
+			return Parent::onHitObject(%this, %player, %slot, %hitObj, %hitPos, %hitNormal);
+		if(%hitObj.getType() & $TypeMasks::PlayerObjectType)
+			return;
+		return Parent::onHitObject(%this, %player, %slot, %hitObj, %hitPos, %hitNormal);
+	}
 };
 deactivatePackage(CityRPG_MainPackage);
 activatepackage(CityRPG_MainPackage);
