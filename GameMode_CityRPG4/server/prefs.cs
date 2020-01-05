@@ -159,7 +159,7 @@ $CityRPG::demerits::bountyPlacing = 250;
 $CityRPG::demerits::bountyClaiming = 500;
 $CityRPG::demerits::pickpocketing = 25;
 $CityRPG::demerits::bankRobbery = 3000;
-$CityRPG::demerits::tasingBros = 25;
+$CityRPG::demerits::tasingBros = 50;
 $CityRPG::demerits::grandTheftAuto = 75;
 
 // Vehicles
