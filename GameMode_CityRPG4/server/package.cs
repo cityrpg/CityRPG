@@ -51,6 +51,7 @@ package CityRPG_MainPackage
 		}
 
 		City_OnPlant(%brick);
+		return %brick;
 	}
 
 	function fxDTSBrick::onPlant(%brick)
