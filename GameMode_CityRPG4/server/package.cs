@@ -464,14 +464,6 @@ package CityRPG_MainPackage
 			parent::setItem(%brick, %datablock, %client);
 	}
 
-	function fxDTSBrick::setMusic(%brick, %song)
-	{
-		if(%brick.getGroup().client.isAdmin || %brick == $LastLoadedBrick)
-			parent::setMusic(%brick, %song);
-		else
-			parent::setMusic(%brick, 0);
-	}
-
 	function fxDTSBrick::spawnItem(%brick, %pos, %datablock, %client)
 	{
 		if(isObject(%owner = getBrickGroupFromObject(%brick).client) && %owner.isAdmin)
