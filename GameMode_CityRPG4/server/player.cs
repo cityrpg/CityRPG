@@ -75,25 +75,20 @@ function gameConnection::buyResources(%client)
 	%totalResources = getWord(CityRPGData.getData(%client.bl_id).valueResources, 0) + getWord(CityRPGData.getData(%client.bl_id).valueResources, 1);
 	if(mFloor(%totalResources * $CityRPG::prices::resourcePrice) > 0)
 	{
-		%product = mFloor(%totalResources * $CityRPG::prices::resourcePrice);
-
-		if(%client.getJobSO().laborer && !getWord(CityRPGData.getData(%client.bl_id).valueJobID, 1))
-		{
-			%product *= getRandom(1.5 + (CityRPGData.getData(%client.bl_id).valueEducation / 12), 2.0 + (CityRPGData.getData(%client.bl_id).valueEducation / 12));
-			%product = mFloor(%product);
-		}
+		%payout = mFloor(%totalResources * $CityRPG::prices::resourcePrice);
 
 		if(!getWord(CityRPGData.getData(%client.bl_id).valueJailData, 1))
 		{
-			%client.cityLog("Resource sell for " @ %product);
-			CityRPGData.getData(%client.bl_id).valueMoney += %product;
-			messageClient(%client, '', "\c6The state has bought all of your resources for \c3$" @ %product @ "\c6.");
+			%client.cityLog("Resource sell for " @ %payout);
+
+			CityRPGData.getData(%client.bl_id).valueMoney += %payout;
+			messageClient(%client, '', "\c6The state has bought all of your resources for \c3$" @ %payout @ "\c6.");
 		}
 		else
 		{
-			%client.cityLog("Resource sell (jail) for " @ %product);
-			CityRPGData.getData(%client.bl_id).valueBank += %product;
-			messageClient(%client, '', '\c6The state has set aside \c3$%1\c6 for when you get out of Prison.', %product);
+			%client.cityLog("Resource sell (jail) for " @ %payout);
+			CityRPGData.getData(%client.bl_id).valueBank += %payout;
+			messageClient(%client, '', '\c6The state has set aside \c3$%1\c6 for when you get out of Prison.', %payout);
 		}
 
 		CitySO.lumber += getWord(CityRPGData.getData(%client.bl_id).valueResources, 0);

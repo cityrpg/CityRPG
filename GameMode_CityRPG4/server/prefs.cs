@@ -109,7 +109,7 @@ $Pref::Server::City::hack::revivetime								= 5; //minutes
 $CityRPG::prices::vehicleSpawn = 2500;
 $CityRPG::prices::jailingBonus = 100;
 
-$CityRPG::prices::resourcePrice = 1;
+$CityRPG::prices::resourcePrice = 1.5;
 
 // Weapon Prices
 $CityRPG::prices::weapon::name[$CityRPG::guns] = "gunItem";
