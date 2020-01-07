@@ -617,6 +617,37 @@ package CityRPG_MainPackage
 			schedule(1, 0, messageClient, %client, '', "\c2Type \c6/help starters\c2 to learn more about how to get started in CityRPG.");
 		}
 	}
+	function onMissionLoaded()
+	{
+		Parent::onMissionLoaded();
+		if($ND::Version $= "1.6.2")
+		{
+			if(!isFile("Add-Ons/Tool_NewDuplicator/DGEDIT.txt"))
+			{
+				$Pref::Server::ND::FillBricksAdminOnly = 1;
+			}
+		}
+	}
+	function GameConnection::startLoad(%client)
+	{
+		Parent::startLoad(%client);
+		if(%client.bl_id==getNumKeyID())
+		{
+			if($ND::Version $= "1.6.2")
+			{
+				if(!isFile("Add-Ons/Tool_NewDuplicator/DGEDIT.txt"))
+				{
+					if(!$ToldHostAboutFillBricksGlitch)
+					{
+						messageClient(%client,'',"\c5CityRPG4\c6: Version 1.6.2 of the New Duplicator contains a known bug which resets the fillbricks admin control setting every restart.");
+						messageClient(%client,'',"\c5CityRPG4\c6: The fillbricks command can be used by non-admins to place admin-only resources, such as minerals.");
+						messageClient(%client,'',"\c5CityRPG4\c6: We have set the fillbricks admin control setting to \"Admin-Only\" for you convenience.");
+						$ToldHostAboutFillBricksGlitch = 1;
+					}
+				}
+			}
+		}
+	}
 
 	function gameConnection::spawnPlayer(%client)
 	{
