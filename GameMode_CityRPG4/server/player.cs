@@ -91,6 +91,7 @@ function gameConnection::buyResources(%client)
 		}
 		else
 		{
+			%client.cityLog("Resource sell (jail) for " @ %product);
 			CityRPGData.getData(%client.bl_id).valueBank += %product;
 			messageClient(%client, '', '\c6The state has set aside \c3$%1\c6 for when you get out of Prison.', %product);
 		}
