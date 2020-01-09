@@ -33,7 +33,7 @@ function CityMenu_Lot(%client, %notitle)
 		messageClient(%client, '', "\c6You are currently not on a lot.");
 		return;
 	}
-	
+
 	// ## Initial display ## //
 	%brick = %client.CityRPGLotBrick;
 	%price = %brick.dataBlock.initialPrice;
@@ -186,7 +186,9 @@ function CityMenu_LotSetName(%client, %input)
 		return;
 	}
 
-	%brick.setCityLotName(%input);
+	%name = StripMLControlChars(%input);
+
+	%brick.setCityLotName(%name);
 	messageClient(%client, '', "\c6Lot name changed to \c3" @ %brick.getCityLotName() @ "\c6.");
 
 	%client.cityMenuClose();
@@ -227,7 +229,9 @@ function CityMenu_LotAdmin_SetName(%client, %input)
 		return;
 	}
 
-	%client.cityMenuID.setCityLotName(%input);
+	%name = StripMLControlChars(%input);
+
+	%client.cityMenuID.setCityLotName(%name);
 	messageClient(%client, '', "\c6Lot name changed to \c3" @ %client.cityMenuID.getCityLotName() @ "\c6.");
 
 	%client.cityMenuClose();
