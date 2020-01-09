@@ -93,6 +93,14 @@ if($GameModeArg $= "Add-Ons/GameMode_CityRPG4/gamemode.txt")
   }
 }
 
+//Brick_Checkpoint (Optional)
+//If enabled, we would like checkpoints to execute first.
+if($AddOn__Brick_Checkpoint)
+{
+  ForceRequiredAddOn("Brick_Checkpoint");
+}
+deactivatepackage(CheckpointPackage);//We don't want the checkpoint package running
+
 // ============================================================
 // File Execution
 // ============================================================

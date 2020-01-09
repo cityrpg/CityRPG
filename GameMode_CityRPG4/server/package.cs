@@ -654,6 +654,31 @@ package CityRPG_MainPackage
 		%client.SetInfo();
 	}
 
+	function GameConnection::applyPersistence(%client, %gotPlayer, %gotCamera)
+	{
+		Parent::applyPersistence(%client, %gotPlayer, %gotCamera);
+
+		//The Checkpoint brick overwrites our spawn method.  This is part of our compatability patch.
+		//CheckpointPackage Start
+		if(%client.checkPointBrickPos $= "")
+			return;
+
+		%pos = %client.checkPointBrickPos;
+		%box = "0.1 0.1 0.1";
+		%mask = $TypeMasks::FxBrickAlwaysObjectType;
+		InitContainerBoxSearch(%pos, %box, %mask);
+
+		while (%checkBrick = containerSearchNext())
+		{	
+			if(%checkBrick.getDataBlock().getName() !$= "brickCheckpointData")
+				continue;
+
+			%client.checkpointBrick = %checkBrick;
+			break;
+		}
+		//CheckpointPackage End
+	}
+
 	function gameConnection::onDeath(%client, %killerPlayer, %killer, %damageType, %unknownA)
 	{
 		if(!getWord(CityRPGData.getData(%client.bl_id).valueJailData, 1))
@@ -904,14 +929,19 @@ package CityRPG_MainPackage
 			%spawn = City_FindSpawn("jailSpawn");
 		else
 		{
-			if(City_FindSpawn("personalSpawn", %client.bl_id))
-				%spawn = City_FindSpawn("personalSpawn", %client.bl_id);
+			if(isObject(%client.checkPointBrick))
+				%spawn = %client.checkPointBrick.getSpawnPoint();
 			else
 			{
-				if(City_FindSpawn("jobSpawn", CityRPGData.getData(%client.bl_id).valueJobID) && CityRPGData.getData(%client.bl_id).valueJobID != 1)
-					%spawn = City_FindSpawn("jobSpawn", CityRPGData.getData(%client.bl_id).valueJobID);
+				if(City_FindSpawn("personalSpawn", %client.bl_id))
+					%spawn = City_FindSpawn("personalSpawn", %client.bl_id);
 				else
-					%spawn = City_FindSpawn("jobSpawn", 1);
+				{
+					if(City_FindSpawn("jobSpawn", CityRPGData.getData(%client.bl_id).valueJobID) && CityRPGData.getData(%client.bl_id).valueJobID != 1)
+						%spawn = City_FindSpawn("jobSpawn", CityRPGData.getData(%client.bl_id).valueJobID);
+					else
+						%spawn = City_FindSpawn("jobSpawn", 1);
+				}
 			}
 		}
 
