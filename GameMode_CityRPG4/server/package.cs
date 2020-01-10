@@ -566,7 +566,7 @@ package CityRPG_MainPackage
 			%suffix = "(!!!)";
 		}
 
-		%client.cityLog("Left game ~" @ %time @ " min" @ %suffix);
+		%client.cityLog("Left game ~" @ %time @ " min" @ %suffix @ " | dems: " @ CityRPGData.getData(%client.bl_id).valueDemerits);
 		if($missionRunning && isObject(%client.player) && !getWord(CityRPGData.getData(%client.bl_id).valueJailData, 1))
 		{
 			for(%a = 0; %a < %client.player.getDatablock().maxTools; %a++)
