@@ -95,25 +95,6 @@ function JobSO::addJobFromFile(%so, %file)
 	}
 }
 
-function JobSO::getAnAlias(%so)
-{
-	%jobCount = 0;
-
-	for(%a = 1; isObject(%so.job[%a]); %a++)
-	{
-		if(!%so.job[%a].hideJobName)
-		{
-			%jobCount++;
-			%jobName[%jobCount] = %so.job[%a].name;
-		}
-	}
-
-	if(%jobCount)
-		return %jobName[getRandom(1, %jobCount)];
-	else
-		return "Gadgethm";
-}
-
 function JobSO::getJobCount(%so)
 {
 	for(%a = 0; isObject(%so.job[%a + 1]); %a++) { }
