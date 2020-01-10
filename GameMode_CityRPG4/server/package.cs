@@ -922,6 +922,14 @@ package CityRPG_MainPackage
 	}
 
 	// Namespaceless Overrides
+	function verifyBrickUINames()
+	{
+		echo("Initializing CityRPG...");
+		City_Init();
+
+		Parent::verifyBrickUINames();
+	}
+
 	function onServerDestroyed()
 	{
 		echo("Exporting CityRPG data...");

@@ -90,6 +90,8 @@ function City_Init()
 	}
 
 	CityMayor_refresh();
+
+	echo("CityRPG initialization complete.");
 }
 
 function CityRPGHostClient::onBottomPrint(%this, %message)
