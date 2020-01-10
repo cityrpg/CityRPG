@@ -1,6 +1,7 @@
 /// ============================================================
 // JobsSO
 // ============================================================
+
 function JobSO::populateJobs(%so)
 {
 	for(%a = 1; isObject(%so.job[%a]); %a++)
@@ -9,6 +10,11 @@ function JobSO::populateJobs(%so)
 		%so.job[%a] = "";
 	}
 
+	%so.loadJobFiles();
+}
+
+function JobSO::loadJobFiles(%so)
+{
 	// NOTE: Order is incredibly important. Jobs are referenced by ID, which is determined by order.
 	// Mixing up the order of these professions will cause save data to reference the wrong job.
 	%so.addJobFromFile("civilian");               // 1
