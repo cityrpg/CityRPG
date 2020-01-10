@@ -2,6 +2,12 @@
 // Initializes the game-mode.
 function City_Init()
 {
+	if(!isObject(JobSO))
+	{
+		new scriptObject(JobSO) { };
+		JobSO.populateJobs();
+	}
+
 	if(!isObject(CityRPGData))
 	{
 		new scriptObject(CityRPGData)

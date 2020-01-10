@@ -101,12 +101,6 @@ function JobSO::getJobCount(%so)
 	return %a;
 }
 
-if(!isObject(JobSO))
-{
-	new scriptObject(JobSO) { };
-	JobSO.populateJobs();
-}
-
 // ============================================================
 // CitySO
 // ============================================================
