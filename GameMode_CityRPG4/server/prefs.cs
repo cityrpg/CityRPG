@@ -158,7 +158,7 @@ $CityRPG::tick::interestTick = 999;
 $CityRPG::tick::promotionLevel = 24;
 
 // Demerit Preferences
-$CityRPG::demerits::hittingInnocents = 5;
+$CityRPG::demerits::hittingInnocents = 50;
 $CityRPG::demerits::attemptedMurder = 15;
 $CityRPG::demerits::murder = 75;
 $CityRPG::demerits::breakingAndEntering = 10;
