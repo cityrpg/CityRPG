@@ -644,6 +644,8 @@ function serverCmddropmoney(%client,%amt)
 			MissionCleanup.add(%cash);
 			%cash.setShapeName("$" @ %cash.value);
 			CityRPGData.getData(%client.bl_id).valueMoney = CityRPGData.getData(%client.bl_id).valueMoney - %amt;
+			%client.setInfo();
+
 			messageClient(%client,'',"\c6You drop \c3$" @ %amt @ ".");
 			%client.cityLog("Drop '$" @ %amt @ "'");
 		}
