@@ -140,6 +140,14 @@ $CityRPG::prices::weapon::name[$CityRPG::guns] = "CityRPGLBItem";
 $CityRPG::prices::weapon::price[$CityRPG::guns] = 100;
 $CityRPG::prices::weapon::mineral[$CityRPG::guns++] = 1;
 
+$CityRPG::prices::weapon::name[$CityRPG::guns] = "CityRPGPickaxeItem";
+$CityRPG::prices::weapon::price[$CityRPG::guns] = 25;
+$CityRPG::prices::weapon::mineral[$CityRPG::guns++] = 1;
+
+$CityRPG::prices::weapon::name[$CityRPG::guns] = "CityRPGLumberjackItem";
+$CityRPG::prices::weapon::price[$CityRPG::guns] = 25;
+$CityRPG::prices::weapon::mineral[$CityRPG::guns++] = 1;
+
 //When adding to this index, be sure to add a forceRequiredAddon("Item_Here");
 //in server.cs, or else the item mod will be broken.
 
