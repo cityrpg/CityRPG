@@ -660,6 +660,8 @@ function serverCmdstats(%client, %name)
 {
 	%client.cityLog("/stats" SPC %name);
 
+	%data = CityRPGData.getData(%target.bl_id);
+
 	if(!isObject(%client.player))
 		return;
 
@@ -670,13 +672,13 @@ function serverCmdstats(%client, %name)
 
 	if(isObject(%target))
 	{
-		%string = "Career:" SPC "\c3" @ JobSO.job[CityRPGData.getData(%target.bl_id).valueJobID].name;
-		%string = %string @ "\n" @ "Money in Wallet:" SPC "\c3" @ CityRPGData.getData(%target.bl_id).valueMoney;
-		%string = %string @ "\n" @ "Net Worth:" SPC "\c3" @ (CityRPGData.getData(%target.bl_id).valueMoney + CityRPGData.getData(%target.bl_id).valueBank);
-		%string = %string @ "\n" @ "Arrest Record:" SPC "\c3" @ (getWord(CityRPGData.getData(%target.bl_id).valueJailData, 0) ? "Yes" : "No");
-		%string = %string @ "\n" @ "Ticks left in Jail:" SPC "\c3" @ getWord(CityRPGData.getData(%target.bl_id).valueJailData, 1);
-		%string = %string @ "\n" @ "Total Demerits:" SPC "\c3" @ CityRPGData.getData(%target.bl_id).valueDemerits;
-		%string = %string @ "\n" @ "Education:" SPC "\c3" @ CityRPGData.getData(%target.bl_id).valueEducation;
+		%string = "Career:" SPC "\c3" @ JobSO.job[%data.valueJobID].name;
+		%string = %string @ "\n" @ "Money in Wallet:" SPC "\c3" @ %data.valueMoney;
+		%string = %string @ "\n" @ "Net Worth:" SPC "\c3" @ (%data.valueMoney + %data.valueBank);
+		%string = %string @ "\n" @ "Arrest Record:" SPC "\c3" @ (getWord(%data.valueJailData, 0) ? "Yes" : "No");
+		%string = %string @ "\n" @ "Ticks left in Jail:" SPC "\c3" @ getWord(%data.valueJailData, 1);
+		%string = %string @ "\n" @ "Total Demerits:" SPC "\c3" @ %data.valueDemerits;
+		%string = %string @ "\n" @ "Education:" SPC "\c3" @ %data.valueEducation;
 		commandToClient(%client, 'MessageBoxOK', %target.name, %string);
 	}
 	else
