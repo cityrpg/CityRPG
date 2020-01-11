@@ -178,7 +178,6 @@ function City_Init_Spawns()
 		return;
 
 	$CityRPG::BuildingSpawns = 1;
-	$CityRPG::temp::spawnPoints = "";
 	$CityRPG::temp::spawnPointsTemp = "";
 
 	$CityRPG::BuildSpawnsSched = schedule(206,mainBrickGroup,"City_Init_Spawns_Tick",0,0);
