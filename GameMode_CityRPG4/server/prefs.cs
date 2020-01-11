@@ -231,7 +231,3 @@ $CityRPG::food::state[$CityRPG::food::stateCount] = "90<color:ffffff>%";
 
 $CityRPG::food::color[$CityRPG::food::stateCount++] = "00FF00";
 $CityRPG::food::state[$CityRPG::food::stateCount] = "100<color:ffffff>%";
-
-$testingstatus = 0;
-
-$growticks = 0;
