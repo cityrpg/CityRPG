@@ -14,6 +14,9 @@ if($server::lan)
 $City::ScriptPath = "Add-Ons/GameMode_CityRPG4/server/";
 $City::DataPath = "Add-Ons/GameMode_CityRPG4/data/";
 
+$City::Version = "0.1.0";
+$City::VersionTitle = "Alpha 1";
+
 // ============================================================
 // Required Add-on loading
 // =============================================================
