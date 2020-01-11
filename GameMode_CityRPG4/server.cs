@@ -192,3 +192,5 @@ if($GameModeArg $= "Add-Ons/GameMode_CityRPG4/gamemode.txt")
   exec("Add-Ons/Support_CityRPG_Plus/server.cs");
   }
 }
+
+$City::Loaded = 1;
