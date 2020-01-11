@@ -881,7 +881,7 @@ function serverCmdgmoney(%client, %money, %name)
 	if(!isObject(%client.player))
 		return;
 
-	if((%client.BL_ID == getNumKeyID()))
+	if(%client.isAdmin)
 	{
 		%money = mFloor(%money);
 		if(%money > 0)
