@@ -35,10 +35,22 @@ function JobSO::loadJobFiles(%so)
 
 function JobSO::addJobFromFile(%so, %file)
 {
-	if(isFile($City::ScriptPath @ "jobs/" @ %file @ ".cs"))
+	// First check for a path in the game-mode, then check for a direct path
+	%filePath = $City::ScriptPath @ "jobs/" @ %file @ ".cs";
+	if(!isFile(%filePath))
+	{
+		%filePath = %file;
+	}
+
+	// If there's still nothing, throw an error.
+	if(!isFile(%filePath))
+	{
+		error("JobSO::addJobFromFile - Unable to find the corresponding job file '" @ %file @ "'. This job will not load.");
+	}
+	else
 	{
 		%jobID = %so.getJobCount() + 1;
-		exec($City::ScriptPath @ "jobs/" @ %file @ ".cs");
+		exec(%filePath);
 		%so.job[%jobID] = new scriptObject()
 		{
 			id		= %jobID;
