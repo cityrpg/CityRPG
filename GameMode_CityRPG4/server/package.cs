@@ -959,6 +959,7 @@ package CityRPG_MainPackage
 		CityRPGMini.delete();
 		JobSO.delete();
 		CitySO.delete();
+		ClothesSO.delete();
 		CalendarSO.delete();
 		ResourceSO.delete();
 
