@@ -113,8 +113,8 @@ exec($City::ScriptPath @ "package.cs");
 exec($City::ScriptPath @ "saving.cs");
 
 // Tools
-exec($City::ScriptPath @ "items/tools/axe.cs");
 exec($City::ScriptPath @ "items/tools/pickaxe.cs");
+exec($City::ScriptPath @ "items/tools/axe.cs");
 exec($City::ScriptPath @ "items/tools/knife.cs");
 
 // Weapons
