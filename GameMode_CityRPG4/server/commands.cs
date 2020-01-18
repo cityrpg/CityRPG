@@ -34,6 +34,8 @@ function serverCmdhelp(%client, %strA, %strB, %strC)
 			messageClient(%client, '', "\c3/reset\c6 - Reset your in-game account. WARNING: This will clear your save data if typed!");
 			messageClient(%client, '', "\c3/dropmoney\c6 [amount] - Make it rain!");
 			messageClient(%client, '', "\c3/giveMoney\c6 [amount] [player] - Give money to another player");
+			messageClient(%client, '', "\c3/lot\c6 - View information about the lot you are standing on");
+
 		case "events":
 			messageClient(%client, '', "\c6 - brick -> \c3sellFood\c6 [Food] [Markup] - Feeds a player using the automated sales system.");
 			messageClient(%client, '', "\c6 - brick -> \c3sellItem\c6 [Item] [Markup] - Sells an item using the automated system.");
