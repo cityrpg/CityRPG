@@ -166,7 +166,7 @@ function serverCmddonate(%client, %arg1)
 	if(!isObject(%client.player))
 		return;
 
-	%arg1 = %arg1+0;
+	%arg1 = mFloor(%arg1);
 
 	if(%arg1*0.15 >= $Pref::Server::City::Economics::Cap) {
 		%arg1 = mCeil($Pref::Server::City::Economics::Cap*6.6666667);
