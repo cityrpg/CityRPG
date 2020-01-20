@@ -12,6 +12,23 @@ function serverCmdhelp(%client, %strA, %strB, %strC)
 			messageClient(%client, '', "\c6Type \c3/help commands\c6 to list the commands in the game");
 			messageClient(%client, '', "\c6Type \c3/help jobs\c6 for a list of available jobs");
 			messageClient(%client, '', "\c6More: \c3/help events\c6, \c3/help admin");
+
+
+			if($GameModeArg $= "Add-Ons/GameMode_CityRPG4/gamemode.txt")
+			{
+				%sentenceStr = "\c6This server is running vanilla CityRPG 4";
+			}
+			else
+			{
+				%sentenceStr = "\c6This server is running a \c3custom configuration\c6 of CityRPG 4";
+			}
+
+			if($City::isGitBuild)
+			{
+				%suffix = " (Git build)";
+			}
+
+			messageClient(%client, '', %sentenceStr SPC $City::VersionTitle @ " (\c3" @ $City::Version @ "\c6)" @ %suffix);
 		case "starters":
 			messageClient(%client, '', "\c6Welcome! To get started, you'll want to explore and familiarize yourself with the map.");
 			messageClient(%client, '', "\c6Some of the places most important to you will include the jobs office, the education office, and the bank.");
@@ -25,6 +42,8 @@ function serverCmdhelp(%client, %strA, %strB, %strC)
 			messageClient(%client, '', "\c3/reset\c6 - Reset your in-game account. WARNING: This will clear your save data if typed!");
 			messageClient(%client, '', "\c3/dropmoney\c6 [amount] - Make it rain!");
 			messageClient(%client, '', "\c3/giveMoney\c6 [amount] [player] - Give money to another player");
+			messageClient(%client, '', "\c3/lot\c6 - View information about the lot you are standing on");
+
 		case "events":
 			messageClient(%client, '', "\c6 - brick -> \c3sellFood\c6 [Food] [Markup] - Feeds a player using the automated sales system.");
 			messageClient(%client, '', "\c6 - brick -> \c3sellItem\c6 [Item] [Markup] - Sells an item using the automated system.");
@@ -155,7 +174,7 @@ function serverCmddonate(%client, %arg1)
 	if(!isObject(%client.player))
 		return;
 
-	%arg1 = %arg1+0;
+	%arg1 = mFloor(%arg1);
 
 	if(%arg1*0.15 >= $Pref::Server::City::Economics::Cap) {
 		%arg1 = mCeil($Pref::Server::City::Economics::Cap*6.6666667);
@@ -635,6 +654,8 @@ function serverCmddropmoney(%client,%amt)
 			MissionCleanup.add(%cash);
 			%cash.setShapeName("$" @ %cash.value);
 			CityRPGData.getData(%client.bl_id).valueMoney = CityRPGData.getData(%client.bl_id).valueMoney - %amt;
+			%client.setInfo();
+
 			messageClient(%client,'',"\c6You drop \c3$" @ %amt @ ".");
 			%client.cityLog("Drop '$" @ %amt @ "'");
 		}
@@ -649,6 +670,8 @@ function serverCmdstats(%client, %name)
 {
 	%client.cityLog("/stats" SPC %name);
 
+	%data = CityRPGData.getData(%target.bl_id);
+
 	if(!isObject(%client.player))
 		return;
 
@@ -659,13 +682,13 @@ function serverCmdstats(%client, %name)
 
 	if(isObject(%target))
 	{
-		%string = "Career:" SPC "\c3" @ JobSO.job[CityRPGData.getData(%target.bl_id).valueJobID].name;
-		%string = %string @ "\n" @ "Money in Wallet:" SPC "\c3" @ CityRPGData.getData(%target.bl_id).valueMoney;
-		%string = %string @ "\n" @ "Net Worth:" SPC "\c3" @ (CityRPGData.getData(%target.bl_id).valueMoney + CityRPGData.getData(%target.bl_id).valueBank);
-		%string = %string @ "\n" @ "Arrest Record:" SPC "\c3" @ (getWord(CityRPGData.getData(%target.bl_id).valueJailData, 0) ? "Yes" : "No");
-		%string = %string @ "\n" @ "Ticks left in Jail:" SPC "\c3" @ getWord(CityRPGData.getData(%target.bl_id).valueJailData, 1);
-		%string = %string @ "\n" @ "Total Demerits:" SPC "\c3" @ CityRPGData.getData(%target.bl_id).valueDemerits;
-		%string = %string @ "\n" @ "Education:" SPC "\c3" @ CityRPGData.getData(%target.bl_id).valueEducation;
+		%string = "Career:" SPC "\c3" @ JobSO.job[%data.valueJobID].name;
+		%string = %string @ "\n" @ "Money in Wallet:" SPC "\c3" @ %data.valueMoney;
+		%string = %string @ "\n" @ "Net Worth:" SPC "\c3" @ (%data.valueMoney + %data.valueBank);
+		%string = %string @ "\n" @ "Arrest Record:" SPC "\c3" @ (getWord(%data.valueJailData, 0) ? "Yes" : "No");
+		%string = %string @ "\n" @ "Ticks left in Jail:" SPC "\c3" @ getWord(%data.valueJailData, 1);
+		%string = %string @ "\n" @ "Total Demerits:" SPC "\c3" @ %data.valueDemerits;
+		%string = %string @ "\n" @ "Education:" SPC "\c3" @ %data.valueEducation;
 		commandToClient(%client, 'MessageBoxOK', %target.name, %string);
 	}
 	else
@@ -868,7 +891,7 @@ function serverCmdgmoney(%client, %money, %name)
 	if(!isObject(%client.player))
 		return;
 
-	if((%client.BL_ID == getNumKeyID()))
+	if(%client.isAdmin)
 	{
 		%money = mFloor(%money);
 		if(%money > 0)

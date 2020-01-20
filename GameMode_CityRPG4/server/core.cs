@@ -379,13 +379,15 @@ function City_TickLoop(%loop)
 			else
 				%so.valueDemerits = 0;
 			messageClient(%client, '', '\c6 - You have had your demerits reduced to \c3%1\c6 due to <a:en.wikipedia.org/wiki/Statute_of_limitations>Statute of Limitations</a>\c6.', %so.valueDemerits);
+
+			%client.setInfo();
 		}
 
 		if(!%so.valueStudent)
 		{
 			if(%client.getSalary() > 0)
 			{
-				if(CityRPGData.getData(%client.bl_id).valueJobID == 12)
+				if(CityRPGData.getData(%client.bl_id).valueJobID == 14)
 				{
 					if(%client.bl_id !$= $City::Mayor::ID)
 					{

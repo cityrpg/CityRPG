@@ -1,6 +1,7 @@
 /// ============================================================
 // JobsSO
 // ============================================================
+
 function JobSO::populateJobs(%so)
 {
 	for(%a = 1; isObject(%so.job[%a]); %a++)
@@ -9,6 +10,11 @@ function JobSO::populateJobs(%so)
 		%so.job[%a] = "";
 	}
 
+	%so.loadJobFiles();
+}
+
+function JobSO::loadJobFiles(%so)
+{
 	// NOTE: Order is incredibly important. Jobs are referenced by ID, which is determined by order.
 	// Mixing up the order of these professions will cause save data to reference the wrong job.
 	%so.addJobFromFile("civilian");               // 1
@@ -29,10 +35,22 @@ function JobSO::populateJobs(%so)
 
 function JobSO::addJobFromFile(%so, %file)
 {
-	if(isFile($City::ScriptPath @ "jobs/" @ %file @ ".cs"))
+	// First check for a path in the game-mode, then check for a direct path
+	%filePath = $City::ScriptPath @ "jobs/" @ %file @ ".cs";
+	if(!isFile(%filePath))
+	{
+		%filePath = %file;
+	}
+
+	// If there's still nothing, throw an error.
+	if(!isFile(%filePath))
+	{
+		error("JobSO::addJobFromFile - Unable to find the corresponding job file '" @ %file @ "'. This job will not load.");
+	}
+	else
 	{
 		%jobID = %so.getJobCount() + 1;
-		exec($City::ScriptPath @ "jobs/" @ %file @ ".cs");
+		exec(%filePath);
 		%so.job[%jobID] = new scriptObject()
 		{
 			id		= %jobID;
@@ -95,35 +113,10 @@ function JobSO::addJobFromFile(%so, %file)
 	}
 }
 
-function JobSO::getAnAlias(%so)
-{
-	%jobCount = 0;
-
-	for(%a = 1; isObject(%so.job[%a]); %a++)
-	{
-		if(!%so.job[%a].hideJobName)
-		{
-			%jobCount++;
-			%jobName[%jobCount] = %so.job[%a].name;
-		}
-	}
-
-	if(%jobCount)
-		return %jobName[getRandom(1, %jobCount)];
-	else
-		return "Gadgethm";
-}
-
 function JobSO::getJobCount(%so)
 {
 	for(%a = 0; isObject(%so.job[%a + 1]); %a++) { }
 	return %a;
-}
-
-if(!isObject(JobSO))
-{
-	new scriptObject(JobSO) { };
-	JobSO.populateJobs();
 }
 
 // ============================================================
@@ -547,7 +540,7 @@ if(!isObject(ClothesSO))
 {
 	new scriptObject(ClothesSO) { };
 	ClothesSO.schedule(1, "loadClothes");
-	ClothesSO.schedule(1, "postEvents");
+	//ClothesSO.schedule(1, "postEvents");
 }
 
 // ============================================================

@@ -14,6 +14,10 @@ if($server::lan)
 $City::ScriptPath = "Add-Ons/GameMode_CityRPG4/server/";
 $City::DataPath = "Add-Ons/GameMode_CityRPG4/data/";
 
+$City::Version = "0.1.0";
+$City::VersionTitle = "Alpha 1";
+$City::isGitBuild = !isFile("Add-Ons/GameMode_CityRPG4/README.md");
+
 // ============================================================
 // Required Add-on loading
 // =============================================================
@@ -83,13 +87,14 @@ if(%error == $Error::AddOn_NotFound)
   return;
 }
 
-// Tool_NewDuplicator (Optional)
-// This needs to load *before* CityRPG for it to be compatible.
 if($GameModeArg $= "Add-Ons/GameMode_CityRPG4/gamemode.txt")
 {
+  // Optionals to always load on a vanilla configuration if they exist:
+
+  // Tool_NewDuplicator (Optional)
   if(isFile("Add-Ons/Tool_NewDuplicator/server.cs"))
   {
-  exec("Add-Ons/Tool_NewDuplicator/server.cs");
+    exec("Add-Ons/Tool_NewDuplicator/server.cs");
   }
 }
 
@@ -118,8 +123,8 @@ exec($City::ScriptPath @ "package.cs");
 exec($City::ScriptPath @ "saving.cs");
 
 // Tools
-exec($City::ScriptPath @ "items/tools/axe.cs");
 exec($City::ScriptPath @ "items/tools/pickaxe.cs");
+exec($City::ScriptPath @ "items/tools/axe.cs");
 exec($City::ScriptPath @ "items/tools/knife.cs");
 
 // Weapons
@@ -188,8 +193,6 @@ addExtraResource($City::DataPath @ "ui/cash.png");
 addExtraResource($City::DataPath @ "ui/health.png");
 addExtraResource($City::DataPath @ "ui/location.png");
 
-City_Init();
-
 // Support_CityRPG_Plus (Optional)
 // This needs to load *after* CityRPG for it to be compatible.
 if($GameModeArg $= "Add-Ons/GameMode_CityRPG4/gamemode.txt")
@@ -199,3 +202,5 @@ if($GameModeArg $= "Add-Ons/GameMode_CityRPG4/gamemode.txt")
   exec("Add-Ons/Support_CityRPG_Plus/server.cs");
   }
 }
+
+$City::Loaded = 1;

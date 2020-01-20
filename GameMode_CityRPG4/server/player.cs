@@ -15,7 +15,7 @@ function gameConnection::arrest(%client, %cop)
 	}
 
 	%ticks += getWord(%robSO.valueJailData, 1);
-	%reward = mFloor($CityRPG::prices::jailingBonus * %ticks);
+	%reward = mFloor($CityRPG::prices::jailingBonus * %client.getWantedLevel());
 
 	if(%reward > 600)
 		%reward = 600;

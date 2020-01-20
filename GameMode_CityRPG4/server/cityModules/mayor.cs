@@ -110,6 +110,7 @@ function serverCmdRegisterCandidates(%client)
 		CityMayor_inputCandidates(%client.name, %client.bl_id);
 		messageClient(%client, '', "\c6Congratulations, you are now a candidate for the election.");
 		CityRPGData.getData(%client.bl_id).valueMoney -= $Pref::Server::City::Mayor::Cost;
+		%client.setInfo();
 	} else {
 		messageClient(%client, '', "\c6You don't have $" @ $Pref::Server::City::Mayor::Cost @ "!");
 	}
@@ -129,7 +130,7 @@ function serverCmdMeMayor(%client)
 // Looper
 function CityMayor_refresh()
 {
-	$City::Mayor::Mayor::Requirement = 1;
+	$City::Mayor::Mayor::Requirement = 10;
 	if($Pref::Server::City::Mayor::Active == 0) //if active mayor
 	{
 		if((clientGroup.getCount() >= $City::Mayor::Mayor::Requirement) || ($City::Mayor::Force::Start == 1))

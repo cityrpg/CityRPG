@@ -101,3 +101,18 @@ Called when `client` is arrested by `cop`.
 **Deprecated**
 
 Called when players are attacked, determines if an attack is to incur demerits as an assault. Returns `false `
+
+## JobSO::loadJobFiles(%so)
+This is the function that populates the job list with jobs. If desired, this function can be packaged and/or overridden to update the game-mode's job list. Jobs can be executed by running `%so.addJobFromFile`
+
+## JobSO::addJobFromFile
+Adds a job from a script file. For a reference of what a job script file looks like, refer to the files contained within `GameMode_CityRPG4/server/jobs`.
+
+The path will check for a script filename first in `GameMode_CityRPG4/jobs`, and if none is found there, it will check for a direct path.
+
+This can be used to create custom jobs without directly editing the game-mode files.
+
+### Examples:
+`JobSO.addJobFromFile("civilian");` - Adds the job found in `GameMode_CityRPG4/jobs/civilian.cs`
+
+`JobSO.addJobFromFile("Add-Ons/Suport_CityRPG_MyCustomJobs/civilian.cs");` - Adds the job found in `Add-Ons/Suport_CityRPG_MyCustomJobs/civilian.cs`

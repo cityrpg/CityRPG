@@ -23,14 +23,13 @@ if(!isObject(CityRPGLumberjackItem))
 		lightColor			= "0 0 0.5";
 	};
 
-	datablock itemData(CityRPGLumberjackItem : swordItem)
+	datablock itemData(CityRPGLumberjackItem : CityRPGPickaxeImage)
 	{
 		uiName = "Lumberjack Axe";
 		image = CityRPGLumberjackImage;
 		shapeFile = $City::DataPath @ "/shapes/lumberjack.1.dts";
 
 		iconName		= $City::DataPath @ "/ui/ItemIcons/axe";
-		doColorShift	= false;
 
 		// CityRPG Properties
 		noSpawn			= true;
@@ -45,6 +44,8 @@ if(!isObject(CityRPGLumberjackItem))
 		raycastDirectDamageType = $DamageType::Sword;
 		raycastExplosionProjectile = swordProjectile;
 		raycastExplosionSound = swordHitSound;
+
+		eyeOffset		= "0.7 1.2 -0.7";
 
 		item = CityRPgLumberjackItem;
 		shapeFile = $City::DataPath @ "/shapes/lumberjack.1.dts";

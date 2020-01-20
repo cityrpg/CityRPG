@@ -140,6 +140,14 @@ $CityRPG::prices::weapon::name[$CityRPG::guns] = "CityRPGLBItem";
 $CityRPG::prices::weapon::price[$CityRPG::guns] = 100;
 $CityRPG::prices::weapon::mineral[$CityRPG::guns++] = 1;
 
+$CityRPG::prices::weapon::name[$CityRPG::guns] = "CityRPGPickaxeItem";
+$CityRPG::prices::weapon::price[$CityRPG::guns] = 25;
+$CityRPG::prices::weapon::mineral[$CityRPG::guns++] = 1;
+
+$CityRPG::prices::weapon::name[$CityRPG::guns] = "CityRPGLumberjackItem";
+$CityRPG::prices::weapon::price[$CityRPG::guns] = 25;
+$CityRPG::prices::weapon::mineral[$CityRPG::guns++] = 1;
+
 //When adding to this index, be sure to add a forceRequiredAddon("Item_Here");
 //in server.cs, or else the item mod will be broken.
 
@@ -150,7 +158,7 @@ $CityRPG::tick::interestTick = 999;
 $CityRPG::tick::promotionLevel = 24;
 
 // Demerit Preferences
-$CityRPG::demerits::hittingInnocents = 5;
+$CityRPG::demerits::hittingInnocents = 50;
 $CityRPG::demerits::attemptedMurder = 15;
 $CityRPG::demerits::murder = 75;
 $CityRPG::demerits::breakingAndEntering = 10;
@@ -223,7 +231,3 @@ $CityRPG::food::state[$CityRPG::food::stateCount] = "90<color:ffffff>%";
 
 $CityRPG::food::color[$CityRPG::food::stateCount++] = "00FF00";
 $CityRPG::food::state[$CityRPG::food::stateCount] = "100<color:ffffff>%";
-
-$testingstatus = 0;
-
-$growticks = 0;

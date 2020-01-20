@@ -2,6 +2,12 @@
 // Initializes the game-mode.
 function City_Init()
 {
+	if(!isObject(JobSO))
+	{
+		new scriptObject(JobSO) { };
+		JobSO.populateJobs();
+	}
+
 	if(!isObject(CityRPGData))
 	{
 		new scriptObject(CityRPGData)
@@ -84,6 +90,8 @@ function City_Init()
 	}
 
 	CityMayor_refresh();
+
+	echo("CityRPG initialization complete.");
 }
 
 function CityRPGHostClient::onBottomPrint(%this, %message)
@@ -170,7 +178,6 @@ function City_Init_Spawns()
 		return;
 
 	$CityRPG::BuildingSpawns = 1;
-	$CityRPG::temp::spawnPoints = "";
 	$CityRPG::temp::spawnPointsTemp = "";
 
 	$CityRPG::BuildSpawnsSched = schedule(206,mainBrickGroup,"City_Init_Spawns_Tick",0,0);
