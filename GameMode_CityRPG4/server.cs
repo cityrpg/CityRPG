@@ -106,9 +106,9 @@ else
   if($AddOn__Brick_Checkpoint)
   {
     ForceRequiredAddOn("Brick_Checkpoint");
-  }
 
-  deactivatepackage(CheckpointPackage); // We don't want the checkpoint package running
+    deactivatepackage(CheckpointPackage); // We don't want the checkpoint package running
+  }
 }
 
 
