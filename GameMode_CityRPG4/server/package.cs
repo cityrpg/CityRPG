@@ -669,7 +669,7 @@ package CityRPG_MainPackage
 		InitContainerBoxSearch(%pos, %box, %mask);
 
 		while (%checkBrick = containerSearchNext())
-		{	
+		{
 			if(%checkBrick.getDataBlock().getName() !$= "brickCheckpointData")
 				continue;
 
