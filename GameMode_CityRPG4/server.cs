@@ -97,14 +97,21 @@ if($GameModeArg $= "Add-Ons/GameMode_CityRPG4/gamemode.txt")
     exec("Add-Ons/Tool_NewDuplicator/server.cs");
   }
 }
-
-//Brick_Checkpoint (Optional)
-//If enabled, we would like checkpoints to execute first.
-if($AddOn__Brick_Checkpoint)
+else
 {
-  ForceRequiredAddOn("Brick_Checkpoint");
+  // Optionals that only need to load in a Custom configuration
+
+  // Brick_Checkpoint (Optional)
+  // If enabled, we would like checkpoints to execute first.
+  if($AddOn__Brick_Checkpoint)
+  {
+    ForceRequiredAddOn("Brick_Checkpoint");
+  }
+
+  deactivatepackage(CheckpointPackage); // We don't want the checkpoint package running
 }
-deactivatepackage(CheckpointPackage);//We don't want the checkpoint package running
+
+
 
 // ============================================================
 // File Execution
