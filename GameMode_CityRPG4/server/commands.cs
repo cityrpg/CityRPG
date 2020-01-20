@@ -13,14 +13,22 @@ function serverCmdhelp(%client, %strA, %strB, %strC)
 			messageClient(%client, '', "\c6Type \c3/help jobs\c6 for a list of available jobs");
 			messageClient(%client, '', "\c6More: \c3/help events\c6, \c3/help admin");
 
+
 			if($GameModeArg $= "Add-Ons/GameMode_CityRPG4/gamemode.txt")
 			{
-				messageClient(%client, '', "\c6This server is running vanilla CityRPG 4 " @ $City::VersionTitle @ " (\c3" @ $City::Version @ "\c6)");
+				%sentenceStr = "\c6This server is running vanilla CityRPG 4";
 			}
 			else
 			{
-				messageClient(%client, '', "\c6This server is running a \c3custom configuration\c6 of CityRPG 4 " @ $City::VersionTitle @ " (\c3" @ $City::Version @ "\c6)");
+				%sentenceStr = "\c6This server is running a \c3custom configuration\c6 of CityRPG 4";
 			}
+
+			if($City::isGitBuild)
+			{
+				%suffix = " (Git build)";
+			}
+
+			messageClient(%client, '', %sentenceStr SPC $City::VersionTitle @ " (\c3" @ $City::Version @ "\c6)" @ %suffix);
 		case "starters":
 			messageClient(%client, '', "\c6Welcome! To get started, you'll want to explore and familiarize yourself with the map.");
 			messageClient(%client, '', "\c6Some of the places most important to you will include the jobs office, the education office, and the bank.");
