@@ -87,13 +87,14 @@ if(%error == $Error::AddOn_NotFound)
   return;
 }
 
-// Tool_NewDuplicator (Optional)
-// This needs to load *before* CityRPG for it to be compatible.
 if($GameModeArg $= "Add-Ons/GameMode_CityRPG4/gamemode.txt")
 {
+  // Optionals to always load on a vanilla configuration if they exist:
+
+  // Tool_NewDuplicator (Optional)
   if(isFile("Add-Ons/Tool_NewDuplicator/server.cs"))
   {
-  exec("Add-Ons/Tool_NewDuplicator/server.cs");
+    exec("Add-Ons/Tool_NewDuplicator/server.cs");
   }
 }
 
