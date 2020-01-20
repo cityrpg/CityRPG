@@ -1147,6 +1147,20 @@ package CityRPG_MainPackage
 			return;
 		return Parent::onHitObject(%this, %player, %slot, %hitObj, %hitPos, %hitNormal);
 	}
+
+	function serverCmdClearCheckpoint(%client)
+	{
+		 if(isObject(%client.checkPointBrick))
+		 {
+				%client.checkPointBrick = "";
+				%client.checkPointBrickPos = "";
+
+				messageClient(%client, '', '\c3Checkpoint reset');
+
+				// Use serverCmdsuicide so the other hook for /suicide can intercept this if necessary
+				serverCmdsuicide(%client);
+		 }
+	}
 };
 deactivatePackage(CityRPG_MainPackage);
 activatepackage(CityRPG_MainPackage);
