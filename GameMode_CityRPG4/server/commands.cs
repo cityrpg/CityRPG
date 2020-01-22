@@ -73,6 +73,11 @@ package CityRPG_Commands
 					}
 				}
 
+				if(!$City::DefaultJobs)
+				{
+					messageClient(%client, '', "\c3This server is running a customized job tree.");
+				}
+
 				messageClient(%client, '', "\c3Use the Page Up and Page Down keys to scroll through the list of jobs.");
 
 			default:
