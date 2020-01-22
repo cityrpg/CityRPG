@@ -126,6 +126,7 @@ exec($City::ScriptPath @ "core.cs");
 exec($City::ScriptPath @ "player.cs");
 exec($City::ScriptPath @ "commands.cs");
 exec($City::ScriptPath @ "package.cs");
+exec($City::ScriptPath @ "overrides.cs");
 
 exec($City::ScriptPath @ "saving.cs");
 

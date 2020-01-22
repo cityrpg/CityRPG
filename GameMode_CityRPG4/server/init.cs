@@ -91,6 +91,8 @@ function City_Init()
 
 	CityMayor_refresh();
 
+	activatePackage("CityRPG_Overrides");
+
 	echo("CityRPG initialization complete.");
 }
 
