@@ -495,7 +495,15 @@ package CityRPG_MainPackage
 	function fxDTSBrick::onLoadPlant(%this, %brick)
 	{
 		parent::onLoadPlant(%this, %brick);
-		City_OnPlant(%this);
+
+		%result = City_OnPlant(%this);
+		if(%result == -1)
+		{
+			%brick.dump();
+			error("ERROR: Attempting to delete a CityRPG brick during loading! Brick data has been dumped.");
+		}
+
+
 		%this.onCityLoadPlant(%this, %brick);
 	}
 
