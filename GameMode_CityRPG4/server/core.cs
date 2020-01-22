@@ -387,7 +387,7 @@ function City_TickLoop(%loop)
 		{
 			if(%client.getSalary() > 0)
 			{
-				if(CityRPGData.getData(%client.bl_id).valueJobID == 14)
+				if(CityRPGData.getData(%client.bl_id).valueJobID == $City::MayorJobID)
 				{
 					if(%client.bl_id !$= $City::Mayor::ID)
 					{

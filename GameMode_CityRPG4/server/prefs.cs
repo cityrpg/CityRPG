@@ -102,6 +102,9 @@ $Pref::Server::City::defaultTools										= "hammerItem wrenchItem printGun";
 $City::EducationCap																	= 6;
 $City::EducationReincarnateLevel										= 8;
 
+// Mayor
+$City::MayorJobID																		= 14;
+
 // ATM Hacking
 $Pref::Server::City::hack::education 								= 3;
 $Pref::Server::City::hack::demerits									= 1000;
