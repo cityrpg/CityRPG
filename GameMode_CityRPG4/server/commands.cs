@@ -1,4 +1,4 @@
-package CityRPGCommands
+package CityRPG_Commands
 {
 
 	// ============================================================
@@ -1143,5 +1143,5 @@ package CityRPGCommands
 	}
 };
 
-deactivatePackage("CityRPGCommands");
-activatePackage("CityRPGCommands");
+deactivatePackage("CityRPG_Commands");
+activatePackage("CityRPG_Commands");
