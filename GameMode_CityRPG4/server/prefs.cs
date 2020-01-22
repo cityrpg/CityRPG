@@ -98,6 +98,10 @@ $Pref::Server::City::demerits::reducePerTick				= 25;
 
 $Pref::Server::City::defaultTools										= "hammerItem wrenchItem printGun";
 
+// Education
+$City::EducationCap																	= 6;
+$City::EducationReincarnateLevel										= 8;
+
 // ATM Hacking
 $Pref::Server::City::hack::education 								= 3;
 $Pref::Server::City::hack::demerits									= 1000;

@@ -602,7 +602,7 @@ function GameConnection::cityEnroll(%client)
 {
 	%client.cityLog("/education" SPC %do);
 
-	if(!isObject(%client.player) || CityRPGData.getData(%client.bl_id).valueEducation >= 6)
+	if(!isObject(%client.player) || CityRPGData.getData(%client.bl_id).valueEducation >= $City::EducationCap)
 		return;
 
 	%price = %client.getCityEnrollCost();

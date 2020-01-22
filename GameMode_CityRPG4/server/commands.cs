@@ -611,7 +611,7 @@ package CityRPG_Commands
 					CityRPGData.removeData(%client.bl_id);
 					CityRPGData.addData(%client.bl_id);
 					CityRPGData.getData(%client.bl_id).valueReincarnated = 1;
-					CityRPGData.getData(%client.bl_id).valueEducation = 8;
+					CityRPGData.getData(%client.bl_id).valueEducation = $City::EducationReincarnateLevel;
 
 					if(isObject(%client.player))
 					{
@@ -627,7 +627,7 @@ package CityRPG_Commands
 				messageClient(%client, '', "\c6Reincarnation is a method for those who are on top to once again replay the game.");
 				messageClient(%client, '', "\c6It costs $100,000 to Reincarnate yourself. Your account will almost completely reset.");
 				messageClient(%client, '', "\c6The perks of doing this are...");
-				messageClient(%client, '', "\c6 - You will start with a level 8 education (+2 maximum)");
+				messageClient(%client, '', "\c6 - You will start with a level " @ $City::EducationReincarnateLevel @ " education (+" @ $City::EducationReincarnateLevel-$City::EducationCap @ " maximum)");
 				messageClient(%client, '', "\c6 - Your name will be yellow by default and white if you are wanted.");
 				messageClient(%client, '', "\c6Type \c3/reincarnate accept\c6 to start anew!");
 			}
