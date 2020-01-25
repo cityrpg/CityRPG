@@ -119,6 +119,8 @@ $CityRPG::prices::jailingBonus = 100;
 $CityRPG::prices::resourcePrice = 1.5;
 
 // Weapon Prices
+$CityRPG::guns = 0;
+
 $CityRPG::prices::weapon::name[$CityRPG::guns] = "gunItem";
 $CityRPG::prices::weapon::price[$CityRPG::guns] = 80;
 $CityRPG::prices::weapon::mineral[$CityRPG::guns++] = 1;
