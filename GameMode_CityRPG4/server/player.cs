@@ -123,7 +123,11 @@ function gameConnection::setGameBottomPrint(%client)
 	%mainFont = "<font:palatino linotype:24>";
 
 	%client.CityRPGPrint = %mainFont;
-	%health = 100 - %client.player.getDamageLevel();
+
+	if(!isObject(%client.player))
+		%health = 0;
+	else
+		%health = 100 - %client.player.getDamageLevel();
 
 	%client.CityRPGPrint = %client.CityRPGPrint @ "<bitmap:" @ $City::DataPath @ "ui/health.png>\c6" SPC mFloor(100 - %client.player.getDamageLevel()) @ "%";
 
