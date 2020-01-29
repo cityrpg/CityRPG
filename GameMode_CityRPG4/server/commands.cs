@@ -184,8 +184,8 @@ package CityRPG_Commands
 
 		%arg1 = mFloor(%arg1);
 
-		if(%arg1*0.15 >= $Pref::Server::City::Economics::Cap) {
-			%arg1 = mCeil($Pref::Server::City::Economics::Cap*6.6666667);
+		if(%arg1*0.15+$Economics::Condition > $Pref::Server::City::Economics::Cap) {
+			%arg1 = mFloor(($Pref::Server::City::Economics::Cap-$Economics::Condition)/0.15);
 		}
 
 		if(%arg1 > 0)
