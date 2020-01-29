@@ -153,6 +153,7 @@ function CityLots_PurchaseLot(%client, %input, %lot)
 		%client.setInfo();
 
 		CityLots_TransferLot(%client.cityMenuID, %client.bl_id); // The menu ID is the lot brick ID
+		%client.cityMenuID.setCityLotTransferDate(getDateTime());
 
 		// Open the menu for the new lot
 		%client.cityMenuClose(1);
@@ -198,8 +199,9 @@ function CityMenu_LotSetName(%client, %input)
 function CityMenu_LotAdmin(%client)
 {
 	%client.cityMenuClose(true);
+	%brick = %client.CityRPGLotBrick;
 
-	messageClient(%client, '', "\c3Lot Admin\c6 for: \c3" @ %client.CityRPGLotBrick.getCityLotName() @ "\c6 - Lot ID: \c3" @ %client.CityRPGLotBrick.getCityLotID());
+	messageClient(%client, '', "\c3Lot Admin\c6 for: \c3" @ %brick.getCityLotName() @ "\c6 - Lot ID: \c3" @ %brick.getCityLotID() @ "\c6 - Lot purchase date: \c3" @ %brick.getCityLotTransferDate());
 
 	%menu = "Force rename."
 			TAB "Transfer lot to the city."
@@ -209,7 +211,7 @@ function CityMenu_LotAdmin(%client)
 						TAB "CityMenu_LotAdmin_TransferCity"
 						TAB "CityMenu_LotAdmin_TransferPlayerPrompt";
 
-	%client.cityMenuOpen(%menu, %functions, %client.CityRPGLotBrick, "\c3Lot management menu closed.");
+	%client.cityMenuOpen(%menu, %functions, %brick, "\c3Lot management menu closed.");
 }
 
 function CityMenu_LotAdmin_SetNamePrompt(%client)
@@ -246,6 +248,7 @@ function CityMenu_LotAdmin_TransferCity(%client)
 	%client.cityLog("Lot MOD " @ %brick.getCityLotID() @ " transfer city");
 
 	CityLots_TransferLot(%brick, %hostID);
+	%brick.setCityLotTransferDate(getDateTime());
 
 	%brick.setCityLotName("Unclaimed Lot");
 	%brick.setCityLotOwnerID(-1);
@@ -276,6 +279,7 @@ function CityMenu_LotAdmin_TransferPlayer(%client, %input)
 	}
 
 	CityLots_TransferLot(%client.cityMenuID, %input);
+	%client.cityMenuID.setCityLotTransferDate(getDateTime());
 
 	%client.cityMenuClose();
 }
@@ -303,6 +307,7 @@ function CityLots_InitRegistry()
 			CityRPGLotRegistry.addValue("name", "Unclaimed Lot");
 			CityRPGLotRegistry.addValue("ownerID", -1);
 			CityRPGLotRegistry.addValue("ruleStr", "This lot currently has no rules.");
+			CityRPGLotRegistry.addValue("transferDate", "None");
 		}
 	}
 }
@@ -399,6 +404,11 @@ function fxDTSBrick::getCityLotRuleStr(%brick)
 	return CityRPGLotRegistry.getData(%brick.getCityLotID()).valueRuleStr;
 }
 
+function fxDTSBrick::getCityLotTransferDate(%brick)
+{
+	return CityRPGLotRegistry.getData(%brick.getCityLotID()).valueTransferDate;
+}
+
 // ## Setters
 
 function fxDTSBrick::setCityLotName(%brick, %value)
@@ -441,6 +451,12 @@ function fxDTSBrick::setCityLotOwnerID(%brick, %value)
 
 	return %valueNew;
 }
+
+function fxDTSBrick::setCityLotTransferDate(%brick, %value)
+{
+	CityRPGLotRegistry.getData(%brick.getCityLotID()).valueTransferDate = %value;
+}
+
 
 // ============================================================
 // Package
