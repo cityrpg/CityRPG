@@ -543,7 +543,7 @@ package CityRPG_MainPackage
 		}
 		else
 		{
-			messageClient(%client, '', "\c6Welcome back! Today is " @ CalendarSO.getDateStr());
+			messageClient(%client, '', "<bitmap:" @ $City::DataPath @ "ui/time_blue.png>\c6 Welcome back! Today is " @ CalendarSO.getDateStr());
 		}
 
 		messageClient(%client, '', "\c6 - Your current job is\c3" SPC %client.getJobSO().name @ "\c6 with an income of \c3$" @ %client.getJobSO().pay @ "\c6.");
