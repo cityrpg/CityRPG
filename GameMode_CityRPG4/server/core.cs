@@ -179,7 +179,10 @@ function City_FindSpawn(%search, %id)
 				%possibleSpawns = (%possibleSpawns $= "") ? %brick : %possibleSpawns SPC %brick;
 		}
 		else
-			$CityRPG::temp::spawnPoints = strreplace($CityRPG::temp::spawnPoints, %brick, "");
+		{
+			$CityRPG::temp::spawnPoints = removeWord($CityRPG::temp::spawnPoints, %a);
+			%a--;
+		}
 	}
 
 	if(%possibleSpawns !$= "")
