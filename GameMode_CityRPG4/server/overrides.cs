@@ -19,6 +19,18 @@ package CityRPG_Overrides
 
 		Parent::serverCmdPlantBrick(%client);
 	}
+
+	function fxDTSBrick::onHoleSpawnPlanted(%obj)
+	{
+		if(%obj.getGroup().bl_id != getNumKeyId())
+		{
+			%obj.getGroup().client.centerPrint("\c6Sorry, bot holes are currently host-only in CityRPG.", 3);
+			%obj.killBrick();
+			return;
+		}
+
+		Parent::onHoleSpawnPlanted(%obj);
+	}
 };
 
 // No need to activate yet--this will be done in City_Init
