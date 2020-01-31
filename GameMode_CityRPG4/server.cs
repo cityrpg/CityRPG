@@ -197,9 +197,11 @@ unRegisterOutputEvent("MiniGame", "RespawnAll");
 // ============================================================
 // Additional Requirements
 // ============================================================
-addExtraResource($City::DataPath @ "ui/cash.png");
-addExtraResource($City::DataPath @ "ui/health.png");
+addExtraResource($City::DataPath @ "ui/cash_green.png");
+addExtraResource($City::DataPath @ "ui/health_heart.png");
 addExtraResource($City::DataPath @ "ui/location.png");
+addExtraResource($City::DataPath @ "ui/time_blue.png");
+
 
 // Support_CityRPG_Plus (Optional)
 // This needs to load *after* CityRPG for it to be compatible.

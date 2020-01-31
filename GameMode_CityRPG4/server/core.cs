@@ -250,7 +250,7 @@ function City_Tick(%brick)
 
 	%dateStr = CalendarSO.getDateStr();
 
-	messageAll('', "\c6Today, on " @ %dateStr @ "\c6...");
+	messageAll('', "<bitmap:" @ $City::DataPath @ "ui/time_blue.png> \c6Today, on " @ %dateStr @ "\c6...");
 
 	if(%so.holiday[CalendarSO.getCurrentDay()] !$= "")
 		messageAll('', "\c6 -" SPC %so.holiday[%so.getCurrentDay()]);
