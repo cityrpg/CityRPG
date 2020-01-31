@@ -374,6 +374,8 @@ function gameConnection::sellFood(%client, %sellerID, %servingID, %foodName, %pr
 				messageClient(%client, '', '\c6You %1 %2 \c3%3\c6 serving of \c3%4\c6.', %eatName, City_DetectVowel(%portionName), %portionName, %foodName);
 				CityRPGData.getData(%client.bl_id).valueHunger += %servingID;
 
+				%client.player.setHealth(%client.player.getdataBlock().maxDamage);
+
 				if(CityRPGData.getData(%client.bl_id).valueHunger > 10)
 				{
 					CityRPGData.getData(%client.bl_id).valueHunger = 10;
