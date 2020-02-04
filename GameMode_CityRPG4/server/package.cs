@@ -962,7 +962,7 @@ package CityRPG_MainPackage
 	// Namespaceless Overrides
 	function verifyBrickUINames()
 	{
-		echo("Initializing CityRPG...");
+		echo("\nInitializing CityRPG...");
 		City_Init();
 
 		Parent::verifyBrickUINames();
