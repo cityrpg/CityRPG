@@ -129,9 +129,9 @@ function gameConnection::setGameBottomPrint(%client)
 	else
 		%health = mFloor(100 - %client.player.getDamageLevel());
 
-	%client.CityRPGPrint = %client.CityRPGPrint @ "<bitmap:" @ $City::DataPath @ "ui/health.png>\c6" SPC %health @ "%";
+	%client.CityRPGPrint = %client.CityRPGPrint @ "<bitmap:" @ $City::DataPath @ "ui/health.png>\c6 Health:" SPC %health @ "%";
 
-	%client.CityRPGPrint = %client.CityRPGPrint @ " <bitmap:" @ $City::DataPath @ "ui/cash.png>" SPC %client.getCashString();
+	%client.CityRPGPrint = %client.CityRPGPrint @ "   <bitmap:" @ $City::DataPath @ "ui/cash.png>\c6 Cash:" SPC %client.getCashString();
 
 	// Placeholder
 	//%client.CityRPGPrint = %client.CityRPGPrint @ "<just:right>\c6Day";
