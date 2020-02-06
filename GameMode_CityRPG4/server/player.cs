@@ -382,13 +382,13 @@ function gameConnection::sellFood(%client, %sellerID, %servingID, %foodName, %pr
 				}
 
 				CityRPGData.getData(%client.bl_id).valueMoney -= %price;
+				CityRPGData.getData(%sellerID).valueBank += %profit;
 
 				if(%profit)
 				{
 					if(isObject(%seller = findClientByBL_ID(%sellerID)))
 					{
 						messageClient(%seller, '', '\c6You just gained \c3$%1\c6 for providing \c3%3\c6 to \c3%2\c6.', %profit, %client.name, %foodName);
-						CityRPGData.getData(%sellerID).valueBank += %profit;
 					}
 				}
 
