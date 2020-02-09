@@ -471,6 +471,7 @@ function gameConnection::sellClothes(%client, %sellerID, %brick, %item, %price)
 			messageClient(%client, '', "\c6Enjoy the new look!");
 			%client.cityLog("Evnt buy clothing " @ %item @ " for " @ %price @ " from " @ %sellerID);
 			CityRPGData.getData(%client.bl_id).valueMoney -= %price;
+			CityRPGData.getData(%sellerID).valueBank += %price;
 			ClothesSO.giveItem(%client, %item);
 
 			if(%price)
@@ -478,7 +479,6 @@ function gameConnection::sellClothes(%client, %sellerID, %brick, %item, %price)
 				if(isObject(%seller = FindClientByBL_ID(%sellerID)))
 				{
 					messageClient(%seller, '', '\c6You just gained \c3$%1\c6 for selling clothes to \c3%2\c6.', %price, %client.name);
-					CityRPGData.getData(%sellerID).valueBank += %price;
 				}
 			}
 
