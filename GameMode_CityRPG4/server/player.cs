@@ -633,3 +633,8 @@ function GameConnection::cityEnroll(%client)
 		}
 	}
 }
+
+function GameConnection::getCityRecordClearCost(%client)
+{
+	return 250 * (CityRPGData.getData(%client.bl_id).valueEducation+1);
+}

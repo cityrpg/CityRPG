@@ -44,7 +44,7 @@ function CityRPGPoliceBrickData::parseData(%this, %brick, %client, %triggerStatu
 
 			messageClient(%client, '', "\c31 \c6- View Online Criminals");
 
-			%cost = 500 * CityRPGData.getData(%client.bl_id).valueEducation;
+			%cost = %client.getCityRecordClearCost();
 			messageClient(%client, '', "\c32 \c6- Clear your record! (\c3$" @ %cost @ "\c6)");
 
 
@@ -110,8 +110,8 @@ function CityRPGPoliceBrickData::parseData(%this, %brick, %client, %triggerStatu
 
 	if(strReplace(%input, "2", "") !$= %input || strReplace(%input, "two", "") !$= %input)
 	{
-					serverCmdbuyErase(%client);
-					return;
+		serverCmdbuyErase(%client);
+		return;
 	}
 
 	if((strReplace(%input, "3", "") !$= %input || strReplace(%input, "three", "") !$= %input) && CityRPGData.getData(%client.bl_id).valueDemerits > 0)

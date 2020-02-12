@@ -220,7 +220,7 @@ package CityRPG_Commands
 		if(!isObject(%client.player))
 			return;
 
-		%cost = 500 * CityRPGData.getData(%client.bl_id).valueEducation;
+		%cost = %client.getCityRecordClearCost();
 		if((CityRPGData.getData(%client.bl_id).valueMoney - %cost) >= 0)
 		{
 			if(getWord(CityRPGData.getData(%client.bl_id).valueJailData, 0))
@@ -245,7 +245,7 @@ package CityRPG_Commands
 		}
 		else
 		{
-			messageClient(%client, '', "\c6You don't have $1,000.");
+			messageClient(%client, '', "\c6You don't have $" @ %cost @ ".");
 		}
 	}
 
