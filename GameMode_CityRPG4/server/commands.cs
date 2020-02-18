@@ -1,5 +1,24 @@
 package CityRPG_Commands
 {
+	// ============================================================
+	// Common
+	// ============================================================
+	function GameConnection::cityRateLimitCheck(%client)
+	{
+		%simTime = getSimTime()+0; // Hack to compare the time.
+		if(%client.cityCommandTime+$City::CommandRateLimitMS > %simTime)
+		{
+			%client.cityCommandTime = %simTime;
+			return 1;
+		}
+		else
+		{
+			%client.cityCommandTime = %simTime;
+			return 0;
+		}
+
+		%client.cityCommandTime = %simTime;
+	}
 
 	// ============================================================
 	// Player Commands
@@ -87,6 +106,11 @@ package CityRPG_Commands
 
 	function serverCmdYes(%client)
 	{
+		if(%client.cityRateLimitCheck())
+		{
+			return;
+		}
+
 		%client.cityLog("/yes");
 
 		if(!isObject(%client.player))
@@ -215,6 +239,11 @@ package CityRPG_Commands
 
 	function serverCmdbuyErase(%client)
 	{
+		if(%client.cityRateLimitCheck())
+		{
+			return;
+		}
+
 		%client.cityLog("/buyErase");
 
 		if(!isObject(%client.player))
@@ -251,6 +280,11 @@ package CityRPG_Commands
 
 	function serverCmdgiveMoney(%client, %money, %name)
 	{
+		if(%client.cityRateLimitCheck())
+		{
+			return;
+		}
+
 		%client.cityLog("/giveMoney" SPC %money SPC %name);
 
 		if(!isObject(%client.player))
@@ -300,6 +334,11 @@ package CityRPG_Commands
 	// TODO: Rewrite this spaghetti mess
 	function serverCmdjobs(%client, %job, %job2, %job3, %job4, %job5)
 	{
+		if(%client.cityRateLimitCheck())
+		{
+			return;
+		}
+
 		%client.cityLog("/jobs" SPC %job SPC %job2 SPC %job3 SPC %job4 SPC %job5);
 
 		if(%job !$= "")
@@ -448,6 +487,11 @@ package CityRPG_Commands
 
 	function serverCmdreset(%client)
 	{
+		if(%client.cityRateLimitCheck())
+		{
+			return;
+		}
+
 		%client.cityLog("/reset");
 
 		if(!isObject(%client.player))
@@ -476,6 +520,11 @@ package CityRPG_Commands
 
 	function serverCmdpardon(%client, %name)
 	{
+		if(%client.cityRateLimitCheck())
+		{
+			return;
+		}
+
 		%client.cityLog("/pardon" SPC %name);
 
 		if(!isObject(%client.player))
@@ -546,6 +595,11 @@ package CityRPG_Commands
 
 	function serverCmderaseRecord(%client, %name)
 	{
+		if(%client.cityRateLimitCheck())
+		{
+			return;
+		}
+
 		%client.cityLog("/eraseRecord" SPC %name);
 
 		if(%client.getJobSO().canPardon || %client.BL_ID == getNumKeyID())
@@ -605,6 +659,11 @@ package CityRPG_Commands
 
 	function serverCmdReincarnate(%client, %do)
 	{
+		if(%client.cityRateLimitCheck())
+		{
+			return;
+		}
+
 		%client.cityLog("/reincarnate" SPC %do);
 
 		if(!CityRPGData.getData(%client.bl_id).valueReincarnated)
@@ -643,6 +702,11 @@ package CityRPG_Commands
 
 	function serverCmddropmoney(%client,%amt)
 	{
+		if(%client.cityRateLimitCheck())
+		{
+			return;
+		}
+
 		%client.cityLog("/dropmoney" SPC %amt);
 
 		%amt = mFloor(%amt);
@@ -676,6 +740,11 @@ package CityRPG_Commands
 
 	function serverCmdstats(%client, %name)
 	{
+		if(%client.cityRateLimitCheck())
+		{
+			return;
+		}
+
 		%client.cityLog("/stats" SPC %name);
 
 		%data = CityRPGData.getData(%target.bl_id);

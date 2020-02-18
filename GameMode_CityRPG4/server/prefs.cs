@@ -79,6 +79,8 @@ if(!isFile("Add-Ons/System_ReturnToBlockland/server.cs"))
 // Constants
 // ============================================================
 
+$City::CommandRateLimitMS = 128;
+
 $ATM::Min = 25;
 $ATM::Max = 300;
 $ATM::Demerits = 500;
