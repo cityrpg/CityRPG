@@ -99,9 +99,18 @@ package CityRPG_MainPackage
 		{
 			if(!%client.isAdmin)
 			{
-				commandToClient(%client, 'centerPrint', "\c6Only admins can create new lot bricks.<br>\c6To purchase a lot, you must find an unclaimed lot and type \c3/lot\c6 over it.", 3);
-				%brick.schedule(0, "delete");
-				return -1;
+				if(isObject(%client))
+				{
+					commandToClient(%client, 'centerPrint', "\c6Only admins can create new lot bricks.<br>\c6To purchase a lot, you must find an unclaimed lot and type \c3/lot\c6 over it.", 3);
+					%brick.schedule(0, "delete");
+					return -1;
+					if(!%client.isAdmin)
+					{
+						commandToClient(%client, 'centerPrint', "\c6Only admins can create new lot bricks.<br>\c6To purchase a lot, you must find an unclaimed lot and type \c3/lot\c6 over it.", 3);
+						%brick.schedule(0, "delete");
+						return -1;
+					}
+				}
 			}
 		}
 
