@@ -247,11 +247,9 @@ function City_Init_AssembleEvents()
 	}
 
 	registerOutputEvent("fxDTSBrick", "doJobTest", "list NONE 0" @ %doJobTest_List TAB "list NONE 0" @ %doJobTest_List TAB "bool");
-	for(%c = 0; %c <= $CityRPG::guns-1; %c++)
-	{
-		%sellItem_List = %sellItem_List SPC strreplace($CityRPG::prices::weapon::name[%c].uiName, " ", "") SPC %c;
-	}
-	registerOutputEvent("fxDTSBrick", "sellItem", "list" @ %sellItem_List TAB "int 0 500 1");
+
+	registerOutputEvent("fxDTSBrick", "sellItem", "dataBlock ItemData" TAB "int 0 500");
+
 	for(%d = 0; %d < ClientGroup.getCount(); %d++)
 	{
 		%subClient = ClientGroup.getObject(%d);
