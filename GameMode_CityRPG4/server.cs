@@ -120,6 +120,7 @@ else
 //Core Files
 exec($City::ScriptPath @ "prefs.cs");
 exec($City::ScriptPath @ "bricks.cs");
+exec($City::ScriptPath @ "events.cs");
 exec($City::ScriptPath @ "scriptobject.cs");
 exec($City::ScriptPath @ "init.cs");
 exec($City::ScriptPath @ "core.cs");
