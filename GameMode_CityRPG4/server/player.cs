@@ -406,59 +406,6 @@ function gameConnection::sellFood(%client, %sellerID, %servingID, %foodName, %pr
 		messageClient(%client, '', "\c6You don't have enough money to buy this food.");
 }
 
-// Client.sellItem(sellerID, itemID, price, profit)
-// (EVENT)
-// Sells item 'itemID' from 'sellerID' to 'client'.
-function gameConnection::sellItem(%client, %sellerID, %itemID, %price, %profit)
-{
-	if(isObject(%client.player) && CityRPGData.getData(%client.bl_id).valueMoney >= %price)
-	{
-		if(JobSO.job[CityRPGData.getData(%client.player.serviceOrigin.getGroup().bl_id).valueJobID].sellItems)
-		{
-			for(%a = 0; %a < %client.player.getDatablock().maxTools; %a++)
-			{
-				if(!isObject(%obj.tool[%a]) || %obj.tool[%a].getName() !$= $CityRPG::prices::weapon::name[%itemID])
-				{
-					if(%freeSpot $= "" && %client.player.tool[%a] $= "")
-					{
-						%freeSpot = %a;
-					}
-				}
-				else
-				{
-					%alreadyOwns = true;
-				}
-			}
-
-			if(%freeSpot !$= "" && !%alreadyOwns)
-			{
-				%client.cityLog("Evnt buy item " @ %itemID @ " for " @ %price @ " from " @ %sellerID);
-
-				CityRPGData.getData(%client.bl_id).valueMoney -= %price;
-				CityRPGData.getData(%sellerID).valueBank += %profit;
-				CitySO.minerals -= $CityRPG::prices::weapon::mineral[%itemID];
-
-				%client.player.tool[%freeSpot] = $CityRPG::prices::weapon::name[%itemID].getID();
-				messageClient(%client, 'MsgItemPickup', "", %freeSpot, %client.player.tool[%freeSpot]);
-
-				messageClient(%client, '', "\c6You have accepted the item's fee of \c3$" @ %price @ "\c6!");
-				%client.setInfo();
-
-				if(%client.player.serviceOrigin.getGroup().client)
-					messageClient(%client.player.serviceOrigin.getGroup().client, '', '\c6You gained \c3$%1\c6 selling \c3%2\c6 an item.', %profit, %client.name);
-
-				%client.player.serviceOrigin.onTransferSuccess(%client);
-			}
-			else if(%alreadyOwns)
-				messageClient(%client, '', "\c6You don't need another\c3" SPC $CityRPG::prices::weapon::name[%itemID].uiName @ "\c6.");
-			else if(%freeSpot $= "")
-				messageClient(%client, '', "\c6You don't have enough space to carry this item!");
-		}
-		else
-			messageClient(%client, '', "\c6This vendor is not liscensed to sell items.");
-	}
-}
-
 // Client.sellClothes(sellerID, brick, item, price)
 // (EVENT)
 // Sells clothing item 'item' from 'sellerID' to 'client'.

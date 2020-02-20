@@ -115,26 +115,8 @@ function fxDTSBrick::sellFood(%brick, %portion, %food, %markup, %client)
 
 function fxDTSBrick::sellItem(%brick, %item, %markup, %client)
 {
-	if(isObject(%client.player) && !%client.player.serviceOrigin  && isObject(%brick))
-	{
-		%name = $CityRPG::prices::weapon::name[%item].uiName;
-
-		if(CitySO.minerals >= $CityRPG::prices::weapon::mineral[%item])
-		{
-			%client.player.serviceType = "item";
-			%client.player.serviceItem = %item;
-			%client.player.serviceFee = $CityRPG::prices::weapon::price[%item] + %markup;
-			%client.player.serviceMarkup = %markup;
-			%client.player.serviceOrigin = %brick;
-
-			messageClient(%client,'',"\c6A service is offering to sell you one \c3" @ %name SPC "\c6for \c3$" @ %client.player.serviceFee SPC "\c6.");
-			messageClient(%client,'',"\c6Accept with \c3/yes\c6, decline with \c3/no\c6.");
-		}
-		else
-			messageClient(%client, '', '\c6A service is trying to offer you %1 \c3%2\c6, but the city needs \c3%3\c6 more minerals to produce it!', City_DetectVowel(%name), %name, ($CityRPG::prices::weapon::mineral[%item] - CitySO.minerals));
-	}
-	else if(%client.player.serviceOrigin && %client.player.serviceOrigin != %brick)
-		messageClient(%client, '', "\c6You already have a charge request from another service! Type \c3/no\c6 to reject it.");
+	echo("SellItem" SPC %client SPC "a");
+	CityMenu_Placeholder(%client);
 }
 
 function fxDTSBrick::sellClothes(%brick, %item, %markup, %client)
