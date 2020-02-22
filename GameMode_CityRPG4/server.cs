@@ -149,6 +149,8 @@ exec($City::ScriptPath @ "cityModules/rep.cs");
 //exec($City::ScriptPath @ "cityModules/trade.cs");
 exec($City::ScriptPath @ "cityModules/mayor.cs");
 exec($City::ScriptPath @ "cityModules/security.cs");
+exec($City::ScriptPath @ "cityModules/shops.cs");
+
 exec($City::ScriptPath @ "support/spacecasts.cs");
 exec($City::ScriptPath @ "support/extraResources.cs");
 

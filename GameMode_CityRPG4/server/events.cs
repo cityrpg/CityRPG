@@ -115,8 +115,12 @@ function fxDTSBrick::sellFood(%brick, %portion, %food, %markup, %client)
 
 function fxDTSBrick::sellItem(%brick, %item, %markup, %client)
 {
-	echo("SellItem" SPC %client SPC "a");
-	CityMenu_Placeholder(%client);
+	if(!isObject(%client.player))
+	{
+		return;
+	}
+	
+	CityMenu_SellItem(%client, %brick, %item, %markup);
 }
 
 function fxDTSBrick::sellClothes(%brick, %item, %markup, %client)
