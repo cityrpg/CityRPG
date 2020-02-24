@@ -487,22 +487,3 @@ function messageAllOfJob(%job, %type, %message)
 
 	return (%sent !$= "" ? %sent : 0);
 }
-
-// ============================================================
-// Misc. Functions
-// ============================================================
-function sendBricksFromTo(%new, %old)
-{
-	if(isObject(%new) && isObject(%old))
-	{
-		for(%a = (%old.getCount() - 1); %a >= 0; %a--)
-		{
-			if(isObject(%brick = %old.getObject(%a)))
-			{
-				%new.add(%brick);
-			}
-		}
-
-		echo("Success.");
-	}
-}
