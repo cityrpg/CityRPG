@@ -487,3 +487,49 @@ function messageAllOfJob(%job, %type, %message)
 
 	return (%sent !$= "" ? %sent : 0);
 }
+
+function CityMenu_ResetAllJobsPrompt(%client)
+{
+	messageClient(%client, '', "\c6Are you sure you want to reset all jobs? This action will affect every player on the server, online and offline.");
+	messageClient(%client, '', "\c6All players will be changed back to the Civilian job. The server may temporarily freeze during this operation.");
+
+	%client.cityLog("Reset all jobs prompt");
+
+	%menu =	"Yes"
+			TAB "No";
+
+	%functions = 	"City_ResetAllJobs"
+						TAB "CityMenu_Close";
+
+	%client.cityMenuOpen(%menu, %functions, %brick, "\c6Job reset cancelled.");
+
+}
+
+function City_ResetAllJobs(%client)
+{
+	// Extra SA check for security
+	if(!%client.isSuperAdmin)
+	{
+		return;
+	}
+
+	%client.cityLog("Reset all jobs");
+
+	messageAll('',"\c3" @ %client.name @ "\c0 reset all jobs.");
+
+	for(%i = 0; %i <= CityRPGData.dataCount; %i++)
+	{
+		%targetClient = findClientByBL_ID(CityRPGData.data[%i].id);
+
+		if(%targetClient != 0)
+		{
+			jobset(%targetClient, 1);
+		}
+		else
+		{
+			CityRPGData.data[%i].valueJobID = 1;
+		}
+	}
+
+	%client.cityMenuClose(1);
+}

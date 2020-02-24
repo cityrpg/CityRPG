@@ -74,6 +74,7 @@ package CityRPG_Commands
 			case "admin":
 				messageClient(%client, '', "\c6Admin commands: /\c3updateScore\c6, /\c3setMinerals\c6 [\c3value\c6], /\c3setLumber\c6 [\c3value\c6], /\c3editEducation\c6 [\c3level\c6] [\c3player\c6]");
 				messageClient(%client, '', "\c6/\c3clearMoney\c6, \c6/\c3gMoney\c6 [\c3amount\c6] [\c3player\c6], /\c3dMoney\c6 [\c3amount\c6] [\c3player\c6], /\c3cleanse\c6, /\c3editHunger\c6 [\c3level\c6], /\c3manageLot");
+				messageClient(%client, '', "\c6/\c3resetAllJobs\c6");
 
 			case "jobs":
 				messageClient(%client, '', "\c6Type \c3/job\c6 then one of the jobs below to apply for that job.");
@@ -1214,6 +1215,17 @@ package CityRPG_Commands
 		{
 			messageClient(%client, '', "\c6You need to be a Super Admin to use this function.");
 		}
+	}
+
+	function serverCmdResetAllJobs(%client)
+	{
+		if(!%client.isSuperAdmin)
+		{
+			messageClient(%client, '', "\c6You need to be a Super Admin to use this function.");
+			return;
+		}
+
+		CityMenu_ResetAllJobsPrompt(%client);
 	}
 };
 

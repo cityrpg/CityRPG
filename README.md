@@ -45,6 +45,7 @@ Dglider for bugfixes and tips, Sentry for replacing missing assets.
 - **/dBank** [amount] [player] - Remove money from a player's bank.
 - **/cleanse** - Removes your wanted level.
 - **/edithunger** [level 1-10] - Changes hunger to a certain level.
+- **/resetAllJobs** - Resets the job for every profile on the server. Used for changing custom job configurations.
 
 # Developer Documentation
 CityRPG 4 is being built fully open source, and we encourage you to fork the repository and make your own changes. We would love to see your contributions!
