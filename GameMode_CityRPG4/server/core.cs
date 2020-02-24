@@ -394,7 +394,7 @@ function City_TickLoop(%loop)
 				{
 					if(%client.bl_id !$= $City::Mayor::ID)
 					{
-						jobset(%client, 1);
+						jobset(%client, $City::CivilianJobID);
 						%client.colorName = "";
 						// return;
 					}
@@ -523,7 +523,7 @@ function City_ResetAllJobs(%client)
 
 		if(%targetClient != 0)
 		{
-			jobset(%targetClient, 1);
+			jobset(%targetClient, $City::CivilianJobID);
 		}
 		else
 		{
