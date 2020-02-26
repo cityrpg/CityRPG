@@ -45,7 +45,7 @@ datablock triggerData(CityRPGInputTriggerData)
 // ============================================================
 datablock fxDTSBrickData(CityRPGSmallLotBrickData : brick16x16FData)
 {
-	iconName = $City::DataPath @ "/ui/BrickIcons/16x16LotIcon";
+	iconName = $City::DataPath @ "ui/BrickIcons/16x16LotIcon";
 
 	category = "CityRPG";
 	subCategory = "Lots";
@@ -64,7 +64,7 @@ datablock fxDTSBrickData(CityRPGSmallLotBrickData : brick16x16FData)
 
 datablock fxDTSBrickData(CityRPGHalfSmallLotBrickData : brick16x32FData)
 {
-	iconName = $City::DataPath @ "/ui/BrickIcons/16x32LotIcon";
+	iconName = $City::DataPath @ "ui/BrickIcons/16x32LotIcon";
 
 	category = "CityRPG";
 	subCategory = "Lots";
@@ -83,7 +83,7 @@ datablock fxDTSBrickData(CityRPGHalfSmallLotBrickData : brick16x32FData)
 
 datablock fxDTSBrickData(CityRPGMediumLotBrickData : brick32x32FData)
 {
-	iconName = $City::DataPath @ "/ui/BrickIcons/32x32LotIcon";
+	iconName = $City::DataPath @ "ui/BrickIcons/32x32LotIcon";
 
 	category = "CityRPG";
 	subCategory = "Lots";
@@ -102,8 +102,8 @@ datablock fxDTSBrickData(CityRPGMediumLotBrickData : brick32x32FData)
 
 datablock fxDTSBrickData(CityRPGHalfLargeLotBrickData)
 {
-	brickFile = $City::DataPath @ "/bricks/32x64F.blb";
-	iconName = $City::DataPath @ "/ui/BrickIcons/32x64LotIcon";
+	brickFile = $City::DataPath @ "bricks/32x64F.blb";
+	iconName = $City::DataPath @ "ui/BrickIcons/32x64LotIcon";
 
 	category = "CityRPG";
 	subCategory = "Lots";
@@ -122,7 +122,7 @@ datablock fxDTSBrickData(CityRPGHalfLargeLotBrickData)
 
 datablock fxDTSBrickData(CityRPGLargeLotBrickData : brick64x64FData)
 {
-	iconName = $City::DataPath @ "/ui/BrickIcons/64x64LotIcon";
+	iconName = $City::DataPath @ "ui/BrickIcons/64x64LotIcon";
 
 	category = "CityRPG";
 	subCategory = "Lots";
@@ -142,7 +142,7 @@ datablock fxDTSBrickData(CityRPGLargeLotBrickData : brick64x64FData)
 // Sale Lots
 //datablock fxDTSBrickData(CityRPGSmallZoneBrickData : brick16x16FData)
 //{
-//	iconName = $City::DataPath @ "/ui/BrickIcons/16x16ZoneIcon";
+//	iconName = $City::DataPath @ "ui/BrickIcons/16x16ZoneIcon";
 //
 //	category = "CityRPG";
 //	subCategory = "CityRPG Zones";
@@ -155,7 +155,7 @@ datablock fxDTSBrickData(CityRPGLargeLotBrickData : brick64x64FData)
 //
 //datablock fxDTSBrickData(CityRPGHalfSmallZoneBrickData : brick16x32FData)
 //{
-//	iconName = $City::DataPath @ "/ui/BrickIcons/16x32ZoneIcon";
+//	iconName = $City::DataPath @ "ui/BrickIcons/16x32ZoneIcon";
 //
 //	category = "CityRPG";
 //	subCategory = "CityRPG Zones";
@@ -168,7 +168,7 @@ datablock fxDTSBrickData(CityRPGLargeLotBrickData : brick64x64FData)
 //
 //datablock fxDTSBrickData(CityRPGMediumZoneBrickData : brick32x32FData)
 //{
-//	iconName = $City::DataPath @ "/ui/BrickIcons/32x32ZoneIcon";
+//	iconName = $City::DataPath @ "ui/BrickIcons/32x32ZoneIcon";
 //
 //	category = "CityRPG";
 //	subCategory = "CityRPG Zones";
@@ -181,7 +181,7 @@ datablock fxDTSBrickData(CityRPGLargeLotBrickData : brick64x64FData)
 //
 //datablock fxDTSBrickData(CityRPGLargeZoneBrickData : brick64x64FData)
 //{
-//	iconName = $City::DataPath @ "/ui/BrickIcons/64x64ZoneIcon";
+//	iconName = $City::DataPath @ "ui/BrickIcons/64x64ZoneIcon";
 //
 //	category = "CityRPG";
 //	subCategory = "CityRPG Zones";

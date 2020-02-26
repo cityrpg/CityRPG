@@ -30,7 +30,7 @@ if(!isObject(CityRPGPickaxeItem))
 		category		= "Weapon";
 		className		= "Weapon";
 
-		shapeFile		= $City::DataPath @ "/shapes/pickaxe.2.dts";
+		shapeFile		= $City::DataPath @ "shapes/pickaxe.2.dts";
 		mass			= 1;
 		density 		= 0.2;
 		elasticity		= 0.2;
@@ -38,7 +38,7 @@ if(!isObject(CityRPGPickaxeItem))
 		emap			= true;
 
 		uiName			= "Pickaxe";
-		iconName		= $City::DataPath @ "/ui/ItemIcons/pickaxe";
+		iconName		= $City::DataPath @ "ui/ItemIcons/pickaxe";
 		doColorShift	= false;
 
 		image			= CityRPGPickaxeImage;
@@ -59,7 +59,7 @@ if(!isObject(CityRPGPickaxeItem))
 		raycastExplosionProjectile = hammerProjectile;
 		raycastExplosionSound = hammerHitSound;
 
-		shapeFile		= $City::DataPath @ "/shapes/pickaxe.2.dts";
+		shapeFile		= $City::DataPath @ "shapes/pickaxe.2.dts";
 		emap			= true;
 		mountPoint		= 0;
 		eyeOffset		= "0.7 1.2 -0.9";
