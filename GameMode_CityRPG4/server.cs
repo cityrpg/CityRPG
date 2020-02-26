@@ -7,7 +7,8 @@ $GameModeDisplayName = "CityRPG 4";
 
 if($server::lan)
 {
-  error("Sorry, CityRPG currently does not support LAN or singleplayer due to conflicts with the saving system.");
+  schedule(1,0,messageAll,'', "Sorry, CityRPG currently does not support LAN or singleplayer. Please run CityRPG using an Internet server instead.");
+  error("Sorry, CityRPG currently does not support LAN or singleplayer. Please run CityRPG using an Internet server instead.");
   return;
 }
 
