@@ -360,9 +360,14 @@ function City_TickLoop(%loop)
 			{
 				if((CalendarSO.date % 2) == 0)
 				{
-					%so.valueHunger--;
-					if(%so.valueHunger == 0)
-						%so.valueHunger = 1;
+					// No hunger effects for admin jobs
+					if(%so.valueJobID != $City::AdminJobID)
+					{
+						%so.valueHunger--;
+
+						if(%so.valueHunger == 0)
+							%so.valueHunger = 1;
+					}
 
 					if(isObject(%client.player))
 						%client.player.setScale("1 1 1");
