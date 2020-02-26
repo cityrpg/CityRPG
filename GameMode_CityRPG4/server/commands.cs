@@ -464,17 +464,7 @@ package CityRPG_Commands
 
 					if(%gotTheJob)
 					{
-						CityRPGData.getData(%client.bl_id).valueJobID = %a;
-
-						if(isObject(%client.player))
-						{
-							serverCmdunUseTool(%client);
-							%client.player.giveDefaultEquipment();
-							%client.applyForcedBodyColors();
-							%client.applyForcedBodyParts();
-						}
-
-						%client.SetInfo();
+						jobset(%client, %a);
 					}
 				}
 			}
