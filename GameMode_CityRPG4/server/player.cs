@@ -500,6 +500,8 @@ function jobset(%client, %job, %name)
 	%client.applyForcedBodyColors();
 	%client.applyForcedBodyParts();
 
+	%client.player.setDatablock(%client.getJobSO().db);
+
 	if(%job == $City::MayorJobID)
 	{
 		$City::Mayor::String = %client.name;
