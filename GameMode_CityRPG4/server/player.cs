@@ -547,36 +547,19 @@ function player::giveDefaultEquipment(%this)
 
 function jobset(%client, %job, %name)
 {
-	if(%name $= "")
+	CityRPGData.getData(%client.bl_id).valueJobID = %job;
+	serverCmdunUseTool(%client);
+	%client.player.giveDefaultEquipment();
+	%client.applyForcedBodyColors();
+	%client.applyForcedBodyParts();
+
+	if(%job == $City::MayorJobID)
 	{
-		CityRPGData.getData(%client.bl_id).valueJobID = %job;
-		serverCmdunUseTool(%client);
-		%client.player.giveDefaultEquipment();
-		%client.applyForcedBodyColors();
-		%client.applyForcedBodyParts();
-
-		if(%job == $City::MayorJobID)
-		{
-			$City::Mayor::String = %client.name;
-			$City::Mayor::Enabled = 0;
-			serverCmdClearImpeach(%client);
-		}
-		%client.SetInfo();
+		$City::Mayor::String = %client.name;
+		$City::Mayor::Enabled = 0;
+		serverCmdClearImpeach(%client);
 	}
-	else
-	{
-		%target = findClientByName(%name);
-		CityRPGData.getData(%target.bl_id).valueJobID = %job;
-		serverCmdunUseTool(%target);
-		%target.player.giveDefaultEquipment();
-		%target.applyForcedBodyColors();
-		%target.applyForcedBodyParts();
-
-		if(%job == $City::MayorJobID)
-			$City::Mayor::String = %target.name;
-
-		%target.SetInfo();
-	}
+	%client.SetInfo();
 }
 
 function resetFree(%client)
