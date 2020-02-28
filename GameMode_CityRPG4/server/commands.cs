@@ -179,15 +179,19 @@ package CityRPG_Commands
 	function serverCmdNo(%client)
 	{
 		%client.cityLog("/no");
+		%serviceOrigin = %client.player.serviceOrigin;
 
 		if(!isObject(%client.player))
 			return;
 
-		if(isObject(%client.player.serviceOrigin))
+		if(isObject(%serviceOrigin) || (!isObject(%serviceOrigin) && %serviceOrigin !$= ""))
 		{
 			messageClient(%client, '', "\c6You have rejected the service fee!");
 
-			%client.player.serviceOrigin.onTransferDecline(%client);
+			if(isObject(%serviceOrigin))
+			{
+				%serviceOrigin.onTransferDecline(%client);
+			}
 
 			%client.player.serviceType = "";
 			%client.player.serviceFee = "";
