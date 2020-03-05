@@ -1090,12 +1090,18 @@ package CityRPG_MainPackage
 
 	function serverCmdcreateMiniGame(%client)
 	{
-		messageClient(%client, '', "I'm afraid I can't let you do that," SPC %client.name @ ".");
+		messageClient(%client, '', "You cannot create mini-games in CityRPG.");
 	}
 
 	function serverCmdleaveMiniGame(%client)
 	{
-		messageClient(%client, '', "I'm afraid I can't let you do that," SPC %client.name @ ".");
+		messageClient(%client, '', "You cannot leave the mini-game in CityRPG.");
+
+		if(%client.isAdmin)
+		{
+			messageClient(%client, '', "\c0As an admin, you can use the \"Council Member\" job to build and manage the server.");
+			messageClient(%client, '', "\c0Type \c6/job council member\c0 to change jobs. This will grant you jets and freeze your hunger.");
+		}
 	}
 
 	function serverCmddropTool(%client, %toolID)
