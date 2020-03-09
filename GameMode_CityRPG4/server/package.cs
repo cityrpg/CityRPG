@@ -887,6 +887,13 @@ package CityRPG_MainPackage
 			parent::damage(%this, %obj, %src, %unk, %dmg, %type);
 	}
 
+	function Armor::onImpact(%this, %obj, %collidedObject, %vec, %vecLen)
+	{
+		Parent::onImpact(%this, %obj, %collidedObject, %vec, %vecLen);
+
+		%obj.client.setInfo();
+	}
+
 	function WheeledVehicle::onActivate(%this, %obj, %client, %pos, %dir)
 	{
 		if(!%this.locked && getTrustLevel(%obj.client.brickGroup, %this.spawnBrick.getGroup()) > 0)
