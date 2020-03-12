@@ -891,7 +891,8 @@ package CityRPG_MainPackage
 	{
 		Parent::onImpact(%this, %obj, %collidedObject, %vec, %vecLen);
 
-		%obj.client.setInfo();
+		if(isObject(%obj.client))
+			%obj.client.setInfo();
 	}
 
 	function WheeledVehicle::onActivate(%this, %obj, %client, %pos, %dir)
