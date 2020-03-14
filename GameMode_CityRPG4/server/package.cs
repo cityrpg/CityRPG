@@ -924,12 +924,43 @@ package CityRPG_MainPackage
 		}
 	}
 
-	function HammerImage::onHitObject(%this, %obj, %slot, %col, %pos, %normal)
+	// Override the killing of lot bricks entirely
+	// Prevents players from deleting lots by any means where not allowed.
+	function fxDTSBrick::killBrick(%brick)
 	{
-		if(%col.getClassName() $= "Player" && isObject(%col.client) && !%col.client.getWantedLevel())
+		if(%brick.getDataBlock().CityRPGBrickType == $CityBrick_Lot && !$CityLotKillOverride)
 			return;
 
-		parent::onHitObject(%this, %obj, %slot, %col, %pos, %normal);
+		$CityLotKillOverride = 0;
+		parent::killBrick(%brick);
+	}
+
+	function HammerImage::onHitObject(%this, %player, %slot, %hitObj, %hitPos, %hitNormal)
+	{
+		if(%hitObj.getClassName() $= "Player" && isObject(%hitObj.client) && !%hitObj.client.getWantedLevel())
+			return;
+
+
+		if(%hitObj.getClassName() $= "fxDTSBrick" && %hitObj.getDataBlock().CityRPGBrickType == $CityBrick_Lot)
+		{
+			if(%player.client.isAdmin)
+				$CityLotKillOverride = 1;
+			else
+			{
+				commandToClient(%player.client, 'centerPrint', "You cannot delete lot bricks.", 3);
+				return;
+			}
+		}
+
+		parent::onHitObject(%this, %player, %slot, %hitObj, %hitPos, %hitNormal);
+	}
+
+	function AdminWandImage::onHitObject(%this, %player, %slot, %hitObj, %hitPos, %hitNormal)
+	{
+		if(%hitObj.getClassName() $= "fxDTSBrick" && %hitObj.getDataBlock().CityRPGBrickType == $CityBrick_Lot)
+			$CityLotKillOverride = 1;
+
+		parent::onHitObject(%this, %player, %slot, %hitObj, %hitPos, %hitNormal);
 	}
 
 	function KeyProjectile::onCollision(%this, %obj, %col, %fade, %pos, %normal)
