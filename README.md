@@ -8,6 +8,8 @@ In CityRPG 4, you can explore a range of jobs and opportunities as you work your
 [Join us on Discord](https://discord.gg/dHcnHb3) | [View update progress on Trello](https://trello.com/b/36wGp6ow/cityrpg-4-roadmap)
 ------------ | ------------- |
 
+![Alpha 1](https://lakeys.net/cityrpg/media/banner.png)
+
 ## Features in Alpha 1
 - The classic gameplay that has been shaped by thousands of players within the Blockland community
 - A variety of jobs and roles to partake in
