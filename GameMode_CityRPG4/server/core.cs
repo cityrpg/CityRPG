@@ -84,6 +84,14 @@ function GameConnection::cityMenuClose(%client, %silent)
 	}
 }
 
+// Client.cityMenuClose(silent)
+// msg: (str) Message to display to the client. Accepts color codes (\c3, etc.)
+function GameConnection::cityMenuMessage(%client, %msg)
+{
+	// We're using messageClient for now--simple enough, but this is subject to change.
+	messageClient(%client, '', %msg);
+}
+
 // Hook functions (CityMenu_*) - These functions are used within menus.
 function CityMenu_Close(%client)
 {
