@@ -10,7 +10,6 @@ datablock fxDTSBrickData(CityRPGBountyBrickData : brick2x4FData)
 
 	CityRPGBrickType = $CityBrick_Info;
 	CityRPGBrickAdmin = true;
-	CityRPGBrickPlayerPrivliage = true;
 	CityRPGBrickCost = 1000;
 
 	triggerDatablock = CityRPGInputTriggerData;
