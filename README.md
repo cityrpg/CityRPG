@@ -1,4 +1,4 @@
-# ![CityRPG 4](./logo.png)
+# ![CityRPG 4](https://lakeys.net/cityrpg/logo.png)
 Live, build, and thrive in a city made of blocks, inhabited by players like you.
 
 CityRPG is a mod for the game Blockland that simulates the life of a blocky city. Each city is built, run, and populated by the players. It’s a sandbox-RPG-simulation blend with limitless potential.
