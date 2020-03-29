@@ -42,7 +42,7 @@ function CityMenu_BankWithdrawPrompt(%client)
 {
 	%client.cityLog("Bank withdraw prompt");
 
-	messageClient(%client, '', "\c6Please enter the amount of money you wish to withdraw.");
+	%client.cityMenuMessage("\c6Please enter the amount of money you wish to withdraw.");
 	%client.cityMenuFunction = CityMenu_BankWithdraw;
 }
 
@@ -50,7 +50,7 @@ function CityMenu_BankWithdraw(%client, %input)
 {
 	if(mFloor(%input) < 1)
 	{
-		messageClient(%client, '', "\c6Please enter a valid amount of money to withdraw.");
+		%client.cityMenuMessage("\c6Please enter a valid amount of money to withdraw.");
 
 		return;
 	}
@@ -59,7 +59,7 @@ function CityMenu_BankWithdraw(%client, %input)
 	{
 		if(CityRPGData.getData(%client.bl_id).valueBank < 1)
 		{
-			messageClient(%client, '', "\c6You don't have that much money in the bank to withdraw.");
+			%client.cityMenuMessage("\c6You don't have that much money in the bank to withdraw.");
 
 			%client.cityMenuClose();
 
@@ -70,7 +70,7 @@ function CityMenu_BankWithdraw(%client, %input)
 	}
 
 	%client.cityLog("Bank withdraw $" @ mFloor(%input));
-	messageClient(%client, '', "\c6You have withdrawn \c3$" @ mFloor(%input) @ "\c6.");
+	%client.cityMenuMessage("\c6You have withdrawn \c3$" @ mFloor(%input) @ "\c6.");
 
 	%client.cityMenuClose();
 
@@ -86,7 +86,7 @@ function CityMenu_BankDepositPrompt(%client)
 {
 	%client.cityLog("Bank deposit prompt");
 
-	messageClient(%client, '', "\c6Please enter the amount of money you wish to deposit.");
+	%client.cityMenuMessage("\c6Please enter the amount of money you wish to deposit.");
 	%client.cityMenuFunction = CityMenu_BankDeposit;
 }
 
@@ -94,7 +94,7 @@ function CityMenu_BankDeposit(%client, %input)
 {
 	if(mFloor(%input) < 1)
 	{
-		messageClient(%client, '', "\c6Please enter a valid amount of money to deposit.");
+		%client.cityMenuMessage("\c6Please enter a valid amount of money to deposit.");
 
 		return;
 	}
@@ -103,7 +103,7 @@ function CityMenu_BankDeposit(%client, %input)
 	{
 		if(CityRPGData.getData(%client.bl_id).valueMoney < 1)
 		{
-			messageClient(%client, '', "\c6You don't have that much money to deposit.");
+			%client.cityMenuMessage("\c6You don't have that much money to deposit.");
 
 			%brick.trigger.getDatablock().onLeaveTrigger(%brick.trigger, (isObject(%client.player) ? %client.player : 0));
 
@@ -115,7 +115,7 @@ function CityMenu_BankDeposit(%client, %input)
 
 	%client.cityLog("Bank deposit $" @ mFloor(%input));
 
-	messageClient(%client, '', "\c6You have deposited \c3$" @ mFloor(%input) @ "\c6!");
+	%client.cityMenuMessage("\c6You have deposited \c3$" @ mFloor(%input) @ "\c6!");
 
 	CityRPGData.getData(%client.bl_id).valueBank += mFloor(%input);
 	CityRPGData.getData(%client.bl_id).valueMoney -= mFloor(%input);
@@ -135,7 +135,7 @@ function CityMenu_BankDepositAll(%client)
 function CityMenu_BankDonatePrompt(%client)
 {
 	%client.cityLog("Bank donate prompt");
-	messageClient(%client, '', "\c6Enter the amount you would like to donate:");
+	%client.cityMenuMessage("\c6Enter the amount you would like to donate:");
 	%client.cityMenuFunction = CityMenu_BankDonate;
 }
 
@@ -154,11 +154,11 @@ function CityRPGBankBrickData::parseData(%this, %brick, %client, %triggerStatus,
 	{
 		if(%client.getWantedLevel())
 		{
-			messageClient(%client, '', "\c6The service refuses to serve you.");
+			%client.cityMenuMessage("\c6The service refuses to serve you.");
 			return;
 		}
 
-		messageClient(%client, '', "\c6Welcome to the " @ $Pref::Server::City::name @ " Bank. Your account balance is \c3$" @ CityRPGData.getData(%client.bl_id).valueBank @ "\c6. Current economy value: \c3" @ %econColor @ $Economics::Condition @ "\c6%");
+		%client.cityMenuMessage("\c6Welcome to the " @ $Pref::Server::City::name @ " Bank. Your account balance is \c3$" @ CityRPGData.getData(%client.bl_id).valueBank @ "\c6. Current economy value: \c3" @ %econColor @ $Economics::Condition @ "\c6%");
 
 		CityMenu_Bank(%client, %brick);
 	}

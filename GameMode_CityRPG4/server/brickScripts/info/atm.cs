@@ -21,8 +21,8 @@ datablock fxDTSBrickData(CityRPGATMBrickData : brick2x4FData)
 // ============================================================
 function CityMenu_ATM(%client, %brick)
 {
-	messageClient(%client, '', "\c3ATM");
-	messageClient(%client, '', "\c6You have \c3$" @ CityRPGData.getData(%client.bl_id).valueBank SPC "\c6in your account.");
+	%client.cityMenuMessage("\c3ATM");
+	%client.cityMenuMessage("\c6You have \c3$" @ CityRPGData.getData(%client.bl_id).valueBank SPC "\c6in your account.");
 
 	%client.cityLog("Enter ATM");
 
@@ -42,11 +42,11 @@ function CityRPGATMBrickData::parseData(%this, %brick, %client, %triggerStatus, 
 	{
 		if(%client.getWantedLevel())
 		{
-			messageClient(%client, '', "\c6The service refuses to serve you.");
+			%client.cityMenuMessage("\c6The service refuses to serve you.");
 			return;
 		}
 
-		messageClient(%client, '', "\c6Welcome to the " @ $Pref::Server::City::name @ " Bank. Your account balance is \c3$" @ CityRPGData.getData(%client.bl_id).valueBank @ "\c6. Current economy value: \c3" @ %econColor @ $Economics::Condition @ "\c6%");
+		%client.cityMenuMessage("\c6Welcome to the " @ $Pref::Server::City::name @ " Bank. Your account balance is \c3$" @ CityRPGData.getData(%client.bl_id).valueBank @ "\c6. Current economy value: \c3" @ %econColor @ $Economics::Condition @ "\c6%");
 
 		CityMenu_ATM(%client, %brick);
 	}

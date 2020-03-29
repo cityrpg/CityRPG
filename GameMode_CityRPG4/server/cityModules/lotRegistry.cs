@@ -30,7 +30,7 @@ function CityMenu_Lot(%client, %notitle)
 {
 	if(%client.CityRPGLotBrick $= "")
 	{
-		messageClient(%client, '', "\c6You are currently not on a lot.");
+		%client.cityMenuMessage("\c6You are currently not on a lot.");
 		return;
 	}
 
@@ -48,7 +48,7 @@ function CityMenu_Lot(%client, %notitle)
 
 	if(!%notitle)
 	{
-		messageClient(%client, '', "\c3Lot Management\c6 for: " @ %brick.getCityLotName() @ "\c6 - " @ %brick.getDataBlock().uiName);
+		%client.cityMenuMessage("\c3Lot Management\c6 for: " @ %brick.getCityLotName() @ "\c6 - " @ %brick.getDataBlock().uiName);
 	}
 
 	// ## Options for all lots ## //
@@ -61,7 +61,7 @@ function CityMenu_Lot(%client, %notitle)
 	// ## Options for unclaimed lots ## //
 	if(%brick.getCityLotOwnerID() == -1)
 	{
-		messageClient(%client, '', "\c6This lot is for sale! It can be purchased for \c3$" @ %price @ "\c6.");
+		%client.cityMenuMessage("\c6This lot is for sale! It can be purchased for \c3$" @ %price @ "\c6.");
 
 		// Place these options first.
 		%menu = "Purchase this lot. " TAB %menu;
@@ -95,10 +95,10 @@ function CityMenu_Lot(%client, %notitle)
 // ## Functions for all lots ## //
 function CityMenu_LotRules(%client)
 {
-	messageClient(%client, '', "\c3Code enforcement requires following restrictions on this lot:");
+	%client.cityMenuMessage("\c3Code enforcement requires following restrictions on this lot:");
 
 	%lotRules = $Pref::Server::City::LotRules;
-	messageClient(%client, '', "\c6" @ %lotRules);
+	%client.cityMenuMessage("\c6" @ %lotRules);
 }
 
 // ## Functions for unclaimed lots ## //
@@ -110,15 +110,15 @@ function CityMenu_LotPurchasePrompt(%client)
 
 	if(CityRPGData.getData(%client.bl_id).valueMoney >= %lot.dataBlock.initialPrice)
 	{
-		messageClient(%client, '', "\c6You are purchasing this lot for \c3$" @ %lot.dataBlock.initialPrice @ "\c6. Make sure you have read the lot rules. Lot sales are final!");
-		messageClient(%client, '', "\c6Type \c31\c6 to confirm, or leave the lot to cancel.");
+		%client.cityMenuMessage("\c6You are purchasing this lot for \c3$" @ %lot.dataBlock.initialPrice @ "\c6. Make sure you have read the lot rules. Lot sales are final!");
+		%client.cityMenuMessage("\c6Type \c31\c6 to confirm, or leave the lot to cancel.");
 
 		%client.cityMenuFunction = CityLots_PurchaseLot;
 		%client.cityMenuID = %lot;
 	}
 	else
 	{
-		messageClient(%client, '', "\c6You need \c3$" @ %lot.dataBlock.initialPrice @ "\c6 on hand to purchase this lot.");
+		%client.cityMenuMessage("\c6You need \c3$" @ %lot.dataBlock.initialPrice @ "\c6 on hand to purchase this lot.");
 		%client.cityMenuClose();
 	}
 }

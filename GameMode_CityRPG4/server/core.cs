@@ -99,7 +99,7 @@ function CityMenu_Close(%client)
 }
 function CityMenu_Placeholder(%client)
 {
-	messageClient(%client, '', "\c6Sorry, this feature is currently not available. Please try again later.");
+	%client.cityMenuMessage("\c6Sorry, this feature is currently not available. Please try again later.");
 }
 
 // City_AddDemerits(blid, demerits)
@@ -503,8 +503,8 @@ function messageAllOfJob(%job, %type, %message)
 
 function CityMenu_ResetAllJobsPrompt(%client)
 {
-	messageClient(%client, '', "\c6Are you sure you want to reset all jobs? This action will affect every player on the server, online and offline.");
-	messageClient(%client, '', "\c6All players will be changed back to the Civilian job. The server may temporarily freeze during this operation.");
+	%client.cityMenuMessage("\c6Are you sure you want to reset all jobs? This action will affect every player on the server, online and offline.");
+	%client.cityMenuMessage("\c6All players will be changed back to the Civilian job. The server may temporarily freeze during this operation.");
 
 	%client.cityLog("Reset all jobs prompt");
 

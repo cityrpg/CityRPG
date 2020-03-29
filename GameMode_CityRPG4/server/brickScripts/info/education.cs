@@ -32,17 +32,17 @@ function CityMenu_Education(%client, %brick)
 		%string = "Level " @ %level @ " Education";
 	}
 
-	messageClient(%client, '', "\c6Welcome to the " @ $Pref::Server::City::name @ " College of Education. You currently hold a \c3" @ %string @ "\c6.");
+	%client.cityMenuMessage("\c6Welcome to the " @ $Pref::Server::City::name @ " College of Education. You currently hold a \c3" @ %string @ "\c6.");
 
 	if(CityRPGData.getData(%client.bl_id).valueStudent > 0) {
-		messageClient(%client, '', "\c6You are currently enrolled. Your education will be complete in \c3" @ CityRPGData.getData(%client.bl_id).valueStudent @ "\c6 days.");
+		%client.cityMenuMessage("\c6You are currently enrolled. Your education will be complete in \c3" @ CityRPGData.getData(%client.bl_id).valueStudent @ "\c6 days.");
 	}
 	else if(%level == $City::EducationCap) {
-		messageClient(%client, '', "\c6Sorry, the department of education is unable to advance you any further.");
-		messageClient(%client, '', "\c6Try typing /reincarnate for a new challenge.");
+		%client.cityMenuMessage("\c6Sorry, the department of education is unable to advance you any further.");
+		%client.cityMenuMessage("\c6Try typing /reincarnate for a new challenge.");
 	}
 	else if(%level == $City::EducationReincarnateLevel) {
-		messageClient(%client, '', "\c6You are already far beyond what the department of education can offer.");
+		%client.cityMenuMessage("\c6You are already far beyond what the department of education can offer.");
 	}
 	else {
 		%menu = "Enroll for \c3$" @ %client.getCityEnrollCost();
