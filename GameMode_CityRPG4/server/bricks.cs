@@ -53,7 +53,7 @@ datablock fxDTSBrickData(CityRPGSmallLotBrickData : brick16x16FData)
 	uiName = "16x16 Lot";
 
 	CityRPGBrickType = $CityBrick_Lot;
-	CityRPGBrickAdmin = false;
+	CityRPGBrickAdmin = true;
 
 	triggerDatablock = CityRPGLotTriggerData;
 	triggerSize = "16 16 4800";
@@ -72,7 +72,7 @@ datablock fxDTSBrickData(CityRPGHalfSmallLotBrickData : brick16x32FData)
 	uiName = "16x32 Lot";
 
 	CityRPGBrickType = $CityBrick_Lot;
-	CityRPGBrickAdmin = false;
+	CityRPGBrickAdmin = true;
 
 	triggerDatablock = CityRPGLotTriggerData;
 	triggerSize = "16 32 4800";
@@ -91,7 +91,7 @@ datablock fxDTSBrickData(CityRPGMediumLotBrickData : brick32x32FData)
 	uiName = "32x32 Lot";
 
 	CityRPGBrickType = $CityBrick_Lot;
-	CityRPGBrickAdmin = false;
+	CityRPGBrickAdmin = true;
 
 	triggerDatablock = CityRPGLotTriggerData;
 	triggerSize = "32 32 6400";
@@ -111,7 +111,7 @@ datablock fxDTSBrickData(CityRPGHalfLargeLotBrickData)
 	uiName = "32x64 Lot";
 
 	CityRPGBrickType = $CityBrick_Lot;
-	CityRPGBrickAdmin = false;
+	CityRPGBrickAdmin = true;
 
 	triggerDatablock = CityRPGLotTriggerData;
 	triggerSize = "32 64 6400";
@@ -130,7 +130,7 @@ datablock fxDTSBrickData(CityRPGLargeLotBrickData : brick64x64FData)
 	uiName = "64x64 Lot";
 
 	CityRPGBrickType = $CityBrick_Lot;
-	CityRPGBrickAdmin = false;
+	CityRPGBrickAdmin = true;
 
 	triggerDatablock = CityRPGLotTriggerData;
 	triggerSize = "64 64 12800";
