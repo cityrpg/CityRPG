@@ -346,6 +346,11 @@ package CityRPG_MainPackage
 
 		parent::autoadmincheck(%client);
 
+		if(getBrickCount() > 150000)
+		{
+			%client.schedule(1, messageCityLagNotice);
+		}
+
 		if(CityRPGData.getData(%client.bl_id).valueJobID $= "")
 		{
 			schedule(1, 0, messageClient, %client, '', "\c2Type \c6/help starters\c2 to learn more about how to get started in CityRPG.");

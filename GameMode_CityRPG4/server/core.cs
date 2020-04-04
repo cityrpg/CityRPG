@@ -546,3 +546,9 @@ function City_ResetAllJobs(%client)
 
 	%client.cityMenuClose(1);
 }
+
+function GameConnection::messageCityLagNotice(%client)
+{
+	messageClient(%client, '', "\c3Notice: This server has " @ getBrickCount() @ " bricks.");
+	messageClient(%client, '', "\c3If you experience lag, consider turning down your shaders, as well as your draw distance under Advanced options.");
+}
