@@ -4,7 +4,7 @@
 datablock fxDTSBrickData(CityRPGJobBrickData : brick2x4FData)
 {
 	category = "CityRPG";
-	subCategory = "Info Bricks";
+	subCategory = "City Info Bricks";
 
 	uiName = "Job Brick";
 

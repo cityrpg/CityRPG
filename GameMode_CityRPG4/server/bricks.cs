@@ -41,6 +41,45 @@ datablock triggerData(CityRPGInputTriggerData)
 };
 
 // ============================================================
+// Bricks
+// ============================================================
+// Player info bricks
+exec($City::ScriptPath @ "brickScripts/info/atm.cs");
+
+// Personal spawns
+datablock fxDtsBrickData(CityRPGPersonalSpawnBrickData : brickSpawnPointData)
+{
+	category = "CityRPG";
+	subCategory = "Personal";
+
+	uiName = "Personal Spawn";
+
+	specialBrickType = "";
+
+	CityRPGBrickType = $CityBrick_Spawn;
+	CityRPGBrickAdmin = false;
+
+	spawnData = "personalSpawn";
+};
+
+// Resources
+exec($City::ScriptPath @ "brickScripts/resources/tree.cs");
+exec($City::ScriptPath @ "brickScripts/resources/ore.cs");
+exec($City::ScriptPath @ "brickScripts/resources/smallore.cs");
+
+// City info bricks
+exec($City::ScriptPath @ "brickScripts/info/bank.cs");
+exec($City::ScriptPath @ "brickScripts/info/police.cs");
+exec($City::ScriptPath @ "brickScripts/info/bounty.cs");
+exec($City::ScriptPath @ "brickScripts/info/labor.cs");
+exec($City::ScriptPath @ "brickScripts/info/realestate.cs");
+exec($City::ScriptPath @ "brickScripts/info/criminalbank.cs");
+exec($City::ScriptPath @ "brickScripts/info/playeratm.cs");
+exec($City::ScriptPath @ "brickScripts/info/education.cs");
+exec($City::ScriptPath @ "brickScripts/info/job.cs");
+exec($City::ScriptPath @ "brickScripts/info/vote.cs");
+
+// ============================================================
 // Lots
 // ============================================================
 datablock fxDTSBrickData(CityRPGSmallLotBrickData : brick16x16FData)
@@ -192,40 +231,7 @@ datablock fxDTSBrickData(CityRPGLargeLotBrickData : brick64x64FData)
 //	CityRPGMatchingLot = CityRPGLargeLotBrickData;
 //};
 
-// ============================================================
-// Data Bricks
-// ============================================================
-exec($City::ScriptPath @ "brickScripts/info/bank.cs");
-exec($City::ScriptPath @ "brickScripts/info/police.cs");
-exec($City::ScriptPath @ "brickScripts/info/bounty.cs");
-exec($City::ScriptPath @ "brickScripts/info/labor.cs");
-exec($City::ScriptPath @ "brickScripts/info/realestate.cs");
-exec($City::ScriptPath @ "brickScripts/info/criminalbank.cs");
-exec($City::ScriptPath @ "brickScripts/info/atm.cs");
-exec($City::ScriptPath @ "brickScripts/info/playeratm.cs");
-exec($City::ScriptPath @ "brickScripts/info/education.cs");
-exec($City::ScriptPath @ "brickScripts/info/job.cs");
-
-exec($City::ScriptPath @ "brickScripts/info/vote.cs");
-
-// ============================================================
-// Spawns
-// ============================================================
-datablock fxDtsBrickData(CityRPGPersonalSpawnBrickData : brickSpawnPointData)
-{
-	category = "CityRPG";
-	subCategory = "Spawns";
-
-	uiName = "Personal Spawn";
-
-	specialBrickType = "";
-
-	CityRPGBrickType = $CityBrick_Spawn;
-	CityRPGBrickAdmin = false;
-
-	spawnData = "personalSpawn";
-};
-
+// Jail spawn
 datablock fxDtsBrickData(CityRPGJailSpawnBrickData : brickSpawnPointData)
 {
 	category = "CityRPG";
@@ -242,19 +248,12 @@ datablock fxDtsBrickData(CityRPGJailSpawnBrickData : brickSpawnPointData)
 };
 
 // ============================================================
-// Resources
-// ============================================================
-exec($City::ScriptPath @ "brickScripts/resources/tree.cs");
-exec($City::ScriptPath @ "brickScripts/resources/ore.cs");
-exec($City::ScriptPath @ "brickScripts/resources/smallore.cs");
-
-// ============================================================
 // Other
 // ============================================================
 datablock fxDTSBrickData(CityRPGPermaSpawnData : brick2x2FData)
 {
 	category = "CityRPG";
-	subCategory = "Info Bricks";
+	subCategory = "City Info Bricks";
 
 	uiName = "Item Spawn Brick";
 
