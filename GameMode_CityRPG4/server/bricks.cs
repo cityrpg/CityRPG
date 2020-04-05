@@ -199,7 +199,7 @@ exec($City::ScriptPath @ "brickScripts/info/bank.cs");
 exec($City::ScriptPath @ "brickScripts/info/police.cs");
 exec($City::ScriptPath @ "brickScripts/info/bounty.cs");
 exec($City::ScriptPath @ "brickScripts/info/labor.cs");
-//exec($City::ScriptPath @ "brickScripts/info/realestate.cs");
+exec($City::ScriptPath @ "brickScripts/info/realestate.cs");
 exec($City::ScriptPath @ "brickScripts/info/criminalbank.cs");
 exec($City::ScriptPath @ "brickScripts/info/atm.cs");
 exec($City::ScriptPath @ "brickScripts/info/playeratm.cs");
