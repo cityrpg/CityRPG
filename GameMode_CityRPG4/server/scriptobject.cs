@@ -17,6 +17,7 @@ function JobSO::loadJobFiles(%so)
 {
 	$City::DefaultJobs = 1;
 	$City::CivilianJobID = 1;
+	$City::AdminJobID = 13;
 
 	// NOTE: Order is incredibly important. Jobs are referenced by ID, which is determined by order.
 	// Mixing up the order of these professions will cause save data to reference the wrong job.

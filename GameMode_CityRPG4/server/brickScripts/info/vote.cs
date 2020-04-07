@@ -4,13 +4,12 @@
 datablock fxDTSBrickData(CityRPGVoteBrickData : brick2x4FData)
 {
 	category = "CityRPG";
-	subCategory = "Info Bricks";
+	subCategory = "City Info Bricks";
 
 	uiName = "Vote Brick";
 
 	CityRPGBrickType = $CityBrick_Info;
 	CityRPGBrickAdmin = true;
-	CityRPGBrickPlayerPrivliage = true;
 	CityRPGBrickCost = 1000;
 
 	triggerDatablock = CityRPGInputTriggerData;

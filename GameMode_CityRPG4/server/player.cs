@@ -538,8 +538,6 @@ function GameConnection::getCityEnrollCost(%client)
 
 function GameConnection::cityEnroll(%client)
 {
-	%client.cityLog("/education" SPC %do);
-
 	if(!isObject(%client.player) || CityRPGData.getData(%client.bl_id).valueEducation >= $City::EducationCap)
 		return;
 
@@ -558,6 +556,8 @@ function GameConnection::cityEnroll(%client)
 
 			messageClient(%client, '', "\c6You are now enrolled. You will complete your education in \c3" @ %valueStudent @ "\c6 days.");
 			%client.setInfo();
+
+			%client.cityLog("Enroll for edu worth " @ %price);
 		}
 		else
 		{

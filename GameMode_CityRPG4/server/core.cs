@@ -84,6 +84,14 @@ function GameConnection::cityMenuClose(%client, %silent)
 	}
 }
 
+// Client.cityMenuClose(silent)
+// msg: (str) Message to display to the client. Accepts color codes (\c3, etc.)
+function GameConnection::cityMenuMessage(%client, %msg)
+{
+	// We're using messageClient for now--simple enough, but this is subject to change.
+	messageClient(%client, '', %msg);
+}
+
 // Hook functions (CityMenu_*) - These functions are used within menus.
 function CityMenu_Close(%client)
 {
@@ -91,7 +99,7 @@ function CityMenu_Close(%client)
 }
 function CityMenu_Placeholder(%client)
 {
-	messageClient(%client, '', "\c6Sorry, this feature is currently not available. Please try again later.");
+	%client.cityMenuMessage("\c6Sorry, this feature is currently not available. Please try again later.");
 }
 
 // City_AddDemerits(blid, demerits)
@@ -360,9 +368,14 @@ function City_TickLoop(%loop)
 			{
 				if((CalendarSO.date % 2) == 0)
 				{
-					%so.valueHunger--;
-					if(%so.valueHunger == 0)
-						%so.valueHunger = 1;
+					// No hunger effects for admin jobs
+					if(%so.valueJobID != $City::AdminJobID)
+					{
+						%so.valueHunger--;
+
+						if(%so.valueHunger == 0)
+							%so.valueHunger = 1;
+					}
 
 					if(isObject(%client.player))
 						%client.player.setScale("1 1 1");
@@ -490,8 +503,8 @@ function messageAllOfJob(%job, %type, %message)
 
 function CityMenu_ResetAllJobsPrompt(%client)
 {
-	messageClient(%client, '', "\c6Are you sure you want to reset all jobs? This action will affect every player on the server, online and offline.");
-	messageClient(%client, '', "\c6All players will be changed back to the Civilian job. The server may temporarily freeze during this operation.");
+	%client.cityMenuMessage("\c6Are you sure you want to reset all jobs? This action will affect every player on the server, online and offline.");
+	%client.cityMenuMessage("\c6All players will be changed back to the Civilian job. The server may temporarily freeze during this operation.");
 
 	%client.cityLog("Reset all jobs prompt");
 
@@ -532,4 +545,10 @@ function City_ResetAllJobs(%client)
 	}
 
 	%client.cityMenuClose(1);
+}
+
+function GameConnection::messageCityLagNotice(%client)
+{
+	messageClient(%client, '', "\c3Notice: This server has " @ getBrickCount() @ " bricks.");
+	messageClient(%client, '', "\c3If you experience lag, consider turning down your shaders, as well as your draw distance under Advanced options.");
 }

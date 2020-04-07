@@ -3,8 +3,8 @@
 // ============================================================
 datablock fxDTSBrickData(CityRPGOreData)
 {
-	brickFile = $City::DataPath @ "/bricks/4x Cube.blb";
-	iconName = $City::DataPath @ "/ui/BrickIcons/4x Cube";
+	brickFile = $City::DataPath @ "bricks/4x Cube.blb";
+	iconName = $City::DataPath @ "ui/BrickIcons/4x Cube";
 
 	category = "CityRPG";
 	subCategory = "Resources";

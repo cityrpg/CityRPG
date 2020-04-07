@@ -27,9 +27,9 @@ if(!isObject(CityRPGLumberjackItem))
 	{
 		uiName = "Lumberjack Axe";
 		image = CityRPGLumberjackImage;
-		shapeFile = $City::DataPath @ "/shapes/lumberjack.1.dts";
+		shapeFile = $City::DataPath @ "shapes/lumberjack.1.dts";
 
-		iconName		= $City::DataPath @ "/ui/ItemIcons/axe";
+		iconName		= $City::DataPath @ "ui/ItemIcons/axe";
 
 		// CityRPG Properties
 		noSpawn			= true;
@@ -45,7 +45,7 @@ if(!isObject(CityRPGLumberjackItem))
 		raycastExplosionProjectile = swordProjectile;
 		raycastExplosionSound = swordHitSound;
 
-		shapeFile = $City::DataPath @ "/shapes/lumberjack.1.dts";
+		shapeFile = $City::DataPath @ "shapes/lumberjack.1.dts";
 		emap = true;
 		mountPoint = 0;
 		eyeOffset	= "0.7 1.2 -0.7";

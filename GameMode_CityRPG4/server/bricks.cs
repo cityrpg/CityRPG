@@ -41,11 +41,50 @@ datablock triggerData(CityRPGInputTriggerData)
 };
 
 // ============================================================
+// Bricks
+// ============================================================
+// Player info bricks
+exec($City::ScriptPath @ "brickScripts/info/atm.cs");
+
+// Personal spawns
+datablock fxDtsBrickData(CityRPGPersonalSpawnBrickData : brickSpawnPointData)
+{
+	category = "CityRPG";
+	subCategory = "Personal";
+
+	uiName = "Personal Spawn";
+
+	specialBrickType = "";
+
+	CityRPGBrickType = $CityBrick_Spawn;
+	CityRPGBrickAdmin = false;
+
+	spawnData = "personalSpawn";
+};
+
+// Resources
+exec($City::ScriptPath @ "brickScripts/resources/tree.cs");
+exec($City::ScriptPath @ "brickScripts/resources/ore.cs");
+exec($City::ScriptPath @ "brickScripts/resources/smallore.cs");
+
+// City info bricks
+exec($City::ScriptPath @ "brickScripts/info/bank.cs");
+exec($City::ScriptPath @ "brickScripts/info/police.cs");
+exec($City::ScriptPath @ "brickScripts/info/bounty.cs");
+exec($City::ScriptPath @ "brickScripts/info/labor.cs");
+exec($City::ScriptPath @ "brickScripts/info/realestate.cs");
+exec($City::ScriptPath @ "brickScripts/info/criminalbank.cs");
+exec($City::ScriptPath @ "brickScripts/info/playeratm.cs");
+exec($City::ScriptPath @ "brickScripts/info/education.cs");
+exec($City::ScriptPath @ "brickScripts/info/job.cs");
+exec($City::ScriptPath @ "brickScripts/info/vote.cs");
+
+// ============================================================
 // Lots
 // ============================================================
 datablock fxDTSBrickData(CityRPGSmallLotBrickData : brick16x16FData)
 {
-	iconName = $City::DataPath @ "/ui/BrickIcons/16x16LotIcon";
+	iconName = $City::DataPath @ "ui/BrickIcons/16x16LotIcon";
 
 	category = "CityRPG";
 	subCategory = "Lots";
@@ -53,7 +92,7 @@ datablock fxDTSBrickData(CityRPGSmallLotBrickData : brick16x16FData)
 	uiName = "16x16 Lot";
 
 	CityRPGBrickType = $CityBrick_Lot;
-	CityRPGBrickAdmin = false;
+	CityRPGBrickAdmin = true;
 
 	triggerDatablock = CityRPGLotTriggerData;
 	triggerSize = "16 16 4800";
@@ -64,7 +103,7 @@ datablock fxDTSBrickData(CityRPGSmallLotBrickData : brick16x16FData)
 
 datablock fxDTSBrickData(CityRPGHalfSmallLotBrickData : brick16x32FData)
 {
-	iconName = $City::DataPath @ "/ui/BrickIcons/16x32LotIcon";
+	iconName = $City::DataPath @ "ui/BrickIcons/16x32LotIcon";
 
 	category = "CityRPG";
 	subCategory = "Lots";
@@ -72,7 +111,7 @@ datablock fxDTSBrickData(CityRPGHalfSmallLotBrickData : brick16x32FData)
 	uiName = "16x32 Lot";
 
 	CityRPGBrickType = $CityBrick_Lot;
-	CityRPGBrickAdmin = false;
+	CityRPGBrickAdmin = true;
 
 	triggerDatablock = CityRPGLotTriggerData;
 	triggerSize = "16 32 4800";
@@ -83,7 +122,7 @@ datablock fxDTSBrickData(CityRPGHalfSmallLotBrickData : brick16x32FData)
 
 datablock fxDTSBrickData(CityRPGMediumLotBrickData : brick32x32FData)
 {
-	iconName = $City::DataPath @ "/ui/BrickIcons/32x32LotIcon";
+	iconName = $City::DataPath @ "ui/BrickIcons/32x32LotIcon";
 
 	category = "CityRPG";
 	subCategory = "Lots";
@@ -91,7 +130,7 @@ datablock fxDTSBrickData(CityRPGMediumLotBrickData : brick32x32FData)
 	uiName = "32x32 Lot";
 
 	CityRPGBrickType = $CityBrick_Lot;
-	CityRPGBrickAdmin = false;
+	CityRPGBrickAdmin = true;
 
 	triggerDatablock = CityRPGLotTriggerData;
 	triggerSize = "32 32 6400";
@@ -102,8 +141,8 @@ datablock fxDTSBrickData(CityRPGMediumLotBrickData : brick32x32FData)
 
 datablock fxDTSBrickData(CityRPGHalfLargeLotBrickData)
 {
-	brickFile = $City::DataPath @ "/bricks/32x64F.blb";
-	iconName = $City::DataPath @ "/ui/BrickIcons/32x64LotIcon";
+	brickFile = $City::DataPath @ "bricks/32x64F.blb";
+	iconName = $City::DataPath @ "ui/BrickIcons/32x64LotIcon";
 
 	category = "CityRPG";
 	subCategory = "Lots";
@@ -111,7 +150,7 @@ datablock fxDTSBrickData(CityRPGHalfLargeLotBrickData)
 	uiName = "32x64 Lot";
 
 	CityRPGBrickType = $CityBrick_Lot;
-	CityRPGBrickAdmin = false;
+	CityRPGBrickAdmin = true;
 
 	triggerDatablock = CityRPGLotTriggerData;
 	triggerSize = "32 64 6400";
@@ -122,7 +161,7 @@ datablock fxDTSBrickData(CityRPGHalfLargeLotBrickData)
 
 datablock fxDTSBrickData(CityRPGLargeLotBrickData : brick64x64FData)
 {
-	iconName = $City::DataPath @ "/ui/BrickIcons/64x64LotIcon";
+	iconName = $City::DataPath @ "ui/BrickIcons/64x64LotIcon";
 
 	category = "CityRPG";
 	subCategory = "Lots";
@@ -130,7 +169,7 @@ datablock fxDTSBrickData(CityRPGLargeLotBrickData : brick64x64FData)
 	uiName = "64x64 Lot";
 
 	CityRPGBrickType = $CityBrick_Lot;
-	CityRPGBrickAdmin = false;
+	CityRPGBrickAdmin = true;
 
 	triggerDatablock = CityRPGLotTriggerData;
 	triggerSize = "64 64 12800";
@@ -142,7 +181,7 @@ datablock fxDTSBrickData(CityRPGLargeLotBrickData : brick64x64FData)
 // Sale Lots
 //datablock fxDTSBrickData(CityRPGSmallZoneBrickData : brick16x16FData)
 //{
-//	iconName = $City::DataPath @ "/ui/BrickIcons/16x16ZoneIcon";
+//	iconName = $City::DataPath @ "ui/BrickIcons/16x16ZoneIcon";
 //
 //	category = "CityRPG";
 //	subCategory = "CityRPG Zones";
@@ -155,7 +194,7 @@ datablock fxDTSBrickData(CityRPGLargeLotBrickData : brick64x64FData)
 //
 //datablock fxDTSBrickData(CityRPGHalfSmallZoneBrickData : brick16x32FData)
 //{
-//	iconName = $City::DataPath @ "/ui/BrickIcons/16x32ZoneIcon";
+//	iconName = $City::DataPath @ "ui/BrickIcons/16x32ZoneIcon";
 //
 //	category = "CityRPG";
 //	subCategory = "CityRPG Zones";
@@ -168,7 +207,7 @@ datablock fxDTSBrickData(CityRPGLargeLotBrickData : brick64x64FData)
 //
 //datablock fxDTSBrickData(CityRPGMediumZoneBrickData : brick32x32FData)
 //{
-//	iconName = $City::DataPath @ "/ui/BrickIcons/32x32ZoneIcon";
+//	iconName = $City::DataPath @ "ui/BrickIcons/32x32ZoneIcon";
 //
 //	category = "CityRPG";
 //	subCategory = "CityRPG Zones";
@@ -181,7 +220,7 @@ datablock fxDTSBrickData(CityRPGLargeLotBrickData : brick64x64FData)
 //
 //datablock fxDTSBrickData(CityRPGLargeZoneBrickData : brick64x64FData)
 //{
-//	iconName = $City::DataPath @ "/ui/BrickIcons/64x64ZoneIcon";
+//	iconName = $City::DataPath @ "ui/BrickIcons/64x64ZoneIcon";
 //
 //	category = "CityRPG";
 //	subCategory = "CityRPG Zones";
@@ -192,40 +231,7 @@ datablock fxDTSBrickData(CityRPGLargeLotBrickData : brick64x64FData)
 //	CityRPGMatchingLot = CityRPGLargeLotBrickData;
 //};
 
-// ============================================================
-// Data Bricks
-// ============================================================
-exec($City::ScriptPath @ "brickScripts/info/bank.cs");
-exec($City::ScriptPath @ "brickScripts/info/police.cs");
-exec($City::ScriptPath @ "brickScripts/info/bounty.cs");
-exec($City::ScriptPath @ "brickScripts/info/labor.cs");
-//exec($City::ScriptPath @ "brickScripts/info/realestate.cs");
-exec($City::ScriptPath @ "brickScripts/info/criminalbank.cs");
-exec($City::ScriptPath @ "brickScripts/info/atm.cs");
-exec($City::ScriptPath @ "brickScripts/info/playeratm.cs");
-exec($City::ScriptPath @ "brickScripts/info/education.cs");
-exec($City::ScriptPath @ "brickScripts/info/job.cs");
-
-exec($City::ScriptPath @ "brickScripts/info/vote.cs");
-
-// ============================================================
-// Spawns
-// ============================================================
-datablock fxDtsBrickData(CityRPGPersonalSpawnBrickData : brickSpawnPointData)
-{
-	category = "CityRPG";
-	subCategory = "Spawns";
-
-	uiName = "Personal Spawn";
-
-	specialBrickType = "";
-
-	CityRPGBrickType = $CityBrick_Spawn;
-	CityRPGBrickAdmin = false;
-
-	spawnData = "personalSpawn";
-};
-
+// Jail spawn
 datablock fxDtsBrickData(CityRPGJailSpawnBrickData : brickSpawnPointData)
 {
 	category = "CityRPG";
@@ -242,19 +248,12 @@ datablock fxDtsBrickData(CityRPGJailSpawnBrickData : brickSpawnPointData)
 };
 
 // ============================================================
-// Resources
-// ============================================================
-exec($City::ScriptPath @ "brickScripts/resources/tree.cs");
-exec($City::ScriptPath @ "brickScripts/resources/ore.cs");
-exec($City::ScriptPath @ "brickScripts/resources/smallore.cs");
-
-// ============================================================
 // Other
 // ============================================================
 datablock fxDTSBrickData(CityRPGPermaSpawnData : brick2x2FData)
 {
 	category = "CityRPG";
-	subCategory = "Info Bricks";
+	subCategory = "City Info Bricks";
 
 	uiName = "Item Spawn Brick";
 

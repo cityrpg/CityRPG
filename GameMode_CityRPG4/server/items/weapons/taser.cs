@@ -3,11 +3,11 @@
 // ============================================================
 if(!isObject(taserItem))
 {
-	AddDamageType("Taser",   "<bitmap:" @ $City::DataPath @ "/ui/ci/taser> %1",    "%2 <bitmap:" @ $City::DataPath @ "ui/ci/taser> %1", 0.5, 1);
+	AddDamageType("Taser",   "<bitmap:" @ $City::DataPath @ "ui/ci/taser> %1",    "%2 <bitmap:" @ $City::DataPath @ "ui/ci/taser> %1", 0.5, 1);
 
 	datablock AudioProfile(taserExplosionSound)
 	{
-		filename	 = $City::DataPath @ "/sounds/radioWaveExplosion.wav";
+		filename	 = $City::DataPath @ "sounds/radioWaveExplosion.wav";
 		description = AudioClosest3d;
 		preload = true;
 	};
@@ -124,7 +124,7 @@ if(!isObject(taserItem))
 		category = "Weapon";
 		className = "Weapon";
 
-		shapeFile = $City::DataPath @ "/shapes/taser.1.dts";
+		shapeFile = $City::DataPath @ "shapes/taser.1.dts";
 		rotate = false;
 		mass = 1;
 		density = 0.2;
@@ -134,7 +134,7 @@ if(!isObject(taserItem))
 
 
 		uiName = "Taser";
-		iconName = $City::DataPath @ "/ui/ItemIcons/taser";
+		iconName = $City::DataPath @ "ui/ItemIcons/taser";
 		doColorShift = false;
 		colorShiftColor = "0.25 0.25 0.25 1.000";
 
@@ -147,7 +147,7 @@ if(!isObject(taserItem))
 
 	datablock ShapeBaseImageData(taserImage)
 	{
-		shapeFile = $City::DataPath @ "/shapes/taser.1.dts";
+		shapeFile = $City::DataPath @ "shapes/taser.1.dts";
 		emap = true;
 
 		mountPoint = 0;

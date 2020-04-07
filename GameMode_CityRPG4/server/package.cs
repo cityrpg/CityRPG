@@ -38,6 +38,22 @@ package CityRPG_MainPackage
 		parent::onDeath(%brick);
 	}
 
+	// Brick plant check
+	function servercmdPlantBrick(%client)
+	{
+		if(isObject(%client.player.tempBrick))
+		{
+			%check = %client.player.tempBrick.cityBrickCheck();
+
+			if(%check == 0)
+			{
+				return;
+			}
+		}
+
+		parent::servercmdPlantBrick(%client);
+	}
+
 	// New Duplicator compatibility
 	function ND_Selection::plantBrick(%this, %i, %position, %angleID, %brickGroup, %client, %bl_id)
 	{
@@ -50,7 +66,17 @@ package CityRPG_MainPackage
 			%brick.assignCityLotName();
 		}
 
-		City_OnPlant(%brick);
+		if(isObject(%brick))
+		{
+			%check = %brick.cityBrickCheck();
+			if(%check == 0)
+			{
+				// In the case of the duplicator, we'll just delete the brick.
+				%brick.delete();
+				return;
+			}
+		}
+
 		return %brick;
 	}
 
@@ -58,336 +84,161 @@ package CityRPG_MainPackage
 	{
 		Parent::onPlant(%brick);
 
-		City_OnPlant(%brick);
+		%brick.cityBrickInit();
 	}
 
-	// TODO: Rewrite this
-	function City_OnPlant(%brick) {
-		if(!isObject(%brick)) {
-			return;
-		}
-
+	function fxDTSBrick::cityBrickInit(%brick)
+	{
 		%client = %brick.getGroup().client;
 
-		if(%brick == $LastLoadedBrick && %brick.getDatablock().CityRPGBrickType !$= $CityBrick_Lot) {
-			switch(%brick.getDatablock().CityRPGBrickType) {
-				case $CityBrick_Info:
-					%brick.schedule(1, "createCityTrigger");
-				case $CityBrick_Spawn:
-					$CityRPG::temp::spawnPoints = ($CityRPG::temp::spawnPoints $= "") ? %brick : $CityRPG::temp::spawnPoints SPC %brick;
-				case $CityBrick_ResourceLumber:
-					%seed = getRandom(1, ResourceSO.treeCount);
-					%brick.id = ResourceSO.tree[%seed].id;
-					%brick.BPH = ResourceSO.tree[%seed].BPH;
-					%brick.name = ResourceSO.tree[%seed].name;
-					%brick.totalHits = ResourceSO.tree[%seed].totalHits;
-					%brick.color = getClosestPaintColor(ResourceSO.tree[%seed].color);
-					%brick.setColor(%brick.color);
-				case $CityBrick_ResourceOre:
-					%seed = getRandom(1, ResourceSO.mineralCount);
-					%brick.id = ResourceSO.mineral[%seed].id;
-					%brick.BPH = ResourceSO.mineral[%seed].BPH;
-					%brick.name = ResourceSO.mineral[%seed].name;
-					%brick.totalHits = ResourceSO.mineral[%seed].totalHits;
-					%brick.color = getClosestPaintColor(ResourceSO.mineral[%seed].color);
-					%brick.setColor(%brick.color);
-			}
-
+		if(!%brick.isPlanted || !isObject(%brick) || !isObject(%client = %brick.getGroup().client))
 			return;
-		}
-		else if(%brick.getDataBlock().CityRPGBrickType $= $CityBrick_Lot)
+
+		switch(%brick.getDatablock().CityRPGBrickType)
 		{
-			if(!%client.isAdmin)
-			{
-				if(isObject(%client))
+			case $CityBrick_Lot:
+				%brick.schedule(1, "createCityTrigger");
+			case $CityBrick_Info:
+				%brick.schedule(1, "createCityTrigger");
+			case $CityBrick_Spawn:
+				$CityRPG::temp::spawnPoints = ($CityRPG::temp::spawnPoints $= "") ? %brick : $CityRPG::temp::spawnPoints SPC %brick;
+			case $CityBrick_ResourceLumber:
+				%seed = getRandom(1, ResourceSO.treeCount);
+				%brick.id = ResourceSO.tree[%seed].id;
+				%brick.BPH = ResourceSO.tree[%seed].BPH;
+				%brick.name = ResourceSO.tree[%seed].name;
+				%brick.totalHits = ResourceSO.tree[%seed].totalHits;
+				%brick.color = getClosestPaintColor(ResourceSO.tree[%seed].color);
+				%brick.setColor(%brick.color);
+			case $CityBrick_ResourceOre:
+				%seed = getRandom(1, ResourceSO.mineralCount);
+				%brick.id = ResourceSO.mineral[%seed].id;
+				%brick.BPH = ResourceSO.mineral[%seed].BPH;
+				%brick.name = ResourceSO.mineral[%seed].name;
+				%brick.totalHits = ResourceSO.mineral[%seed].totalHits;
+				%brick.color = getClosestPaintColor(ResourceSO.mineral[%seed].color);
+				%brick.setColor(%brick.color);
+			default:
+				if(%brick.getDatablock().getID() == brickVehicleSpawnData.getID() && !%client.isAdmin)
 				{
-					commandToClient(%client, 'centerPrint', "\c6Only admins can create new lot bricks.<br>\c6To purchase a lot, you must find an unclaimed lot and type \c3/lot\c6 over it.", 3);
-					%brick.schedule(0, "delete");
-					return -1;
-					if(!%client.isAdmin)
-					{
-						commandToClient(%client, 'centerPrint', "\c6Only admins can create new lot bricks.<br>\c6To purchase a lot, you must find an unclaimed lot and type \c3/lot\c6 over it.", 3);
-						%brick.schedule(0, "delete");
-						return -1;
-					}
+					commandToClient(%client, 'centerPrint', "\c6You have paid \c3$" @ mFloor($CityRPG::prices::vehicleSpawn) @ "\c6 to plant this vehicle spawn.", 3);
+					CityRPGData.getData(%client.bl_id).valueMoney -= mFloor($CityRPG::prices::vehicleSpawn);
+					%client.setInfo();
 				}
-			}
+		}
+	}
+
+	// Brick::cityBrickCheck(this/client)
+	// Checks if the current brick can be planted by the client that owns it.
+	// Typically called on a client's temp brick, except when using the duplicator.
+	// Displays an error and returns -1 if there are any problems.
+	function fxDTSBrick::cityBrickCheck(%brick)
+	{
+		%client = %brick.getGroup().client;
+
+		if(!isObject(%client))
+		{
+			// City brick checks are never called while loading.
+			// Therefore, if the client doesn't exist, something went wrong. Refuse to plant for security.
+			return 0;
 		}
 
-		if(%brick.getDatablock().CityRPGBrickType && isObject(%brick.client)) {
+		// Set %brickType and check it.
+		%brickType = %brick.getDataBlock().CityRPGBrickType;
+
+		if(%brickType !$= "" && isObject(%brick.client))
+		{
+			// Log if it's a CityRPG brick
 			%brick.client.cityLog("Attempt to plant " @ %brick.getDatablock().getName());
 		}
 
-		if(isObject(%client) || %brick.getDatablock().CityRPGBrickType == $CityBrick_Lot) {
-			if(mFloor(getWord(%brick.rotation, 3)) == 90) {
-				%boxSize = getWord(%brick.getDatablock().brickSizeY, 1) / 2.5 SPC getWord(%brick.getDatablock().brickSizeX, 0) / 2.5 SPC getWord(%brick.getDatablock().brickSizeZ, 2) / 2.5;
-			}
-			else {
-				%boxSize = getWord(%brick.getDatablock().brickSizeX, 1) / 2.5 SPC getWord(%brick.getDatablock().brickSizeY, 0) / 2.5 SPC getWord(%brick.getDatablock().brickSizeZ, 2) / 2.5;
-			}
+		if(%client.isAdmin || CityRPGData.getData(%client.bl_id).valueJobID == $City::AdminJobID)
+		{
+			return 1;
+		}
 
-			initContainerBoxSearch(%brick.getWorldBoxCenter(), %boxSize, $typeMasks::triggerObjectType);
+		%brickData = %brick.getDatablock();
 
-			while(isObject(%trigger = containerSearchNext())) {
-				if(%trigger.getDatablock() == CityRPGLotTriggerData.getID()) {
-					%lotTrigger = %trigger;
-				}
-			}
+		if(%brickData.CityRPGBrickType == $CityBrick_Lot)
+		{
+			commandToClient(%client, 'centerPrint', "\c6You cannot place new lot bricks.<br>\c6To purchase a lot, find an unclaimed lot and type /lot while standing on it.", 5);
+			return 0;
+		}
 
-			if(%lotTrigger && %brick.getDatablock().CityRPGBrickType != $CityBrick_Lot)
+		if(%brickData.CityRPGBrickAdmin)
+		{
+			commandToClient(%client, 'centerPrint', "\c6You cannot place this type of brick.", 3);
+			return 0;
+		}
+
+		// Lot zone check
+		if(mFloor(getWord(%brick.rotation, 3)) == 90)
+			%boxSize = getWord(%brick.getDatablock().brickSizeY, 1) / 2.5 SPC getWord(%brick.getDatablock().brickSizeX, 0) / 2.5 SPC getWord(%brick.getDatablock().brickSizeZ, 2) / 2.5;
+		else
+			%boxSize = getWord(%brick.getDatablock().brickSizeX, 1) / 2.5 SPC getWord(%brick.getDatablock().brickSizeY, 0) / 2.5 SPC getWord(%brick.getDatablock().brickSizeZ, 2) / 2.5;
+
+		initContainerBoxSearch(%brick.getWorldBoxCenter(), %boxSize, $typeMasks::triggerObjectType);
+
+		while(isObject(%trigger = containerSearchNext()))
+		{
+			if(%trigger.getDatablock() == CityRPGLotTriggerData.getID())
 			{
-				%lotTriggerMinX = getWord(%lotTrigger.getWorldBox(), 0);
-				%lotTriggerMinY = getWord(%lotTrigger.getWorldBox(), 1);
-				%lotTriggerMinZ = getWord(%lotTrigger.getWorldBox(), 2);
-
-				%lotTriggerMaxX = getWord(%lotTrigger.getWorldBox(), 3);
-				%lotTriggerMaxY = getWord(%lotTrigger.getWorldBox(), 4);
-				%lotTriggerMaxZ = getWord(%lotTrigger.getWorldBox(), 5);
-
-				%brickMinX = getWord(%brick.getWorldBox(), 0) + 0.0016;
-				%brickMinY = getWord(%brick.getWorldBox(), 1) + 0.0013;
-				%brickMinZ = getWord(%brick.getWorldBox(), 2) + 0.00126;
-
-				%brickMaxX = getWord(%brick.getWorldBox(), 3) - 0.0016;
-				%brickMaxY = getWord(%brick.getWorldBox(), 4) - 0.0013;
-				%brickMaxZ = getWord(%brick.getWorldBox(), 5) - 0.00126;
-
-				// Ensure that the bricks do not go over the edge of the lot boundaries.
-				if(%brickMinX < %lotTriggerMinX || %brickMinY < %lotTriggerMinY || %brickMinZ < %lotTriggerMinZ) {
-					%brick.schedule(0, "delete");
-					return -1;
-				}
-
-				if(%brickMaxX > %lotTriggerMaxX || %brickMaxY > %lotTriggerMaxY || %brickMaxZ > %lotTriggerMaxZ) {
-					%brick.schedule(0, "delete");
-					return -1;
-				}
-
-				if(%brick.getDatablock().CityRPGBrickAdmin && !%client.isAdmin) {
-					if(%brick.getDatablock().CityRPGBrickPlayerPrivliage) {
-						if(CityRPGData.getData(%client.bl_id).valueMoney >= %brick.getDatablock().CityRPGBrickCost) {
-							messageClient(%client,'',"\c6You have bought the brick for \c3$" @ %brick.getDatablock().CityRPGBrickCost @ "\c6.");
-							CityRPGData.getData(%client.bl_id).valueMoney -= %brick.getDatablock().CityRPGBrickCost;
-
-							switch(%brick.getDatablock().CityRPGBrickType) {
-								case $CityBrick_Info:
-									%brick.schedule(0, "createCityTrigger");
-								case $CityBrick_Spawn:
-									$CityRPG::temp::spawnPoints = ($CityRPG::temp::spawnPoints $= "") ? %brick : $CityRPG::temp::spawnPoints SPC %brick;
-								case $CityBrick_ResourceLumber:
-									%seed = getRandom(1, ResourceSO.treeCount);
-									%brick.id = ResourceSO.tree[%seed].id;
-									%brick.BPH = ResourceSO.tree[%seed].BPH;
-									%brick.name = ResourceSO.tree[%seed].name;
-									%brick.totalHits = ResourceSO.tree[%seed].totalHits;
-									%brick.color = getClosestPaintColor(ResourceSO.tree[%seed].color);
-									%brick.setColor(%brick.color);
-								case $CityBrick_ResourceOre:
-									%seed = getRandom(1, ResourceSO.mineralCount);
-									%brick.id = ResourceSO.mineral[%seed].id;
-									%brick.BPH = ResourceSO.mineral[%seed].BPH;
-									%brick.name = ResourceSO.mineral[%seed].name;
-									%brick.totalHits = ResourceSO.mineral[%seed].totalHits;
-									%brick.color = getClosestPaintColor(ResourceSO.mineral[%seed].color);
-									%brick.setColor(%brick.color);
-								default:
-									if(%brick.getDatablock().getID() == brickVehicleSpawnData.getID()) {
-										if(CityRPGData.getData(%client.bl_id).valueMoney >= mFloor($CityRPG::prices::vehicleSpawn)) {
-											commandToClient(%client, 'centerPrint', "\c6You have paid \c3$" @ mFloor($CityRPG::prices::vehicleSpawn) @ "\c6 to plant this vehicle spawn.", 3);
-											CityRPGData.getData(%client.bl_id).valueMoney -= $CityRPG::prices::vehicleSpawn;
-											schedule(3000, 0, removeMoney, %brick, %client, mFloor($CityRPG::prices::vehicleSpawn));
-										}
-										else {
-											commandToClient(%client, 'centerPrint', "\c6You need at least \c3$" @ mFloor($CityRPG::prices::vehicleSpawn) SPC "\c6in order to plant this vehicle spawn!", 3);
-											%brick.schedule(0, "delete");
-											return -1;
-										}
-									}
-							}
-						} else {
-							%brick.schedule(0, "delete");
-							commandToClient(%client, 'centerPrint', "\c6You don't have enough money to buy this brick! \c3($" @ %brick.getDatablock().CityRPGBrickCost @ ")", 3);
-							return -1;
-						}
-					} else {
-						commandToClient(%client, 'centerPrint', "You must be an admin to plant this brick.", 3);
-						%brick.schedule(0, "delete");
-						return -1;
-					}
-				} else {
-					switch(%brick.getDatablock().CityRPGBrickType) {
-						case $CityBrick_Info:
-							%brick.schedule(0, "createCityTrigger");
-						case $CityBrick_Spawn:
-							$CityRPG::temp::spawnPoints = ($CityRPG::temp::spawnPoints $= "") ? %brick : $CityRPG::temp::spawnPoints SPC %brick;
-						case $CityBrick_ResourceLumber:
-							%seed = getRandom(1, ResourceSO.treeCount);
-							%brick.id = ResourceSO.tree[%seed].id;
-							%brick.BPH = ResourceSO.tree[%seed].BPH;
-							%brick.name = ResourceSO.tree[%seed].name;
-							%brick.totalHits = ResourceSO.tree[%seed].totalHits;
-							%brick.color = getClosestPaintColor(ResourceSO.tree[%seed].color);
-							%brick.setColor(%brick.color);
-						case $CityBrick_ResourceOre:
-							%seed = getRandom(1, ResourceSO.mineralCount);
-							%brick.id = ResourceSO.mineral[%seed].id;
-							%brick.BPH = ResourceSO.mineral[%seed].BPH;
-							%brick.name = ResourceSO.mineral[%seed].name;
-							%brick.totalHits = ResourceSO.mineral[%seed].totalHits;
-							%brick.color = getClosestPaintColor(ResourceSO.mineral[%seed].color);
-							%brick.setColor(%brick.color);
-						default:
-							if(!%brick.brickGroup.client.isAdmin && %brick.getDatablock().getID() == brickVehicleSpawnData.getID()) {
-								if(CityRPGData.getData(%client.bl_id).valueMoney >= mFloor($CityRPG::prices::vehicleSpawn)) {
-									commandToClient(%client, 'centerPrint', "\c6You have paid \c3$" @ mFloor($CityRPG::prices::vehicleSpawn) @ "\c6 to plant this vehicle spawn.", 3);
-									CityRPGData.getData(%client.bl_id).valueMoney -= $CityRPG::prices::vehicleSpawn;
-									schedule(3000, 0, removeMoney, %brick, %client, mFloor($CityRPG::prices::vehicleSpawn));
-									%client.setInfo();
-								}
-								else {
-									commandToClient(%client, 'centerPrint', "\c6You need at least \c3$" @ mFloor($CityRPG::prices::vehicleSpawn) SPC "\c6in order to plant this vehicle spawn!", 3);
-									%brick.schedule(0, "delete");
-									return -1;
-								}
-							}
-					}
-				}
-			}
-			else if(%lotTrigger && %brick.getDatablock().CityRPGBrickType == $CityBrick_Lot) {
-				commandToClient(%client, 'centerPrint', "Only Chuck Norris can put a lot on top of another lot.", 3);
-				%brick.schedule(0, "delete");
-				return -1;
-			}
-			else if(!%lotTrigger && %brick.getDatablock().CityRPGBrickType == $CityBrick_Lot) {
-				%brick.schedule(0, "createCityTrigger");
-			}
-			else if(!%lotTrigger) {
-				if(!%client.isAdmin) {
-					commandToClient(%client, 'centerPrint', "You cannot plant a brick outside of a lot.\n\c6Use a lot brick to start your build!", 3);
-					%brick.schedule(0, "delete");
-					return -1;
-				}
-				else {
-					// Admin check
-					if(%brick.getDatablock().CityRPGBrickAdmin && !%client.isAdmin) {
-						if(%brick.getDatablock().CityRPGBrickPlayerPrivliage) {
-							if(CityRPGData.getData(%client.bl_id).valueMoney >= %brick.getDatablock().CityRPGBrickCost) {
-								messageClient(%client,'',"\c6You have bought the brick for \c3$" @ %brick.getDatablock().CityRPGBrickCost @ "\c6.");
-								CityRPGData.getData(%client.bl_id).valueMoney -= %brick.getDatablock().CityRPGBrickCost;
-								switch(%brick.getDatablock().CityRPGBrickType) {
-									case $CityBrick_Info:
-										%brick.schedule(0, "createCityTrigger");
-									case $CityBrick_Spawn:
-										$CityRPG::temp::spawnPoints = ($CityRPG::temp::spawnPoints $= "") ? %brick : $CityRPG::temp::spawnPoints SPC %brick;
-									case $CityBrick_ResourceLumber:
-										%seed = getRandom(1, ResourceSO.treeCount);
-										%brick.id = ResourceSO.tree[%seed].id;
-										%brick.BPH = ResourceSO.tree[%seed].BPH;
-										%brick.name = ResourceSO.tree[%seed].name;
-										%brick.totalHits = ResourceSO.tree[%seed].totalHits;
-										%brick.color = getClosestPaintColor(ResourceSO.tree[%seed].color);
-										%brick.setColor(%brick.color);
-									case $CityBrick_ResourceOre:
-										%seed = getRandom(1, ResourceSO.mineralCount);
-										%brick.id = ResourceSO.mineral[%seed].id;
-										%brick.BPH = ResourceSO.mineral[%seed].BPH;
-										%brick.name = ResourceSO.mineral[%seed].name;
-										%brick.totalHits = ResourceSO.mineral[%seed].totalHits;
-										%brick.color = getClosestPaintColor(ResourceSO.mineral[%seed].color);
-										%brick.setColor(%brick.color);
-									default:
-										if(%brick.getDatablock().getID() == brickVehicleSpawnData.getID()) {
-											if(CityRPGData.getData(%client.bl_id).valueMoney >= mFloor($CityRPG::prices::vehicleSpawn)) {
-												commandToClient(%client, 'centerPrint', "\c6You have paid \c3$" @ mFloor($CityRPG::prices::vehicleSpawn) @ "\c6 to plant this vehicle spawn.", 3);
-												CityRPGData.getData(%client.bl_id).valueMoney -= $CityRPG::prices::vehicleSpawn;
-												schedule(3000, 0, removeMoney, %brick, %client, mFloor($CityRPG::prices::vehicleSpawn));
-											}
-											else {
-												commandToClient(%client, 'centerPrint', "\c6You need at least \c3$" @ mFloor($CityRPG::prices::vehicleSpawn) SPC "\c6in order to plant this vehicle spawn!", 3);
-												%brick.schedule(0, "delete");
-											}
-										}
-								}
-							} else {
-								%brick.schedule(0, "delete");
-								return -1;
-								commandToClient(%client, 'centerPrint', "\c6You don't have enough money to buy this brick! \c3($" @ %brick.getDatablock().CityRPGBrickCost @ ")", 3);
-							}
-						} else {
-							commandToClient(%client, 'centerPrint', "You must be an admin to plant this brick.", 3);
-							%brick.schedule(0, "delete");
-							return -1;
-						}
-					}
-					else {
-						switch(%brick.getDatablock().CityRPGBrickType) {
-							case $CityBrick_Info:
-								%brick.schedule(0, "createCityTrigger");
-							case $CityBrick_Spawn:
-								$CityRPG::temp::spawnPoints = ($CityRPG::temp::spawnPoints $= "") ? %brick : $CityRPG::temp::spawnPoints SPC %brick;
-							case $CityBrick_ResourceLumber:
-								%seed = getRandom(1, ResourceSO.treeCount);
-								%brick.id = ResourceSO.tree[%seed].id;
-								%brick.BPH = ResourceSO.tree[%seed].BPH;
-								%brick.name = ResourceSO.tree[%seed].name;
-								%brick.totalHits = ResourceSO.tree[%seed].totalHits;
-								%brick.color = getClosestPaintColor(ResourceSO.tree[%seed].color);
-								%brick.setColor(%brick.color);
-							case $CityBrick_ResourceOre:
-								%seed = getRandom(1, ResourceSO.mineralCount);
-								%brick.id = ResourceSO.mineral[%seed].id;
-								%brick.BPH = ResourceSO.mineral[%seed].BPH;
-								%brick.name = ResourceSO.mineral[%seed].name;
-								%brick.totalHits = ResourceSO.mineral[%seed].totalHits;
-								%brick.color = getClosestPaintColor(ResourceSO.mineral[%seed].color);
-								%brick.setColor(%brick.color);
-							default:
-								if(%brick.getDatablock().getID() == brickVehicleSpawnData.getID()) {
-									if(CityRPGData.getData(%client.bl_id).valueMoney >= mFloor($CityRPG::prices::vehicleSpawn)) {
-										commandToClient(%client, 'centerPrint', "\c6You have paid \c3$" @ mFloor($CityRPG::prices::vehicleSpawn) @ "\c6 to plant this vehicle spawn.", 3);
-										CityRPGData.getData(%client.bl_id).valueMoney -= $CityRPG::prices::vehicleSpawn;
-										schedule(3000, 0, removeMoney, %brick, %client, mFloor($CityRPG::prices::vehicleSpawn));
-									}
-									else {
-										commandToClient(%client, 'centerPrint', "\c6You need at least \c3$" @ mFloor($CityRPG::prices::vehicleSpawn) SPC "\c6in order to plant this vehicle spawn!", 3);
-										%brick.schedule(0, "delete");
-										return -1;
-									}
-								}
-						}
-					}
-				}
-			}
-			else {
-				error("City_OnPlant() - Brick fell through tests!");
+				%lotTrigger = %trigger;
+				break;
 			}
 		}
-		else {
-			switch(%brick.getDatablock().CityRPGBrickType) {
-				case $CityBrick_Info:
-					%brick.schedule(0, "createCityTrigger");
-				case $CityBrick_Spawn:
-					$CityRPG::temp::spawnPoints = ($CityRPG::temp::spawnPoints $= "") ? %brick : $CityRPG::temp::spawnPoints SPC %brick;
-				case $CityBrick_ResourceLumber:
-					%seed = getRandom(1, ResourceSO.treeCount);
-					%brick.id = ResourceSO.tree[%seed].id;
-					%brick.BPH = ResourceSO.tree[%seed].BPH;
-					%brick.name = ResourceSO.tree[%seed].name;
-					%brick.totalHits = ResourceSO.tree[%seed].totalHits;
-					%brick.color = getClosestPaintColor(ResourceSO.tree[%seed].color);
-					%brick.setColor(%brick.color);
-				case $CityBrick_ResourceOre:
-					%seed = getRandom(1, ResourceSO.mineralCount);
-					%brick.id = ResourceSO.mineral[%seed].id;
-					%brick.BPH = ResourceSO.mineral[%seed].BPH;
-					%brick.name = ResourceSO.mineral[%seed].name;
-					%brick.totalHits = ResourceSO.mineral[%seed].totalHits;
-					%brick.color = getClosestPaintColor(ResourceSO.mineral[%seed].color);
-					%brick.setColor(%brick.color);
+
+		if(!%lotTrigger && %brickData.CityRPGBrickType != 1)
+		{
+			commandToClient(%client, 'centerPrint', "You cannot plant a brick outside of a lot.\n\c6Use a lot brick to start your build!", 3);
+			return 0;
+		}
+
+		if(CityRPGData.getData(%client.bl_id).valueMoney < mFloor(%brick.getDatablock().initialPrice))
+		{
+			commandToClient(%client, 'centerPrint', "\c6You need at least \c3$" @ mFloor(%brick.getDatablock().initialPrice) SPC "\c6in order to plant this brick!", 3);
+			return 0;
+		}
+
+		if(%lotTrigger && %brick.getDatablock().CityRPGBrickType != 1)
+		{
+			%lotTriggerMinX = getWord(%lotTrigger.getWorldBox(), 0);
+			%lotTriggerMinY = getWord(%lotTrigger.getWorldBox(), 1);
+			%lotTriggerMinZ = getWord(%lotTrigger.getWorldBox(), 2);
+
+			%lotTriggerMaxX = getWord(%lotTrigger.getWorldBox(), 3);
+			%lotTriggerMaxY = getWord(%lotTrigger.getWorldBox(), 4);
+			%lotTriggerMaxZ = getWord(%lotTrigger.getWorldBox(), 5);
+
+			%brickMinX = getWord(%brick.getWorldBox(), 0) + 0.0016;
+			%brickMinY = getWord(%brick.getWorldBox(), 1) + 0.0013;
+			%brickMinZ = getWord(%brick.getWorldBox(), 2) + 0.00126;
+
+			%brickMaxX = getWord(%brick.getWorldBox(), 3) - 0.0016;
+			%brickMaxY = getWord(%brick.getWorldBox(), 4) - 0.0013;
+			%brickMaxZ = getWord(%brick.getWorldBox(), 5) - 0.00126;
+
+			if(%brickMinX < %lotTriggerMinX || %brickMinY < %lotTriggerMinY || %brickMinZ < %lotTriggerMinZ || %brickMaxX > %lotTriggerMaxX || %brickMaxY > %lotTriggerMaxY || %brickMaxZ > %lotTriggerMaxZ)
+			{
+				CommandToClient(%client, 'ServerMessage', 'MsgPlantError_Unstable');
+				return -1;
 			}
+		}
+
+		if(%lotTrigger && %brickData.CityRPGBrickType == 1)
+		{
+			commandToClient('centerPrint', "You can not place a lot within a lot.", 3);
+			return -1;
+		}
+
+		if(%lotTrigger && %brickData.getID() == brickVehicleSpawnData.getID() && CityRPGData.getData(%client.bl_id).valueMoney < mFloor($CityRPG::prices::vehicleSpawn))
+		{
+			commandToClient(%client, 'centerPrint', "\c6You need at least \c3$" @ mFloor($CityRPG::prices::vehicleSpawn) SPC "\c6in order to plant this vehicle spawn!", 3);
+			return -1;
 		}
 
 		if(%brick.getDatablock().CityRPGBrickType && isObject(%brick.client)) {
+			return 1;
 			%brick.client.cityLog("---- Passed CityRPG checks", 1);
 		}
 	}
@@ -498,20 +349,13 @@ package CityRPG_MainPackage
 	// Hack to work around wonky packaging issues
 	function fxDTSBrick::onCityLoadPlant(%this, %brick)
 	{
-
+		// Empty
 	}
 
 	function fxDTSBrick::onLoadPlant(%this, %brick)
 	{
 		parent::onLoadPlant(%this, %brick);
-
-		%result = City_OnPlant(%this);
-		if(%result == -1)
-		{
-			%brick.dump();
-			error("ERROR: Attempting to delete a CityRPG brick during loading! Brick data has been dumped.");
-		}
-
+		%this.cityBrickInit();
 
 		%this.onCityLoadPlant(%this, %brick);
 	}
@@ -628,6 +472,11 @@ package CityRPG_MainPackage
 		}
 
 		parent::autoadmincheck(%client);
+
+		if(getBrickCount() > 150000)
+		{
+			%client.schedule(1, messageCityLagNotice);
+		}
 
 		if(CityRPGData.getData(%client.bl_id).valueJobID $= "")
 		{
@@ -887,6 +736,14 @@ package CityRPG_MainPackage
 			parent::damage(%this, %obj, %src, %unk, %dmg, %type);
 	}
 
+	function Armor::onImpact(%this, %obj, %collidedObject, %vec, %vecLen)
+	{
+		Parent::onImpact(%this, %obj, %collidedObject, %vec, %vecLen);
+
+		if(isObject(%obj.client))
+			%obj.client.setInfo();
+	}
+
 	function WheeledVehicle::onActivate(%this, %obj, %client, %pos, %dir)
 	{
 		if(!%this.locked && getTrustLevel(%obj.client.brickGroup, %this.spawnBrick.getGroup()) > 0)
@@ -916,12 +773,43 @@ package CityRPG_MainPackage
 		}
 	}
 
-	function HammerImage::onHitObject(%this, %obj, %slot, %col, %pos, %normal)
+	// Override the killing of lot bricks entirely
+	// Prevents players from deleting lots by any means where not allowed.
+	function fxDTSBrick::killBrick(%brick)
 	{
-		if(%col.getClassName() $= "Player" && isObject(%col.client) && !%col.client.getWantedLevel())
+		if(%brick.getDataBlock().CityRPGBrickType == $CityBrick_Lot && !$CityLotKillOverride)
 			return;
 
-		parent::onHitObject(%this, %obj, %slot, %col, %pos, %normal);
+		$CityLotKillOverride = 0;
+		parent::killBrick(%brick);
+	}
+
+	function HammerImage::onHitObject(%this, %player, %slot, %hitObj, %hitPos, %hitNormal)
+	{
+		if(%hitObj.getClassName() $= "Player" && isObject(%hitObj.client) && !%hitObj.client.getWantedLevel())
+			return;
+
+
+		if(%hitObj.getClassName() $= "fxDTSBrick" && %hitObj.getDataBlock().CityRPGBrickType == $CityBrick_Lot)
+		{
+			if(%player.client.isAdmin)
+				$CityLotKillOverride = 1;
+			else
+			{
+				commandToClient(%player.client, 'centerPrint', "You cannot delete lot bricks.", 3);
+				return;
+			}
+		}
+
+		parent::onHitObject(%this, %player, %slot, %hitObj, %hitPos, %hitNormal);
+	}
+
+	function AdminWandImage::onHitObject(%this, %player, %slot, %hitObj, %hitPos, %hitNormal)
+	{
+		if(%hitObj.getClassName() $= "fxDTSBrick" && %hitObj.getDataBlock().CityRPGBrickType == $CityBrick_Lot)
+			$CityLotKillOverride = 1;
+
+		parent::onHitObject(%this, %player, %slot, %hitObj, %hitPos, %hitNormal);
 	}
 
 	function KeyProjectile::onCollision(%this, %obj, %col, %fade, %pos, %normal)
@@ -1090,12 +978,18 @@ package CityRPG_MainPackage
 
 	function serverCmdcreateMiniGame(%client)
 	{
-		messageClient(%client, '', "I'm afraid I can't let you do that," SPC %client.name @ ".");
+		messageClient(%client, '', "You cannot create mini-games in CityRPG.");
 	}
 
 	function serverCmdleaveMiniGame(%client)
 	{
-		messageClient(%client, '', "I'm afraid I can't let you do that," SPC %client.name @ ".");
+		messageClient(%client, '', "You cannot leave the mini-game in CityRPG.");
+
+		if(%client.isAdmin)
+		{
+			messageClient(%client, '', "\c0As an admin, you can use the \"Council Member\" job to build and manage the server.");
+			messageClient(%client, '', "\c0Type \c6/job council member\c0 to change jobs. This will grant you jets and freeze your hunger.");
+		}
 	}
 
 	function serverCmddropTool(%client, %toolID)
