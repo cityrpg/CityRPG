@@ -154,7 +154,7 @@ package CityRPG_MainPackage
 
 		if(%client.isAdmin || CityRPGData.getData(%client.bl_id).valueJobID == $City::AdminJobID)
 		{
-			//return 1;
+			return 1;
 		}
 
 		%brickData = %brick.getDatablock();
