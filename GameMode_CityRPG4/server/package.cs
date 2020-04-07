@@ -38,6 +38,22 @@ package CityRPG_MainPackage
 		parent::onDeath(%brick);
 	}
 
+	// Brick plant check
+	function servercmdPlantBrick(%client)
+	{
+		if(isObject(%client.player.tempBrick))
+		{
+			%check = %client.player.tempBrick.cityBrickCheck();
+
+			if(%check == 0)
+			{
+				return;
+			}
+		}
+
+		parent::servercmdPlantBrick(%client);
+	}
+
 	// New Duplicator compatibility
 	function ND_Selection::plantBrick(%this, %i, %position, %angleID, %brickGroup, %client, %bl_id)
 	{
@@ -50,7 +66,17 @@ package CityRPG_MainPackage
 			%brick.assignCityLotName();
 		}
 
-		City_OnPlant(%brick);
+		if(isObject(%brick))
+		{
+			%check = %brick.cityBrickCheck();
+			if(%check == 0)
+			{
+				// In the case of the duplicator, we'll just delete the brick.
+				%brick.delete();
+				return;
+			}
+		}
+
 		return %brick;
 	}
 
@@ -58,14 +84,11 @@ package CityRPG_MainPackage
 	{
 		Parent::onPlant(%brick);
 
-		City_OnPlant(%brick);
+		%brick.cityBrickInit();
 	}
 
-	function City_OnPlant(%brick) {
-		if(!isObject(%brick)) {
-			return;
-		}
-
+	function fxDTSBrick::cityBrickInit(%brick)
+	{
 		%client = %brick.getGroup().client;
 
 		if(!%brick.isPlanted || !isObject(%brick) || !isObject(%client = %brick.getGroup().client))
@@ -103,8 +126,119 @@ package CityRPG_MainPackage
 					%client.setInfo();
 				}
 		}
+	}
+
+	// Brick::cityBrickCheck(this/client)
+	// Checks if the current brick can be planted by the client that owns it.
+	// Typically called on a client's temp brick, except when using the duplicator.
+	// Displays an error and returns -1 if there are any problems.
+	function fxDTSBrick::cityBrickCheck(%brick)
+	{
+		%client = %brick.getGroup().client;
+
+		if(!isObject(%client))
+		{
+			// City brick checks are never called while loading.
+			// Therefore, if the client doesn't exist, something went wrong. Refuse to plant for security.
+			return 0;
+		}
+
+		// Set %brickType and check it.
+		%brickType = %brick.getDataBlock().CityRPGBrickType;
+
+		if(%brickType !$= "" && isObject(%brick.client))
+		{
+			// Log if it's a CityRPG brick
+			%brick.client.cityLog("Attempt to plant " @ %brick.getDatablock().getName());
+		}
+
+		if(%client.isAdmin || CityRPGData.getData(%client.bl_id).valueJobID == $City::AdminJobID)
+		{
+			//return 1;
+		}
+
+		%brickData = %brick.getDatablock();
+
+		if(%brickData.CityRPGBrickType == $CityBrick_Lot)
+		{
+			commandToClient(%client, 'centerPrint', "\c6You cannot place new lot bricks.<br>\c6To purchase a lot, find an unclaimed lot and type /lot while standing on it.", 5);
+			return 0;
+		}
+
+		if(%brickData.CityRPGBrickAdmin)
+		{
+			commandToClient(%client, 'centerPrint', "\c6You cannot place this type of brick.", 3);
+			return 0;
+		}
+
+		// Lot zone check
+		if(mFloor(getWord(%brick.rotation, 3)) == 90)
+			%boxSize = getWord(%brick.getDatablock().brickSizeY, 1) / 2.5 SPC getWord(%brick.getDatablock().brickSizeX, 0) / 2.5 SPC getWord(%brick.getDatablock().brickSizeZ, 2) / 2.5;
+		else
+			%boxSize = getWord(%brick.getDatablock().brickSizeX, 1) / 2.5 SPC getWord(%brick.getDatablock().brickSizeY, 0) / 2.5 SPC getWord(%brick.getDatablock().brickSizeZ, 2) / 2.5;
+
+		initContainerBoxSearch(%brick.getWorldBoxCenter(), %boxSize, $typeMasks::triggerObjectType);
+
+		while(isObject(%trigger = containerSearchNext()))
+		{
+			if(%trigger.getDatablock() == CityRPGLotTriggerData.getID())
+			{
+				%lotTrigger = %trigger;
+				break;
+			}
+		}
+
+		if(!%lotTrigger && %brickData.CityRPGBrickType != 1)
+		{
+			commandToClient(%client, 'centerPrint', "You cannot plant a brick outside of a lot.\n\c6Use a lot brick to start your build!", 3);
+			return 0;
+		}
+
+		if(CityRPGData.getData(%client.bl_id).valueMoney < mFloor(%brick.getDatablock().initialPrice))
+		{
+			commandToClient(%client, 'centerPrint', "\c6You need at least \c3$" @ mFloor(%brick.getDatablock().initialPrice) SPC "\c6in order to plant this brick!", 3);
+			return 0;
+		}
+
+		if(%lotTrigger && %brick.getDatablock().CityRPGBrickType != 1)
+		{
+			%lotTriggerMinX = getWord(%lotTrigger.getWorldBox(), 0);
+			%lotTriggerMinY = getWord(%lotTrigger.getWorldBox(), 1);
+			%lotTriggerMinZ = getWord(%lotTrigger.getWorldBox(), 2);
+
+			%lotTriggerMaxX = getWord(%lotTrigger.getWorldBox(), 3);
+			%lotTriggerMaxY = getWord(%lotTrigger.getWorldBox(), 4);
+			%lotTriggerMaxZ = getWord(%lotTrigger.getWorldBox(), 5);
+
+			%brickMinX = getWord(%brick.getWorldBox(), 0) + 0.0016;
+			%brickMinY = getWord(%brick.getWorldBox(), 1) + 0.0013;
+			%brickMinZ = getWord(%brick.getWorldBox(), 2) + 0.00126;
+
+			%brickMaxX = getWord(%brick.getWorldBox(), 3) - 0.0016;
+			%brickMaxY = getWord(%brick.getWorldBox(), 4) - 0.0013;
+			%brickMaxZ = getWord(%brick.getWorldBox(), 5) - 0.00126;
+
+			if(%brickMinX < %lotTriggerMinX || %brickMinY < %lotTriggerMinY || %brickMinZ < %lotTriggerMinZ || %brickMaxX > %lotTriggerMaxX || %brickMaxY > %lotTriggerMaxY || %brickMaxZ > %lotTriggerMaxZ)
+			{
+				CommandToClient(%client, 'ServerMessage', 'MsgPlantError_Unstable');
+				return -1;
+			}
+		}
+
+		if(%lotTrigger && %brickData.CityRPGBrickType == 1)
+		{
+			commandToClient('centerPrint', "You can not place a lot within a lot.", 3);
+			return -1;
+		}
+
+		if(%lotTrigger && %brickData.getID() == brickVehicleSpawnData.getID() && CityRPGData.getData(%client.bl_id).valueMoney < mFloor($CityRPG::prices::vehicleSpawn))
+		{
+			commandToClient(%client, 'centerPrint', "\c6You need at least \c3$" @ mFloor($CityRPG::prices::vehicleSpawn) SPC "\c6in order to plant this vehicle spawn!", 3);
+			return -1;
+		}
 
 		if(%brick.getDatablock().CityRPGBrickType && isObject(%brick.client)) {
+			return 1;
 			%brick.client.cityLog("---- Passed CityRPG checks", 1);
 		}
 	}
@@ -215,20 +349,13 @@ package CityRPG_MainPackage
 	// Hack to work around wonky packaging issues
 	function fxDTSBrick::onCityLoadPlant(%this, %brick)
 	{
-
+		// Empty
 	}
 
 	function fxDTSBrick::onLoadPlant(%this, %brick)
 	{
 		parent::onLoadPlant(%this, %brick);
-
-		%result = City_OnPlant(%this);
-		if(%result == -1)
-		{
-			%brick.dump();
-			error("ERROR: Attempting to delete a CityRPG brick during loading! Brick data has been dumped.");
-		}
-
+		%this.cityBrickInit();
 
 		%this.onCityLoadPlant(%this, %brick);
 	}

@@ -581,7 +581,6 @@ package CityRPG_LotRegistry
 	}
 
 	// Hack to work around wonky packaging issues
-	// Called after City_OnPlant
 	function fxDTSBrick::onCityLoadPlant(%this, %brick)
 	{
 		Parent::onCityLoadPlant(%this, %brick);
