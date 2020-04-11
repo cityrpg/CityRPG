@@ -74,7 +74,6 @@ exec($City::ScriptPath @ "brickScripts/info/bounty.cs");
 exec($City::ScriptPath @ "brickScripts/info/labor.cs");
 exec($City::ScriptPath @ "brickScripts/info/realestate.cs");
 exec($City::ScriptPath @ "brickScripts/info/criminalbank.cs");
-exec($City::ScriptPath @ "brickScripts/info/playeratm.cs");
 exec($City::ScriptPath @ "brickScripts/info/education.cs");
 exec($City::ScriptPath @ "brickScripts/info/job.cs");
 exec($City::ScriptPath @ "brickScripts/info/vote.cs");
