@@ -60,6 +60,7 @@ function JobSO::addJobFromFile(%so, %file)
 			id		= %jobID;
 
 			name		= $CityRPG::jobs::name;
+			track		= $CityRPG::jobs::track;
 			invest		= $CityRPG::jobs::initialInvestment;
 			pay		= $CityRPG::jobs::pay;
 			tools		= $CityRPG::jobs::tools;
