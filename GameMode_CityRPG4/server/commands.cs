@@ -81,8 +81,8 @@ package CityRPG_Commands
 
 				for(%a = 1; %a <= JobSO.getJobCount(); %a++)
 				{
-						if(!JobSO.job[%a].adminonly && !JobSO.job[%a].hostonly)
-						{
+					if(!JobSO.job[%a].adminonly && !JobSO.job[%a].hostonly)
+					{
 						messageClient(%client, '', "\c3" @ JobSO.job[%a].name SPC "\c6- Inital Investment: \c3" @ JobSO.job[%a].invest SPC "- \c6Pay: \c3" @ JobSO.job[%a].pay SPC "- \c6Required Education: \c3" @ JobSO.job[%a].education);
 						messageClient(%client, '', JobSO.job[%a].helpline);
 
