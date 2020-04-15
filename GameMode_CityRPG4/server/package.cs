@@ -1081,6 +1081,36 @@ package CityRPG_MainPackage
 				serverCmdsuicide(%client);
 		 }
 	}
+
+	function serverCmdAddEvent(%client, %enabled, %inputEventIdx, %delay, %targetIdx, %NTNameIdx, %outputEventIdx, %par1, %par2, %par3, %par4)
+	{
+	  %parent = Parent::serverCmdAddEvent(%client, %enabled, %inputEventIdx, %delay, %targetIdx, %NTNameIdx, %outputEventIdx, %par1, %par2, %par3, %par4);
+
+	  // If the checks passed properly
+	  if(%parent !$= "")
+	  {
+	    %brick = %client.wrenchBrick;
+	    %brickClass = %brick.getClassName();
+
+	    if($OutputEvent_Name[%brickClass, %outputEventIdx] $= "sellItem")
+	    {
+				// City sale event check
+				// Call citySaleCheck with no client value and the item ID specified in the event.
+				%error = %brick.citySaleCheck(%client, %brick.eventOutputParameter[%brick.numEvents-1, 1]);
+				%errorMsg = "Event \c3#" @ mFloor(%brick.numEvents-1) @ "\c6 will show an error to your customers.";
+
+				switch(%error)
+				{
+					case $Error::CityShop::NotLicensed:
+						messageClient(%client, '', "\c6" @ %errorMsg SPC "You are not licensed to sell this type of item.");
+					case $Error::CityShop::InvalidItem:
+						messageClient(%client, '', "\c6" @ %errorMsg SPC "The item you selected is not available to be sold in shops.");
+				}
+	    }
+	  }
+
+	  return %parent;
+	}
 };
 deactivatePackage(CityRPG_MainPackage);
 activatepackage(CityRPG_MainPackage);
