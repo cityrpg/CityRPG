@@ -61,6 +61,7 @@ function JobSO::addJobFromFile(%so, %file)
 
 			name		= $CityRPG::jobs::name;
 			track		= $CityRPG::jobs::track;
+
 			invest		= $CityRPG::jobs::initialInvestment;
 			pay		= $CityRPG::jobs::pay;
 			tools		= $CityRPG::jobs::tools;
@@ -93,6 +94,27 @@ function JobSO::addJobFromFile(%so, %file)
 			helpline	= $CityRPG::jobs::helpline;
 			flavortext	= $CityRPG::jobs::flavortext;
 		};
+
+		%track = $CityRPG::jobs::track;
+
+		if(%track $= "")
+			%track = "Miscellaneous";
+
+		// Job track registration for menus
+		// "Invisible" jobs such as admin and mayor are not included
+		if(!$CityRPG::jobs::hostonly && !$CityRPG::jobs::adminonly)
+		{
+			// Initialize if needed
+			$City::Jobs[%track] = $City::Jobs[%track]!$=""?($City::Jobs[%track] TAB %jobID):%jobID;
+
+			if(!$City::JobTrackExists[%track])
+			{
+				// Record the job track to a list so that we can loop through it later.
+				$City::JobTracks = $City::JobTracks!$=""?($City::JobTracks TAB %track):%track;
+
+				$City::JobTrackExists[%track] = true;
+			}
+		}
 
 		if(!isObject("CityRPGJob" @ %jobID @ "SpawnBrickData"))
 		{
