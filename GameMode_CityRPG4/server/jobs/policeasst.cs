@@ -1,5 +1,5 @@
 $CityRPG::jobs::name = "Police Assistant";
-$CityRPG::jobs::track = "Law Enforcement";
+$CityRPG::jobs::track = "Police";
 $CityRPG::jobs::initialInvestment = 25;
 $CityRPG::jobs::pay = 30;
 $CityRPG::jobs::tools = "CityRPGBatonItem taserItem DoughnutItem";
