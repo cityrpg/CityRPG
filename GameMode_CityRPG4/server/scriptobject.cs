@@ -102,7 +102,7 @@ function JobSO::addJobFromFile(%so, %file)
 
 		// Job track registration for menus
 		// "Invisible" jobs such as admin and mayor are not included
-		if(!$CityRPG::jobs::hostonly && !$CityRPG::jobs::adminonly)
+		if(!$CityRPG::jobs::adminonly)
 		{
 			// Initialize if needed
 			$City::Jobs[%track] = $City::Jobs[%track]!$=""?($City::Jobs[%track] TAB %jobID):%jobID;
