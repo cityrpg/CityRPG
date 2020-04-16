@@ -32,14 +32,6 @@ if(%error == $Error::AddOn_NotFound)
   return;
 }
 
-// Weapon_Shotgun
-%error = ForceRequiredAddOn("Weapon_Shotgun");
-if(%error == $Error::AddOn_NotFound)
-{
-  error("ERROR: GameMode_CityRPG4 - required add-on Weapon_Shotgun not found");
-  return;
-}
-
 // Weapon_Rocket_Launcher
 %error = ForceRequiredAddOn("Weapon_Rocket_Launcher");
 if(%error == $Error::AddOn_NotFound)
@@ -47,15 +39,6 @@ if(%error == $Error::AddOn_NotFound)
    error("ERROR: GameMode_CityRPG4 - required add-on Weapon_Rocket_Launcher not found");
    return;
 }
-
-// Weapon_Sniper_Rifle
-%error = ForceRequiredAddOn("Weapon_Sniper_Rifle");
-if(%error == $Error::AddOn_NotFound)
-{
-  error("ERROR: GameMode_CityRPG4 - required add-on Weapon_Sniper_Rifle not found");
-  return;
-}
-
 // Weapon_Sword
 %error = ForceRequiredAddOn("Weapon_Sword");
 if(%error == $Error::AddOn_NotFound)
