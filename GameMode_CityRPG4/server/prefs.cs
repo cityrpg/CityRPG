@@ -120,45 +120,6 @@ $CityRPG::prices::jailingBonus = 100;
 
 $CityRPG::prices::resourcePrice = 1.5;
 
-// Weapon Prices
-$CityRPG::guns = 0;
-
-$CityRPG::prices::weapon::name[$CityRPG::guns] = "gunItem";
-$CityRPG::prices::weapon::price[$CityRPG::guns] = 80;
-$CityRPG::prices::weapon::mineral[$CityRPG::guns++] = 1;
-
-$CityRPG::prices::weapon::name[$CityRPG::guns] = "taserItem";
-$CityRPG::prices::weapon::price[$CityRPG::guns] = 40;
-$CityRPG::prices::weapon::mineral[$CityRPG::guns++] = 1;
-
-$CityRPG::prices::weapon::name[$CityRPG::guns] = "akimboGunItem";
-$CityRPG::prices::weapon::price[$CityRPG::guns] = 150;
-$CityRPG::prices::weapon::mineral[$CityRPG::guns++] = 1;
-
-$CityRPG::prices::weapon::name[$CityRPG::guns] = "shotgunItem";
-$CityRPG::prices::weapon::price[$CityRPG::guns] = 260;
-$CityRPG::prices::weapon::mineral[$CityRPG::guns++] = 1;
-
-$CityRPG::prices::weapon::name[$CityRPG::guns] = "sniperRifleItem";
-$CityRPG::prices::weapon::price[$CityRPG::guns] = 450;
-$CityRPG::prices::weapon::mineral[$CityRPG::guns++] = 1;
-
-//$CityRPG::prices::weapon::name[$CityRPG::guns] = "PillItem";
-//$CityRPG::prices::weapon::price[$CityRPG::guns] = 30;
-//$CityRPG::prices::weapon::mineral[$CityRPG::guns++] = 1;
-
-$CityRPG::prices::weapon::name[$CityRPG::guns] = "CityRPGLBItem";
-$CityRPG::prices::weapon::price[$CityRPG::guns] = 100;
-$CityRPG::prices::weapon::mineral[$CityRPG::guns++] = 1;
-
-$CityRPG::prices::weapon::name[$CityRPG::guns] = "CityRPGPickaxeItem";
-$CityRPG::prices::weapon::price[$CityRPG::guns] = 25;
-$CityRPG::prices::weapon::mineral[$CityRPG::guns++] = 1;
-
-$CityRPG::prices::weapon::name[$CityRPG::guns] = "CityRPGLumberjackItem";
-$CityRPG::prices::weapon::price[$CityRPG::guns] = 25;
-$CityRPG::prices::weapon::mineral[$CityRPG::guns++] = 1;
-
 //When adding to this index, be sure to add a forceRequiredAddon("Item_Here");
 //in server.cs, or else the item mod will be broken.
 

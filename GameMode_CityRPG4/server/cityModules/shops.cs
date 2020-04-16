@@ -68,10 +68,11 @@ function fxDTSBrick::citySaleCheck(%brick, %targetClient, %item)
 	{
 		return $Error::CityShop::NotLicensed;
 	}
-	else if(%item != 0 && CitySO.minerals < $CityRPG::prices::weapon::mineral[%item])
-	{
-		return $Error::CityShop::NoResources;
-	}
+	//else if(%item != 0 && CitySO.minerals < 1)
+	//{
+	//	// TODO: Rework this
+	//	return $Error::CityShop::NoResources;
+	//}
 	else if(isObject(%targetClient) && %slotCheck = %targetClient.player.getCityItemSlot(%item) == $Error::CityShop::NoSlot)
 	{
 		// This check only runs if a client arg was specified
