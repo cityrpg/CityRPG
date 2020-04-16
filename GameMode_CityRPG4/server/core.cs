@@ -45,7 +45,7 @@ function GameConnection::cityMenuInput(%client, %input)
 				%client.cityMenuClose();
 
 			// It's important to do this after closing in case the function we're calling opens another menu.
-			call(%function, %client);
+			call(%function, %client, %input);
 
 			return true;
 		}
