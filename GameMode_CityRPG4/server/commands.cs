@@ -32,7 +32,6 @@ package CityRPG_Commands
 			case "":
 				messageClient(%client, '', "\c6Type \c3/help starters\c6 for information to get started in CityRPG");
 				messageClient(%client, '', "\c6Type \c3/help commands\c6 to list the commands in the game");
-				messageClient(%client, '', "\c6Type \c3/help jobs\c6 for a list of available jobs");
 				messageClient(%client, '', "\c6More: \c3/help events\c6, \c3/help admin");
 
 
@@ -77,28 +76,7 @@ package CityRPG_Commands
 				messageClient(%client, '', "\c6/\c3resetAllJobs\c6");
 
 			case "jobs":
-				messageClient(%client, '', "\c6Type \c3/job\c6 then one of the jobs below to apply for that job.");
-
-				for(%a = 1; %a <= JobSO.getJobCount(); %a++)
-				{
-						if(!JobSO.job[%a].adminonly && !JobSO.job[%a].hostonly)
-						{
-						messageClient(%client, '', "\c3" @ JobSO.job[%a].name SPC "\c6- Inital Investment: \c3" @ JobSO.job[%a].invest SPC "- \c6Pay: \c3" @ JobSO.job[%a].pay SPC "- \c6Required Education: \c3" @ JobSO.job[%a].education);
-						messageClient(%client, '', JobSO.job[%a].helpline);
-
-						if(JobSO.job[%a].flavortext !$= "")
-						{
-							messageClient(%client, '', "<color:A6A6A6>" @ JobSO.job[%a].flavortext);
-						}
-					}
-				}
-
-				if(!$City::DefaultJobs)
-				{
-					messageClient(%client, '', "\c3This server is running a customized job tree.");
-				}
-
-				messageClient(%client, '', "\c3Use the Page Up and Page Down keys to scroll through the list of jobs.");
+				messageClient(%client, '', "\c6Visit the jobs office to view the available jobs.");
 
 			default:
 				messageClient(%client, '', "\c6Unknown help section. Please try again.");
@@ -499,6 +477,8 @@ package CityRPG_Commands
 			messageAll('',"\c3"@ %client.name @" \c6has reset their account.");
 			CityRPGData.removeData(%client.bl_id);
 			CityRPGData.addData(%client.bl_id);
+
+			CityRPGData.getData(%client.bl_id).valueBank = 100;
 
 			if(isObject(%client.player))
 			{

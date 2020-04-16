@@ -1,4 +1,5 @@
 $CityRPG::jobs::name = "Store Manager";
+$CityRPG::jobs::track = "Business";
 $CityRPG::jobs::initialInvestment = 125;
 $CityRPG::jobs::pay = 45;
 $CityRPG::jobs::tools = "";

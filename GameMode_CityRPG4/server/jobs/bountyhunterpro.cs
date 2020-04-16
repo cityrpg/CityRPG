@@ -1,4 +1,5 @@
 $CityRPG::jobs::name = "Vigilante";
+$CityRPG::jobs::track = "Bounty Hunter";
 $CityRPG::jobs::initialInvestment = 50;
 $CityRPG::jobs::pay = 75;
 $CityRPG::jobs::tools = "CityRPGLBItem TacticalVestItem";

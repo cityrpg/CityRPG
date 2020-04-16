@@ -1,4 +1,5 @@
 $CityRPG::jobs::name = "Lumberjack";
+$CityRPG::jobs::track = "Labor";
 $CityRPG::jobs::initialInvestment = 25;
 $CityRPG::jobs::pay = 25;
 $CityRPG::jobs::tools = "CityRPGLumberjackItem";
