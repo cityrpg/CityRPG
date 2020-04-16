@@ -80,6 +80,12 @@ if(%error == $Error::AddOn_NotFound)
   return;
 }
 
+if(%error == $Error::AddOn_Disabled)
+{
+  // Skis are "disabled", remove them from the item list.
+  SkiItem.uiName = "";
+}
+
 // Tool_ChangeOwnership
 %error = ForceRequiredAddOn("Tool_ChangeOwnership");
 if(%error == $Error::AddOn_NotFound)
