@@ -76,7 +76,7 @@ function JobSO::addJobFromFile(%so, %file)
 
 			sellItems	= $CityRPG::jobs::sellItems;
 			sellFood	= $CityRPG::jobs::sellFood;
-			sellServices 	= $CityRPG::jobs::sellServices; // Unused.
+			sellItems 	= $CityRPG::jobs::sellItems; // Unused.
 			sellClothes 	= $CityRPG::jobs::sellClothes;
 
 			law		= $CityRPG::jobs::law;

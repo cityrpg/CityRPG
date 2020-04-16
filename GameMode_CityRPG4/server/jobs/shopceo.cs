@@ -8,7 +8,7 @@ $CityRPG::jobs::education = 8;
 
 $CityRPG::jobs::sellItems = true;
 $CityRPG::jobs::sellFood = true;
-$CityRPG::jobs::sellServices = false;
+$CityRPG::jobs::sellItems = false;
 $CityRPG::jobs::sellClothes = true;
 
 $CityRPG::jobs::law = false;

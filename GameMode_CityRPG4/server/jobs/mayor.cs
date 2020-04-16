@@ -9,7 +9,7 @@ $CityRPG::jobs::hostonly = true;
 
 $CityRPG::jobs::sellItems = true;
 $CityRPG::jobs::sellFood = true;
-$CityRPG::jobs::sellServices = true;
+$CityRPG::jobs::sellItems = true;
 
 $CityRPG::jobs::law = false;
 $CityRPG::jobs::usepolicecars = true;

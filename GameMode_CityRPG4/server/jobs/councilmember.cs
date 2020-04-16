@@ -8,7 +8,7 @@ $CityRPG::jobs::adminonly = 1;
 
 $CityRPG::jobs::sellItems = true;
 $CityRPG::jobs::sellFood = true;
-$CityRPG::jobs::sellServices = true;
+$CityRPG::jobs::sellItems = true;
 $CityRPG::jobs::sellClothes = true;
 
 $CityRPG::jobs::law = false;
