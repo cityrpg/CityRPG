@@ -13,17 +13,18 @@ function CityMenu_SellItem(%client, %brick, %item, %markup)
 
 	%functions =  "CityMenu_Placeholder" TAB "CityMenu_Close";
 
-	if(%client.CityRPGLotBrick)
+	%lotTrigger = %brick.getCityLotTrigger();
+
+	if(%lotTrigger $= "")
 	{
-		%ownerStr = "\c3" @ %client.CityRPGLotBrick.getCityLotName() @ "\c6";
+		%ownerStr = "\c3" @ CityRPGData.getData(%brick.getGroup().bl_id).valueName;
 	}
 	else
 	{
-		%ownerStr = "the city";
+		%ownerStr = "\c3" @ %lotTrigger.parent.getCityLotName();
 	}
 
-	// TODO: This currently uses the client's lot brick trigger, however it should work off the brick's location instead.
-	messageClient(%client, '', "\c6Would you like to purchase this \c3" @ %item.uiName @ "\c6 from " @ %ownerStr @ " for \c3$" @ %markup @ "\c6?");
+	messageClient(%client, '', "\c6Would you like to purchase this \c3" @ %item.uiName @ "\c6 from " @ %ownerStr @ "\c6 for \c3$" @ %markup @ "\c6?");
 
 	%client.cityMenuOpen(%menu, %functions, %brick, "\c6Purchase cancelled.", 1);
 }
