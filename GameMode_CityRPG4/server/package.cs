@@ -129,10 +129,16 @@ package CityRPG_MainPackage
 	}
 
 	// Brick::getCityLotTrigger(this/brick)
-	// Returns the lot trigger containing the brick.
+	// Returns the lot trigger containing the brick. Caches the value on %brick.cityLotTrigger.
 	// If the brick overlaps in multiple lots, the first trigger found is returned.
 	function fxDTSBrick::getCityLotTrigger(%brick)
 	{
+		if(%brick.isPlanted && %brick.cityLotTrigger !$= "")
+		{
+			return %brick.cityLotTrigger;
+		}
+
+		// If not already cached, determine the lot trigger.
 		if(mFloor(getWord(%brick.rotation, 3)) == 90)
 			%boxSize = getWord(%brick.getDatablock().brickSizeY, 1) / 2.5 SPC getWord(%brick.getDatablock().brickSizeX, 0) / 2.5 SPC getWord(%brick.getDatablock().brickSizeZ, 2) / 2.5;
 		else
@@ -144,6 +150,7 @@ package CityRPG_MainPackage
 		{
 			if(%trigger.getDatablock() == CityRPGLotTriggerData.getID())
 			{
+				%brick.cityLotTrigger = %trigger;
 				return %trigger;
 			}
 		}
