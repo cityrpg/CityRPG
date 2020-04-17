@@ -23,5 +23,7 @@ $CityRPG::jobs::labor = false;
 
 $CityRPG::jobs::tmHexColor = "FF7F00";
 $CityRPG::jobs::helpline = "\c6Skilled bounty hunters that earn a stipend for cleaning the streets.";
+$CityRPG::jobs::flavortext = "\"I'm whatever " @ $Pref::Server::City::name @ " needs me to be\".";
+
 
 $CityRPG::jobs::outfit = "none none none none blackShirt blackShirt skin blackPants blackShoes smileyEvil1 Alyx";

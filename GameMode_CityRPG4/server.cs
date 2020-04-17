@@ -55,6 +55,20 @@ if(%error == $Error::AddOn_NotFound)
   return;
 }
 
+// Item_Skis
+%error = ForceRequiredAddOn("Item_Skis");
+if(%error == $Error::AddOn_NotFound)
+{
+  error("ERROR: GameMode_CityRPG4 - required add-on Item_Skis not found");
+  return;
+}
+
+if(%error == $Error::AddOn_Disabled)
+{
+  // Skis are "disabled", remove them from the item list.
+  SkiItem.uiName = "";
+}
+
 // Tool_ChangeOwnership
 %error = ForceRequiredAddOn("Tool_ChangeOwnership");
 if(%error == $Error::AddOn_NotFound)

@@ -122,7 +122,7 @@ datablock ItemData(knifeItem)
 
 	//gui stuff
 	uiName = "Knife";
-	iconName = $City::DataPath @ "shapes/knifeicon";
+	iconName = $City::DataPath @ "ui/ItemIcons/knife";
 	doColorShift = true;
 	colorShiftColor = "0.471 0.471 0.471 1.000";
 
