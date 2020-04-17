@@ -128,7 +128,7 @@ package CityRPG_MainPackage
 		}
 	}
 
-	// Brick::cityBrickCheck(this/client)
+	// Brick::cityBrickCheck(this/brick)
 	// Checks if the current brick can be planted by the client that owns it.
 	// Typically called on a client's temp brick, except when using the duplicator.
 	// Displays an error and returns -1 if there are any problems.
