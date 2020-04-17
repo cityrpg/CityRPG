@@ -128,6 +128,27 @@ package CityRPG_MainPackage
 		}
 	}
 
+	// Brick::getCityLotTrigger(this/brick)
+	// Returns the lot trigger containing the brick.
+	// If the brick overlaps in multiple lots, the first trigger found is returned.
+	function fxDTSBrick::getCityLotTrigger(%brick)
+	{
+		if(mFloor(getWord(%brick.rotation, 3)) == 90)
+			%boxSize = getWord(%brick.getDatablock().brickSizeY, 1) / 2.5 SPC getWord(%brick.getDatablock().brickSizeX, 0) / 2.5 SPC getWord(%brick.getDatablock().brickSizeZ, 2) / 2.5;
+		else
+			%boxSize = getWord(%brick.getDatablock().brickSizeX, 1) / 2.5 SPC getWord(%brick.getDatablock().brickSizeY, 0) / 2.5 SPC getWord(%brick.getDatablock().brickSizeZ, 2) / 2.5;
+
+		initContainerBoxSearch(%brick.getWorldBoxCenter(), %boxSize, $typeMasks::triggerObjectType);
+
+		while(isObject(%trigger = containerSearchNext()))
+		{
+			if(%trigger.getDatablock() == CityRPGLotTriggerData.getID())
+			{
+				return %trigger;
+			}
+		}
+	}
+
 	// Brick::cityBrickCheck(this/brick)
 	// Checks if the current brick can be planted by the client that owns it.
 	// Typically called on a client's temp brick, except when using the duplicator.
@@ -172,21 +193,7 @@ package CityRPG_MainPackage
 		}
 
 		// Lot zone check
-		if(mFloor(getWord(%brick.rotation, 3)) == 90)
-			%boxSize = getWord(%brick.getDatablock().brickSizeY, 1) / 2.5 SPC getWord(%brick.getDatablock().brickSizeX, 0) / 2.5 SPC getWord(%brick.getDatablock().brickSizeZ, 2) / 2.5;
-		else
-			%boxSize = getWord(%brick.getDatablock().brickSizeX, 1) / 2.5 SPC getWord(%brick.getDatablock().brickSizeY, 0) / 2.5 SPC getWord(%brick.getDatablock().brickSizeZ, 2) / 2.5;
-
-		initContainerBoxSearch(%brick.getWorldBoxCenter(), %boxSize, $typeMasks::triggerObjectType);
-
-		while(isObject(%trigger = containerSearchNext()))
-		{
-			if(%trigger.getDatablock() == CityRPGLotTriggerData.getID())
-			{
-				%lotTrigger = %trigger;
-				break;
-			}
-		}
+		%lotTrigger = %brick.getCityLotTrigger();
 
 		if(!%lotTrigger && %brickData.CityRPGBrickType != 1)
 		{
