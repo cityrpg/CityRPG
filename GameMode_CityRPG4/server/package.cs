@@ -220,15 +220,9 @@ package CityRPG_MainPackage
 
 			if(%brickMinX < %lotTriggerMinX || %brickMinY < %lotTriggerMinY || %brickMinZ < %lotTriggerMinZ || %brickMaxX > %lotTriggerMaxX || %brickMaxY > %lotTriggerMaxY || %brickMaxZ > %lotTriggerMaxZ)
 			{
-				CommandToClient(%client, 'ServerMessage', 'MsgPlantError_Unstable');
-				return -1;
+				commandToClient(%client, 'ServerMessage', 'MsgPlantError_Unstable');
+				return 0;
 			}
-		}
-
-		if(%lotTrigger && %brickData.CityRPGBrickType == 1)
-		{
-			commandToClient('centerPrint', "You can not place a lot within a lot.", 3);
-			return -1;
 		}
 
 		if(%lotTrigger && %brickData.getID() == brickVehicleSpawnData.getID() && CityRPGData.getData(%client.bl_id).valueMoney < mFloor($CityRPG::prices::vehicleSpawn))
