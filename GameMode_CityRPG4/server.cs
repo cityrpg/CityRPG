@@ -111,6 +111,12 @@ if($GameModeArg $= "Add-Ons/GameMode_CityRPG4/gamemode.txt")
   {
     exec("Add-Ons/Tool_NewDuplicator/server.cs");
   }
+
+  // Server_NewBrickTool (Optional)
+  if(isFile("Add-Ons/Server_NewBrickTool/server.cs"))
+  {
+    exec("Add-Ons/Server_NewBrickTool/server.cs");
+  }
 }
 else
 {
