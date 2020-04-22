@@ -12,7 +12,9 @@ function GameConnection::cityMenuOpen(%client, %menu, %functions, %menuID, %exit
 		return;
 	}
 
-	messageClient(%client, '', "\c6Type a number in chat:");
+	// Account for empty menus
+	if(%menu !$= "")
+		messageClient(%client, '', "\c6Type a number in chat:");
 
 	for(%i = 0; %i < getFieldCount(%menu); %i++)
 	{
