@@ -132,7 +132,7 @@ else
 // File Execution
 // ============================================================
 
-//Core Files
+// Core Files
 exec($City::ScriptPath @ "prefs.cs");
 exec($City::ScriptPath @ "bricks.cs");
 exec($City::ScriptPath @ "events.cs");
@@ -164,8 +164,10 @@ exec($City::ScriptPath @ "cityModules/rep.cs");
 //exec($City::ScriptPath @ "cityModules/trade.cs");
 exec($City::ScriptPath @ "cityModules/mayor.cs");
 exec($City::ScriptPath @ "cityModules/security.cs");
+
 exec($City::ScriptPath @ "support/spacecasts.cs");
 exec($City::ScriptPath @ "support/extraResources.cs");
+exec($City::ScriptPath @ "support/formatNumber.cs");
 
 // Playertype
 exec($City::ScriptPath @ "playerTypes/Multislot/server.cs");

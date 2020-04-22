@@ -282,9 +282,9 @@ function gameConnection::applyForcedBodyParts(%client)
 function gameConnection::getCashString(%client)
 {
 	if(CityRPGData.getData(%client.bl_id).valueMoney >= 0)
-		%money = "\c6$" @ CityRPGData.getData(%client.bl_id).valueMoney;
+		%money = "\c6$" @ strFormatNumber(CityRPGData.getData(%client.bl_id).valueMoney);
 	else
-		%money = "\c0($" @ strreplace(CityRPGData.getData(%client.bl_id).valueMoney, "-", "")  @ ")";
+		%money = "\c0($" @ strreplace(strFormatNumber(CityRPGData.getData(%client.bl_id).valueMoney), "-", "")  @ ")";
 
 	return %money;
 }
