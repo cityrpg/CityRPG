@@ -64,6 +64,12 @@ function CityRPGVoteBrickData::parseData(%this, %brick, %client, %triggerStatus,
 {
 	if(%triggerStatus == true && !%client.cityMenuOpen)
 	{
+		if(%client.getWantedLevel())
+		{
+			%client.cityMenuMessage("\c6The service refuses to serve you.");
+			return;
+		}
+		
 		%client.cityMenuMessage("\c3" @ $Pref::Server::City::name @ " Voting Booth");
 
 		CityMenu_Vote(%client, %brick);
