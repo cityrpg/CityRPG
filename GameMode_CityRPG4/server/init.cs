@@ -196,7 +196,7 @@ function City_Init_Spawns_Tick(%bgi, %bi)
 		for(%bi;%bi<%bgc;%bi++)
 		{
 			%b = %bg.getObject(%bi);
-			if(%b.getDatablock().CityRPGBrickType == 3)
+			if(%b.getDatablock().CityRPGBrickType == $CityBrick_Spawn)
 			{
 				$CityRPG::temp::spawnPointsTemp = (!$CityRPG::temp::spawnPointsTemp ? %b : $CityRPG::temp::spawnPointsTemp SPC %b);
 			}

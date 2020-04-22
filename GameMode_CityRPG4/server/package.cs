@@ -202,7 +202,7 @@ package CityRPG_MainPackage
 		// Lot zone check
 		%lotTrigger = %brick.getCityLotTrigger();
 
-		if(!%lotTrigger && %brickData.CityRPGBrickType != 1)
+		if(!%lotTrigger && %brickData.CityRPGBrickType != $CityBrick_Lot)
 		{
 			commandToClient(%client, 'centerPrint', "You cannot plant a brick outside of a lot.\n\c6Use a lot brick to start your build!", 3);
 			return 0;
@@ -214,7 +214,7 @@ package CityRPG_MainPackage
 			return 0;
 		}
 
-		if(%lotTrigger && %brick.getDatablock().CityRPGBrickType != 1)
+		if(%lotTrigger && %brick.getDatablock().CityRPGBrickType != $CityBrick_Lot)
 		{
 			%lotTriggerMinX = getWord(%lotTrigger.getWorldBox(), 0);
 			%lotTriggerMinY = getWord(%lotTrigger.getWorldBox(), 1);
