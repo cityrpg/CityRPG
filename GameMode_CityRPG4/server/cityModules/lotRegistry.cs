@@ -42,7 +42,7 @@ function CityMenu_Lot(%client, %notitle)
 	{
 		error("Attempting to access a blank lot! Re-initializing it...");
 
-		%brick.initializeCityLot();
+		%brick.registerNewCityLot();
 		%brick.assignCityLotName();
 	}
 
@@ -324,7 +324,7 @@ function CityLots_GetLotCount()
 	return %count;
 }
 
-function fxDTSBrick::initializeCityLot(%brick)
+function fxDTSBrick::registerNewCityLot(%brick)
 {
 	if(CityRPGLotRegistry.getData(%brick.getCityLotID()) != 0)
 	{
@@ -560,7 +560,7 @@ package CityRPG_LotRegistry
 
 		if(%lotID == -1)
 		{
-			%lotID = %brick.initializeCityLot();
+			%lotID = %brick.registerNewCityLot();
 		}
 
 		%brick.cityLotInit = 0;
