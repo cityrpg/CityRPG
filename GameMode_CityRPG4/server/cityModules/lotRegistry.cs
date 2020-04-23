@@ -436,7 +436,11 @@ function fxDTSBrick::setCityLotOwnerID(%brick, %value)
 	{
 		// If transferring from the city to a player, automatically rename the lot.
 		%brick.setCityLotName(%brick.getGroup().name @ "\c6's Lot");
+
+		$City::RealEstate::UnclaimedLots--;
 	}
+	else if(%value == -1)
+		$City::RealEstate::UnclaimedLots++;
 
 	%valueNew = %data.valueOwnerID = %value;
 
@@ -558,6 +562,9 @@ package CityRPG_LotRegistry
 	{
 		%lotID = %brick.getCityLotID();
 
+		$City::RealEstate::TotalLots++;
+		$City::RealEstate::UnclaimedLots++;
+
 		if(%lotID == -1)
 		{
 			%lotID = %brick.registerNewCityLot();
@@ -567,7 +574,6 @@ package CityRPG_LotRegistry
 		%brick.cityLotOverride = 1;
 		%brick.setNTObjectName(%lotID);
 
-		// If this falls through, the lot is an existing lot and can be left alone.
 	}
 
 	function fxDTSBrick::onPlant(%brick)
@@ -595,8 +601,18 @@ package CityRPG_LotRegistry
 
 	function fxDTSBrick::onRemove(%brick,%client)
 	{
-		// Always override on remove
-		%brick.cityLotOverride = 1;
+		if(%brick.isPlanted && %brick.getDataBlock().CityRPGBrickType == $CityBrick_Lot)
+		{
+			// Always override on remove
+			%brick.cityLotOverride = 1;
+
+			$City::RealEstate::TotalLots--;
+			if(%brick.getCityLotOwnerID() == -1)
+				$City::RealEstate::UnclaimedLots--;
+
+			// TODO Decrease the number of lots for sale if the lot was on sale.
+		}
+
 		Parent::onRemove(%brick);
 	}
 
