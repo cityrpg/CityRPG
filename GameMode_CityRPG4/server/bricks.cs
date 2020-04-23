@@ -480,7 +480,7 @@ function fxDTSBrick::cityBrickCheck(%brick)
 	}
 }
 
-function fxDTSBrick::handleCityRPGBrickDelete(%brick, %data)
+function fxDTSBrick::onCityBrickRemove(%brick, %data)
 {
 	if(isObject(%brick.trigger))
 	{

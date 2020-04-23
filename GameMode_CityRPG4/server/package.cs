@@ -25,9 +25,9 @@ package CityRPG_MainPackage
 		switch(%brick.getDatablock().CityRPGBrickType)
 		{
 			case 1:
-				%brick.handleCityRPGBrickDelete();
+				%brick.onCityBrickRemove();
 			case 2:
-				%brick.handleCityRPGBrickDelete();
+				%brick.onCityBrickRemove();
 			case 3:
 				if(getWord($CityRPG::temp::spawnPoints, 0) == %brick)
 					$CityRPG::temp::spawnPoints = strReplace($CityRPG::temp::spawnPoints, %brick @ " ", "");
@@ -92,9 +92,9 @@ package CityRPG_MainPackage
 		switch(%brick.getDatablock().CityRPGBrickType)
 		{
 			case $CityBrick_Lot:
-				%brick.handleCityRPGBrickDelete();
+				%brick.onCityBrickRemove();
 			case $CityBrick_Info:
-				%brick.handleCityRPGBrickDelete();
+				%brick.onCityBrickRemove();
 			case $CityBrick_Spawn:
 				if(getWord($CityRPG::temp::spawnPoints, 0) == %brick)
 					$CityRPG::temp::spawnPoints = strReplace($CityRPG::temp::spawnPoints, %brick @ " ", "");
