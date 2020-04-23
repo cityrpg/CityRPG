@@ -237,6 +237,16 @@ package CityRPG_MainPackage
 			resetFree(%client);
 
 			messageClient(%client, '', "\c6Welcome to " @ $Pref::Server::City::name @ "!");
+
+			if($Pref::Server::City::IntroMessage)
+			{
+				// Intro message
+				// Beware of the 255-character packet limit.
+				schedule(4000, 0, commandToClient, %client, 'messageBoxOK', "Welcome to CityRPG 4 Alpha 2!",
+										"Welcome, and thanks for joining us!"
+									@ "<br><br>CityRPG 4 is a work-in-progress. You may encounter bugs and quirks along the way. If you do, feel free to let us know."
+									@ "<br><br>Have fun!<bitmap:add-ons/gamemode_cityrpg4/boxlogo>");
+			}
 		}
 		else
 		{
