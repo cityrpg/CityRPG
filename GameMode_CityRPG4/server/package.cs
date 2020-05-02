@@ -459,9 +459,11 @@ package CityRPG_MainPackage
 
 	function gameConnection::bottomPrint(%this, %text, %time, %showBar)
 	{
+		// Time is in seconds
 		if(%time > 0)
 		{
 			%this.cityHudTimer = $sim::time + %time;
+			%this.schedule((%time*1000)+10, setInfo);
 		}
 
 		parent::bottomPrint(%this, %text, %time, %showBar);
