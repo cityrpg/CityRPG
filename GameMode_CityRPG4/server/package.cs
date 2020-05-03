@@ -471,6 +471,12 @@ package CityRPG_MainPackage
 
 	function bottomPrint(%client, %message, %time, %lines)
 	{
+		if(%time > 0)
+		{
+			%client.cityHudTimer = $sim::time + %time;
+			%client.schedule((%time*1000)+10, setInfo);
+		}
+
 		if(%client.getID() == CityRPGHostClient.getID())
 		{
 			CityRPGHostClient.onBottomPrint(%message);
