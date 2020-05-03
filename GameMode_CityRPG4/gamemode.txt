@@ -9,6 +9,7 @@ ADDON Emote_Hate
 ADDON Emote_Love
 ADDON Event_DayNightCycle
 ADDON Item_Skis
+ADDON Item_Defibrillator
 ADDON Light_Animated
 ADDON Light_Basic
 ADDON Particle_Basic
@@ -33,6 +34,7 @@ ADDON Vehicle_Jeep
 ADDON Weapon_Bow
 ADDON Weapon_Gun
 ADDON Weapon_Guns_Akimbo
+ADDON Weapon_Package_Medic1
 ADDON Weapon_Push_Broom
 ADDON Weapon_Rocket_Launcher
 ADDON Weapon_Shotgun

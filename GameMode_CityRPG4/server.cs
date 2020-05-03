@@ -102,6 +102,22 @@ if(%error == $Error::AddOn_NotFound)
   return;
 }
 
+// Weapon_Package_Medic1
+%error = ForceRequiredAddOn("Weapon_Package_Medic1");
+if(%error == $Error::AddOn_NotFound)
+{
+  error("ERROR: GameMode_CityRPG4 - required add-on Weapon_Package_Medic1 not found");
+  return;
+}
+
+// Item_Defibrillator
+%error = ForceRequiredAddOn("Item_Defibrillator");
+if(%error == $Error::AddOn_NotFound)
+{
+  error("ERROR: GameMode_CityRPG4 - required add-on Item_Defibrillator not found");
+  return;
+}
+
 if($GameModeArg $= "Add-Ons/GameMode_CityRPG4/gamemode.txt")
 {
   // Optionals to always load on a vanilla configuration if they exist:
