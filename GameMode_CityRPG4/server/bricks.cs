@@ -471,7 +471,7 @@ function fxDTSBrick::cityBrickCheck(%brick)
 	if(%lotTrigger && %brickData.getID() == brickVehicleSpawnData.getID() && CityRPGData.getData(%client.bl_id).valueMoney < mFloor($CityRPG::prices::vehicleSpawn))
 	{
 		commandToClient(%client, 'centerPrint', "\c6You need at least \c3$" @ mFloor($CityRPG::prices::vehicleSpawn) SPC "\c6in order to plant this vehicle spawn!", 3);
-		return -1;
+		return 0;
 	}
 
 	if(%brick.getDatablock().CityRPGBrickType && isObject(%brick.client)) {
