@@ -593,6 +593,14 @@ package CityRPG_MainPackage
 			%obj.client.setInfo();
 	}
 
+	function Armor::onDisabled(%this, %obj, %state)
+	{
+		Parent::onDisabled(%this, %obj, %state);
+
+		if(isObject(%obj.client))
+			%obj.client.setInfo();
+	}
+
 	function Armor::onImpact(%this, %obj, %collidedObject, %vec, %vecLen)
 	{
 		Parent::onImpact(%this, %obj, %collidedObject, %vec, %vecLen);
