@@ -588,6 +588,9 @@ package CityRPG_MainPackage
 		}
 		else
 			parent::damage(%this, %obj, %src, %unk, %dmg, %type);
+
+		if(isObject(%obj.client))
+			%obj.client.setInfo();
 	}
 
 	function Armor::onImpact(%this, %obj, %collidedObject, %vec, %vecLen)
