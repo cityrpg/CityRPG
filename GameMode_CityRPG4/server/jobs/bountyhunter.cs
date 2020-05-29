@@ -21,7 +21,6 @@ $CityRPG::jobs::claimer = true;
 
 $CityRPG::jobs::labor = false;
 
-$CityRPG::jobs::tmHexColor = "FF7F00";
 $CityRPG::jobs::helpline = "\c6Bounty Hunters can arrest criminals and claim bounties, but don't need a good record.";
 
 $CityRPG::jobs::outfit = "none none none none blackShirt blackShirt skin blackPants blackShoes smileyEvil1 Alyx";

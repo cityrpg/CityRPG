@@ -24,7 +24,6 @@ $CityRPG::jobs::claimer = true;
 
 $CityRPG::jobs::labor = false;
 
-$CityRPG::jobs::tmHexColor = "0000CC";
 $CityRPG::jobs::helpline = "\c6Council Members are for Admins only.";
 
 $CityRPG::jobs::outfit = "none none none none blueShirt blueShirt skin blackPants blackShoes smileyBlonde Mod-Suit";

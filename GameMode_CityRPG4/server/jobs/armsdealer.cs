@@ -22,7 +22,6 @@ $CityRPG::jobs::claimer = false;
 
 $CityRPG::jobs::labor = false;
 
-$CityRPG::jobs::tmHexColor = "AAAAAA";
 $CityRPG::jobs::helpline = "\c6Arms dealers are licensed to open stores and sell weapons.";
 $CityRPG::jobs::flavortext = "Stay safe, stay second amendment.";
 
