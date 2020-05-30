@@ -320,7 +320,7 @@ function fxDTSBrick::cityBrickInit(%brick)
 {
 	%client = %brick.getGroup().client;
 
-	if(!%brick.isPlanted || !isObject(%brick) || !isObject(%client = %brick.getGroup().client))
+	if(!%brick.isPlanted || !isObject(%brick))
 		return;
 
 	switch(%brick.getDatablock().CityRPGBrickType)
