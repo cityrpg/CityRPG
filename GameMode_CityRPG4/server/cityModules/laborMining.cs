@@ -32,7 +32,7 @@ datablock fxDTSBrickData(CityRPGSmallOreData)
 // ============================================================
 // Brick Functions
 // ============================================================
-function fxDTSBrick::onMine(%this, %client)
+function fxDTSBrick::onCityMine(%this, %client)
 {
 	// WIP
 }

@@ -16,7 +16,7 @@ datablock fxDTSBrickData(CityRPGTreeData : brickPineTreeData)
 // ============================================================
 // Brick Functions
 // ============================================================
-function fxDTSBrick::onChop(%this, %client)
+function fxDTSBrick::onCityChop(%this, %client)
 {
 	// WIP
 }

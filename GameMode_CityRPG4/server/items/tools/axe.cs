@@ -116,7 +116,7 @@ function CityRPGLumberjackImage::onStopFire(%this, %obj, %slot)
 function CityRPGLumberjackImage::onHitObject(%this, %obj, %slot, %col, %pos, %normal)
 {
 	if(%col.getClassName() $= "fxDTSBrick" && %col.getDatablock().CityRPGBrickType == $CityBrick_ResourceLumber)
-		%col.onChop(%obj.client);
+		%col.onCityChop(%obj.client);
 
 	parent::onHitObject(%this, %obj, %slot, %col, %pos, %normal);
 }
