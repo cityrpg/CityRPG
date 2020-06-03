@@ -847,9 +847,9 @@ package CityRPG_MainPackage
 				for(%i = 0;%i < ClientGroup.getCount();%i++)
 				{
 					%subClient = ClientGroup.getObject(%i);
-					if(CityRPGData.getData(%subClient.bl_id).valueJobID == CityRPGData.getData(%client.bl_id).valueJobID && !getWord(CityRPGData.getData(%subClient.bl_id).valueJailData, 1))
+					if((%subClient.getJobSO().track $= %client.getJobSO().track && !getWord(CityRPGData.getData(%subClient.bl_id).valueJailData, 1)))
 					{
-						messageClient(%subClient, '', "\c3[<color:" @ $City::JobTrackColor[%client.getJobSO().track] @ ">" @ %client.getJobSO().name @ "\c3]" SPC %client.name @ "<color:FFFFFF>:" SPC %text);
+						messageClient(%subClient, '', "\c3[<color:" @ $City::JobTrackColor[%client.getJobSO().track] @ ">" @ %client.getJobSO().track @ " Radio\c3]" SPC %client.name @ "<color:FFFFFF>:" SPC %text);
 					}
 				}
 			}
