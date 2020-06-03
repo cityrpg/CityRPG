@@ -1,3 +1,17 @@
+datablock AudioProfile(cityPickaxeHitSound)
+{
+	filename    = $City::DataPath @ "sounds/pickaxeHit.wav";
+	description = AudioClosest3d;
+	preload = true;
+};
+
+datablock AudioProfile(cityOreBreakSound)
+{
+	filename    = $City::DataPath @ "sounds/oreBreak.wav";
+	description = AudioClosest3d;
+	preload = true;
+};
+
 if(!isObject(CityRPGPickaxeItem))
 {
 	AddDamageType("Pickaxe",   "<bitmap:" @ $City::DataPath @ 'ui/ci/pickaxe> %1',    "%2 <bitmap:" @ $City::DataPath @ "ui/ci/pickaxe> %1", 0.5, 1);
@@ -57,7 +71,7 @@ if(!isObject(CityRPGPickaxeItem))
 		raycastDirectDamage = 0;
 		raycastDirectDamageType = $DamageType::Pickaxe;
 		raycastExplosionProjectile = hammerProjectile;
-		raycastExplosionSound = hammerHitSound;
+		raycastExplosionSound = cityPickaxeHitSound;
 
 		shapeFile		= $City::DataPath @ "shapes/pickaxe.2.dts";
 		emap			= true;

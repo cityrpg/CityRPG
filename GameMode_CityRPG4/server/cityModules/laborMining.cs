@@ -98,7 +98,7 @@ function fxDTSBrick::cityOreBreak(%this, %client)
 	}
 
 	%this.disappear(getRandom(30,60));
-	%this.playSound(brickBreakSound);
+	%this.playSound(cityOreBreakSound);
 }
 
 // ============================================================
