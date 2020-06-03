@@ -155,6 +155,11 @@ exec($City::ScriptPath @ "cityModules/mayor.cs");
 exec($City::ScriptPath @ "cityModules/security.cs");
 exec($City::ScriptPath @ "cityModules/shops.cs");
 
+// Modules - Labor
+exec($City::ScriptPath @ "cityModules/laborResources.cs");
+exec($City::ScriptPath @ "cityModules/laborWoodcutting.cs");
+exec($City::ScriptPath @ "cityModules/laborMining.cs");
+
 exec($City::ScriptPath @ "support/spacecasts.cs");
 exec($City::ScriptPath @ "support/extraResources.cs");
 exec($City::ScriptPath @ "support/formatNumber.cs");

@@ -1,0 +1,4 @@
+function fxDTSBrick::cityInitResource()
+{
+	// WIP
+}

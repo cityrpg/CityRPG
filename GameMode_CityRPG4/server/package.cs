@@ -740,7 +740,6 @@ package CityRPG_MainPackage
 		CitySO.delete();
 		ClothesSO.delete();
 		CalendarSO.delete();
-		ResourceSO.delete();
 
 		return parent::onServerDestroyed();
 	}

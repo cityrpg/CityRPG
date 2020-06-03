@@ -62,11 +62,6 @@ datablock fxDtsBrickData(CityRPGPersonalSpawnBrickData : brickSpawnPointData)
 	spawnData = "personalSpawn";
 };
 
-// Resources
-exec($City::ScriptPath @ "brickScripts/resources/tree.cs");
-exec($City::ScriptPath @ "brickScripts/resources/ore.cs");
-exec($City::ScriptPath @ "brickScripts/resources/smallore.cs");
-
 // City info bricks
 exec($City::ScriptPath @ "brickScripts/info/bank.cs");
 exec($City::ScriptPath @ "brickScripts/info/police.cs");
@@ -332,21 +327,9 @@ function fxDTSBrick::cityBrickInit(%brick)
 		case $CityBrick_Spawn:
 			$CityRPG::temp::spawnPoints = ($CityRPG::temp::spawnPoints $= "") ? %brick : $CityRPG::temp::spawnPoints SPC %brick;
 		case $CityBrick_ResourceLumber:
-			%seed = getRandom(1, ResourceSO.treeCount);
-			%brick.id = ResourceSO.tree[%seed].id;
-			%brick.BPH = ResourceSO.tree[%seed].BPH;
-			%brick.name = ResourceSO.tree[%seed].name;
-			%brick.totalHits = ResourceSO.tree[%seed].totalHits;
-			%brick.color = getClosestPaintColor(ResourceSO.tree[%seed].color);
-			%brick.setColor(%brick.color);
+			%brick.cityInitResource();
 		case $CityBrick_ResourceOre:
-			%seed = getRandom(1, ResourceSO.mineralCount);
-			%brick.id = ResourceSO.mineral[%seed].id;
-			%brick.BPH = ResourceSO.mineral[%seed].BPH;
-			%brick.name = ResourceSO.mineral[%seed].name;
-			%brick.totalHits = ResourceSO.mineral[%seed].totalHits;
-			%brick.color = getClosestPaintColor(ResourceSO.mineral[%seed].color);
-			%brick.setColor(%brick.color);
+			%brick.cityInitResource();
 		default:
 			if(%brick.getDatablock().getID() == brickVehicleSpawnData.getID() && !%client.isAdmin)
 			{
