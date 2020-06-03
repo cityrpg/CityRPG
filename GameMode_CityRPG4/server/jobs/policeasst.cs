@@ -22,7 +22,6 @@ $CityRPG::jobs::claimer = true;
 
 $CityRPG::jobs::labor = false;
 
-$CityRPG::jobs::tmHexColor = "99FF00";
 $CityRPG::jobs::helpline = "\c6Assistants to the police department. Carries out lower level operations in the department.";
 
 $CityRPG::jobs::outfit = "none copHat none none copShirt copShirt skin blackPants blackShoes default worm-sweater";

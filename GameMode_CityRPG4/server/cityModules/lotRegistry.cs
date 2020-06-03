@@ -362,6 +362,8 @@ function fxDTSBrick::registerNewCityLot(%brick)
 		CityLots_TransferLot(%brick, %publicID);
 	}
 
+	echo("City: Registered new lot, #" @ %newIndex);
+
 	return %newIndex;
 }
 

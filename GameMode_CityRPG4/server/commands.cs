@@ -452,10 +452,10 @@ package CityRPG_Commands
 			}
 
 			if(!%foundJob)
-				messageClient(%client, '', "\c6No such job as \c3" @ %job @ "\c6. Type \c3/help jobs\c6 to see a list of the jobs.");
+				messageClient(%client, '', "\c6No such job as \c3" @ %job @ "\c6. Please try again.");
 		}
 		else
-			messageClient(%client, '', "\c6Type \c3/help jobs\c6 to see a list of jobs.");
+			messageClient(%client, '', "\c6Visit the employment office to view available jobs.");
 	}
 
 	function serverCmdreset(%client)

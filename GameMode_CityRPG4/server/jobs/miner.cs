@@ -21,7 +21,6 @@ $CityRPG::jobs::claimer = false;
 
 $CityRPG::jobs::labor = true;
 
-$CityRPG::jobs::tmHexColor = "802A2A";
 $CityRPG::jobs::helpline = "\c6Self-employed miners that earn profit directly by selling ores.";
 
 $CityRPG::jobs::outfit = "none none none none whitet blackShirt skin bluePants blackShoes default Mod-Prisoner";

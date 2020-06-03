@@ -596,6 +596,17 @@ package CityRPG_MainPackage
 		}
 		else
 			parent::damage(%this, %obj, %src, %unk, %dmg, %type);
+
+		if(isObject(%obj.client))
+			%obj.client.setInfo();
+	}
+
+	function Armor::onDisabled(%this, %obj, %state)
+	{
+		Parent::onDisabled(%this, %obj, %state);
+
+		if(isObject(%obj.client))
+			%obj.client.setInfo();
 	}
 
 	function Armor::onImpact(%this, %obj, %collidedObject, %vec, %vecLen)
@@ -766,6 +777,21 @@ package CityRPG_MainPackage
 	// Always-in-Minigame Overrides
 	function miniGameCanDamage(%obj1, %obj2)
 	{
+		if(%obj2.getClassName() $= "WheeledVehicle")
+		{
+			// Only allow vehicle damage if a passenger is wanted.
+			for(%i = 0; %i <= %obj2.getMountedObjectCount()-1; %i++)
+			{
+				if(%obj2.getMountedObject(%i).client.getWantedLevel())
+				{
+					return 1;
+				}
+			}
+
+			// It's a vehicle with no wanted passenger; disable damage.
+			return 0;
+		}
+
 		return 1;
 	}
 
@@ -831,7 +857,7 @@ package CityRPG_MainPackage
 					%subClient = ClientGroup.getObject(%i);
 					if(CityRPGData.getData(%subClient.bl_id).valueJobID == CityRPGData.getData(%client.bl_id).valueJobID && !getWord(CityRPGData.getData(%subClient.bl_id).valueJailData, 1))
 					{
-						messageClient(%subClient, '', "\c3[<color:" @ %client.getJobSO().tmHexColor @ ">" @ %client.getJobSO().name @ "\c3]" SPC %client.name @ "<color:" @ %client.getJobSO().tmHexColor @ ">:" SPC %text);
+						messageClient(%subClient, '', "\c3[<color:" @ $City::JobTrackColor[%client.getJobSO().track] @ ">" @ %client.getJobSO().name @ "\c3]" SPC %client.name @ "<color:FFFFFF>:" SPC %text);
 					}
 				}
 			}

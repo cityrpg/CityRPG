@@ -21,7 +21,6 @@ $CityRPG::jobs::claimer = false;
 
 $CityRPG::jobs::labor = false;
 
-$CityRPG::jobs::tmHexColor = "00FF00";
 $CityRPG::jobs::helpline = "\c6Grocers can open stores and sell food for profit.";
 
 $CityRPG::jobs::outfit = "none none none none greenShirt blackShirt skin blackPants blackShoes default worm-sweater";
