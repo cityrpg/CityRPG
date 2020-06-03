@@ -769,6 +769,21 @@ package CityRPG_MainPackage
 	// Always-in-Minigame Overrides
 	function miniGameCanDamage(%obj1, %obj2)
 	{
+		if(%obj2.getClassName() $= "WheeledVehicle")
+		{
+			// Only allow vehicle damage if a passenger is wanted.
+			for(%i = 0; %i <= %obj2.getMountedObjectCount()-1; %i++)
+			{
+				if(%obj2.getMountedObject(%i).client.getWantedLevel())
+				{
+					return 1;
+				}
+			}
+
+			// It's a vehicle with no wanted passenger; disable damage.
+			return 0;
+		}
+
 		return 1;
 	}
 
