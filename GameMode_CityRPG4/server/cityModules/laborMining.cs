@@ -34,5 +34,20 @@ datablock fxDTSBrickData(CityRPGSmallOreData)
 // ============================================================
 function fxDTSBrick::onCityMine(%this, %client)
 {
-	// WIP
+	%client.onCityMine(%this, "Tin");
+}
+
+// ============================================================
+// Client Functions
+// ============================================================
+function gameConnection::onCityMine(%client, %brick, %resource)
+{
+	%progressBar = "";
+
+	for(%i = 0; %i <= getSimTime()/515 % 4; %i++)
+	{
+		%progressBar = %progressBar @ "-";
+	}
+
+	%client.centerPrint("\c6" @ %progressBar @ " Mining " @ %progressBar @ "<br>\c3" @ %resource, 2);
 }
