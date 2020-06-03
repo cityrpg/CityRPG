@@ -19,6 +19,8 @@ function JobSO::loadJobFiles(%so)
 	$City::CivilianJobID = 1;
 	$City::AdminJobID = 13;
 
+	exec($City::ScriptPath @ "/jobTrees.cs");
+
 	// NOTE: Order is incredibly important. Jobs are referenced by ID, which is determined by order.
 	// Mixing up the order of these professions will cause save data to reference the wrong job.
 	%so.addJobFromFile("civilian");               // 1
@@ -96,6 +98,12 @@ function JobSO::addJobFromFile(%so, %file)
 		};
 
 		%track = $CityRPG::jobs::track;
+
+		// Default to a neutral grey if there is no color
+		if($City::JobTrackColor[%track] $= "")
+		{
+			$City::JobTrackColor[%track] = "505050";
+		}
 
 		if(%track $= "")
 			%track = "Miscellaneous";

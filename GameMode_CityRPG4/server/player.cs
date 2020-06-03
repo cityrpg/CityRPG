@@ -311,9 +311,11 @@ function gameConnection::getSalary(%client)
 
 function gameConnection::getWantedLevel(%client)
 {
-	if(CityRPGData.getData(%client.bl_id).valueDemerits >= $Pref::Server::City::demerits::wantedLevel)
+	%data = CityRPGData.getData(%client.bl_id);
+
+	if(%data.valueDemerits >= $Pref::Server::City::demerits::wantedLevel)
 	{
-		%div = CityRPGData.getData(%client.bl_id).valueDemerits / $Pref::Server::City::demerits::wantedLevel;
+		%div = %data.valueDemerits / $Pref::Server::City::demerits::wantedLevel;
 
 	if(%div <= 3)
 		return 1;

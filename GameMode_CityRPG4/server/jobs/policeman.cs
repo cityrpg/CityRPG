@@ -22,7 +22,6 @@ $CityRPG::jobs::claimer = true;
 
 $CityRPG::jobs::labor = false;
 
-$CityRPG::jobs::tmHexColor = "99FF00";
 $CityRPG::jobs::helpline = "\c6An officer of the law. Answers to the police chief.";
 
 $CityRPG::jobs::outfit = "none copHat none none copShirt copShirt skin blackPants blackShoes default Mod-Police";

@@ -25,9 +25,9 @@ package CityRPG_MainPackage
 		switch(%brick.getDatablock().CityRPGBrickType)
 		{
 			case 1:
-				%brick.handleCityRPGBrickDelete();
+				%brick.onCityBrickRemove();
 			case 2:
-				%brick.handleCityRPGBrickDelete();
+				%brick.onCityBrickRemove();
 			case 3:
 				if(getWord($CityRPG::temp::spawnPoints, 0) == %brick)
 					$CityRPG::temp::spawnPoints = strReplace($CityRPG::temp::spawnPoints, %brick @ " ", "");
@@ -62,7 +62,7 @@ package CityRPG_MainPackage
 		if(%brick != -1 && %brick.getDataBlock().CityRPGBrickType == $CityBrick_Lot)
 		{
 			// Force init as a new lot
-			%brick.initializeCityLot();
+			%brick.registerNewCityLot();
 			%brick.assignCityLotName();
 		}
 
@@ -92,9 +92,9 @@ package CityRPG_MainPackage
 		switch(%brick.getDatablock().CityRPGBrickType)
 		{
 			case $CityBrick_Lot:
-				%brick.handleCityRPGBrickDelete();
+				%brick.onCityBrickRemove();
 			case $CityBrick_Info:
-				%brick.handleCityRPGBrickDelete();
+				%brick.onCityBrickRemove();
 			case $CityBrick_Spawn:
 				if(getWord($CityRPG::temp::spawnPoints, 0) == %brick)
 					$CityRPG::temp::spawnPoints = strReplace($CityRPG::temp::spawnPoints, %brick @ " ", "");
@@ -237,6 +237,16 @@ package CityRPG_MainPackage
 			resetFree(%client);
 
 			messageClient(%client, '', "\c6Welcome to " @ $Pref::Server::City::name @ "!");
+
+			if($Pref::Server::City::IntroMessage)
+			{
+				// Intro message
+				// Beware of the 255-character packet limit.
+				schedule(4000, 0, commandToClient, %client, 'messageBoxOK', "Welcome to CityRPG 4 Alpha 2!",
+										"Welcome, and thanks for joining us!"
+									@ "<br><br>CityRPG 4 is a work-in-progress. You may encounter bugs and quirks along the way. If you do, feel free to let us know."
+									@ "<br><br>Have fun!<bitmap:add-ons/gamemode_cityrpg4/boxlogo>");
+			}
 		}
 		else
 		{
@@ -578,6 +588,17 @@ package CityRPG_MainPackage
 		}
 		else
 			parent::damage(%this, %obj, %src, %unk, %dmg, %type);
+
+		if(isObject(%obj.client))
+			%obj.client.setInfo();
+	}
+
+	function Armor::onDisabled(%this, %obj, %state)
+	{
+		Parent::onDisabled(%this, %obj, %state);
+
+		if(isObject(%obj.client))
+			%obj.client.setInfo();
 	}
 
 	function Armor::onImpact(%this, %obj, %collidedObject, %vec, %vecLen)
@@ -747,6 +768,21 @@ package CityRPG_MainPackage
 	// Always-in-Minigame Overrides
 	function miniGameCanDamage(%obj1, %obj2)
 	{
+		if(%obj2.getClassName() $= "WheeledVehicle")
+		{
+			// Only allow vehicle damage if a passenger is wanted.
+			for(%i = 0; %i <= %obj2.getMountedObjectCount()-1; %i++)
+			{
+				if(%obj2.getMountedObject(%i).client.getWantedLevel())
+				{
+					return 1;
+				}
+			}
+
+			// It's a vehicle with no wanted passenger; disable damage.
+			return 0;
+		}
+
 		return 1;
 	}
 
@@ -812,7 +848,7 @@ package CityRPG_MainPackage
 					%subClient = ClientGroup.getObject(%i);
 					if(CityRPGData.getData(%subClient.bl_id).valueJobID == CityRPGData.getData(%client.bl_id).valueJobID && !getWord(CityRPGData.getData(%subClient.bl_id).valueJailData, 1))
 					{
-						messageClient(%subClient, '', "\c3[<color:" @ %client.getJobSO().tmHexColor @ ">" @ %client.getJobSO().name @ "\c3]" SPC %client.name @ "<color:" @ %client.getJobSO().tmHexColor @ ">:" SPC %text);
+						messageClient(%subClient, '', "\c3[<color:" @ $City::JobTrackColor[%client.getJobSO().track] @ ">" @ %client.getJobSO().name @ "\c3]" SPC %client.name @ "<color:FFFFFF>:" SPC %text);
 					}
 				}
 			}

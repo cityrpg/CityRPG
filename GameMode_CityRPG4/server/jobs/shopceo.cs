@@ -22,7 +22,6 @@ $CityRPG::jobs::claimer = false;
 
 $CityRPG::jobs::labor = false;
 
-$CityRPG::jobs::tmHexColor = "0066CC";
 $CityRPG::jobs::helpline = "\c6The most highly successful businessmen with strong backgrounds in their business ventures";
 $CityRPG::jobs::flavortext = "This guy's so rich, he has a swimming pool in his swimming pool.";
 

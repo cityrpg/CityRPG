@@ -42,7 +42,7 @@ function CityMenu_Lot(%client, %notitle)
 	{
 		error("Attempting to access a blank lot! Re-initializing it...");
 
-		%brick.initializeCityLot();
+		%brick.registerNewCityLot();
 		%brick.assignCityLotName();
 	}
 
@@ -324,7 +324,7 @@ function CityLots_GetLotCount()
 	return %count;
 }
 
-function fxDTSBrick::initializeCityLot(%brick)
+function fxDTSBrick::registerNewCityLot(%brick)
 {
 	if(CityRPGLotRegistry.getData(%brick.getCityLotID()) != 0)
 	{
@@ -361,6 +361,8 @@ function fxDTSBrick::initializeCityLot(%brick)
 	{
 		CityLots_TransferLot(%brick, %publicID);
 	}
+
+	echo("City: Registered new lot, #" @ %newIndex);
 
 	return %newIndex;
 }
@@ -436,7 +438,11 @@ function fxDTSBrick::setCityLotOwnerID(%brick, %value)
 	{
 		// If transferring from the city to a player, automatically rename the lot.
 		%brick.setCityLotName(%brick.getGroup().name @ "\c6's Lot");
+
+		$City::RealEstate::UnclaimedLots--;
 	}
+	else if(%value == -1)
+		$City::RealEstate::UnclaimedLots++;
 
 	%valueNew = %data.valueOwnerID = %value;
 
@@ -558,16 +564,18 @@ package CityRPG_LotRegistry
 	{
 		%lotID = %brick.getCityLotID();
 
+		$City::RealEstate::TotalLots++;
+		$City::RealEstate::UnclaimedLots++;
+
 		if(%lotID == -1)
 		{
-			%lotID = %brick.initializeCityLot();
+			%lotID = %brick.registerNewCityLot();
 		}
 
 		%brick.cityLotInit = 0;
 		%brick.cityLotOverride = 1;
 		%brick.setNTObjectName(%lotID);
 
-		// If this falls through, the lot is an existing lot and can be left alone.
 	}
 
 	function fxDTSBrick::onPlant(%brick)
@@ -595,8 +603,18 @@ package CityRPG_LotRegistry
 
 	function fxDTSBrick::onRemove(%brick,%client)
 	{
-		// Always override on remove
-		%brick.cityLotOverride = 1;
+		if(%brick.isPlanted && %brick.getDataBlock().CityRPGBrickType == $CityBrick_Lot)
+		{
+			// Always override on remove
+			%brick.cityLotOverride = 1;
+
+			$City::RealEstate::TotalLots--;
+			if(%brick.getCityLotOwnerID() == -1)
+				$City::RealEstate::UnclaimedLots--;
+
+			// TODO Decrease the number of lots for sale if the lot was on sale.
+		}
+
 		Parent::onRemove(%brick);
 	}
 
