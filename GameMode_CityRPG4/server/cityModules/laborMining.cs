@@ -84,7 +84,7 @@ function fxDTSBrick::citySpawnOre(%this)
 		static = 0;
 	};
 
-	%item.setVelocity(getRandom(0,2) SPC getRandom(0,2) SPC getRandom(0,2));
+	%item.setVelocity(getRandom(-3,3) SPC getRandom(-3,3) SPC 6);
 	%item.setTransform(%this.getPosition() SPC "0 0 0 0");
 	%item.schedulePop(); // TODO: Extend the de-spawn time
 	%item.spawnBrick = %this;
