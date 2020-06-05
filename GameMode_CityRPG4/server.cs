@@ -120,7 +120,7 @@ if($GameModeArg $= "Add-Ons/GameMode_CityRPG4/gamemode.txt")
 }
 else
 {
-  // Optionals that only need to load in a Custom configuration
+  // Optionals that only need to load in a Custom configuration for compatibility
 
   // Brick_Checkpoint (Optional)
   // If enabled, we would like checkpoints to execute first.
@@ -129,6 +129,16 @@ else
     ForceRequiredAddOn("Brick_Checkpoint");
 
     deactivatepackage(CheckpointPackage); // We don't want the checkpoint package running
+  // Event_doPlayerTeleport (Optional)
+  // If doPlayerTeleport is enabled, re-register it without the "relative" option.
+  // This prevents players from exploiting doPlayerTeleport to move through walls.
+
+  if($AddOn__Event_doPlayerTeleport)
+  {
+    ForceRequiredAddOn("Event_doPlayerTeleport");
+
+    unregisterOutputEvent("fxDTSBrick","doPlayerTeleport");
+    registerOutputEvent("fxDTSBrick","doPlayerTeleport","string 200 90\tlist Relative 0 North 1 East 2 South 3 West 4\tbool",1);
   }
 }
 
