@@ -378,7 +378,7 @@ package CityRPG_MainPackage
 	{
 		Parent::applyPersistence(%client, %gotPlayer, %gotCamera);
 
-		//The Checkpoint brick overwrites our spawn method.  This is part of our compatability patch.
+		//The Checkpoint brick overwrites our spawn method.  This is part of our compatibility patch.
 		//CheckpointPackage Start
 		if(%client.checkPointBrickPos $= "")
 			return;
