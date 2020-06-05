@@ -128,7 +128,11 @@ else
   {
     ForceRequiredAddOn("Brick_Checkpoint");
 
-    deactivatepackage(CheckpointPackage); // We don't want the checkpoint package running
+    deactivatepackage(CheckpointPackage);
+    // We don't want the checkpoint package loading.
+    // The necessary functions will be rewritten later to fix spawn compatibility.
+  }
+
   // Event_doPlayerTeleport (Optional)
   // If doPlayerTeleport is enabled, re-register it without the "relative" option.
   // This prevents players from exploiting doPlayerTeleport to move through walls.
