@@ -1085,9 +1085,9 @@ package CityRPG_Commands
 			else if(isObject(findClientByName(%name)))
 			{
 				%target = findClientByName(%name);
-				CityRPGData.getData(%client.bl_id).valueDemerits = 0;
 				messageClient(%client, '', "\c6You cleared \c3" @ %target.name @ "\c6's demerits.");
 				messageClient(%target, '', "\c6Your demerits have vanished.");
+				CityRPGData.getData(%target.bl_id).valueDemerits = 0;
 				%target.setInfo();
 			}
 		}
