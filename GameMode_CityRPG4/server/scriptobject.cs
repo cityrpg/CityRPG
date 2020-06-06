@@ -106,7 +106,10 @@ function JobSO::addJobFromFile(%so, %file)
 		}
 
 		if(%track $= "")
+		{
 			%track = "Miscellaneous";
+			%so.job[%jobID].track = Miscellaneous;
+		}
 
 		// Job track registration for menus
 		// "Invisible" jobs such as admin and mayor are not included
