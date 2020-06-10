@@ -98,6 +98,12 @@ function JobSO::addJobFromFile(%so, %file)
 		};
 
 		%track = $CityRPG::jobs::track;
+		
+		if(%track $= "")
+		{
+			%track = "Miscellaneous";
+			%so.job[%jobID].track = Miscellaneous;
+		}
 
 		// Default to a neutral grey if there is no color
 		if($City::JobTrackColor[%track] $= "")
@@ -105,11 +111,6 @@ function JobSO::addJobFromFile(%so, %file)
 			$City::JobTrackColor[%track] = "505050";
 		}
 
-		if(%track $= "")
-		{
-			%track = "Miscellaneous";
-			%so.job[%jobID].track = Miscellaneous;
-		}
 
 		// Job track registration for menus
 		// "Invisible" jobs such as admin and mayor are not included
