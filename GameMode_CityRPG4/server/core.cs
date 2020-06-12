@@ -554,3 +554,21 @@ function GameConnection::messageCityLagNotice(%client)
 	messageClient(%client, '', "\c3Notice: This server has " @ getBrickCount() @ " bricks.");
 	messageClient(%client, '', "\c3If you experience lag, consider turning down your shaders, as well as your draw distance under Advanced options.");
 }
+
+function messageCityRadio(%jobTrack, %msgType, %msgString)
+{
+	echo("(" @ %jobTrack @ " Chat)" SPC %msgString);
+
+	for(%i = 0; %i < ClientGroup.getCount(); %i++)
+	{
+		%client = ClientGroup.getObject(%i);
+
+		if(CityRPGData.getData(%client.bl_id).valueJobID == $City::AdminJobID || // Admin job always sees radio..
+		($Pref::Server::City::AdminsAlwaysMonitorChat && %client.isAdmin) || // Or if the pref is enabled, allow admin to snoop...
+		(%client.getJobSO().track $= %jobTrack && // Otherwise, check for a matching job track...
+		!getWord(CityRPGData.getData(%client.bl_id).valueJailData, 1))) // And exclude convicts from seeing messages in their track.
+		{
+			messageClient(%client, '', "\c3[<color:" @ $City::JobTrackColor[%jobTrack] @ ">" @ %jobTrack @ " Radio\c3]" SPC %msgString);
+		}
+	}
+}

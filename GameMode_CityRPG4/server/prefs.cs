@@ -60,6 +60,7 @@ if(!isFile("Add-Ons/System_ReturnToBlockland/server.cs"))
 	RTB_registerPref("Max Bounty", "CityRPG 4|Crime", "$Pref::Server::City::demerits::maxBounty", "int 0 1000000", "GameMode_CityRPG4", 7500, 0, 0);
 
 	RTB_registerPref("Logging Enabled", "CityRPG 4|Server Management", "$Pref::Server::City::loggerEnabled", "bool", "GameMode_CityRPG4", true, 0, 0);
+	RTB_registerPref("Always show team chat to admins", "CityRPG 4|Server Management", "$Pref::Server::City::AdminsAlwaysMonitorChat", "bool", "GameMode_CityRPG4", false, 0, 0);
 
 	RTB_registerPref("Economy Relay", "CityRPG 4|Economy", "$Pref::Server::City::Economics::Relay", "int 0 50", "GameMode_CityRPG4", 2, 0, 0);
 	RTB_registerPref("Max Economy Percentage", "CityRPG 4|Economy", "$Pref::Server::City::Economics::Greatest", "int -500 500", "GameMode_CityRPG4", 100, 0, 0);
