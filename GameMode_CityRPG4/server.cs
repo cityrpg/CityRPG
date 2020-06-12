@@ -85,6 +85,14 @@ if(%error == $Error::AddOn_NotFound)
   return;
 }
 
+// Brick_ModTer_4xPack
+%error = ForceRequiredAddOn("Brick_ModTer_4xPack");
+if(%error == $Error::AddOn_NotFound)
+{
+  error("ERROR: GameMode_CityRPG4 - required add-on Brick_ModTer_4xPack not found");
+  return;
+}
+
 if($GameModeArg $= "Add-Ons/GameMode_CityRPG4/gamemode.txt")
 {
   // Optionals to always load on a vanilla configuration if they exist:

@@ -29,6 +29,17 @@ datablock fxDTSBrickData(CityRPGSmallOreData)
 	CityRPGBrickAdmin = true;
 };
 
+datablock fxDTSBrickData(CityRPGPrintOreData : brick4Cube1Data)
+{
+	category = "CityRPG";
+	subCategory = "Resources";
+
+	uiName = "Ore - ModTer 4x";
+
+	CityRPGBrickType = $CityBrick_ResourceOre;
+	CityRPGBrickAdmin = true;
+};
+
 // ============================================================
 // Mining Resource Drop Datablocks
 // ============================================================
