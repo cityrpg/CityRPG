@@ -194,6 +194,7 @@ $CityRPG::vehicles::banned[5] = "TankVehicle";
 $CityRPG::vehicles::banned[6] = "horseArmor";
 $CityRPG::vehicles::banned[7] = "BlackhawkVehicle";
 $CityRPG::vehicles::banned[7] = "TankTurretVehicle";
+$CityRPG::vehicles::banned[8] = "CannonTurret";
 
 // Allowed Inmate Items
 $CityRPG::demerits::jail::image["CityRPGLumberjackImage"] = true;
