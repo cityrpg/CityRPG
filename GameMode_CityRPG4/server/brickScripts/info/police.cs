@@ -52,7 +52,7 @@ function CityRPGPoliceBrickData::parseData(%this, %brick, %client, %triggerStatu
 
 			if(CityRPGData.getData(%client.bl_id).valueDemerits)
 			{
-				if(%demsYouCanBuy >= %yourDemerits)
+				if(%client.demsAffordable >= %client.dems)
 				{
 					messageClient(%client, '', "\c33 \c6- Pay off Demerits (\c3$" @ %client.demCost @ "\c6)");
 				}
