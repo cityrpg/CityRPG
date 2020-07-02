@@ -396,7 +396,11 @@ function City_TickLoop(%loop)
 				 %so.valueDemerits -= $Pref::Server::City::demerits::reducePerTick;
 			else
 				%so.valueDemerits = 0;
-			messageClient(%client, '', '\c6 - You have had your demerits reduced to \c3%1\c6 due to <a:en.wikipedia.org/wiki/Statute_of_limitations>Statute of Limitations</a>\c6.', %so.valueDemerits);
+
+			if(calendarSO.getCurrentDay() == 187)
+				messageClient(%client, '', '\c6 - You have had your demerits reduced to \c3%1\c6 due to <a:https://www.youtube.com/watch?v=iq8gfaFqFpI>Statue of Limitations</a>\c6.', %so.valueDemerits);
+			else
+				messageClient(%client, '', '\c6 - You have had your demerits reduced to \c3%1\c6 due to <a:en.wikipedia.org/wiki/Statute_of_limitations>Statute of Limitations</a>\c6.', %so.valueDemerits);
 
 			%client.setInfo();
 		}
