@@ -32,7 +32,7 @@ package CityRPG_Commands
 			case "":
 				messageClient(%client, '', "\c6Type \c3/help starters\c6 for information to get started in CityRPG");
 				messageClient(%client, '', "\c6Type \c3/help commands\c6 to list the commands in the game");
-				messageClient(%client, '', "\c6More: \c3/help events\c6, \c3/help admin");
+				messageClient(%client, '', "\c6More: \c3/help events\c6, \c3/help admin\c6, \c3/stats");
 
 
 				if($GameModeArg $= "Add-Ons/GameMode_CityRPG4/gamemode.txt")
