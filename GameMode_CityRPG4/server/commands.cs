@@ -722,8 +722,6 @@ package CityRPG_Commands
 
 		%client.cityLog("/stats" SPC %name);
 
-		%data = CityRPGData.getData(%target.bl_id);
-
 		if(!isObject(%client.player))
 			return;
 
@@ -732,16 +730,47 @@ package CityRPG_Commands
 		else
 			%target = %client;
 
+		%data = CityRPGData.getData(%target.bl_id);
+
 		if(isObject(%target))
 		{
-			%string = "Career:" SPC "\c3" @ JobSO.job[%data.valueJobID].name;
-			%string = %string @ "\n" @ "Money in Wallet:" SPC "\c3" @ %data.valueMoney;
-			%string = %string @ "\n" @ "Net Worth:" SPC "\c3" @ (%data.valueMoney + %data.valueBank);
-			%string = %string @ "\n" @ "Arrest Record:" SPC "\c3" @ (getWord(%data.valueJailData, 0) ? "Yes" : "No");
-			%string = %string @ "\n" @ "Ticks left in Jail:" SPC "\c3" @ getWord(%data.valueJailData, 1);
-			%string = %string @ "\n" @ "Total Demerits:" SPC "\c3" @ %data.valueDemerits;
-			%string = %string @ "\n" @ "Education:" SPC "\c3" @ %data.valueEducation;
-			commandToClient(%client, 'MessageBoxOK', %target.name, %string);
+			%job = %target.getJobSo();
+
+			// Career
+			%string = "Career:" SPC "\c3" @ %target.getJobSO().track;
+
+			// Title
+			if(%job.title !$= "")
+			{
+				%string = %string @ "\n" @ "Title:" SPC %job.title SPC %target.name;
+			}
+
+			// Job
+			%string = %string @ "\n" @ "Job:" SPC %job.name;
+
+			// Wallet
+			%string = %string @ "\n" @ "Money in wallet:" SPC "\c3$" @ %data.valueMoney;
+
+			// Net worth
+			%string = %string @ "\n" @ "Net worth:" SPC "\c3$" @ (%data.valueMoney + %data.valueBank);
+
+			// Crim record
+			%string = %string @ "\n" @ "Criminal record:" SPC "\c3" @ (getWord(%data.valueJailData, 0) ? "Yes" : "No");
+
+			// Education
+			%level = %data.valueEducation;
+			if($CityRPG::EducationStr[%level] !$= "")
+			{
+				%eduString = $CityRPG::EducationStr[%level];
+			}
+			else
+			{
+				%eduString = "Level " @ %level;
+			}
+			%string = %string @ "\n" @ "Education:" SPC "\c3" @ %eduString;
+
+
+			commandToClient(%client, 'MessageBoxOK', "Stats for " @ %target.name, %string);
 		}
 		else
 			messageClient(%client, '', "\c6Either you did not enter or the person specified does not exist.");
