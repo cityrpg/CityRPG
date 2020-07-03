@@ -162,7 +162,21 @@ function CityRPGPoliceBrickData::parseData(%this, %brick, %client, %triggerStatu
 
 			%client.cityMenuMessage("\c3" @ $Pref::Server::City::name @ " Police Department");
 
+			// Show their name and title (if it exists) if the user is an officer.
+			%job = %client.getJobSO();
 
+			%titleStr = "";
+			if(%job.title !$= "")
+			{
+				%titleStr = %job.title @ " ";
+			}
+
+			if(%job.track $= "Police")
+			{
+				%client.cityMenuMessage("\c6Welcome, \c3" @ %titleStr @ %client.name @ "\c6.");
+			}
+
+			// Show their demerits if they have any
 			if(%data.valueDemerits > 0)
 			{
 				%client.cityMenuMessage("\c6You have \c3" @ CityRPGData.getData(%client.bl_id).valueDemerits SPC "\c6demerits.");

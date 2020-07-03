@@ -63,6 +63,8 @@ function JobSO::addJobFromFile(%so, %file)
 
 			name		= $CityRPG::jobs::name;
 			track		= $CityRPG::jobs::track;
+			title		= $CityRPG::jobs::title;
+
 
 			invest		= $CityRPG::jobs::initialInvestment;
 			pay		= $CityRPG::jobs::pay;
@@ -98,7 +100,7 @@ function JobSO::addJobFromFile(%so, %file)
 		};
 
 		%track = $CityRPG::jobs::track;
-		
+
 		if(%track $= "")
 		{
 			%track = "Miscellaneous";
