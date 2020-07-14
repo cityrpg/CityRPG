@@ -5,7 +5,6 @@ $City::UsePrefObjects = isFunction(registerPreferenceAddon);
 
 function City_RegisterPref(%category, %name, %variable, %type, %params, %defaultValue, %loadCallback, %updateCallback, %requireRestart, %hostOnly)
 {
-	echo("Registering " @ %name);
 	if($City::UsePrefObjects)
 	{
 		new ScriptObject(Preference) {
@@ -49,7 +48,7 @@ function City_RegisterPref(%category, %name, %variable, %type, %params, %default
 function City_InitPrefs()
 {
 	registerPreferenceAddon("GameMode_CityRPG4", "CityRPG 4", "building");
-	
+
 	// City Prefs
 	City_RegisterPref("Game", "City name", "$Pref::Server::City::name", "string", "64", "Blocko Town");
 	City_RegisterPref("Game", "Drop Cash on Death", "$Pref::Server::City::misc::cashdrop", "bool", "", true);
