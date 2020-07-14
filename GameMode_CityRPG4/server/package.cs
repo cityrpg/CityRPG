@@ -972,6 +972,17 @@ package CityRPG_MainPackage
 				serverCmdsuicide(%client);
 		 }
 	}
+
+	// If a menu is open, hide the player's typing status.
+	function serverCmdStartTalking(%client)
+	{
+		if(%client.cityMenuOpen)
+		{
+			return;
+		}
+
+		Parent::serverCmdStartTalking(%client);
+	}
 };
 deactivatePackage(CityRPG_MainPackage);
 activatepackage(CityRPG_MainPackage);
