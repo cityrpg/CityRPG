@@ -13,7 +13,7 @@ function City_Init()
 		new scriptObject(CityRPGData)
 		{
 			class = Sassy;
-			dataFile = "config/server/CityRPG/CityRPG/Data.dat";
+			dataFile = $City::SavePath @ "CityRPG/Data.dat";
 		};
 
 		if(!isObject($DamageType::Starvation))

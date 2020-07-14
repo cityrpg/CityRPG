@@ -215,7 +215,7 @@ package CityRPG_MainPackage
 		// Re-open the file for each item that is logged.
 		// This probably isn't great for performance, but it's much more secure
 		// because we need to be able to retain logs when the server hard crashes.
-		%client.logFile.openForAppend("config/server/CityRPG/Logs/" @ %client.bl_id @ ".log");
+		%client.logFile.openForAppend($City::SavePath @ "Logs/" @ %client.bl_id @ ".log");
 		%client.logFile.writeLine((!%nodate?"[" @ getDateTime() @ "] ":"") @ %data);
 		%client.logFile.close();
 	}

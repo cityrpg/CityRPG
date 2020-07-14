@@ -296,7 +296,7 @@ function CityLots_InitRegistry()
 		new scriptObject(CityRPGLotRegistry)
 		{
 			class = Sassy;
-			dataFile = "config/server/CityRPG/CityLots.dat";
+			dataFile = $City::SavePath @ "CityLots.dat";
 		};
 
 		// Also use valueCount as a fallback check.

@@ -1,12 +1,12 @@
 function loadMayor()
 {
-	exec("config/server/CityRPG/Global/Mayor.cs");
+	exec($City::SavePath @ "Global/Mayor.cs");
 	$City::Mayor::Loaded = 1;
 }
 
 function saveMayor()
 {
-	export("$City::Mayor::*","config/server/CityRPG/Global/Mayor.cs");
+	export("$City::Mayor::*",$City::SavePath @ "Global/Mayor.cs");
 }
 
 //////////////////////////////////////////////////

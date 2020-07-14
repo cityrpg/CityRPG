@@ -165,9 +165,9 @@ function JobSO::getJobCount(%so)
 // ============================================================
 function CitySO::loadData(%so)
 {
-	if(isFile("config/server/CityRPG/CityRPG/City.cs"))
+	if(isFile($City::SavePath @ "CityRPG/City.cs"))
 	{
-		exec("config/server/CityRPG/CityRPG/City.cs");
+		exec($City::SavePath @ "CityRPG/City.cs");
 		%so.minerals		= $CityRPG::temp::citydata::datumminerals;
 		%so.lumber			= $CityRPG::temp::citydata::datumlumber;
 		%so.economy			= $Economics::Condition;
@@ -190,7 +190,7 @@ function CitySO::saveData(%so)
 
 	$CityRPG::temp::citydata::datum["minerals"]		= %so.minerals;
 	$CityRPG::temp::citydata::datum["lumber"]		= %so.lumber;
-	export("$CityRPG::temp::citydata::*", "config/server/CityRPG/CityRPG/City.cs");
+	export("$CityRPG::temp::citydata::*", $City::SavePath @ "CityRPG/City.cs");
 }
 
 if(!isObject(CitySO))
@@ -318,9 +318,9 @@ function CalendarSO::getCurrentDay(%so)
 
 function CalendarSO::loadData(%so)
 {
-	if(isFile("config/server/CityRPG/CityRPG/Calendar.cs"))
+	if(isFile($City::SavePath @ "CityRPG/Calendar.cs"))
 	{
-		exec("config/server/CityRPG/CityRPG/Calendar.cs");
+		exec($City::SavePath @ "CityRPG/Calendar.cs");
 		%so.date = $CityRPG::temp::calendar::datumdate;
 	}
 	else
@@ -334,7 +334,7 @@ function CalendarSO::loadData(%so)
 function CalendarSO::saveData(%so)
 {
 	$CityRPG::temp::calendar::datum["date"]	= %so.date;
-	export("$CityRPG::temp::calendar::*", "config/server/CityRPG/CityRPG/Calendar.cs");
+	export("$CityRPG::temp::calendar::*", $City::SavePath @ "CityRPG/Calendar.cs");
 }
 
 if(!isObject(CalendarSO))
