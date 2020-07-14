@@ -1,3 +1,39 @@
+// ============================================================
+// Admin Mode
+// ============================================================
+function serverCmdAdminMode(%client)
+{
+  %client.cityMenuClose();
+
+  %data = CityRPGData.getData(%client.bl_id);
+
+  if(%data.valueJobID == $City::AdminJobID)
+  {
+    jobset(%client, %data.valueJobRevert || 1);
+
+    messageClient(%client, '', "\c6Admin mode has been disabled. Your job has changed back to \c3" @ JobSO.job[%data.valueJobRevert || 1].name @ "\c6.");
+  }
+  else
+  {
+    %data.valueJobRevert = %data.valueJobID;
+    jobset(%client, $City::AdminJobID);
+
+    messageClient(%client, '', "\c6You are now in \c4Admin Mode\c6.");
+    %client.adminModeMessage();
+  }
+}
+
+function GameConnection::AdminModeMessage(%client)
+{
+  messageClient(%client, '', "\c2+\c6 Building restrictions are disabled.");
+	messageClient(%client, '', "\c2+\c6 Hunger is frozen.");
+	messageClient(%client, '', "\c2+\c6 You have jets.");
+	messageClient(%client, '', "\c3*\c6 Your job is fixed as \c3Council Member\c6. Changing jobs will disable admin mode.");
+}
+
+// ============================================================
+// Other Admin Commands
+// ============================================================
 function serverCmdEditEducation(%client, %int, %name)
 {
   %client.cityLog("/EditEducation" SPC %int SPC %name);

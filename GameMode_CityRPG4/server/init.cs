@@ -29,6 +29,7 @@ function City_Init()
 			CityRPGData.addValue("hunger", "7");
 			CityRPGData.addValue("jailData", "0 0");
 			CityRPGData.addValue("jobID", "1");
+			CityRPGData.addValue("jobRevert", "1");
 			CityRPGData.addValue("lotData", "0");
 			CityRPGData.addValue("money", "0");
 			CityRPGData.addValue("name", "noName");

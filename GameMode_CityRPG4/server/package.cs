@@ -231,7 +231,9 @@ package CityRPG_MainPackage
 
 		//applyForcedBodyParts();
 
-		if(CityRPGData.getData(%client.bl_id).valueJobID $= "")
+		%data = CityRPGData.getData(%client.bl_id);
+
+		if(%data.valueJobID $= "")
 		{
 			// Reset if there is no job data.
 			resetFree(%client);
@@ -253,22 +255,32 @@ package CityRPG_MainPackage
 			messageClient(%client, '', "<bitmap:" @ $City::DataPath @ "ui/time.png>\c6 Welcome back! Today is " @ CalendarSO.getDateStr());
 		}
 
-		messageClient(%client, '', "\c6 - Your current job is\c3" SPC %client.getJobSO().name @ "\c6 with an income of \c3$" @ %client.getJobSO().pay @ "\c6.");
-
-		if(CityRPGData.getData(%client.bl_id).valueStudent > 0)
+		if(%data.valueJobID == $City::AdminJobID)
 		{
-			messageClient(%client, '', "\c6 - You will complete your education in \c3" @ CityRPGData.getData(%client.bl_id).valueStudent @ "\c6 days.");
+			// Admin mode is enabled -- reiterate the parameters.
+			messageClient(%client, '', "\c6You are currently in \c4Admin Mode\c6.");
+			%client.adminModeMessage();
 		}
-
-		messageClient(%client, '', "\c6 - City mayor: \c3" @ $City::Mayor::String);
-		%client.doCityHungerStatus();
-
-		// Note: Not implemented yet.
-		%earnings = CityRPGData.getData(%client.bl_id).valueShopEarnings;
-		if(%earnings > 0)
+		else
 		{
-			messageClient(%client, '', "\c6 - You earned \c3$" @ %earnings @ "\c6 in sales while you were out.");
-			CityRPGData.getData(%client.bl_id).valueShopEarnings = 0;
+			// "Brief" the player about their status in the game.
+			messageClient(%client, '', "\c6 - Your current job is\c3" SPC %client.getJobSO().name @ "\c6 with an income of \c3$" @ %client.getJobSO().pay @ "\c6.");
+
+			if(CityRPGData.getData(%client.bl_id).valueStudent > 0)
+			{
+				messageClient(%client, '', "\c6 - You will complete your education in \c3" @ CityRPGData.getData(%client.bl_id).valueStudent @ "\c6 days.");
+			}
+
+			messageClient(%client, '', "\c6 - City mayor: \c3" @ $City::Mayor::String);
+			%client.doCityHungerStatus();
+
+			// Note: Not implemented yet.
+			%earnings = CityRPGData.getData(%client.bl_id).valueShopEarnings;
+			if(%earnings > 0)
+			{
+				messageClient(%client, '', "\c6 - You earned \c3$" @ %earnings @ "\c6 in sales while you were out.");
+				CityRPGData.getData(%client.bl_id).valueShopEarnings = 0;
+			}
 		}
 	}
 
