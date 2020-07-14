@@ -1,4 +1,22 @@
 // ============================================================
+// Admin Menu
+// ============================================================
+function serverCmdAdmin(%client)
+{
+  CityMenu_Admin(%client);
+}
+
+function CityMenu_Admin(%client)
+{
+  %client.cityMenuMessage("\c3CityRPG Game Master");
+
+	%menu = "Toggle admin mode" TAB "Close menu.";
+	%functions = "serverCmdAdminMode" TAB "CityMenu_Close";
+
+	%client.cityMenuOpen(%menu, %functions, %client.CityRPGLotBrick);
+}
+
+// ============================================================
 // Admin Mode
 // ============================================================
 function serverCmdAdminMode(%client)
