@@ -176,7 +176,7 @@ function CitySO::loadData(%so)
 	}
 	else
 	{
-		%so.value["version"] = $City::Version;
+		%so.version = $City::Version;
 		%so.value["minerals"] = 0;
 		%so.value["lumber"] = 0;
 		%so.value["economy"] = 0;
