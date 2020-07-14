@@ -348,6 +348,12 @@ package CityRPG_MainPackage
 		{
 			schedule(1, 0, messageClient, %client, '', "\c2Type \c6/help starters\c2 to learn more about how to get started in CityRPG.");
 		}
+
+		if($City::DisplayVersionWarning)
+		{
+			messageClient(%client, '', $City::VersionWarning);
+			$City::DisplayVersionWarning = 0;
+		}
 	}
 
 	function gameConnection::spawnPlayer(%client)

@@ -19,6 +19,7 @@ $City::Version = "0.2.0";
 $City::VersionTitle = "Alpha 2";
 $City::isGitBuild = !isFile("Add-Ons/GameMode_CityRPG4/README.md");
 
+$City::VersionWarning = "!!!!! WARNING: You are using save data from a different version of CityRPG. You are likely to encounter compatibility issues. To fix this, move or delete the save file located in your Blockland folder: config/server/CityRPG/";
 // ============================================================
 // Required Add-on loading
 // =============================================================

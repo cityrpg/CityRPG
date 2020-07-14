@@ -172,9 +172,11 @@ function CitySO::loadData(%so)
 		%so.lumber			= $CityRPG::temp::citydata::datumlumber;
 		%so.economy			= $Economics::Condition;
 
+		%so.version			= $CityRPG::temp::citydata::version;
 	}
 	else
 	{
+		%so.value["version"] = $City::Version;
 		%so.value["minerals"] = 0;
 		%so.value["lumber"] = 0;
 		%so.value["economy"] = 0;
@@ -183,6 +185,9 @@ function CitySO::loadData(%so)
 
 function CitySO::saveData(%so)
 {
+	// Always override the version with the current one.
+	$CityRPG::temp::citydata::version							= $City::Version;
+
 	$CityRPG::temp::citydata::datum["minerals"]		= %so.minerals;
 	$CityRPG::temp::citydata::datum["lumber"]		= %so.lumber;
 	export("$CityRPG::temp::citydata::*", "config/server/CityRPG/CityRPG/City.cs");
@@ -192,6 +197,15 @@ if(!isObject(CitySO))
 {
 	new scriptObject(CitySO) { };
 	CitySO.loadData();
+
+	// Until the saver is replaced, we sadly have to worry about save data compatibility.
+	if(CitySO.version != $City::Version || CitySO.version $= "")
+	{
+		// Set a flag to display a warning for the host when they join.
+		$City::DisplayVersionWarning = 1;
+
+		echo("-----------------------------------------------------------" NL $City::VersionWarning NL "-----------------------------------------------------------");
+	}
 }
 
 // ============================================================
