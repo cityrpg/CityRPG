@@ -265,14 +265,14 @@ function City_Tick(%brick)
 	if(%so.holiday[CalendarSO.getCurrentDay()] !$= "")
 		messageAll('', "\c6 -" SPC %so.holiday[%so.getCurrentDay()]);
 
-	if($Economics::Condition > 0) {
+	if($City::Economics::Condition > 0) {
 		%econColor = "<color:00ee00>";
 	}
 	else {
 		%econColor = "<color:ee0000>";
 	}
 
-	messageAll('', "\c6 - The current economy value is " @ %econColor @ $Economics::Condition @ "\c6%.");
+	messageAll('', "\c6 - The current economy value is " @ %econColor @ $City::Economics::Condition @ "\c6%.");
 
 	City_Init_Spawns();
 	City_TickLoop(0);
@@ -419,12 +419,12 @@ function City_TickLoop(%loop)
 					}
 				}
 
-				%sume = $Economics::Condition / 100;
+				%sume = $City::Economics::Condition / 100;
 				%osum = %client.getSalary();
 				%sum = (%osum * %sume) + %osum;
 				%sum = mFloor(%sum);
 
-				if($Economics::Condition > 25)
+				if($City::Economics::Condition > 25)
 					%include = 0.005;
 				else
 					%include = -0.025;

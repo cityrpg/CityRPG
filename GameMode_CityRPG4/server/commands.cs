@@ -191,13 +191,13 @@ package CityRPG_Commands
 
 		%arg1 = mFloor(%arg1);
 
-		if(%arg1*0.15+$Economics::Condition > $Pref::Server::City::Economics::Cap) {
-			%arg1 = mFloor(($Pref::Server::City::Economics::Cap-$Economics::Condition)/0.15);
+		if(%arg1*0.15+$City::Economics::Condition > $Pref::Server::City::Economics::Cap) {
+			%arg1 = mFloor(($Pref::Server::City::Economics::Cap-$City::Economics::Condition)/0.15);
 		}
 
 		if(%arg1 > 0)
 		{
-			if($Economics::Condition > $Pref::Server::City::Economics::Cap)
+			if($City::Economics::Condition > $Pref::Server::City::Economics::Cap)
 			{
 				messageClient(%client, '', "\c6The economy is currently at the maxiumum rate. Please try again later.");
 			}
@@ -209,7 +209,7 @@ package CityRPG_Commands
 					CityRPGData.getData(%client.bl_id).valueMoney -= %arg1;
 					messageClient(%client, '', "\c6You've donated \c3$" @ %arg1 SPC "\c6to the economy! (" @ %amoutPer @ "%)");
 					messageAll('',"\c3" @ %client.name SPC "\c6has donated \c3$" @ %arg1 SPC "\c6to the economy! (" @ %amoutPer @ "%)");
-					$Economics::Condition = $Economics::Condition + %amoutPer;
+					$City::Economics::Condition = $City::Economics::Condition + %amoutPer;
 					%client.setGameBottomPrint();
 				}
 				else
