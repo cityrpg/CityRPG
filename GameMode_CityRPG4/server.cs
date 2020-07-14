@@ -14,7 +14,7 @@ if($server::lan)
 
 $City::ScriptPath = "Add-Ons/GameMode_CityRPG4/server/";
 $City::DataPath = "Add-Ons/GameMode_CityRPG4/data/";
-$City::SavePath = "config/server/CityRPG/";
+$City::SavePath = "config/server/CityRPG4_A2/";
 
 $City::Version = "0.2.0";
 $City::VersionTitle = "Alpha 2";

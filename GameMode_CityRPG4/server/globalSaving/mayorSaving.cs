@@ -1,12 +1,12 @@
 function loadMayor()
 {
-	exec($City::SavePath @ "Global/Mayor.cs");
+	exec($City::SavePath @ "Mayor.cs");
 	$City::Mayor::Loaded = 1;
 }
 
 function saveMayor()
 {
-	export("$City::Mayor::*",$City::SavePath @ "Global/Mayor.cs");
+	export("$City::Mayor::*",$City::SavePath @ "Mayor.cs");
 }
 
 //////////////////////////////////////////////////
