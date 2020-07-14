@@ -161,6 +161,7 @@ exec($City::ScriptPath @ "init.cs");
 exec($City::ScriptPath @ "core.cs");
 exec($City::ScriptPath @ "player.cs");
 exec($City::ScriptPath @ "commands.cs");
+exec($City::ScriptPath @ "admin.cs");
 exec($City::ScriptPath @ "package.cs");
 exec($City::ScriptPath @ "overrides.cs");
 
