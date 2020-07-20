@@ -44,7 +44,6 @@ function City_RegisterPref(%category, %name, %variable, %type, %params, %default
 
 }
 
-// Init prefs without registering them
 function City_InitPrefs()
 {
 	registerPreferenceAddon("GameMode_CityRPG4", "CityRPG 4", "building");
