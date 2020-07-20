@@ -71,6 +71,7 @@ package CityRPG_Commands
 				messageClient(%client, '', "\c6 - brick -> \c3requestFunds\c6 [Service] [Price] - Requests $\c3[Price]\c6 for \c3[Service]\c6. Charge money to call events.");
 				messageClient(%client, '', "\c6 - brick -> \c3doJobTest\c6 [Job] [NoConvicts] - Tests if user's job is [Job]. NoConvicts will fail inmates. Calls onJobTestFail and onJobTestPass");
 			case "admin":
+				messageClient(%client, '', "\c6Type \c3/admin\c6 to access the main admin panel.");
 				messageClient(%client, '', "\c6Admin commands: /\c3updateScore\c6, /\c3setMinerals\c6 [\c3value\c6], /\c3setLumber\c6 [\c3value\c6], /\c3editEducation\c6 [\c3level\c6] [\c3player\c6]");
 				messageClient(%client, '', "\c6/\c3clearMoney\c6, \c6/\c3gMoney\c6 [\c3amount\c6] [\c3player\c6], /\c3dMoney\c6 [\c3amount\c6] [\c3player\c6], /\c3cleanse\c6, /\c3editHunger\c6 [\c3level\c6], /\c3manageLot");
 				messageClient(%client, '', "\c6/\c3resetAllJobs\c6");
