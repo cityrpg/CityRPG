@@ -434,7 +434,7 @@ function fxDTSBrick::cityBrickCheck(%brick)
 		%brick.client.cityLog("Attempt to plant " @ %brick.getDatablock().getName());
 	}
 
-	if(%client.isAdmin || CityRPGData.getData(%client.bl_id).valueJobID == $City::AdminJobID)
+	if(CityRPGData.getData(%client.bl_id).valueJobID == $City::AdminJobID)
 	{
 		return 1;
 	}
