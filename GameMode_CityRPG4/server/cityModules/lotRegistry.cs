@@ -42,8 +42,7 @@ function CityMenu_Lot(%client, %notitle)
 	{
 		error("Attempting to access a blank lot! Re-initializing it...");
 
-		%brick.registerNewCityLot();
-		%brick.assignCityLotName();
+		%brick.initNewCityLot();
 	}
 
 	if(!%notitle)
@@ -285,7 +284,7 @@ function CityMenu_LotAdmin_TransferPlayer(%client, %input)
 }
 
 // ============================================================
-// Database
+// Registry
 // ============================================================
 // TODO We are currently using the included Sassy saver, however this is planned to be replaced in the future.
 
@@ -324,7 +323,38 @@ function CityLots_GetLotCount()
 	return %count;
 }
 
-function fxDTSBrick::registerNewCityLot(%brick)
+// Determines the state of the lot and directs the corresponding init process.
+function fxDTSBrick::initCityLot(%brick)
+{
+	if(%brick.getCityLotID() == -1)
+	{
+		%brick.initNewCityLot();
+	}
+	else
+	{
+		%brick.initExistingCityLot();
+	}
+}
+
+function fxDTSBrick::initExistingCityLot(%brick)
+{
+	%lotID = %brick.getCityLotID();
+
+	$City::RealEstate::TotalLots++;
+	$City::RealEstate::UnclaimedLots++;
+
+	if(%lotID == -1)
+	{
+		warn("CityRPG 4 - Attempt to initialize existing lot " @ %brick @ ", but lot ID is blank! Aborting init.");
+		return;
+	}
+
+	%brick.cityLotInit = 0;
+	%brick.cityLotOverride = 1;
+	%brick.setNTObjectName(%lotID);
+}
+
+function fxDTSBrick::initNewCityLot(%brick)
 {
 	if(CityRPGLotRegistry.getData(%brick.getCityLotID()) != 0)
 	{
@@ -337,14 +367,14 @@ function fxDTSBrick::registerNewCityLot(%brick)
 	// 1. Initialize lot data with default values
 	// 2. Increment the lot index
 
-	%newIndex = CityLots_GetLotCount()+1;
+	%newID = CityLots_GetLotCount()+1;
 
-	if(CityRPGLotRegistry.getData(%newIndex) != 0)
+	if(CityRPGLotRegistry.getData(%newID) != 0)
 	{
-		error("CityRPG Lot Registry - Attempting to initialize the lot '" @ %newIndex @ "' but the ID already exists! This lot may not have registered correctly.");
+		error("CityRPG Lot Registry - Attempting to initialize the lot '" @ %newID @ "' but the ID already exists! This lot may not have registered correctly.");
 	}
 
-	CityRPGLotRegistry.addData(%newIndex);
+	CityRPGLotRegistry.addData(%newID);
 
 	if(CityRPGLotRegistry.dataCount > 0)
 	{
@@ -355,16 +385,19 @@ function fxDTSBrick::registerNewCityLot(%brick)
 		error("Lot registry is blank or missing! Will not export.");
 	}
 
-	%publicID = getNumKeyID();
 
+	%publicID = getNumKeyID();
 	if(%brick.getGroup().bl_id != %publicID)
 	{
 		CityLots_TransferLot(%brick, %publicID);
 	}
 
-	echo("City: Registered new lot, #" @ %newIndex);
+	%brick.cityLotOverride = 1;
+	%brick.setNTObjectName(%newID);
 
-	return %newIndex;
+	echo("City: Registered new lot, #" @ %newID);
+
+	return %newID;
 }
 
 // Returns the lot's ID number.
@@ -507,8 +540,8 @@ package CityRPG_LotRegistry
 		{
 			Parent::SetNTObjectName(%obj, %name);
 
-			// assignCityLot will reset the init value
-			%obj.assignCityLotName();
+			// Init value will be set back to 0 from initCityLot()
+			%obj.initCityLot();
 
 			return;
 		}
@@ -558,33 +591,13 @@ package CityRPG_LotRegistry
 		Parent::AddNTName(%obj, %name);
 	}
 
-	// Assigns the name for a city lot brick.
-	// Initializes the lot if it doesn't already exist.
-	function fxDTSBrick::assignCityLotName(%brick)
-	{
-		%lotID = %brick.getCityLotID();
-
-		$City::RealEstate::TotalLots++;
-		$City::RealEstate::UnclaimedLots++;
-
-		if(%lotID == -1)
-		{
-			%lotID = %brick.registerNewCityLot();
-		}
-
-		%brick.cityLotInit = 0;
-		%brick.cityLotOverride = 1;
-		%brick.setNTObjectName(%lotID);
-
-	}
-
 	function fxDTSBrick::onPlant(%brick)
 	{
 		Parent::onPlant(%brick);
 
 		if(%brick.dataBlock !$= "" && %brick.dataBlock.CityRPGBrickType == $CityBrick_Lot)
 		{
-			%brick.schedule(0,assignCityLotName);
+			%brick.schedule(0,initNewCityLot);
 		}
 	}
 
