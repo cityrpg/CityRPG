@@ -878,8 +878,8 @@ package CityRPG_MainPackage
 
 		if(%client.isAdmin)
 		{
-			messageClient(%client, '', "\c0As an admin, you can use the \"Council Member\" job to build and manage the server.");
-			messageClient(%client, '', "\c0Type \c6/job council member\c0 to change jobs. This will grant you jets and freeze your hunger.");
+			messageClient(%client, '', "\c0As an admin, you can use Admin Mode to build and manage the server.");
+			messageClient(%client, '', "\c0Type \c6/adminMode\c0 to toggle Admin Mode. This will grant you jets and freeze your hunger.");
 		}
 	}
 
