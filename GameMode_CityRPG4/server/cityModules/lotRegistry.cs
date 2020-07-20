@@ -551,7 +551,7 @@ package CityRPG_LotRegistry
 	{
 		if(%obj.dataBlock !$= "" && %obj.dataBlock.CityRPGBrickType == $CityBrick_Lot)
 		{
-			warn("CityRPG 4 - Attempt to call ClearNTObjectName on a lot brick!");
+			warn("CityRPG 4 - Attempt to call AddNTName on a lot brick!");
 			backtrace();
 		}
 
