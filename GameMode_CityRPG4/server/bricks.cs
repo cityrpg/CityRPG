@@ -590,6 +590,10 @@ function CityRPGInputTriggerData::onLeaveTrigger(%this, %trigger, %obj, %a)
 	{
 		%trigger.parent.getDatablock().parseData(%trigger.parent, %obj.client, false, "");
 		%obj.client.CityRPGTrigger = "";
-		%obj.client.cityMenuClose();
+
+		if(%obj.client.cityMenuID == %trigger.parent.getID())
+		{
+			%obj.client.cityMenuClose();
+		}
 	}
 }
