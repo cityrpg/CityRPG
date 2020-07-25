@@ -46,6 +46,12 @@ function GameConnection::AdminModeMessage(%client)
   messageClient(%client, '', "\c2+\c6 Building restrictions are disabled.");
 	messageClient(%client, '', "\c2+\c6 Hunger is frozen.");
 	messageClient(%client, '', "\c2+\c6 You have jets.");
+
+  if(!$Pref::Server::City::AdminsAlwaysMonitorChat)
+  {
+    messageClient(%client, '', "\c2+\c6 You can see radio chat messages for all jobs.");
+  }
+
 	messageClient(%client, '', "\c3*\c6 Your job is fixed as \c3Council Member\c6. Changing jobs will disable admin mode.");
 }
 
