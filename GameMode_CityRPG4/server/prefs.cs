@@ -59,7 +59,7 @@ function City_InitPrefs()
 	City_RegisterPref("Game", "Max Bounty", "$Pref::Server::City::demerits::maxBounty", "int", "0 1000000", 7500);
 
 	City_RegisterPref("Server Management", "Logging Enabled", "$Pref::Server::City::loggerEnabled", "bool", "", true);
-	City_RegisterPref("Server Management", "Always show team chat to admins", "$Pref::Server::City::AdminsAlwaysMonitorChat", "bool", "", false);
+	City_RegisterPref("Server Management", "Always show radio chat to admins", "$Pref::Server::City::AdminsAlwaysMonitorChat", "bool", "", false);
 
 	City_RegisterPref("Economy", "Economy Relay", "$Pref::Server::City::Economics::Relay", "int", "0 50", 2);
 	City_RegisterPref("Economy", "Max Economy Percentage", "$Pref::Server::City::Economics::Greatest", "int", "-500 500", 100);
