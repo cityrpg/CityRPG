@@ -140,7 +140,7 @@ package CityRPG_MainPackage
 			{
 				%ownerBG = getBrickGroupFromObject(%brick);
 
-				if(%ownerBG.client.isAdmin)
+				if(CityRPGData.getData(%client.bl_id).valueJobID == $City::AdminJobID)
 					parent::setItem(%brick, %datablock, %client);
 			}
 			else
