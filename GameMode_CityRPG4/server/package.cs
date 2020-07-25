@@ -657,7 +657,7 @@ package CityRPG_MainPackage
 
 		if(%hitObj.getClassName() $= "fxDTSBrick" && %hitObj.getDataBlock().CityRPGBrickType == $CityBrick_Lot)
 		{
-			if(%player.client.isAdmin)
+			if(CityRPGData.getData(%player.client.bl_id).valueJobID == $City::AdminJobID)
 				$CityLotKillOverride = 1;
 			else
 			{
