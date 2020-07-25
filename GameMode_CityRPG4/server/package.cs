@@ -862,7 +862,7 @@ package CityRPG_MainPackage
 			}
 			else
 			{
-				messageCityRadio(%client.getJobSO().track, '', %client.name @ "<color:FFFFFF>:" SPC %text);
+				messageCityRadio(%client.getJobSO().track, '', %client.name @ "\c6:" SPC %text);
 			}
 		}
 	}
