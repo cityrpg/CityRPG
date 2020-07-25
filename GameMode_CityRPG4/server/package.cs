@@ -150,24 +150,6 @@ package CityRPG_MainPackage
 			parent::setItem(%brick, %datablock, %client);
 	}
 
-	function fxDTSBrick::setItem(%brick, %datablock, %client)
-	{
-		if(!%brick.getDatablock().CityRPGPermaspawn && %brick != $LastLoadedBrick)
-		{
-			if(!isObject(%brick.item) || %brick.item.getDatablock() != %datablock)
-			{
-				%ownerBG = getBrickGroupFromObject(%brick);
-
-				if(%ownerBG.client.isAdmin)
-					parent::setItem(%brick, %datablock, %client);
-			}
-			else
-				parent::setItem(%brick, %datablock, %client);
-		}
-		else
-			parent::setItem(%brick, %datablock, %client);
-	}
-
 	function fxDTSBrick::spawnItem(%brick, %pos, %datablock, %client)
 	{
 		if(isObject(%owner = getBrickGroupFromObject(%brick).client) && %owner.isAdmin)
