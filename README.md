@@ -5,8 +5,8 @@ CityRPG is a mod for the game Blockland that simulates the life of a blocky city
 
 In CityRPG 4, you can explore a range of jobs and opportunities as you work your way to the top! You can join the fun on an existing server, or create your own server with any theme, rules, and style that you like
 
-[Join us on Discord](https://discord.gg/dHcnHb3) | [View update progress on Trello](https://lakeys.net/cityrpg/roadmap/)
------------- | ------------- |
+[Download CityRPG 4](https://github.com/cityrpg/CityRPG-4-Alpha/releases) | [Join us on Discord](https://discord.gg/dHcnHb3) | [View update progress on Trello](https://lakeys.net/cityrpg/roadmap/)
+------------ | ------------- | ------------- |
 
 ![Alpha 1](https://lakeys.net/cityrpg/media/banner.png)
 

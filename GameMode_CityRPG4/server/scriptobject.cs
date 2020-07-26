@@ -63,6 +63,8 @@ function JobSO::addJobFromFile(%so, %file)
 
 			name		= $CityRPG::jobs::name;
 			track		= $CityRPG::jobs::track;
+			title		= $CityRPG::jobs::title;
+
 
 			invest		= $CityRPG::jobs::initialInvestment;
 			pay		= $CityRPG::jobs::pay;
@@ -99,14 +101,18 @@ function JobSO::addJobFromFile(%so, %file)
 
 		%track = $CityRPG::jobs::track;
 
+		if(%track $= "")
+		{
+			%track = "Miscellaneous";
+			%so.job[%jobID].track = Miscellaneous;
+		}
+
 		// Default to a neutral grey if there is no color
 		if($City::JobTrackColor[%track] $= "")
 		{
 			$City::JobTrackColor[%track] = "505050";
 		}
 
-		if(%track $= "")
-			%track = "Miscellaneous";
 
 		// Job track registration for menus
 		// "Invisible" jobs such as admin and mayor are not included
@@ -159,16 +165,18 @@ function JobSO::getJobCount(%so)
 // ============================================================
 function CitySO::loadData(%so)
 {
-	if(isFile("config/server/CityRPG/CityRPG/City.cs"))
+	if(isFile($City::SavePath @ "City.cs"))
 	{
-		exec("config/server/CityRPG/CityRPG/City.cs");
+		exec($City::SavePath @ "City.cs");
 		%so.minerals		= $CityRPG::temp::citydata::datumminerals;
 		%so.lumber			= $CityRPG::temp::citydata::datumlumber;
 		%so.economy			= $Economics::Condition;
 
+		%so.version			= $CityRPG::temp::citydata::version;
 	}
 	else
 	{
+		%so.version = $City::Version;
 		%so.value["minerals"] = 0;
 		%so.value["lumber"] = 0;
 		%so.value["economy"] = 0;
@@ -177,15 +185,27 @@ function CitySO::loadData(%so)
 
 function CitySO::saveData(%so)
 {
+	// Always override the version with the current one.
+	$CityRPG::temp::citydata::version							= $City::Version;
+
 	$CityRPG::temp::citydata::datum["minerals"]		= %so.minerals;
 	$CityRPG::temp::citydata::datum["lumber"]		= %so.lumber;
-	export("$CityRPG::temp::citydata::*", "config/server/CityRPG/CityRPG/City.cs");
+	export("$CityRPG::temp::citydata::*", $City::SavePath @ "City.cs");
 }
 
 if(!isObject(CitySO))
 {
 	new scriptObject(CitySO) { };
 	CitySO.loadData();
+
+	// Until the saver is replaced, we sadly have to worry about save data compatibility.
+	if(CitySO.version != $City::Version || CitySO.version $= "")
+	{
+		// Set a flag to display a warning for the host when they join.
+		$City::DisplayVersionWarning = 1;
+
+		echo("-----------------------------------------------------------" NL $City::VersionWarning NL "-----------------------------------------------------------");
+	}
 }
 
 // ============================================================
@@ -298,9 +318,9 @@ function CalendarSO::getCurrentDay(%so)
 
 function CalendarSO::loadData(%so)
 {
-	if(isFile("config/server/CityRPG/CityRPG/Calendar.cs"))
+	if(isFile($City::SavePath @ "Calendar.cs"))
 	{
-		exec("config/server/CityRPG/CityRPG/Calendar.cs");
+		exec($City::SavePath @ "Calendar.cs");
 		%so.date = $CityRPG::temp::calendar::datumdate;
 	}
 	else
@@ -314,7 +334,7 @@ function CalendarSO::loadData(%so)
 function CalendarSO::saveData(%so)
 {
 	$CityRPG::temp::calendar::datum["date"]	= %so.date;
-	export("$CityRPG::temp::calendar::*", "config/server/CityRPG/CityRPG/Calendar.cs");
+	export("$CityRPG::temp::calendar::*", $City::SavePath @ "Calendar.cs");
 }
 
 if(!isObject(CalendarSO))

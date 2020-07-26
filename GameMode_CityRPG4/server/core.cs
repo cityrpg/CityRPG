@@ -265,14 +265,14 @@ function City_Tick(%brick)
 	if(%so.holiday[CalendarSO.getCurrentDay()] !$= "")
 		messageAll('', "\c6 -" SPC %so.holiday[%so.getCurrentDay()]);
 
-	if($Economics::Condition > 0) {
+	if($City::Economics::Condition > 0) {
 		%econColor = "<color:00ee00>";
 	}
 	else {
 		%econColor = "<color:ee0000>";
 	}
 
-	messageAll('', "\c6 - The current economy value is " @ %econColor @ $Economics::Condition @ "\c6%.");
+	messageAll('', "\c6 - The current economy value is " @ %econColor @ $City::Economics::Condition @ "\c6%.");
 
 	City_Init_Spawns();
 	City_TickLoop(0);
@@ -396,7 +396,11 @@ function City_TickLoop(%loop)
 				 %so.valueDemerits -= $Pref::Server::City::demerits::reducePerTick;
 			else
 				%so.valueDemerits = 0;
-			messageClient(%client, '', '\c6 - You have had your demerits reduced to \c3%1\c6 due to <a:en.wikipedia.org/wiki/Statute_of_limitations>Statute of Limitations</a>\c6.', %so.valueDemerits);
+
+			if(calendarSO.getCurrentDay() == 187)
+				messageClient(%client, '', '\c6 - You have had your demerits reduced to \c3%1\c6 due to <a:https://www.youtube.com/watch?v=iq8gfaFqFpI>Statue of Limitations</a>\c6.', %so.valueDemerits);
+			else
+				messageClient(%client, '', '\c6 - You have had your demerits reduced to \c3%1\c6 due to <a:en.wikipedia.org/wiki/Statute_of_limitations>Statute of Limitations</a>\c6.', %so.valueDemerits);
 
 			%client.setInfo();
 		}
@@ -415,12 +419,12 @@ function City_TickLoop(%loop)
 					}
 				}
 
-				%sume = $Economics::Condition / 100;
+				%sume = $City::Economics::Condition / 100;
 				%osum = %client.getSalary();
 				%sum = (%osum * %sume) + %osum;
 				%sum = mFloor(%sum);
 
-				if($Economics::Condition > 25)
+				if($City::Economics::Condition > 25)
 					%include = 0.005;
 				else
 					%include = -0.025;
@@ -553,4 +557,22 @@ function GameConnection::messageCityLagNotice(%client)
 {
 	messageClient(%client, '', "\c3Notice: This server has " @ getBrickCount() @ " bricks.");
 	messageClient(%client, '', "\c3If you experience lag, consider turning down your shaders, as well as your draw distance under Advanced options.");
+}
+
+function messageCityRadio(%jobTrack, %msgType, %msgString)
+{
+	echo("(" @ %jobTrack @ " Chat)" SPC %msgString);
+
+	for(%i = 0; %i < ClientGroup.getCount(); %i++)
+	{
+		%client = ClientGroup.getObject(%i);
+
+		if(CityRPGData.getData(%client.bl_id).valueJobID == $City::AdminJobID || // Admin job always sees radio..
+		($Pref::Server::City::AdminsAlwaysMonitorChat && %client.isAdmin) || // Or if the pref is enabled, allow admin to snoop...
+		(%client.getJobSO().track $= %jobTrack && // Otherwise, check for a matching job track...
+		!getWord(CityRPGData.getData(%client.bl_id).valueJailData, 1))) // And exclude convicts from seeing messages in their track.
+		{
+			messageClient(%client, '', "\c3[<color:" @ $City::JobTrackColor[%jobTrack] @ ">" @ %jobTrack @ " Radio\c3]" SPC %msgString);
+		}
+	}
 }
