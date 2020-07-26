@@ -2,6 +2,7 @@
 ADDON Brick_Large_Cubes
 ADDON Brick_Arch
 ADDON Brick_ModTer_BasicPack
+ADDON Brick_ModTer_InvertedPack
 ADDON Brick_V15
 ADDON Emote_Alarm
 ADDON Emote_Confusion
