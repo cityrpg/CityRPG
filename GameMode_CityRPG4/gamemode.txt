@@ -18,6 +18,7 @@ ADDON Particle_Grass
 ADDON Particle_Player
 ADDON Particle_Tools
 ADDON Print_ModTer_Default
+ADDON Player_DifferentSlotPlayers
 ADDON Player_No_Jet
 ADDON Projectile_GravityRocket
 ADDON Projectile_Pinball

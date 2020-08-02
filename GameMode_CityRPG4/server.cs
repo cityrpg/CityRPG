@@ -74,6 +74,14 @@ if(%error == $Error::AddOn_NotFound)
   return;
 }
 
+// Player_DifferentSlotPlayers
+%error = ForceRequiredAddOn("Player_DifferentSlotPlayers");
+if(%error == $Error::AddOn_NotFound)
+{
+  error("ERROR: GameMode_CityRPG4 - required add-on Player_DifferentSlotPlayers not found");
+  return;
+}
+
 // Item_Skis
 %error = ForceRequiredAddOn("Item_Skis");
 if(%error == $Error::AddOn_NotFound)
@@ -191,9 +199,6 @@ exec($City::ScriptPath @ "cityModules/security.cs");
 exec($City::ScriptPath @ "support/spacecasts.cs");
 exec($City::ScriptPath @ "support/extraResources.cs");
 exec($City::ScriptPath @ "support/formatNumber.cs");
-
-// Playertype
-exec($City::ScriptPath @ "playerTypes/Multislot/server.cs");
 
 // Global saving
 exec($City::ScriptPath @ "globalSaving/mayorSaving.cs");

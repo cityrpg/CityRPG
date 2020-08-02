@@ -56,6 +56,16 @@ function GameConnection::AdminModeMessage(%client)
 }
 
 // ============================================================
+// Jets
+// ============================================================
+datablock PlayerData(Player9SlotJetPlayer : Player9SlotPlayer)
+{
+	canJet = 1;
+	uiName = "";
+};
+
+
+// ============================================================
 // Other Admin Commands
 // ============================================================
 function serverCmdEditEducation(%client, %int, %name)
