@@ -18,9 +18,7 @@ ADDON Particle_Grass
 ADDON Particle_Player
 ADDON Particle_Tools
 ADDON Print_ModTer_Default
-ADDON Player_Leap_Jet
 ADDON Player_No_Jet
-ADDON Player_Quake
 ADDON Projectile_GravityRocket
 ADDON Projectile_Pinball
 ADDON Projectile_Pong
@@ -61,8 +59,6 @@ ADDON Item_Sports
 ADDON Tool_ChangeOwnership
 
 ADDON GameMode_CityRPG4
-
-//music
 
 //environment
 $EnvGuiServer::SimpleMode 1
