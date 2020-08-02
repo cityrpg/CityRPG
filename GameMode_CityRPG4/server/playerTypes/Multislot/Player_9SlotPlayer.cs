@@ -10,3 +10,9 @@ datablock PlayerData(Player9SlotPlayer : PlayerStandardArmor)
 	maxTools = 9;
 	maxWeapons = 9;
 };
+
+datablock PlayerData(Player9SlotJetPlayer : Player9SlotPlayer)
+{
+	canJet = 1;
+	uiName = "";
+};
