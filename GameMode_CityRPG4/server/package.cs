@@ -222,7 +222,7 @@ package CityRPG_MainPackage
 
 			messageClient(%client, '', "\c6Welcome to " @ $Pref::Server::City::name @ "!");
 
-			if($Pref::Server::City::IntroMessage)
+			if(!$Pref::Server::City::DisableIntroMessage)
 			{
 				// Intro message
 				// Beware of the 255-character packet limit.
