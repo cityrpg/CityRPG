@@ -227,8 +227,8 @@ package CityRPG_MainPackage
 				// Intro message
 				// Beware of the 255-character packet limit.
 				schedule(4000, 0, commandToClient, %client, 'messageBoxOK', "Welcome to CityRPG 4 Alpha 2!",
-										"Welcome, and thanks for joining us!"
-									@ "<br><br>CityRPG 4 is a work-in-progress. You may encounter bugs and quirks along the way. If you do, feel free to let us know."
+										"Welcome!"
+									@ "<br><br>CityRPG 4 is a work-in-progress. You may encounter bugs and incomplete features along the way. Keep up with development at <a:https://cityrpg.lakeys.net/>cityrpg.lakeys.net</a>"
 									@ "<br><br>Have fun!<bitmap:add-ons/gamemode_cityrpg4/boxlogo>");
 			}
 		}
