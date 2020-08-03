@@ -528,11 +528,11 @@ function CityRPGLotTriggerData::onEnterTrigger(%this, %trigger, %obj)
 	%client.CityRPGTrigger = %trigger;
 	%client.CityRPGLotBrick = %trigger.parent;
 
-	%lotStr = "<just:right><font:palatino linotype:24>\c6" @ %trigger.parent.getCityLotName();
+	%lotStr = "<just:right><font:palatino linotype:18>\c6" @ %trigger.parent.getCityLotName();
 
 	if(%trigger.parent.getCityLotOwnerID() == -1)
 	{
-		%lotStr = %lotStr @ "<br>\c3For sale! \c6Type /lot for more info";
+		%lotStr = %lotStr @ "<br>\c2For sale!\c6 Type /lot for info";
 	}
 
 	%client.centerPrint(%lotStr, 2);
