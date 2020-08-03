@@ -186,6 +186,18 @@ package CityRPG_MainPackage
 		%this.onCityLoadPlant(%this, %brick);
 	}
 
+	function fxDTSBrick::spawnProjectile(%obj, %velocity, %projectileData, %variance, %scale, %client)
+	{
+		// Replace the source client with a generic one that always fails minigameCanDamage.
+		Parent::spawnProjectile(%obj, %velocity, %projectileData, %variance, %scale, CityRPGEventClient);
+	}
+
+	function fxDTSBrick::spawnExplosion(%obj, %projectileData, %scale, %client)
+	{
+		// Replace the source client with a generic one that always fails minigameCanDamage.
+		Parent::spawnExplosion(%obj, %projectileData, %scale, CityRPGEventClient);
+	}
+
 	// ============================================================
 	// Client Packages
 	// ============================================================
@@ -769,6 +781,13 @@ package CityRPG_MainPackage
 	// Always-in-Minigame Overrides
 	function miniGameCanDamage(%obj1, %obj2)
 	{
+		if(%obj1.getId() == CityRPGEventClient.getId() || %obj2.getId() == CityRPGEventClient.getId())
+		{
+			// If we're dealing with CityRPGEventClient, *always* return 0.
+			// This prevents evented projectiles and explosions from doing any sort of damage.
+			return 0;
+		}
+
 		if(%obj2.getClassName() $= "WheeledVehicle")
 		{
 			// Only allow vehicle damage if a passenger is wanted.

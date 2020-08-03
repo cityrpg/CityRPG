@@ -85,6 +85,14 @@ function City_Init()
 		};
 	}
 
+	// Generic client to run events such as spawnProjectile. See: minigameCanDamage
+	if(!isObject(CityRPGEventClient))
+	{
+		new ScriptObject(CityRPGEventClient)
+		{
+		};
+	}
+
 	if(!isObject(CityRPGMini))
 	{
 		City_Init_Minigame();

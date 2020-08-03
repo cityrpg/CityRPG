@@ -213,9 +213,7 @@ unRegisterOutputEvent("fxDTSBrick", "SetItem");
 unRegisterOutputEvent("fxDTSBrick", "SetItemDirection");
 unRegisterOutputEvent("fxDTSBrick", "SetItemPosition");
 unRegisterOutputEvent("fxDTSBrick", "SetVehicle");
-unRegisterOutputEvent("fxDTSBrick", "SpawnExplosion");
 unRegisterOutputEvent("fxDTSBrick", "SpawnItem");
-unRegisterOutputEvent("fxDTSBrick", "SpawnProjectile");
 
 unRegisterOutputEvent("Player", "AddHealth");
 unRegisterOutputEvent("Player", "AddVelocity");
