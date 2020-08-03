@@ -779,21 +779,21 @@ package CityRPG_MainPackage
 	}
 
 	// Always-in-Minigame Overrides
-	function miniGameCanDamage(%obj1, %obj2)
+	function miniGameCanDamage(%client, %victimObject)
 	{
-		if(%obj1.getId() == CityRPGEventClient.getId() || %obj2.getId() == CityRPGEventClient.getId())
+		if(%client.getId() == CityRPGEventClient.getId() || %victimObject.getId() == CityRPGEventClient.getId())
 		{
 			// If we're dealing with CityRPGEventClient, *always* return 0.
 			// This prevents evented projectiles and explosions from doing any sort of damage.
 			return 0;
 		}
 
-		if(%obj2.getClassName() $= "WheeledVehicle")
+		if(%victimObject.getClassName() $= "WheeledVehicle")
 		{
 			// Only allow vehicle damage if a passenger is wanted.
-			for(%i = 0; %i <= %obj2.getMountedObjectCount()-1; %i++)
+			for(%i = 0; %i <= %victimObject.getMountedObjectCount()-1; %i++)
 			{
-				if(%obj2.getMountedObject(%i).client.getWantedLevel())
+				if(%victimObject.getMountedObject(%i).client.getWantedLevel())
 				{
 					return 1;
 				}
