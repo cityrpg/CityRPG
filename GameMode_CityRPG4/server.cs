@@ -127,6 +127,12 @@ if($GameModeArg $= "Add-Ons/GameMode_CityRPG4/gamemode.txt")
   {
     exec("Add-Ons/Server_NewBrickTool/server.cs");
   }
+
+  // Event_Bot_Relay (Optional)
+  if(isFile("Add-Ons/Event_Bot_Relay/server.cs"))
+  {
+    exec("Add-Ons/Event_Bot_Relay/server.cs");
+  }
 }
 else
 {
