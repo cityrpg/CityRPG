@@ -1,4 +1,6 @@
 //add-ons to load
+ADDON Bot_Hole
+ADDON Bot_Blockhead
 ADDON Brick_Large_Cubes
 ADDON Brick_Arch
 ADDON Brick_ModTer_BasicPack
