@@ -43,11 +43,12 @@ function GameConnection::cityMenuInput(%client, %input)
 
 		if(isFunction(%function))
 		{
+			%id = %client.cityMenuID;
 			if(%client.cityMenuAutoClose)
 				%client.cityMenuClose();
 
 			// It's important to do this after closing in case the function we're calling opens another menu.
-			call(%function, %client, %input);
+			call(%function, %client, %input, %id);
 
 			return true;
 		}

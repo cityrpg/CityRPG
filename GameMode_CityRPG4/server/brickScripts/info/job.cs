@@ -46,7 +46,7 @@ function CityMenu_Jobs_ApplyInput(%client, %input)
 	serverCmdjobs(%client, %input);
 }
 
-function CityMenu_Jobs_List(%client)
+function CityMenu_Jobs_List(%client, %input, %brick)
 {
 	%client.cityMenuClose(1);
 
