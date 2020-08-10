@@ -98,7 +98,7 @@ function CityMenu_Jobs_ViewTrack(%client, %input)
 	%functions = 	"CityMenu_Jobs_List"
 						TAB "CityMenu_Jobs_ApplyPrompt";
 
-	%client.cityMenuOpen(%menu, %functions, %brick, "\c6Thanks, come again.");
+	%client.cityMenuOpen(%menu, %functions, %client.cityMenuID, "\c6Thanks, come again.");
 }
 
 // ============================================================
