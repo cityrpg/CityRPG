@@ -142,23 +142,29 @@ else
   // If enabled, we would like checkpoints to execute first.
   if($AddOn__Brick_Checkpoint)
   {
-    ForceRequiredAddOn("Brick_Checkpoint");
+    %error = ForceRequiredAddOn("Brick_Checkpoint");
 
-    deactivatepackage(CheckpointPackage);
-    // We don't want the checkpoint package loading.
-    // The necessary functions will be rewritten later to fix spawn compatibility.
+    if(%error == $Error::None)
+    {
+      deactivatepackage(CheckpointPackage);
+      // We don't want the checkpoint package loading.
+      // The necessary functions will be rewritten later to fix spawn compatibility.
+    }
   }
 
   // Event_doPlayerTeleport (Optional)
   // If doPlayerTeleport is enabled, re-register it without the "relative" option.
   // This prevents players from exploiting doPlayerTeleport to move through walls.
-
   if($AddOn__Event_doPlayerTeleport)
   {
-    ForceRequiredAddOn("Event_doPlayerTeleport");
+    %error = ForceRequiredAddOn("Event_doPlayerTeleport");
 
-    unregisterOutputEvent("fxDTSBrick","doPlayerTeleport");
-    registerOutputEvent("fxDTSBrick","doPlayerTeleport","string 200 90\tlist Relative 0 North 1 East 2 South 3 West 4\tbool",1);
+    if(%error == $Error::None)
+    {
+      unregisterOutputEvent("fxDTSBrick","doPlayerTeleport");
+      registerOutputEvent("fxDTSBrick","doPlayerTeleport","string 200 90\tlist Relative 0 North 1 East 2 South 3 West 4\tbool",1);
+    }
+  }
   }
 }
 
