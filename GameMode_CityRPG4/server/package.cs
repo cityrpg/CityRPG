@@ -186,6 +186,18 @@ package CityRPG_MainPackage
 		%this.onCityLoadPlant(%this, %brick);
 	}
 
+	function fxDTSBrick::spawnProjectile(%obj, %velocity, %projectileData, %variance, %scale, %client)
+	{
+		// Replace the source client with a generic one that always fails minigameCanDamage.
+		Parent::spawnProjectile(%obj, %velocity, %projectileData, %variance, %scale, CityRPGEventClient);
+	}
+
+	function fxDTSBrick::spawnExplosion(%obj, %projectileData, %scale, %client)
+	{
+		// Replace the source client with a generic one that always fails minigameCanDamage.
+		Parent::spawnExplosion(%obj, %projectileData, %scale, CityRPGEventClient);
+	}
+
 	// ============================================================
 	// Client Packages
 	// ============================================================
@@ -222,13 +234,13 @@ package CityRPG_MainPackage
 
 			messageClient(%client, '', "\c6Welcome to " @ $Pref::Server::City::name @ "!");
 
-			if($Pref::Server::City::IntroMessage)
+			if(!$Pref::Server::City::DisableIntroMessage)
 			{
 				// Intro message
 				// Beware of the 255-character packet limit.
 				schedule(4000, 0, commandToClient, %client, 'messageBoxOK', "Welcome to CityRPG 4 Alpha 2!",
-										"Welcome, and thanks for joining us!"
-									@ "<br><br>CityRPG 4 is a work-in-progress. You may encounter bugs and quirks along the way. If you do, feel free to let us know."
+										"Welcome!"
+									@ "<br><br>CityRPG 4 is a work-in-progress. You may encounter bugs and incomplete features along the way. Keep up with development at <a:https://cityrpg.lakeys.net/>cityrpg.lakeys.net</a>"
 									@ "<br><br>Have fun!<bitmap:add-ons/gamemode_cityrpg4/boxlogo>");
 			}
 		}
@@ -766,14 +778,21 @@ package CityRPG_MainPackage
 	}
 
 	// Always-in-Minigame Overrides
-	function miniGameCanDamage(%obj1, %obj2)
+	function miniGameCanDamage(%client, %victimObject)
 	{
-		if(%obj2.getClassName() $= "WheeledVehicle")
+		if(%client.getId() == CityRPGEventClient.getId() || %victimObject.getId() == CityRPGEventClient.getId())
+		{
+			// If we're dealing with CityRPGEventClient, *always* return 0.
+			// This prevents evented projectiles and explosions from doing any sort of damage.
+			return 0;
+		}
+
+		if(%victimObject.getClassName() $= "WheeledVehicle")
 		{
 			// Only allow vehicle damage if a passenger is wanted.
-			for(%i = 0; %i <= %obj2.getMountedObjectCount()-1; %i++)
+			for(%i = 0; %i <= %victimObject.getMountedObjectCount()-1; %i++)
 			{
-				if(%obj2.getMountedObject(%i).client.getWantedLevel())
+				if(%victimObject.getMountedObject(%i).client.getWantedLevel())
 				{
 					return 1;
 				}

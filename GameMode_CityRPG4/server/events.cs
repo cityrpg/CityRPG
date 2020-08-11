@@ -1,3 +1,4 @@
+// See City_Init_AssembleEvents() in init.cs for registration
 // Input Events
 function fxDTSBrick::OnEnterLot(%brick, %obj)
 {
@@ -63,6 +64,33 @@ function fxDTSBrick::onJobTestFail(%brick, %client)
 	$inputTarget_client	= %client;
 
 	%brick.processInputEvent("onJobTestFail", %client);
+}
+
+function fxDTSBrick::onMenuOpen(%brick, %client)
+{
+	$inputTarget_self	= %brick;
+	$inputTarget_player	= %client.player;
+	$inputTarget_client	= %client;
+
+	%brick.processInputEvent("onMenuOpen", %client);
+}
+
+function fxDTSBrick::onMenuClose(%brick, %client)
+{
+	$inputTarget_self	= %brick;
+	$inputTarget_player	= %client.player;
+	$inputTarget_client	= %client;
+
+	%brick.processInputEvent("onMenuClose", %client);
+}
+
+function fxDTSBrick::onMenuInput(%brick, %client)
+{
+	$inputTarget_self	= %brick;
+	$inputTarget_player	= %client.player;
+	$inputTarget_client	= %client;
+
+	%brick.processInputEvent("onMenuInput", %client);
 }
 
 // Output Events

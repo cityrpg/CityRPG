@@ -28,6 +28,12 @@ function GameConnection::cityMenuOpen(%client, %menu, %functions, %menuID, %exit
 	%client.cityMenuID = %menuID;
 	%client.cityMenuExitMsg = %exitMsg;
 
+	// Event
+	if(isObject(%menuID) && %menuID.getClassName() $= "fxDTSBrick")
+	{
+		%menuID.onMenuOpen();
+	}
+
 	// Return to indicate everything went smoothly.
 	return true;
 }
@@ -36,6 +42,12 @@ function GameConnection::cityMenuOpen(%client, %menu, %functions, %menuID, %exit
 // Called when a user enters an input for a city menu.
 function GameConnection::cityMenuInput(%client, %input)
 {
+	// Event
+	if(isObject(%client.cityMenuID) && %client.cityMenuID.getClassName() $= "fxDTSBrick")
+	{
+		%client.cityMenuID.onMenuInput();
+	}
+
 	// If there's multiple fields, this is a numbered menu.
 	if(getFieldCount(%client.cityMenuFunction) > 1)
 	{
@@ -43,11 +55,12 @@ function GameConnection::cityMenuInput(%client, %input)
 
 		if(isFunction(%function))
 		{
+			%id = %client.cityMenuID;
 			if(%client.cityMenuAutoClose)
 				%client.cityMenuClose();
 
 			// It's important to do this after closing in case the function we're calling opens another menu.
-			call(%function, %client, %input);
+			call(%function, %client, %input, %id);
 
 			return true;
 		}
@@ -76,7 +89,13 @@ function GameConnection::cityMenuClose(%client, %silent)
 	{
 		// Use a 1ms delay so the 'closed' message shows after any other messages
 		if(!%silent)
-			schedule(1, 0, messageClient, %client, '', %client.cityMenuExitMsg);
+			%client.schedule(1, cityMenuMessage, %client.cityMenuExitMsg);
+
+		// Event
+		if(isObject(%client.cityMenuID) && %client.cityMenuID.getClassName() $= "fxDTSBrick")
+		{
+			%client.cityMenuID.onMenuClose();
+		}
 
 		%client.cityMenuOpen = false;
 		%client.cityMenuFunction = "";

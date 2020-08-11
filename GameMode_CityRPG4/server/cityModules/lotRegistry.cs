@@ -216,7 +216,7 @@ function CityMenu_LotAdmin(%client)
 function CityMenu_LotAdmin_SetNamePrompt(%client)
 {
 	%client.cityLog("Lot MOD " @ %client.cityMenuID.getCityLotID() @ " rename prompt");
-	messageClient(%client, '', "\c6Enter a new name for the lot \c3" @ %client.cityMenuID.getCityLotName() @ "\c6.");
+	messageClient(%client, '', "\c6Enter a new name for the lot \c3" @ %client.cityMenuID.getCityLotName() @ "\c6. ML tags are allowed.");
 	%client.cityMenuFunction = CityMenu_LotAdmin_SetName;
 }
 
@@ -229,8 +229,6 @@ function CityMenu_LotAdmin_SetName(%client, %input)
 		messageClient(%client, '', "\c6Sorry, that name exceeds the length limit. Please try again.");
 		return;
 	}
-
-	%name = StripMLControlChars(%input);
 
 	%client.cityMenuID.setCityLotName(%name);
 	messageClient(%client, '', "\c6Lot name changed to \c3" @ %client.cityMenuID.getCityLotName() @ "\c6.");

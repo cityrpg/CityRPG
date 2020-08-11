@@ -57,6 +57,14 @@ if(%error == $Error::AddOn_NotFound)
   return;
 }
 
+// Player_DifferentSlotPlayers
+%error = ForceRequiredAddOn("Player_DifferentSlotPlayers");
+if(%error == $Error::AddOn_NotFound)
+{
+  error("ERROR: GameMode_CityRPG4 - required add-on Player_DifferentSlotPlayers not found");
+  return;
+}
+
 // Item_Skis
 %error = ForceRequiredAddOn("Item_Skis");
 if(%error == $Error::AddOn_NotFound)
@@ -110,6 +118,12 @@ if($GameModeArg $= "Add-Ons/GameMode_CityRPG4/gamemode.txt")
   {
     exec("Add-Ons/Server_NewBrickTool/server.cs");
   }
+
+  // Event_Bot_Relay (Optional)
+  if(isFile("Add-Ons/Event_Bot_Relay/server.cs"))
+  {
+    exec("Add-Ons/Event_Bot_Relay/server.cs");
+  }
 }
 else
 {
@@ -119,23 +133,29 @@ else
   // If enabled, we would like checkpoints to execute first.
   if($AddOn__Brick_Checkpoint)
   {
-    ForceRequiredAddOn("Brick_Checkpoint");
+    %error = ForceRequiredAddOn("Brick_Checkpoint");
 
-    deactivatepackage(CheckpointPackage);
-    // We don't want the checkpoint package loading.
-    // The necessary functions will be rewritten later to fix spawn compatibility.
+    if(%error == $Error::None)
+    {
+      deactivatepackage(CheckpointPackage);
+      // We don't want the checkpoint package loading.
+      // The necessary functions will be rewritten later to fix spawn compatibility.
+    }
   }
 
   // Event_doPlayerTeleport (Optional)
   // If doPlayerTeleport is enabled, re-register it without the "relative" option.
   // This prevents players from exploiting doPlayerTeleport to move through walls.
-
   if($AddOn__Event_doPlayerTeleport)
   {
-    ForceRequiredAddOn("Event_doPlayerTeleport");
+    %error = ForceRequiredAddOn("Event_doPlayerTeleport");
 
-    unregisterOutputEvent("fxDTSBrick","doPlayerTeleport");
-    registerOutputEvent("fxDTSBrick","doPlayerTeleport","string 200 90\tlist Relative 0 North 1 East 2 South 3 West 4\tbool",1);
+    if(%error == $Error::None)
+    {
+      unregisterOutputEvent("fxDTSBrick","doPlayerTeleport");
+      registerOutputEvent("fxDTSBrick","doPlayerTeleport","string 200 90\tlist Relative 0 North 1 East 2 South 3 West 4\tbool",1);
+    }
+  }
   }
 }
 
@@ -189,9 +209,6 @@ exec($City::ScriptPath @ "support/spacecasts.cs");
 exec($City::ScriptPath @ "support/extraResources.cs");
 exec($City::ScriptPath @ "support/formatNumber.cs");
 
-// Playertype
-exec($City::ScriptPath @ "playerTypes/Multislot/server.cs");
-
 // Global saving
 exec($City::ScriptPath @ "globalSaving/mayorSaving.cs");
 
@@ -205,9 +222,7 @@ unRegisterOutputEvent("fxDTSBrick", "SetItem");
 unRegisterOutputEvent("fxDTSBrick", "SetItemDirection");
 unRegisterOutputEvent("fxDTSBrick", "SetItemPosition");
 unRegisterOutputEvent("fxDTSBrick", "SetVehicle");
-unRegisterOutputEvent("fxDTSBrick", "SpawnExplosion");
 unRegisterOutputEvent("fxDTSBrick", "SpawnItem");
-unRegisterOutputEvent("fxDTSBrick", "SpawnProjectile");
 
 unRegisterOutputEvent("Player", "AddHealth");
 unRegisterOutputEvent("Player", "AddVelocity");

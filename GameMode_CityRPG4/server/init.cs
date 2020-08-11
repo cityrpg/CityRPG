@@ -85,6 +85,14 @@ function City_Init()
 		};
 	}
 
+	// Generic client to run events such as spawnProjectile. See: minigameCanDamage
+	if(!isObject(CityRPGEventClient))
+	{
+		new ScriptObject(CityRPGEventClient)
+		{
+		};
+	}
+
 	if(!isObject(CityRPGMini))
 	{
 		City_Init_Minigame();
@@ -225,7 +233,9 @@ function City_Init_AssembleEvents()
 	registerInputEvent("fxDTSBrick", "onTransferSuccess", "Self fxDTSBrick" TAB "Player Player" TAB "Client GameConnection");
 	registerInputEvent("fxDTSBrick", "onTransferDecline", "Self fxDTSBrick" TAB "Client GameConnection");
 	registerInputEvent("fxDTSBrick", "onJobTestPass", "Self fxDTSBrick" TAB "Player Player" TAB "Client GameConnection");
-	registerInputEvent("fxDTSBrick", "onJobTestFail", "Self fxDTSBrick" TAB "Player Player" TAB "Client GameConnection");
+	registerInputEvent("fxDTSBrick", "onMenuOpen", "Self fxDTSBrick" TAB "Player Player" TAB "Client GameConnection");
+	registerInputEvent("fxDTSBrick", "onMenuClose", "Self fxDTSBrick" TAB "Player Player" TAB "Client GameConnection");
+	registerInputEvent("fxDTSBrick", "onMenuInput", "Self fxDTSBrick" TAB "Player Player" TAB "Client GameConnection");
 
 	// Basic Output
 	registerOutputEvent("fxDTSBrick", "requestFunds", "string 80 200" TAB "int 1 9000 1");
