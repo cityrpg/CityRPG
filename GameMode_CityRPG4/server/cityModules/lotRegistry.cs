@@ -357,6 +357,13 @@ function fxDTSBrick::initExistingCityLot(%brick)
 	%brick.cityLotInit = 0;
 	%brick.cityLotOverride = 1;
 	%brick.setNTObjectName(%lotID);
+
+	%ownerID = %brick.getCityLotOwnerID();
+	if(%ownerID != -1)
+	{
+		// Add the lot to the owner's list, initializing the list with our first value if it's blank.
+		$City::Cache::LotsOwnedBy[%ownerID] = $City::Cache::LotsOwnedBy[%ownerID] $= "" ? %lotID : $City::Cache::LotsOwnedBy[%ownerID] SPC %lotID;
+	}
 }
 
 function fxDTSBrick::initNewCityLot(%brick)
@@ -403,6 +410,28 @@ function fxDTSBrick::initNewCityLot(%brick)
 	echo("City: Registered new lot, #" @ %newID);
 
 	return %newID;
+}
+
+// Removes the lot from the owner's cached list of "owned lots".
+function fxDTSBrick::cityLotCacheRemove(%brick)
+{
+	%lotID = %brick.getCityLotID();
+	%ownerID = %brick.getCityLotOwnerID();
+
+	for(%i = 0; %i <= getWordCount($City::Cache::LotsOwnedBy[%ownerID]); %i++)
+	{
+		%id = getWord($City::Cache::LotsOwnedBy[%ownerID], %i);
+		if(%id == %lotID)
+		{
+			$City::Cache::LotsOwnedBy[%ownerID] = removeWord($City::Cache::LotsOwnedBy[%ownerID], %i);
+			%removed = 1;
+			break;
+		}
+
+	}
+
+	if(!%removed)
+		error("CityRPG 4 - Attempted to remove the lot '" @ %lotID @ "' from the ownership cache of BLID '" @ %ownerID @ "' but the value is missing from the cache.");
 }
 
 // Returns the lot's ID number.
@@ -469,7 +498,8 @@ function fxDTSBrick::setCityLotName(%brick, %value)
 
 function fxDTSBrick::setCityLotOwnerID(%brick, %value)
 {
-	%data = CityRPGLotRegistry.getData(%brick.getCityLotID());
+	%lotID = %brick.getCityLotID();
+	%data = CityRPGLotRegistry.getData(%lotID);
 	%valueOld = %data.valueOwnerID;
 
 	if(%valueOld == -1 && %value != -1)
@@ -479,8 +509,24 @@ function fxDTSBrick::setCityLotOwnerID(%brick, %value)
 
 		$City::RealEstate::UnclaimedLots--;
 	}
-	else if(%value == -1)
+
+	if(%valueOld != -1)
+	{
+		// If transferring from a player, clear the cache.
+		%brick.cityLotCacheRemove();
+	}
+
+	if(%value == -1)
+	{
 		$City::RealEstate::UnclaimedLots++;
+	}
+	else
+	{
+		// If transferring to a player, add it to their cache.
+		// Initialize if the cache is blank.
+		$City::Cache::LotsOwnedBy[%value] = $City::Cache::LotsOwnedBy[%value] $= "" ? %lotID : $City::Cache::LotsOwnedBy[%value] SPC %lotID;
+	}
+
 
 	%valueNew = %data.valueOwnerID = %value;
 
@@ -628,14 +674,21 @@ package CityRPG_LotRegistry
 		// This can happen in certain edge cases, such as while loading bricks that already exist (onRemove is called on the brick after it fails to plant)
 		if(%brick.isPlanted && %brick.getDataBlock().CityRPGBrickType == $CityBrick_Lot && %lotID != -1)
 		{
+			%ownerID = %brick.getCityLotOwnerID();
+
 			// Always override on remove
 			%brick.cityLotOverride = 1;
 
 			$City::RealEstate::TotalLots--;
-			if(%brick.getCityLotOwnerID() == -1)
+			if(%ownerID == -1)
 				$City::RealEstate::UnclaimedLots--;
+			else
+			{
+				// Now, we have to remove this lot from the owner's cache of owned lots.
+				%brick.cityLotCacheRemove();
+			}
 
-			if(CityRPGLotRegistry.getData(%brick.getCityLotID()).valueIsPreownedForSale)
+			if(CityRPGLotRegistry.getData(%lotID).valueIsPreownedForSale)
 			{
 				$City::RealEstate::LotCountSale--;
 			}
