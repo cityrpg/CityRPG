@@ -630,7 +630,10 @@ package CityRPG_LotRegistry
 			if(%brick.getCityLotOwnerID() == -1)
 				$City::RealEstate::UnclaimedLots--;
 
-			// TODO Decrease the number of lots for sale if the lot was on sale.
+			if(CityRPGLotRegistry.getData(%brick.getCityLotID()).valueIsPreownedForSale)
+			{
+				$City::RealEstate::LotCountSale--;
+			}
 		}
 
 		Parent::onRemove(%brick);
