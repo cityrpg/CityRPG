@@ -84,7 +84,7 @@ function GameConnection::cityMenuInput(%client, %input)
 		// Not a numbered input, call the specified function, passing the client object and message.
 		if(isFunction(%function))
 		{
-			call(%function, %client, %input);
+			call(%function, %client, %input, %client.cityMenuID);
 		}
 	}
 }
