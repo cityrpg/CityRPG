@@ -340,13 +340,14 @@ function fxDTSBrick::initExistingCityLot(%brick)
 	%lotID = %brick.getCityLotID();
 
 	$City::RealEstate::TotalLots++;
-	$City::RealEstate::UnclaimedLots++;
 
 	// Count it as a pre-owned lot for sale if applicable.
 	if(%data.valueIsPreownedForSale == 1)
 	{
 		$City::RealEstate::LotCountSale++;
 	}
+
+	%ownerID = %brick.getCityLotOwnerID();
 
 	if(%lotID == -1)
 	{
@@ -358,11 +359,14 @@ function fxDTSBrick::initExistingCityLot(%brick)
 	%brick.cityLotOverride = 1;
 	%brick.setNTObjectName(%lotID);
 
-	%ownerID = %brick.getCityLotOwnerID();
 	if(%ownerID != -1)
 	{
 		// Add the lot to the owner's list, initializing the list with our first value if it's blank.
 		$City::Cache::LotsOwnedBy[%ownerID] = $City::Cache::LotsOwnedBy[%ownerID] $= "" ? %brick : $City::Cache::LotsOwnedBy[%ownerID] SPC %brick;
+	}
+	else
+	{
+		$City::RealEstate::UnclaimedLots++;
 	}
 }
 
@@ -406,6 +410,8 @@ function fxDTSBrick::initNewCityLot(%brick)
 
 	%brick.cityLotOverride = 1;
 	%brick.setNTObjectName(%newID);
+
+	$City::RealEstate::UnclaimedLots++;
 
 	echo("City: Registered new lot, #" @ %newID);
 
