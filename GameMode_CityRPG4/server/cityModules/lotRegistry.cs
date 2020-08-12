@@ -362,7 +362,7 @@ function fxDTSBrick::initExistingCityLot(%brick)
 	if(%ownerID != -1)
 	{
 		// Add the lot to the owner's list, initializing the list with our first value if it's blank.
-		$City::Cache::LotsOwnedBy[%ownerID] = $City::Cache::LotsOwnedBy[%ownerID] $= "" ? %lotID : $City::Cache::LotsOwnedBy[%ownerID] SPC %lotID;
+		$City::Cache::LotsOwnedBy[%ownerID] = $City::Cache::LotsOwnedBy[%ownerID] $= "" ? %brick : $City::Cache::LotsOwnedBy[%ownerID] SPC %brick;
 	}
 }
 
@@ -415,13 +415,12 @@ function fxDTSBrick::initNewCityLot(%brick)
 // Removes the lot from the owner's cached list of "owned lots".
 function fxDTSBrick::cityLotCacheRemove(%brick)
 {
-	%lotID = %brick.getCityLotID();
 	%ownerID = %brick.getCityLotOwnerID();
 
 	for(%i = 0; %i <= getWordCount($City::Cache::LotsOwnedBy[%ownerID]); %i++)
 	{
-		%id = getWord($City::Cache::LotsOwnedBy[%ownerID], %i);
-		if(%id == %lotID)
+		%brickCheck = getWord($City::Cache::LotsOwnedBy[%ownerID], %i);
+		if(%brickCheck == %brick)
 		{
 			$City::Cache::LotsOwnedBy[%ownerID] = removeWord($City::Cache::LotsOwnedBy[%ownerID], %i);
 			%removed = 1;
@@ -431,7 +430,7 @@ function fxDTSBrick::cityLotCacheRemove(%brick)
 	}
 
 	if(!%removed)
-		error("CityRPG 4 - Attempted to remove the lot '" @ %lotID @ "' from the ownership cache of BLID '" @ %ownerID @ "' but the value is missing from the cache.");
+		error("CityRPG 4 - Attempted to remove the lot '" @ %brick.getCityLotID() @ "' from the ownership cache of BLID '" @ %ownerID @ "' but the value is missing from the cache.");
 }
 
 // Returns the lot's ID number.
@@ -524,7 +523,7 @@ function fxDTSBrick::setCityLotOwnerID(%brick, %value)
 	{
 		// If transferring to a player, add it to their cache.
 		// Initialize if the cache is blank.
-		$City::Cache::LotsOwnedBy[%value] = $City::Cache::LotsOwnedBy[%value] $= "" ? %lotID : $City::Cache::LotsOwnedBy[%value] SPC %lotID;
+		$City::Cache::LotsOwnedBy[%value] = $City::Cache::LotsOwnedBy[%value] $= "" ? %brick : $City::Cache::LotsOwnedBy[%value] SPC %brick;
 	}
 
 
