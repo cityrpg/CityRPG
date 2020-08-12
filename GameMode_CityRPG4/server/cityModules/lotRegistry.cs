@@ -299,12 +299,13 @@ function CityLots_InitRegistry()
 		// Also use valueCount as a fallback check.
 		// Externally deleted files still return 1 for isFile (and thus loadedSaveFile) until the game restarts.
 		// This fixes the registry breaking if the file is deleted via external method mid-game, or if any other trickery occurs.
-		if(!CityRPGLotRegistry.loadedSaveFile || CityRPGLotRegistry.valueCount != 4)
+		if(!CityRPGLotRegistry.loadedSaveFile || CityRPGLotRegistry.valueCount != 5)
 		{
 			CityRPGLotRegistry.addValue("name", "Unclaimed Lot");
 			CityRPGLotRegistry.addValue("ownerID", -1);
 			CityRPGLotRegistry.addValue("ruleStr", "This lot currently has no rules.");
 			CityRPGLotRegistry.addValue("transferDate", "None");
+			CityRPGLotRegistry.addValue("isPreownedForSale", 0);
 		}
 	}
 }
