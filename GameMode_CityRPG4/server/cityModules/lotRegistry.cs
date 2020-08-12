@@ -342,6 +342,12 @@ function fxDTSBrick::initExistingCityLot(%brick)
 	$City::RealEstate::TotalLots++;
 	$City::RealEstate::UnclaimedLots++;
 
+	// Count it as a pre-owned lot for sale if applicable.
+	if(%data.valueForSale == 1)
+	{
+		$City::RealEstate::LotCountSale++;
+	}
+
 	if(%lotID == -1)
 	{
 		warn("CityRPG 4 - Attempt to initialize existing lot " @ %brick @ ", but lot ID is blank! Aborting init.");
