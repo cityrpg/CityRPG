@@ -165,7 +165,6 @@ else
       registerOutputEvent("fxDTSBrick","doPlayerTeleport","string 200 90\tlist Relative 0 North 1 East 2 South 3 West 4\tbool",1);
     }
   }
-  }
 }
 
 
