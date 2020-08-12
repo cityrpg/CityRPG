@@ -333,6 +333,9 @@ function fxDTSBrick::initCityLot(%brick)
 	{
 		%brick.initExistingCityLot();
 	}
+
+	// Cache the brick.
+	CityRPGLotRegistry.getData(%brick.getCityLotID()).brick = %brick;
 }
 
 function fxDTSBrick::initExistingCityLot(%brick)
@@ -459,6 +462,11 @@ function fxDTSBrick::getCityLotID(%brick)
 	}
 
 	return %lotID;
+}
+
+function findLotBrickByID(%value)
+{
+	return CityRPGLotRegistry.getData(%value).brick;
 }
 
 // ## Getters
@@ -706,6 +714,11 @@ package CityRPG_LotRegistry
 			{
 				$City::RealEstate::LotCountSale--;
 			}
+
+			// This lot will exist in the memory, but it will no-longer have a brick associated with it.
+			// Therefore, we need to remove the brick from the cache.
+			// If the lot is re-loaded later, it will be restored on init.
+			CityRPGLotRegistry.getData(%lotID).brick = -1;
 		}
 
 		Parent::onRemove(%brick);
