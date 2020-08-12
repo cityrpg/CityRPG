@@ -626,7 +626,7 @@ package CityRPG_LotRegistry
 		// Check that the brick actually exists, is planted, etc.
 		// Also verify that is has a lot ID. If it doesn't, the brick likely never fully initialized.
 		// This can happen in certain edge cases, such as while loading bricks that already exist (onRemove is called on the brick after it fails to plant)
-		if(%brick.isPlanted && %brick.getDataBlock().CityRPGBrickType == $CityBrick_Lot && %lotID !$="")
+		if(%brick.isPlanted && %brick.getDataBlock().CityRPGBrickType == $CityBrick_Lot && %lotID != -1)
 		{
 			// Always override on remove
 			%brick.cityLotOverride = 1;
