@@ -126,6 +126,7 @@ function CityMenu_RealEstate_ListForSaleConfirmPrompt(%client, %input)
 function CityMenu_RealEstate_ListForSale(%client, %input)
 {
 	%lotBrick = %client.cityLotSelected;
+	%lotID = %lotBrick.getCityLotID();
 
 	if(%input !$= "1")
 	{
@@ -148,7 +149,7 @@ function CityMenu_RealEstate_ListForSale(%client, %input)
 	$City::RealEstate::LotCountSale++;
 
 	// Append the lot to the fields under CitySO.lotListings.
-	CitySO.lotListings = CitySO.lotListings $= ""? CitySO.lotListings = %lotBrick : CitySO.lotListings = CitySO.lotListings TAB %lotBrick;
+	CitySO.lotListings = CitySO.lotListings $= ""? CitySO.lotListings = %lotID : CitySO.lotListings = CitySO.lotListings SPC %lotID;
 
 	%client.cityMenuMessage("\c6You have listed your lot for sale.");
 	%client.cityMenuClose();
