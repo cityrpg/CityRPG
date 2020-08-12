@@ -342,7 +342,7 @@ function fxDTSBrick::initExistingCityLot(%brick)
 	$City::RealEstate::TotalLots++;
 
 	// Count it as a pre-owned lot for sale if applicable.
-	if(%data.valueIsPreownedForSale == 1)
+	if(%brick%brick.getCityLotIsPreownedSale() == 1)
 	{
 		$City::RealEstate::LotCountSale++;
 	}
@@ -483,6 +483,11 @@ function fxDTSBrick::getCityLotTransferDate(%brick)
 	return CityRPGLotRegistry.getData(%brick.getCityLotID()).valueTransferDate;
 }
 
+function fxDTSBrick::getCityLotIsPreownedSale(%brick)
+{
+	return CityRPGLotRegistry.getData(%brick.getCityLotID()).valueIsPreownedForSale;
+}
+
 // ## Setters
 
 function fxDTSBrick::setCityLotName(%brick, %value)
@@ -552,6 +557,10 @@ function fxDTSBrick::setCityLotTransferDate(%brick, %value)
 	CityRPGLotRegistry.getData(%brick.getCityLotID()).valueTransferDate = %value;
 }
 
+function fxDTSBrick::getCityLotIsPreownedSale(%brick, %value)
+{
+	CityRPGLotRegistry.getData(%brick.getCityLotID()).valueIsPreownedForSale = %value;
+}
 
 // ============================================================
 // Package
@@ -693,7 +702,7 @@ package CityRPG_LotRegistry
 				%brick.cityLotCacheRemove();
 			}
 
-			if(CityRPGLotRegistry.getData(%lotID).valueIsPreownedForSale)
+			if(%brick.getCityLotIsPreownedSale())
 			{
 				$City::RealEstate::LotCountSale--;
 			}
