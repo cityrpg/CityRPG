@@ -343,7 +343,7 @@ function fxDTSBrick::initExistingCityLot(%brick)
 	$City::RealEstate::UnclaimedLots++;
 
 	// Count it as a pre-owned lot for sale if applicable.
-	if(%data.valueForSale == 1)
+	if(%data.valueIsPreownedForSale == 1)
 	{
 		$City::RealEstate::LotCountSale++;
 	}
