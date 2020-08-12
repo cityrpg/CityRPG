@@ -61,9 +61,7 @@ function CityMenu_RealEstate(%client, %brick)
 function CityMenu_RealEstate_ListForSalePrompt(%client, %input, %brick)
 {
 	%client.cityMenuClose(1);
-
-	%lotList = CityRPGData.getData(%client.bl_id).ownedLots;
-
+	
 	for(%i = 0; %i <= getWordCount($City::Cache::LotsOwnedBy[%client.bl_id])-1; %i++)
 	{
 		%lotBrick = getWord($City::Cache::LotsOwnedBy[%client.bl_id], %i);
