@@ -12,6 +12,14 @@ function GameConnection::cityMenuOpen(%client, %menu, %functions, %menuID, %exit
 		return;
 	}
 
+	if(%menuID $= "")
+	{
+		error("CityRPG 4 - Attempting to open a menu with no ID. Aborting.");
+		echo("Menu data: " @ %menu);
+
+		return;
+	}
+
 	// Account for empty menus
 	if(%menu !$= "")
 		messageClient(%client, '', "\c6Type a number in chat:");
