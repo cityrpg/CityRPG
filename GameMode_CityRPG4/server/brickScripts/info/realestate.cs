@@ -44,7 +44,7 @@ function CityMenu_RealEstate(%client, %brick)
 				TAB "View pre-owned lots for sale"
 				TAB "Purchase a pre-owned lot";
 
-		%functions = "CityMenu_Placeholder"
+		%functions = "CityMenu_RealEstate_ListForSalePrompt"
 						 TAB "CityMenu_Placeholder"
 						 TAB "CityMenu_Placeholder";
 	}
@@ -52,11 +52,48 @@ function CityMenu_RealEstate(%client, %brick)
 	{
 		%message = %message SPC "There are no pre-owned lots for sale at this time.";
 		%menu = "List a lot for sale";
-		%functions = "CityMenu_Placeholder";
+		%functions = "CityMenu_RealEstate_ListForSalePrompt";
 	}
 
 	%client.cityMenuMessage(%message);
 	%client.cityMenuOpen(%menu, %functions, %brick, "\c6Thanks, come again.");
+}
+
+function CityMenu_RealEstate_ListForSalePrompt(%client, %input, %brick)
+{
+	%client.cityMenuClose(1);
+
+	%lotList = CityRPGData.getData(%client.bl_id).ownedLots;
+
+	for(%i = 0; %i <= getWordCount($City::Cache::LotsOwnedBy[%client.bl_id])-1; %i++)
+	{
+		%lotBrick = getWord($City::Cache::LotsOwnedBy[%client.bl_id], %i);
+
+		%option = %lotBrick.getCityLotName();
+
+		if(%i == 0)
+		{
+			%menu = %option;
+			%functions = CityMenu_RealEstate_ListForSale;
+		}
+		else
+		{
+			%menu = %menu TAB %option;
+			%functions = %functions TAB CityMenu_RealEstate_ListForSale;
+		}
+	}
+
+	%client.cityMenuOpen(%menu, %functions, %brick, "\c6Thanks, come again.");
+	%client.cityMenuMessage("\c6Choose one of your lots to list for sale. Use the PG UP and PG DOWN keys to scroll.");
+}
+
+function CityMenu_RealEstate_ListForSale(%client, %input)
+{
+	%i = atof(%input)-1;
+	%lotBrick = getWord($City::Cache::LotsOwnedBy[%client.bl_id], %i);
+
+	%client.cityMenuMessage("\c6You have chosen the lot: " @ %lotBrick.getCityLotName());
+	CityMenu_Placeholder(%client);
 }
 
 // ============================================================
