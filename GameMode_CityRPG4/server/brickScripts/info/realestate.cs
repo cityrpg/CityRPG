@@ -44,7 +44,6 @@ function CityMenu_RealEstate(%client, %brick)
 				TAB "View pre-owned lots for sale";
 
 		%functions = "CityMenu_RealEstate_ListForSalePrompt"
-						 TAB "CityMenu_Placeholder"
 						 TAB "CityMenu_Placeholder";
 	}
 	else
@@ -61,7 +60,7 @@ function CityMenu_RealEstate(%client, %brick)
 function CityMenu_RealEstate_ListForSalePrompt(%client, %input, %brick)
 {
 	%client.cityMenuClose(1);
-	
+
 	for(%i = 0; %i <= getWordCount($City::Cache::LotsOwnedBy[%client.bl_id])-1; %i++)
 	{
 		%lotBrick = getWord($City::Cache::LotsOwnedBy[%client.bl_id], %i);
@@ -78,6 +77,15 @@ function CityMenu_RealEstate_ListForSalePrompt(%client, %input, %brick)
 			%menu = %menu TAB %option;
 			%functions = %functions TAB CityMenu_RealEstate_ListForSalePricePrompt;
 		}
+	}
+
+	if(getFieldCount(%menu) == 0)
+	{
+		%client.cityMenuMessage("\c0You do not own any lots that you can list for sale!");
+
+		%client.cityMenuClose(1);
+		CityMenu_RealEstate(%client, %brick);
+		return;
 	}
 
 	%client.cityMenuOpen(%menu, %functions, %brick, "\c6Thanks, come again.");
