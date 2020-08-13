@@ -200,7 +200,7 @@ function CityMenu_LotAdmin(%client)
 	%client.cityMenuClose(true);
 	%brick = %client.CityRPGLotBrick;
 
-	%client.cityMenuMessage("\c3Lot Admin\c6 for: \c3" @ %brick.getCityLotName() @ "\c6 - Lot ID: \c3" @ %brick.getCityLotID() @ "\c6 - Lot purchase date: \c3" @ %brick.getCityLotTransferDate());
+	%client.cityMenuMessage("\c3Lot Admin\c6 for: \c3" @ %brick.getCityLotName() @ "\c6 - Lot ID: \c3" @ %brick.getCityLotID() @ "\c6 - Brick ID: \c3" @ %brick.getID() @ "\c6 - Lot purchase date: \c3" @ %brick.getCityLotTransferDate());
 
 	%menu = "Force rename."
 			TAB "Transfer lot to the city."
