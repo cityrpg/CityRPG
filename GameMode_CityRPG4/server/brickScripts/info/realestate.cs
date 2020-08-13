@@ -159,7 +159,7 @@ function CityMenu_RealEstate_ListForSale(%client, %input)
 // View & Purchase
 function CityMenu_RealEstate_ViewLots(%client, %input, %brick)
 {
-	for(%i = 0; %i <= getWordCount(CitySO.lotListings); %i++)
+	for(%i = 0; %i <= getWordCount(CitySO.lotListings)-1; %i++)
 	{
 		%lotID = getWord(CitySO.lotListings, %i);
 		%lotBrick = findLotBrickByID(%lotID);
