@@ -44,7 +44,7 @@ function CityMenu_RealEstate(%client, %brick)
 				TAB "View pre-owned lots for sale";
 
 		%functions = "CityMenu_RealEstate_ListForSalePrompt"
-						 TAB "CityMenu_Placeholder";
+						 TAB "CityMenu_RealEstate_ViewLots";
 	}
 	else
 	{
@@ -57,6 +57,7 @@ function CityMenu_RealEstate(%client, %brick)
 	%client.cityMenuOpen(%menu, %functions, %brick, "\c6Thanks, come again.");
 }
 
+// List for sale
 function CityMenu_RealEstate_ListForSalePrompt(%client, %input, %brick)
 {
 	%client.cityMenuClose(1);
@@ -154,6 +155,46 @@ function CityMenu_RealEstate_ListForSale(%client, %input)
 	%client.cityMenuMessage("\c6You have listed your lot for sale.");
 	%client.cityMenuClose();
 }
+
+// View & Purchase
+function CityMenu_RealEstate_ViewLots(%client, %input, %brick)
+{
+	for(%i = 0; %i <= getWordCount(CitySO.lotListings); %i++)
+	{
+		%lotID = getWord(CitySO.lotListings, %i);
+		%lotBrick = findLotBrickByID(%lotID);
+
+		// Hide lots that are in the registry, but don't have an existing brick.
+		if(%lotBrick == -1)
+			continue;
+
+		if(%i == 0)
+		{
+			%menu = %lotBrick.getCityLotName();
+			%functions = CityMenu_RealEstate_ViewLotDetail;
+		}
+		else
+		{
+			%menu = %menu TAB %lotBrick.getCityLotName();
+			%functions = %functions TAB CityMenu_RealEstate_ViewLotDetail;
+		}
+
+		// Record the available options so we know which one to pick.
+		%client.cityLotIndex[%i+1] = %lotID;
+	}
+
+	%client.cityMenuClose(1);
+	%client.cityMenuOpen(%menu, %functions, %brick, "\c6Thanks, come again.");
+	%client.cityMenuMessage("\c6Type the number for a listing to view more info. Use the PG UP and PG DOWN keys to scroll.");
+}
+
+function CityMenu_RealEstate_ViewLotDetail(%client, %input, %brick)
+{
+	%lotID = %client.cityLotIndex[%input];
+
+	CityMenu_Placeholder(%client);
+}
+
 
 // ============================================================
 // Trigger Data
