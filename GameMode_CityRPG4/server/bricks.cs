@@ -385,6 +385,31 @@ function fxDTSBrick::getCityLotTrigger(%brick)
 	}
 }
 
+// Brick::getCityBrickUnstable(this/brick, lotTrigger)
+function fxDTSBrick::getCityBrickUnstable(%brick, %lotTrigger)
+{
+	%lotTriggerMinX = getWord(%lotTrigger.getWorldBox(), 0);
+	%lotTriggerMinY = getWord(%lotTrigger.getWorldBox(), 1);
+	%lotTriggerMinZ = getWord(%lotTrigger.getWorldBox(), 2);
+
+	%lotTriggerMaxX = getWord(%lotTrigger.getWorldBox(), 3);
+	%lotTriggerMaxY = getWord(%lotTrigger.getWorldBox(), 4);
+	%lotTriggerMaxZ = getWord(%lotTrigger.getWorldBox(), 5);
+
+	%brickMinX = getWord(%brick.getWorldBox(), 0) + 0.0016;
+	%brickMinY = getWord(%brick.getWorldBox(), 1) + 0.0013;
+	%brickMinZ = getWord(%brick.getWorldBox(), 2) + 0.00126;
+
+	%brickMaxX = getWord(%brick.getWorldBox(), 3) - 0.0016;
+	%brickMaxY = getWord(%brick.getWorldBox(), 4) - 0.0013;
+	%brickMaxZ = getWord(%brick.getWorldBox(), 5) - 0.00126;
+
+	if(%brickMinX < %lotTriggerMinX || %brickMinY < %lotTriggerMinY || %brickMinZ < %lotTriggerMinZ || %brickMaxX > %lotTriggerMaxX || %brickMaxY > %lotTriggerMaxY || %brickMaxZ > %lotTriggerMaxZ)
+	{
+		return 1;
+	}
+}
+
 // Brick::cityBrickCheck(this/brick)
 // Checks if the current brick can be planted by the client that owns it.
 // Typically called on a client's temp brick, except when using the duplicator.
@@ -409,7 +434,7 @@ function fxDTSBrick::cityBrickCheck(%brick)
 		%brick.client.cityLog("Attempt to plant " @ %brick.getDatablock().getName());
 	}
 
-	if(%client.isAdmin || CityRPGData.getData(%client.bl_id).valueJobID == $City::AdminJobID)
+	if(CityRPGData.getData(%client.bl_id).valueJobID == $City::AdminJobID)
 	{
 		return 1;
 	}
@@ -443,29 +468,10 @@ function fxDTSBrick::cityBrickCheck(%brick)
 		return 0;
 	}
 
-	if(%lotTrigger && %brick.getDatablock().CityRPGBrickType != $CityBrick_Lot)
+	if(%brick.getDatablock().CityRPGBrickType != $CityBrick_Lot && %brick.getCityBrickUnstable(%lotTrigger))
 	{
-		%lotTriggerMinX = getWord(%lotTrigger.getWorldBox(), 0);
-		%lotTriggerMinY = getWord(%lotTrigger.getWorldBox(), 1);
-		%lotTriggerMinZ = getWord(%lotTrigger.getWorldBox(), 2);
-
-		%lotTriggerMaxX = getWord(%lotTrigger.getWorldBox(), 3);
-		%lotTriggerMaxY = getWord(%lotTrigger.getWorldBox(), 4);
-		%lotTriggerMaxZ = getWord(%lotTrigger.getWorldBox(), 5);
-
-		%brickMinX = getWord(%brick.getWorldBox(), 0) + 0.0016;
-		%brickMinY = getWord(%brick.getWorldBox(), 1) + 0.0013;
-		%brickMinZ = getWord(%brick.getWorldBox(), 2) + 0.00126;
-
-		%brickMaxX = getWord(%brick.getWorldBox(), 3) - 0.0016;
-		%brickMaxY = getWord(%brick.getWorldBox(), 4) - 0.0013;
-		%brickMaxZ = getWord(%brick.getWorldBox(), 5) - 0.00126;
-
-		if(%brickMinX < %lotTriggerMinX || %brickMinY < %lotTriggerMinY || %brickMinZ < %lotTriggerMinZ || %brickMaxX > %lotTriggerMaxX || %brickMaxY > %lotTriggerMaxY || %brickMaxZ > %lotTriggerMaxZ)
-		{
-			commandToClient(%client, 'ServerMessage', 'MsgPlantError_Unstable');
-			return 0;
-		}
+		commandToClient(%client, 'ServerMessage', 'MsgPlantError_Unstable');
+		return 0;
 	}
 
 	if(%lotTrigger && %brickData.getID() == brickVehicleSpawnData.getID() && CityRPGData.getData(%client.bl_id).valueMoney < mFloor($CityRPG::prices::vehicleSpawn))
@@ -522,11 +528,11 @@ function CityRPGLotTriggerData::onEnterTrigger(%this, %trigger, %obj)
 	%client.CityRPGTrigger = %trigger;
 	%client.CityRPGLotBrick = %trigger.parent;
 
-	%lotStr = "<just:right><font:palatino linotype:24>\c6" @ %trigger.parent.getCityLotName();
+	%lotStr = "<just:right><font:palatino linotype:18>\c6" @ %trigger.parent.getCityLotName();
 
 	if(%trigger.parent.getCityLotOwnerID() == -1)
 	{
-		%lotStr = %lotStr @ "<br>\c3For sale! \c6Type /lot for more info";
+		%lotStr = %lotStr @ "<br>\c2For sale!\c6 Type /lot for info";
 	}
 
 	%client.centerPrint(%lotStr, 2);
@@ -584,6 +590,10 @@ function CityRPGInputTriggerData::onLeaveTrigger(%this, %trigger, %obj, %a)
 	{
 		%trigger.parent.getDatablock().parseData(%trigger.parent, %obj.client, false, "");
 		%obj.client.CityRPGTrigger = "";
-		%obj.client.cityMenuClose();
+
+		if(%obj.client.cityMenuID == %trigger.parent.getID())
+		{
+			%obj.client.cityMenuClose();
+		}
 	}
 }

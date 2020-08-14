@@ -46,7 +46,7 @@ function CityMenu_Jobs_ApplyInput(%client, %input)
 	serverCmdjobs(%client, %input);
 }
 
-function CityMenu_Jobs_List(%client)
+function CityMenu_Jobs_List(%client, %input, %brick)
 {
 	%client.cityMenuClose(1);
 
@@ -69,7 +69,7 @@ function CityMenu_Jobs_List(%client)
 	%client.cityMenuOpen(%menu, %functions, %brick, "\c6Thanks, come again.");
 }
 
-function CityMenu_Jobs_ViewTrack(%client, %input)
+function CityMenu_Jobs_ViewTrack(%client, %input, %brick)
 {
 	%client.cityMenuClose(1);
 

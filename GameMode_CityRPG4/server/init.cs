@@ -13,7 +13,7 @@ function City_Init()
 		new scriptObject(CityRPGData)
 		{
 			class = Sassy;
-			dataFile = "config/server/CityRPG/CityRPG/Data.dat";
+			dataFile = $City::SavePath @ "Profiles.dat";
 		};
 
 		if(!isObject($DamageType::Starvation))
@@ -29,6 +29,7 @@ function City_Init()
 			CityRPGData.addValue("hunger", "7");
 			CityRPGData.addValue("jailData", "0 0");
 			CityRPGData.addValue("jobID", "1");
+			CityRPGData.addValue("jobRevert", "1");
 			CityRPGData.addValue("lotData", "0");
 			CityRPGData.addValue("money", "0");
 			CityRPGData.addValue("name", "noName");
@@ -81,6 +82,14 @@ function City_Init()
 		new ScriptObject(CityRPGHostClient)
 		{
 			isSuperAdmin = 1;
+		};
+	}
+
+	// Generic client to run events such as spawnProjectile. See: minigameCanDamage
+	if(!isObject(CityRPGEventClient))
+	{
+		new ScriptObject(CityRPGEventClient)
+		{
 		};
 	}
 
@@ -224,7 +233,9 @@ function City_Init_AssembleEvents()
 	registerInputEvent("fxDTSBrick", "onTransferSuccess", "Self fxDTSBrick" TAB "Player Player" TAB "Client GameConnection");
 	registerInputEvent("fxDTSBrick", "onTransferDecline", "Self fxDTSBrick" TAB "Client GameConnection");
 	registerInputEvent("fxDTSBrick", "onJobTestPass", "Self fxDTSBrick" TAB "Player Player" TAB "Client GameConnection");
-	registerInputEvent("fxDTSBrick", "onJobTestFail", "Self fxDTSBrick" TAB "Player Player" TAB "Client GameConnection");
+	registerInputEvent("fxDTSBrick", "onMenuOpen", "Self fxDTSBrick" TAB "Player Player" TAB "Client GameConnection");
+	registerInputEvent("fxDTSBrick", "onMenuClose", "Self fxDTSBrick" TAB "Player Player" TAB "Client GameConnection");
+	registerInputEvent("fxDTSBrick", "onMenuInput", "Self fxDTSBrick" TAB "Player Player" TAB "Client GameConnection");
 
 	// Basic Output
 	registerOutputEvent("fxDTSBrick", "requestFunds", "string 80 200" TAB "int 1 9000 1");
