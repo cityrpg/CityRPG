@@ -437,7 +437,7 @@ package CityRPG_MainPackage
 				CityRPGData.getData(%killer.bl_id).valueBank += CityRPGData.getData(%client.bl_id).valueBounty;
 				CityRPGData.getData(%client.bl_id).valueBounty = 0;
 			}
-			else if(City_illegalAttackTest(%killer, %client))
+			else if(City_illegalAttackTest(%killer, %client, %damageType))
 			{
 				if(%killer.lastKill + 15 >= $sim::time)
 				{
@@ -524,7 +524,7 @@ package CityRPG_MainPackage
 
 				if(!getWord(%atkr.valueJailData, 1))
 				{
-					if(City_illegalAttackTest(%atkr, %vctm))
+					if(City_illegalAttackTest(%atkr, %vctm, %damageType))
 					{
 						commandToClient(%atkr, 'centerPrint', "\c6You have committed a crime. [\c3Assault\c6]", 1);
 

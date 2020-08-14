@@ -226,7 +226,7 @@ function taserProjectile::onCollision(%this, %obj, %col, %fade, %pos, %normal)
 		%col.setVelocity(VectorScale(getRandom(0, 0.250) SPC getRandom(0, 0.250) SPC "1", 10));
 		tumble(%col);
 
-		if(City_illegalAttackTest(%obj.client, %col.client))
+		if(City_illegalAttackTest(%obj.client, %col.client, $DamageType::Taser))
 		{
 			commandToClient(%obj.client, 'centerPrint', "\c6You have committed a crime. [\c3Tasing Innocents\c6]", 3);
 			City_AddDemerits(%obj.client.bl_id, $CityRPG::demerits::tasingBros);

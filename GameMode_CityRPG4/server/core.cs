@@ -258,10 +258,13 @@ function City_GetMostWanted()
 	return (isObject(%mostWanted) ? %mostWanted : 0);
 }
 
-function City_illegalAttackTest(%atkr, %vctm)
+function City_illegalAttackTest(%atkr, %vctm, %damageType)
 {
 	if(isObject(%atkr) && isObject(%vctm) && %atkr.getClassName() $= "GameConnection" && %vctm.getClassName() $= "GameConnection")
 	{
+		if(%damageType == $DamageType::Defibrillator)
+			return false;
+			
 		if(%atkr != %vctm)
 		{
 			if(CityRPGData.getData(%vctm.bl_id).valueBounty && %atkr.getJobSO().bountyClaim)
