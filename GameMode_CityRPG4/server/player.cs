@@ -1,3 +1,5 @@
+$City::StartingCash = 250;
+
 function gameConnection::arrest(%client, %cop)
 {
 	%client.cityLog("Arrested by '" @ %cop.bl_id @ "'");
@@ -520,7 +522,7 @@ function resetFree(%client)
 		CityRPGData.removeData(%client.bl_id);
 	CityRPGData.addData(%client.bl_id);
 
-	CityRPGData.getData(%client.bl_id).valueBank = 250;
+	CityRPGData.getData(%client.bl_id).valueBank = $City::StartingCash;
 
 	if(isObject(%client.player))
 	{
