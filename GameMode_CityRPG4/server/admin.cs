@@ -36,7 +36,7 @@ function serverCmdAdminMode(%client)
     %data.valueJobRevert = %data.valueJobID;
     jobset(%client, $City::AdminJobID);
 
-    messageClient(%client, '', "\c6You are now in \c4Admin Mode\c6.");
+    messageClient(%client, '', "\c6You are now in \c4Admin Mode\c6. Time for crime!");
     %client.adminModeMessage();
   }
 }
