@@ -24,7 +24,10 @@ package CityRPG_Overrides
 	{
 		if(%obj.getGroup().bl_id != getNumKeyId())
 		{
-			%obj.getGroup().client.centerPrint("\c6Sorry, bot holes are currently host-only in CityRPG.", 3);
+			if(isObject(%obj.getGroup().client)) {
+				%obj.getGroup().client.centerPrint("\c6Sorry, bot holes are currently host-only in CityRPG.", 3);
+			}
+
 			%obj.killBrick();
 			return;
 		}
