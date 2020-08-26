@@ -116,6 +116,8 @@ function CityMenu_RealEstate_ListForSaleConfirmPrompt(%client, %input)
 	%client.cityMenuMessage("\c6You are listing the lot \c3" @ %lotBrick.getCityLotName() @ "\c6 on sale for \c3$" @ strFormatNumber(%price));
 	%client.cityMenuMessage("\c0Warning!\c6 Once a player purchases this lot, they will become the permanent owner of your lot. Are you sure?");
 
+	%client.cityLotPrice = %price;
+
 	if(%price == 0)
 		%client.cityMenuMessage("\c0You are about to list this lot for free. Are you sure?");
 
@@ -151,6 +153,7 @@ function CityMenu_RealEstate_ListForSale(%client, %input)
 
 	// Append the lot to the fields under CitySO.lotListings.
 	CitySO.lotListings = CitySO.lotListings $= ""? CitySO.lotListings = %lotID : CitySO.lotListings = CitySO.lotListings SPC %lotID;
+	%lotBrick.setCityLotPreownedPrice(%client.cityLotPrice);
 
 	%client.cityMenuMessage("\c6You have listed your lot for sale.");
 	%client.cityMenuClose();

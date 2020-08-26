@@ -305,7 +305,9 @@ function CityLots_InitRegistry()
 			CityRPGLotRegistry.addValue("ownerID", -1);
 			CityRPGLotRegistry.addValue("ruleStr", "This lot currently has no rules.");
 			CityRPGLotRegistry.addValue("transferDate", "None");
-			CityRPGLotRegistry.addValue("isPreownedForSale", 0);
+			CityRPGLotRegistry.addValue("preownedSalePrice", -1);
+
+			// Instead of using the getData function directly, these values are generally called upon using setter and getter functions.
 		}
 	}
 }
@@ -345,7 +347,7 @@ function fxDTSBrick::initExistingCityLot(%brick)
 	$City::RealEstate::TotalLots++;
 
 	// Count it as a pre-owned lot for sale if applicable.
-	if(%brick.getCityLotIsPreownedSale() == 1)
+	if(%brick.setCityLotPreownedPrice() == -1)
 	{
 		$City::RealEstate::LotCountSale++;
 	}
@@ -491,9 +493,9 @@ function fxDTSBrick::getCityLotTransferDate(%brick)
 	return CityRPGLotRegistry.getData(%brick.getCityLotID()).valueTransferDate;
 }
 
-function fxDTSBrick::getCityLotIsPreownedSale(%brick)
+function fxDTSBrick::getCityLotPreownedPrice(%brick)
 {
-	return CityRPGLotRegistry.getData(%brick.getCityLotID()).valueIsPreownedForSale;
+	return CityRPGLotRegistry.getData(%brick.getCityLotID()).valuePreownedSalePrice;
 }
 
 // ## Setters
@@ -565,9 +567,9 @@ function fxDTSBrick::setCityLotTransferDate(%brick, %value)
 	CityRPGLotRegistry.getData(%brick.getCityLotID()).valueTransferDate = %value;
 }
 
-function fxDTSBrick::getCityLotIsPreownedSale(%brick, %value)
+function fxDTSBrick::setCityLotPreownedPrice(%brick, %value)
 {
-	CityRPGLotRegistry.getData(%brick.getCityLotID()).valueIsPreownedForSale = %value;
+	CityRPGLotRegistry.getData(%brick.getCityLotID()).valuePreownedSalePrice = %value;
 }
 
 // ============================================================
@@ -710,7 +712,7 @@ package CityRPG_LotRegistry
 				%brick.cityLotCacheRemove();
 			}
 
-			if(%brick.getCityLotIsPreownedSale())
+			if(%brick.getCityLotPreownedPrice() == -1)
 			{
 				$City::RealEstate::LotCountSale--;
 			}
