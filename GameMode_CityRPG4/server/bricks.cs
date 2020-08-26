@@ -534,6 +534,10 @@ function CityRPGLotTriggerData::onEnterTrigger(%this, %trigger, %obj)
 	{
 		%lotStr = %lotStr @ "<br>\c2For sale!\c6 Type /lot for info";
 	}
+	else if(%trigger.parent.getCityLotPreownedPrice() != -1)
+	{
+		%lotStr = %lotStr @ "<br>\c2For sale!\c6 Visit Real Estate for info";
+	}
 
 	%client.centerPrint(%lotStr, 2);
 
