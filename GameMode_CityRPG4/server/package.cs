@@ -62,8 +62,7 @@ package CityRPG_MainPackage
 		if(%brick != -1 && %brick.getDataBlock().CityRPGBrickType == $CityBrick_Lot)
 		{
 			// Force init as a new lot
-			%brick.registerNewCityLot();
-			%brick.assignCityLotName();
+			%brick.initNewCityLot();
 		}
 
 		if(isObject(%brick))
