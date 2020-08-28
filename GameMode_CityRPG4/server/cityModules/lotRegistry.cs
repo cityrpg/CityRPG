@@ -199,8 +199,19 @@ function CityMenu_LotAdmin(%client)
 {
 	%client.cityMenuClose(true);
 	%brick = %client.CityRPGLotBrick;
+	%ownerID = %brick.getCityLotOwnerID();
 
 	%client.cityMenuMessage("\c3Lot Admin\c6 for: \c3" @ %brick.getCityLotName() @ "\c6 - Lot ID: \c3" @ %brick.getCityLotID() @ "\c6 - Brick ID: \c3" @ %brick.getID() @ "\c6 - Lot purchase date: \c3" @ %brick.getCityLotTransferDate());
+
+	if(%ownerID != -1)
+	{
+		%owner = CityRPGData.getData(%ownerID);
+		%client.cityMenuMessage("\c6Owner: \c3" @ %owner.valueName @ "\c6 (ID \c3" @ %brick.getCityLotOwnerID() @ "\c6)");
+	}
+	else
+	{
+		%client.cityMenuMessage("\c6Lot is owned by the city.");
+	}
 
 	%menu = "Force rename."
 			TAB "Transfer lot to the city."
