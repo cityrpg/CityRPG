@@ -240,6 +240,10 @@ unRegisterOutputEvent("Player", "SetVelocity");
 unRegisterOutputEvent("Player", "SpawnExplosion");
 unRegisterOutputEvent("Player", "SpawnProjectile");
 
+registerOutputEvent("Bot", "DropItem");
+registerOutputEvent("Bot", "SetMeleeDamage");
+registerOutputEvent("Bot", "ChangeDatablock");
+
 unRegisterOutputEvent("GameConnection", "ChatMessage");
 unRegisterOutputEvent("GameConnection", "IncScore");
 
