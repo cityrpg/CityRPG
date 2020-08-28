@@ -354,16 +354,14 @@ function fxDTSBrick::initCityLot(%brick)
 function fxDTSBrick::initExistingCityLot(%brick)
 {
 	%lotID = %brick.getCityLotID();
+	%ownerID = %brick.getCityLotOwnerID();
 
 	$City::RealEstate::TotalLots++;
-
 	// Count it as a pre-owned lot for sale if applicable.
 	if(%brick.setCityLotPreownedPrice() == -1)
 	{
 		$City::RealEstate::LotCountSale++;
 	}
-
-	%ownerID = %brick.getCityLotOwnerID();
 
 	if(%lotID == -1)
 	{
@@ -384,6 +382,8 @@ function fxDTSBrick::initExistingCityLot(%brick)
 	{
 		$City::RealEstate::UnclaimedLots++;
 	}
+
+	
 }
 
 function fxDTSBrick::initNewCityLot(%brick)
