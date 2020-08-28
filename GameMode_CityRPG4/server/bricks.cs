@@ -408,6 +408,8 @@ function fxDTSBrick::getCityBrickUnstable(%brick, %lotTrigger)
 	{
 		return 1;
 	}
+	
+	return 0;
 }
 
 // Brick::cityBrickCheck(this/brick)
