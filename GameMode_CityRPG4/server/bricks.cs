@@ -297,7 +297,7 @@ function fxDTSBrick::createCityTrigger(%brick, %data)
 		%brick.trigger = new trigger()
 		{
 			datablock = %datablock.triggerDatablock;
-			position = getWords(%brick.getWorldBoxCenter(), 0, 1) SPC getWord(%brick.getWorldBoxCenter(), 2) + ((getWord(%datablock.triggerSize, 2) / 4) + (%datablock.brickSizeZ * 0.1));
+			position = getWords(%brick.getWorldBoxCenter(), 0, 1) SPC getWord(%brick.getWorldBox(), 2) + ((getWord(%datablock.triggerSize, 2) / 4));
 			rotation = "1 0 0 0";
 			scale = %scale;
 			polyhedron = "-0.5 -0.5 -0.5 1 0 0 0 1 0 0 0 1";
@@ -408,7 +408,7 @@ function fxDTSBrick::getCityBrickUnstable(%brick, %lotTrigger)
 	{
 		return 1;
 	}
-	
+
 	return 0;
 }
 
