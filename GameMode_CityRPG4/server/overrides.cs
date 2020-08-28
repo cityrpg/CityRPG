@@ -22,15 +22,20 @@ package CityRPG_Overrides
 
 	function fxDTSBrick::onHoleSpawnPlanted(%obj)
 	{
-		if(%obj.getGroup().bl_id != getNumKeyId())
-		{
-			if(isObject(%obj.getGroup().client)) {
-				%obj.getGroup().client.centerPrint("\c6Sorry, bot holes are currently host-only in CityRPG.", 3);
-			}
+		//if(%obj.getGroup().bl_id != getNumKeyId())
+		//{
+			// Attempt to detect the type of bot. No attack bots, no rideables.
+			%datablock = %obj.getDatablock();
+			if(!isObject(%datablock.holeBot) || %datablock.holeBot.hMelee != 0 || %datablock.holeBot.rideable)
+			{
+				if(isObject(%obj.getGroup().client)) {
+					%obj.getGroup().client.centerPrint("You cannot spawn this type of bot.", 3);
+				}
 
-			%obj.killBrick();
-			return;
-		}
+				%obj.killBrick();
+				return;
+			}
+		//}
 
 		Parent::onHoleSpawnPlanted(%obj);
 	}
