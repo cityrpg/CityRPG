@@ -165,6 +165,10 @@ function JobSO::getJobCount(%so)
 // ============================================================
 function CitySO::loadData(%so)
 {
+	// As an additional caution, use discoverFile.
+	// This covers cases such as the admin deleting the file after the game starts.
+	discoverFile($City::SavePath @ "City.cs");
+
 	if(isFile($City::SavePath @ "City.cs"))
 	{
 		exec($City::SavePath @ "City.cs");
