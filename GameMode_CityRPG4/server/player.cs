@@ -556,6 +556,7 @@ function jobset(%client, %job, %name)
 	%client.player.giveDefaultEquipment();
 	%client.applyForcedBodyColors();
 	%client.applyForcedBodyParts();
+	%client.player.setDatablock(%client.getJobSO().db);
 
 	if(%job == $City::MayorJobID)
 	{
