@@ -626,3 +626,8 @@ function GameConnection::getCityRecordClearCost(%client)
 {
 	return 250 * (CityRPGData.getData(%client.bl_id).valueEducation+1);
 }
+
+function GameConnection::isCityAdmin(%client)
+{
+	return CityRPGData.getData(%client.bl_id).valueJobID == $City::AdminJobID;
+}

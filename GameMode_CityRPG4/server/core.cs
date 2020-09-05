@@ -398,7 +398,7 @@ function City_TickLoop(%loop)
 				if((CalendarSO.date % 2) == 0)
 				{
 					// No hunger effects for admin jobs
-					if(%so.valueJobID != $City::AdminJobID)
+					if(%client.isCityAdmin())
 					{
 						%so.valueHunger--;
 
@@ -594,7 +594,7 @@ function messageCityRadio(%jobTrack, %msgType, %msgString)
 	{
 		%client = ClientGroup.getObject(%i);
 
-		if(CityRPGData.getData(%client.bl_id).valueJobID == $City::AdminJobID || // Admin job always sees radio..
+		if(%client.isCityAdmin() || // Admin job always sees radio..
 		($Pref::Server::City::AdminsAlwaysMonitorChat && %client.isAdmin) || // Or if the pref is enabled, allow admin to snoop...
 		(%client.getJobSO().track $= %jobTrack && // Otherwise, check for a matching job track...
 		!getWord(CityRPGData.getData(%client.bl_id).valueJailData, 1))) // And exclude convicts from seeing messages in their track.

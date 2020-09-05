@@ -90,6 +90,9 @@ This is a list of existing functions for menus. These functions should be used w
 - CityMenu_Close - Closes the menu.
 - CityMenu_Placeholder - Displays the text "Sorry, this feature is currently not available. Please try again later."
 
+## GameConnection::isCityAdmin()
+Returns true or false whether the target client is in Admin Mode. For most uses, it is recommended that you use this in place of checking isAdmin.
+
 ## CityRPGBatonImage::onCityPlayerHit(obj, slot, col, pos, normal)
 Allows the creation of additional checks when players are batoned. MUST return `true` if a check is passed, otherwise baton actions will overlap each other.
 
