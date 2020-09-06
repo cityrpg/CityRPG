@@ -44,7 +44,7 @@ function serverCmdAdminMode(%client)
 function GameConnection::AdminModeMessage(%client)
 {
   messageClient(%client, '', "\c2+\c6 Building restrictions are disabled.");
-	messageClient(%client, '', "\c2+\c6 Hunger is frozen.");
+	messageClient(%client, '', "\c2+\c6 You are immune to all damage, and your hunger is frozen.");
 	messageClient(%client, '', "\c2+\c6 You have jets.");
 
   if(!$Pref::Server::City::AdminsAlwaysMonitorChat)

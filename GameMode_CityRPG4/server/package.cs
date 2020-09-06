@@ -501,6 +501,11 @@ package CityRPG_MainPackage
 
 	function player::damage(%this, %obj, %pos, %damage, %damageType)
 	{
+		if(isObject(%this.client) && %this.client.isCityAdmin())
+		{
+			return;
+		}
+		
 		if(isObject(%obj.client) && isObject(%this.client) && isObject(%this))
 		{
 			if(%obj.getDatablock().getName() $= "deathVehicle")
