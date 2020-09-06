@@ -507,7 +507,7 @@ package CityRPG_MainPackage
 
 	function player::damage(%this, %obj, %pos, %damage, %damageType)
 	{
-		if(isObject(%this.client) && %this.client.isCityAdmin())
+		if(isObject(%this.client) && %this.client.isCityAdmin() && %damageType != $DamageType::Suicide)
 		{
 			return;
 		}
