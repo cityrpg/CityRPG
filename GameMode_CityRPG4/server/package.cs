@@ -151,8 +151,10 @@ package CityRPG_MainPackage
 
 	function fxDTSBrick::spawnItem(%brick, %pos, %datablock, %client)
 	{
-		if(isObject(%owner = getBrickGroupFromObject(%brick).client) && %owner.isAdmin)
+		if(isObject(%owner = getBrickGroupFromObject(%brick).client) && %owner.isCityAdmin())
+		{
 			parent::spawnItem(%brick, %pos, %datablock, %client);
+		}
 	}
 
 	function fxDTSBrick::respawnVehicle(%brick, %client)
@@ -505,7 +507,7 @@ package CityRPG_MainPackage
 		{
 			return;
 		}
-		
+
 		if(isObject(%obj.client) && isObject(%this.client) && isObject(%this))
 		{
 			if(%obj.getDatablock().getName() $= "deathVehicle")
