@@ -335,6 +335,17 @@ function CityLots_GetLotCount()
 	return %count;
 }
 
+// Brick::getCityLotSaveName()
+// Returns the brick's NT Object name in a readable format.
+function fxDTSBrick::getCityLotSaveName(%brick)
+{
+	%nameRaw = %brick.getName();
+	%nameRaw = getSubStr(%nameRaw, 1, strlen(%nameRaw));
+	%nameRaw = strreplace(%nameRaw, "_", " ");
+
+	return %nameRaw;
+}
+
 // Determines the state of the lot and directs the corresponding init process.
 function fxDTSBrick::initCityLot(%brick)
 {
@@ -353,7 +364,38 @@ function fxDTSBrick::initCityLot(%brick)
 
 function fxDTSBrick::initExistingCityLot(%brick)
 {
-	%lotID = %brick.getCityLotID();
+	%nameRaw = %brick.getCityLotSaveName();
+
+	%lotHost = getWord(%nameRaw, 0);
+	//%lotSavedOwner = getWord(%nameRaw, 1);
+	%lotID = getWord(%nameRaw, 2);
+
+	// If there is a mismatch, or the lot appears to be a legacy lot.
+	if(%lotHost != getNumKeyID() || getWordCount(%nameRaw) < 3)
+	{
+		if($LoadingBricks_Client !$= "")
+		{
+			if(!$City::WarningMessageDisplay)
+			{
+				$City::WarningMessageDisplay = 1;
+				// TODO Clarify "See the prefs panel"
+				%warningMsg = "!!!! WARNING: This save appears to be from a different CityRPG server, or an older version. Lot data (names, etc.) may not carry over, but ownership will be converted. If you would like to override this (i.e. you have the CityRPG data files from the original server), see the prefs panel.";
+
+				warn(%warningMsg);
+				messageAll('', %warningMsg);
+			}
+
+			%brick.convertCityLotOwnership();
+		}
+		else
+		{
+			// We have a host mismatch, but mysteriously, we're not loading bricks.
+			// In this case, something has gone terribly wrong.
+			error("CityRPG Lot Registry - Lot host mismatch outside of loading bricks! ('" @ %nameRaw @ "'). Aborting...");
+			return;
+		}
+	}
+
 	%ownerID = %brick.getCityLotOwnerID();
 
 	$City::RealEstate::TotalLots++;
@@ -371,7 +413,9 @@ function fxDTSBrick::initExistingCityLot(%brick)
 
 	%brick.cityLotInit = 0;
 	%brick.cityLotOverride = 1;
-	%brick.setNTObjectName(%lotID);
+	// Note that for an existing lot, the owner ID is always derived from the lot registry, NOT the brick's saved name.
+	// This rules out any potential error in the brick's saved name.
+	%brick.setNTObjectName(getNumKeyID() @ "_" @ %ownerID @ "_" @ %lotID);
 
 	if(%ownerID != -1)
 	{
@@ -382,8 +426,6 @@ function fxDTSBrick::initExistingCityLot(%brick)
 	{
 		$City::RealEstate::UnclaimedLots++;
 	}
-
-	
 }
 
 function fxDTSBrick::initNewCityLot(%brick)
@@ -417,7 +459,6 @@ function fxDTSBrick::initNewCityLot(%brick)
 		error("Lot registry is blank or missing! Will not export.");
 	}
 
-
 	%publicID = getNumKeyID();
 	if(%brick.getGroup().bl_id != %publicID)
 	{
@@ -425,13 +466,21 @@ function fxDTSBrick::initNewCityLot(%brick)
 	}
 
 	%brick.cityLotOverride = 1;
-	%brick.setNTObjectName(%newID);
+	%brick.setNTObjectName(%publicID @ "_" @ "none" @ "_" @ %newID);
 
 	$City::RealEstate::UnclaimedLots++;
 
 	echo("City: Registered new lot, #" @ %newID);
 
 	return %newID;
+}
+
+function fxDTSBrick::convertCityLotOwnership(%brick)
+{
+	talk("TODO: Lot ownership conversion not implemented");
+	// 1. Check the lot's brick name for the original owner. Assign.
+	// 2. Initialize the lot as a new lot to give it an ID on the current server, flushing out the old one.
+	// 3. Call a transfer of the lot's ownership via CityLots_TransferLot to the original owner.
 }
 
 // Removes the lot from the owner's cached list of "owned lots".
@@ -466,7 +515,11 @@ function fxDTSBrick::getCityLotID(%brick)
 		return -1;
 	}
 
-	%lotID = getSubStr(%nameRaw, 1, strlen(%nameRaw));
+	%nameRaw = %brick.getCityLotSaveName();
+
+	%lotID = getWord(%nameRaw, 2);
+
+	// If the lot's brick name is blank at this stage, for whatever reason, lotID will  be -1 due to getWord failing.
 
 	if(CityRPGLotRegistry.getData(%lotID) == 0)
 	{
@@ -533,6 +586,7 @@ function fxDTSBrick::setCityLotOwnerID(%brick, %value)
 	%data = CityRPGLotRegistry.getData(%lotID);
 	%valueOld = %data.valueOwnerID;
 
+	// ## Display name handling
 	if(%valueOld == -1 && %value != -1)
 	{
 		// If transferring from the city to a player, automatically rename the lot.
@@ -541,6 +595,7 @@ function fxDTSBrick::setCityLotOwnerID(%brick, %value)
 		$City::RealEstate::UnclaimedLots--;
 	}
 
+	// ## Caching
 	if(%valueOld != -1)
 	{
 		// If transferring from a player, clear the cache.
@@ -558,7 +613,6 @@ function fxDTSBrick::setCityLotOwnerID(%brick, %value)
 		$City::Cache::LotsOwnedBy[%value] = $City::Cache::LotsOwnedBy[%value] $= "" ? %brick : $City::Cache::LotsOwnedBy[%value] SPC %brick;
 	}
 
-
 	%valueNew = %data.valueOwnerID = %value;
 
 	if(CityRPGLotRegistry.dataCount > 0)
@@ -569,6 +623,15 @@ function fxDTSBrick::setCityLotOwnerID(%brick, %value)
 	{
 		error("Lot registry is blank or missing! Will not export.");
 	}
+
+	// ## Brick name handling
+	// The brick's name needs to match the new owner ID, so we need to update it.
+	%nameRaw = %brick.getCityLotSaveName();
+	%lotHost = getWord(%nameRaw, 0);
+	%lotID = getWord(%nameRaw, 2);
+
+	%brick.cityLotOverride = 1;
+	%brick.setNTObjectName(%lotHost @ "_" @ (%valueNew == -1?"none":%valueNew) @ "_" @ %lotID);
 
 	return %valueNew;
 }
