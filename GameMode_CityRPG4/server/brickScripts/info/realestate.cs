@@ -141,7 +141,7 @@ function CityMenu_RealEstate_ListForSale(%client, %input)
 	// Security check
 	if(%lotBrick.getCityLotOwnerID() != %client.bl_id)
 	{
-		%client.cityLog("(!!!) Lot " @ %lotBrick.getCityLotID() @ " sale listing fell through");
+		%client.cityLog("Lot " @ %lotBrick.getCityLotID() @ " sale listing fell through", 0, 1);
 
 		// Security check falls through
 		%client.cityMenuMessage("\c0Sorry, you are no-longer able to list that lot for sale at this time.");

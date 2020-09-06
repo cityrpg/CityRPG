@@ -136,7 +136,7 @@ function CityLots_PurchaseLot(%client, %input, %lot)
 	}
 	else if(%lot.getCityLotOwnerID() != -1 || CityRPGData.getData(%client.bl_id).valueMoney < %lot.dataBlock.initialPrice)
 	{
-		%client.cityLog("(!!!) Lot " @ %lot.getCityLotID() @ " purchase fell through");
+		%client.cityLog("Lot " @ %lot.getCityLotID() @ " purchase fell through", 0, 1);
 
 		// Security check falls through
 		%client.cityMenuMessage("\c0Sorry, you are no-longer able to purchase this lot at this time.");

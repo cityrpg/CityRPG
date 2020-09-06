@@ -202,16 +202,20 @@ package CityRPG_MainPackage
 	// ============================================================
 	// Client Packages
 	// ============================================================
-	function gameConnection::cityLog(%client, %data, %nodate) {
+	function gameConnection::cityLog(%client, %data, %nodate, %warn) {
 		if(!$Pref::Server::City::loggerEnabled) {
 			return;
+		}
+
+		if(%warn) {
+			%warningPrefix = "(!!!) ";
 		}
 
 		// Re-open the file for each item that is logged.
 		// This probably isn't great for performance, but it's much more secure
 		// because we need to be able to retain logs when the server hard crashes.
 		%client.logFile.openForAppend($City::SavePath @ "Logs/" @ %client.bl_id @ ".log");
-		%client.logFile.writeLine((!%nodate?"[" @ getDateTime() @ "] ":"") @ %data);
+		%client.logFile.writeLine((!%nodate?"[" @ getDateTime() @ "] ":"") @ %warningPrefix @ %data);
 		%client.logFile.close();
 	}
 
@@ -285,10 +289,10 @@ package CityRPG_MainPackage
 
 		// Drop a warning flag if the session lasted longer than 6 hours to catch idlers
 		if(%time >= 360) {
-			%suffix = "(!!!)";
+			%warn = 1;
 		}
 
-		%client.cityLog("Left game ~" @ %time @ " min" @ %suffix @ " | dems: " @ CityRPGData.getData(%client.bl_id).valueDemerits);
+		%client.cityLog("Left game ~" @ %time @ " min" @ %suffix @ " | dems: " @ CityRPGData.getData(%client.bl_id).valueDemerits, 0, %warn);
 		if($missionRunning && isObject(%client.player) && !getWord(CityRPGData.getData(%client.bl_id).valueJailData, 1))
 		{
 			for(%a = 0; %a < %client.player.getDatablock().maxTools; %a++)
