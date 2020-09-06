@@ -349,7 +349,13 @@ function GameConnection::doCityHungerStatus(%client)
 	}
 }
 
-function GameConnection::doCityHungerEffects(%client) {
+function GameConnection::doCityHungerEffects(%client)
+{
+	if(%client.isCityAdmin())
+	{
+		return;
+	}
+
 	%rand = getRandom(1,6);
 	%data = CityRPGData.getData(%client.bl_id);
 
