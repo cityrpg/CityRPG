@@ -1,80 +1,77 @@
 // ============================================================
 // Preferences
 // ============================================================
+$City::UsePrefObjects = isFunction(registerPreferenceAddon);
 
-// WARNING: If changing defaults, make sure to change them consistently in both places.
-
-// Init prefs without registering them
-function City_InitPrefs() {
-	$Pref::Server::City::name = "Blocko City";
-
-	// Game
-	$Pref::Server::City::misc::cashdrop									= 1;
-	$Pref::Server::City::realestate::maxLots						= 5;
-	$Pref::Server::City::prices::reset									= 100;
-	$Pref::Server::City::tick::speed										= 5;
-	$Pref::Server::City::LotRules												= "No spam. No excessive FX, emitters, or lights.";
-
-	// Crime
-	$Pref::Server::City::demerits::minBounty						= 100;
-	$Pref::Server::City::demerits::maxBounty						= 7500;
-
-	// Management
-	$Pref::Server::City::loggerEnabled 									= true;
-
-	// Economy
-	$Pref::Server::City::Economics::Relay								= 2;
-	$Pref::Server::City::Economics::Greatest						= 100;
-	$Pref::Server::City::Economics::Least								= -35;
-	$Pref::Server::City::Economics::Cap									= 150;
-
-	// Mayor
-	$Pref::Server::City::Mayor::Active									= true;
-	$Pref::Server::City::Mayor::Cost										= 500;
-	$Pref::Server::City::Mayor::ImpeachCost							= 100;
-	$Pref::Server::City::Mayor::Time										= 10;
-}
-
-if(!isFile("Add-Ons/System_ReturnToBlockland/server.cs"))
+function City_RegisterPref(%category, %name, %variable, %type, %params, %defaultValue, %loadCallback, %updateCallback, %requireRestart, %hostOnly)
 {
-	City_InitPrefs();
-} else {
-	if(!$RTB::RTBR_ServerControl_Hook)
+	if($City::UsePrefObjects)
 	{
-		exec("Add-Ons/System_ReturnToBlockland/RTBR_ServerControl_Hook.cs");
+		new ScriptObject(Preference) {
+			className      = "CityPref";
+
+			addon          = "GameMode_CityRPG4";
+			//category       = "General";
+			category       = %category;
+			//title          = "Can use";
+			title          = %name;
+
+			//type           = "dropdown";
+			type           = %type;
+			params         = "Host 3 Super_Admin 2 Admin 1"; //list based parameters
+			params         = %params; //list based parameters
+
+			variable       = %variable;
+
+			defaultValue   = %defaultValue;
+
+			updateCallback = %updateCallback; //to call after ::onUpdate (optional)
+			loadCallback   = %loadCallback; //to call after ::onLoad (optional)
+
+			hostOnly       = %hostOnly;
+			requireRestart = %requireRestart;
+		};
+	}
+	else
+	{
+		eval("%varRef = " @ %variable @ ";");
+
+		// If the value does not exist, automatically set it to its default value.
+		if(%varRef $= "")
+			eval(%variable @ " = " @ defaultValue);
 	}
 
-	// Register prefs if there is a compatible prefs add-on
-	// For the sake of reverse compatibility, the old RTB pref function is being used for now.
+
+}
+
+function City_InitPrefs()
+{
+	registerPreferenceAddon("GameMode_CityRPG4", "CityRPG 4", "building");
 
 	// City Prefs
-	RTB_registerPref("City name", "CityRPG 4|Game", "$Pref::Server::City::name", "string 64", "GameMode_CityRPG4", "Blocko City", 0, 0);
+	City_RegisterPref("Game", "City name", "$Pref::Server::City::name", "string", "64", "Blocko Town");
+	City_RegisterPref("Game", "Drop Cash on Death", "$Pref::Server::City::misc::cashdrop", "bool", "", true);
+	City_RegisterPref("Game", "Max Lots", "$Pref::Server::City::realestate::maxLots", "int", "0 999", 5);
+	City_RegisterPref("Game", "Account Reset Cost (/reset)", "$Pref::Server::City::prices::reset", "int", "0 5000", 100);
+	City_RegisterPref("Game", "Tick Length (minutes)", "$Pref::Server::City::tick::speed", "int", "0 10", 5);
+	City_RegisterPref("Game", "Lot Rules", "$Pref::Server::City::LotRules", "string", "256", "No spam. No excessive FX, emitters, or lights.");
+	City_RegisterPref("Game", "Min Bounty", "$Pref::Server::City::demerits::minBounty", "int", "0 1000", 100);
+	City_RegisterPref("Game", "Max Bounty", "$Pref::Server::City::demerits::maxBounty", "int", "0 1000000", 7500);
 
-	RTB_registerPref("Drop Cash on Death", "CityRPG 4|Game", "$Pref::Server::City::misc::cashdrop", "bool", "GameMode_CityRPG4", 1, 0, 0);
-	RTB_registerPref("Max Lots", "CityRPG 4|Game", "$Pref::Server::City::realestate::maxLots", "int 0 999", "GameMode_CityRPG4", 5, 0, 0);
-	RTB_registerPref("Account Reset Cost (/reset)", "CityRPG 4|Game", "$Pref::Server::City::prices::reset", "int 0 5000", "GameMode_CityRPG4", 100, 0, 0);
-	RTB_registerPref("Tick Length (minutes)", "CityRPG 4|Game", "$Pref::Server::City::tick::speed", "int 0 10", "GameMode_CityRPG4", 5, 0, 0);
-	RTB_registerPref("Lot Rules", "CityRPG 4|Game", "$Pref::Server::City::LotRules", "string 256", "GameMode_CityRPG4", "No spam. No excessive FX, emitters, or lights.", 0, 0);
+	City_RegisterPref("Server Management", "Logging Enabled", "$Pref::Server::City::loggerEnabled", "bool", "", true);
+	City_RegisterPref("Server Management", "Always show radio chat to admins", "$Pref::Server::City::AdminsAlwaysMonitorChat", "bool", "", false);
 
-	RTB_registerPref("Min Bounty", "CityRPG 4|Crime", "$Pref::Server::City::demerits::minBounty", "int 0 1000", "GameMode_CityRPG4", 100, 0, 0);
-	RTB_registerPref("Max Bounty", "CityRPG 4|Crime", "$Pref::Server::City::demerits::maxBounty", "int 0 1000000", "GameMode_CityRPG4", 7500, 0, 0);
+	City_RegisterPref("Economy", "Economy Relay", "$Pref::Server::City::Economics::Relay", "int", "0 50", 2);
+	City_RegisterPref("Economy", "Max Economy Percentage", "$Pref::Server::City::Economics::Greatest", "int", "-500 500", 100);
+	City_RegisterPref("Economy", "Economy Cap", "$Pref::Server::City::Economics::Cap", "int", "-5000 5000", 150);
 
-	RTB_registerPref("Logging Enabled", "CityRPG 4|Server Management", "$Pref::Server::City::loggerEnabled", "bool", "GameMode_CityRPG4", true, 0, 0);
-	RTB_registerPref("Always show team chat to admins", "CityRPG 4|Server Management", "$Pref::Server::City::AdminsAlwaysMonitorChat", "bool", "GameMode_CityRPG4", false, 0, 0);
-
-	RTB_registerPref("Economy Relay", "CityRPG 4|Economy", "$Pref::Server::City::Economics::Relay", "int 0 50", "GameMode_CityRPG4", 2, 0, 0);
-	RTB_registerPref("Max Economy Percentage", "CityRPG 4|Economy", "$Pref::Server::City::Economics::Greatest", "int -500 500", "GameMode_CityRPG4", 100, 0, 0);
-	RTB_registerPref("Min Economy Percentage", "CityRPG 4|Economy", "$Pref::Server::City::Economics::Least", "int -500 500", "GameMode_CityRPG4", -35, 0, 0);
-	RTB_registerPref("Economy Cap", "CityRPG 4|Economy", "$Pref::Server::City::Economics::Cap", "int -5000 5000", "GameMode_CityRPG4", 150, 0, 0);
-
-	RTB_registerPref("Election Active", "CityRPG 4|Mayor", "$Pref::Server::City::Mayor::Active", "bool", "GameMode_CityRPG4", true, 0, 0);
-	RTB_registerPref("Mayor Run Cost", "CityRPG 4|Mayor", "$Pref::Server::City::Mayor::Cost", "int 0 50000", "GameMode_CityRPG4", 500, 0, 0);
-	RTB_registerPref("Election Time (minutes)", "CityRPG 4|Mayor", "$Pref::Server::City::Mayor::Time", "int 0 30", "GameMode_CityRPG4", 10, 0, 0);
-	RTB_registerPref("Mayor Removal Cost", "CityRPG 4|Mayor", "$Pref::Server::City::Mayor::ImpeachCost", "int 0 50000", "GameMode_CityRPG4", 100, 0, 0);
-
-	// A bit of a hack. Registering as a glass section after registering all of the RTB prefs.
-	registerPreferenceAddon("GameMode_CityRPG4", "CityRPG 4", "building");
+	City_RegisterPref("Mayor", "Election Active", "$Pref::Server::City::Mayor::Active", "bool", "", true);
+	City_RegisterPref("Mayor", "Mayor Run Cost", "$Pref::Server::City::Mayor::Cost", "int", "0 50000", 500);
+	City_RegisterPref("Mayor", "Election Time (minutes)", "$Pref::Server::City::Mayor::Time", "int", "0 30", 10);
+	City_RegisterPref("Mayor", "Mayor Removal Cost", "$Pref::Server::City::Mayor::ImpeachCost", "int", "0 50000", 100);
 }
+
+City_InitPrefs();
 
 // ============================================================
 // Constants

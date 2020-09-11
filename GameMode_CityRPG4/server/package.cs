@@ -62,8 +62,7 @@ package CityRPG_MainPackage
 		if(%brick != -1 && %brick.getDataBlock().CityRPGBrickType == $CityBrick_Lot)
 		{
 			// Force init as a new lot
-			%brick.registerNewCityLot();
-			%brick.assignCityLotName();
+			%brick.initNewCityLot();
 		}
 
 		if(isObject(%brick))
@@ -140,25 +139,7 @@ package CityRPG_MainPackage
 			{
 				%ownerBG = getBrickGroupFromObject(%brick);
 
-				if(%ownerBG.client.isAdmin)
-					parent::setItem(%brick, %datablock, %client);
-			}
-			else
-				parent::setItem(%brick, %datablock, %client);
-		}
-		else
-			parent::setItem(%brick, %datablock, %client);
-	}
-
-	function fxDTSBrick::setItem(%brick, %datablock, %client)
-	{
-		if(!%brick.getDatablock().CityRPGPermaspawn && %brick != $LastLoadedBrick)
-		{
-			if(!isObject(%brick.item) || %brick.item.getDatablock() != %datablock)
-			{
-				%ownerBG = getBrickGroupFromObject(%brick);
-
-				if(%ownerBG.client.isAdmin)
+				if(CityRPGData.getData(%client.bl_id).valueJobID == $City::AdminJobID)
 					parent::setItem(%brick, %datablock, %client);
 			}
 			else
@@ -170,8 +151,10 @@ package CityRPG_MainPackage
 
 	function fxDTSBrick::spawnItem(%brick, %pos, %datablock, %client)
 	{
-		if(isObject(%owner = getBrickGroupFromObject(%brick).client) && %owner.isAdmin)
+		if(isObject(%owner = getBrickGroupFromObject(%brick).client) && %owner.isCityAdmin())
+		{
 			parent::spawnItem(%brick, %pos, %datablock, %client);
+		}
 	}
 
 	function fxDTSBrick::respawnVehicle(%brick, %client)
@@ -204,19 +187,35 @@ package CityRPG_MainPackage
 		%this.onCityLoadPlant(%this, %brick);
 	}
 
+	function fxDTSBrick::spawnProjectile(%obj, %velocity, %projectileData, %variance, %scale, %client)
+	{
+		// Replace the source client with a generic one that always fails minigameCanDamage.
+		Parent::spawnProjectile(%obj, %velocity, %projectileData, %variance, %scale, CityRPGEventClient);
+	}
+
+	function fxDTSBrick::spawnExplosion(%obj, %projectileData, %scale, %client)
+	{
+		// Replace the source client with a generic one that always fails minigameCanDamage.
+		Parent::spawnExplosion(%obj, %projectileData, %scale, CityRPGEventClient);
+	}
+
 	// ============================================================
 	// Client Packages
 	// ============================================================
-	function gameConnection::cityLog(%client, %data, %nodate) {
+	function gameConnection::cityLog(%client, %data, %nodate, %warn) {
 		if(!$Pref::Server::City::loggerEnabled) {
 			return;
+		}
+
+		if(%warn) {
+			%warningPrefix = "(!!!) ";
 		}
 
 		// Re-open the file for each item that is logged.
 		// This probably isn't great for performance, but it's much more secure
 		// because we need to be able to retain logs when the server hard crashes.
-		%client.logFile.openForAppend("config/server/CityRPG/Logs/" @ %client.bl_id @ ".log");
-		%client.logFile.writeLine((!%nodate?"[" @ getDateTime() @ "] ":"") @ %data);
+		%client.logFile.openForAppend($City::SavePath @ "Logs/" @ %client.bl_id @ ".log");
+		%client.logFile.writeLine((!%nodate?"[" @ getDateTime() @ "] ":"") @ %warningPrefix @ %data);
 		%client.logFile.close();
 	}
 
@@ -231,20 +230,22 @@ package CityRPG_MainPackage
 
 		//applyForcedBodyParts();
 
-		if(CityRPGData.getData(%client.bl_id).valueJobID $= "")
+		%data = CityRPGData.getData(%client.bl_id);
+
+		if(%data.valueJobID $= "")
 		{
 			// Reset if there is no job data.
 			resetFree(%client);
 
 			messageClient(%client, '', "\c6Welcome to " @ $Pref::Server::City::name @ "!");
 
-			if($Pref::Server::City::IntroMessage)
+			if(!$Pref::Server::City::DisableIntroMessage)
 			{
 				// Intro message
 				// Beware of the 255-character packet limit.
 				schedule(4000, 0, commandToClient, %client, 'messageBoxOK', "Welcome to CityRPG 4 Alpha 2!",
-										"Welcome, and thanks for joining us!"
-									@ "<br><br>CityRPG 4 is a work-in-progress. You may encounter bugs and quirks along the way. If you do, feel free to let us know."
+										"Welcome!"
+									@ "<br><br>CityRPG 4 is a work-in-progress. You may encounter bugs and incomplete features along the way. Keep up with development at <a:https://cityrpg.lakeys.net/>cityrpg.lakeys.net</a>"
 									@ "<br><br>Have fun!<bitmap:add-ons/gamemode_cityrpg4/boxlogo>");
 			}
 		}
@@ -253,22 +254,32 @@ package CityRPG_MainPackage
 			messageClient(%client, '', "<bitmap:" @ $City::DataPath @ "ui/time.png>\c6 Welcome back! Today is " @ CalendarSO.getDateStr());
 		}
 
-		messageClient(%client, '', "\c6 - Your current job is\c3" SPC %client.getJobSO().name @ "\c6 with an income of \c3$" @ %client.getJobSO().pay @ "\c6.");
-
-		if(CityRPGData.getData(%client.bl_id).valueStudent > 0)
+		if(%data.valueJobID == $City::AdminJobID)
 		{
-			messageClient(%client, '', "\c6 - You will complete your education in \c3" @ CityRPGData.getData(%client.bl_id).valueStudent @ "\c6 days.");
+			// Admin mode is enabled -- reiterate the parameters.
+			messageClient(%client, '', "\c6You are currently in \c4Admin Mode\c6.");
+			%client.adminModeMessage();
 		}
-
-		messageClient(%client, '', "\c6 - City mayor: \c3" @ $City::Mayor::String);
-		%client.doCityHungerStatus();
-
-		// Note: Not implemented yet.
-		%earnings = CityRPGData.getData(%client.bl_id).valueShopEarnings;
-		if(%earnings > 0)
+		else
 		{
-			messageClient(%client, '', "\c6 - You earned \c3$" @ %earnings @ "\c6 in sales while you were out.");
-			CityRPGData.getData(%client.bl_id).valueShopEarnings = 0;
+			// "Brief" the player about their status in the game.
+			messageClient(%client, '', "\c6 - Your current job is\c3" SPC %client.getJobSO().name @ "\c6 with an income of \c3$" @ %client.getJobSO().pay @ "\c6.");
+
+			if(CityRPGData.getData(%client.bl_id).valueStudent > 0)
+			{
+				messageClient(%client, '', "\c6 - You will complete your education in \c3" @ CityRPGData.getData(%client.bl_id).valueStudent @ "\c6 days.");
+			}
+
+			messageClient(%client, '', "\c6 - City mayor: \c3" @ $City::Mayor::String);
+			%client.doCityHungerStatus();
+
+			// Note: Not implemented yet.
+			%earnings = CityRPGData.getData(%client.bl_id).valueShopEarnings;
+			if(%earnings > 0)
+			{
+				messageClient(%client, '', "\c6 - You earned \c3$" @ %earnings @ "\c6 in sales while you were out.");
+				CityRPGData.getData(%client.bl_id).valueShopEarnings = 0;
+			}
 		}
 	}
 
@@ -278,10 +289,10 @@ package CityRPG_MainPackage
 
 		// Drop a warning flag if the session lasted longer than 6 hours to catch idlers
 		if(%time >= 360) {
-			%suffix = "(!!!)";
+			%warn = 1;
 		}
 
-		%client.cityLog("Left game ~" @ %time @ " min" @ %suffix @ " | dems: " @ CityRPGData.getData(%client.bl_id).valueDemerits);
+		%client.cityLog("Left game ~" @ %time @ " min" @ %suffix @ " | dems: " @ CityRPGData.getData(%client.bl_id).valueDemerits, 0, %warn);
 		if($missionRunning && isObject(%client.player) && !getWord(CityRPGData.getData(%client.bl_id).valueJailData, 1))
 		{
 			for(%a = 0; %a < %client.player.getDatablock().maxTools; %a++)
@@ -335,6 +346,12 @@ package CityRPG_MainPackage
 		if(CityRPGData.getData(%client.bl_id).valueJobID $= "")
 		{
 			schedule(1, 0, messageClient, %client, '', "\c2Type \c6/help starters\c2 to learn more about how to get started in CityRPG.");
+		}
+
+		if($City::DisplayVersionWarning)
+		{
+			messageClient(%client, '', $City::VersionWarning);
+			$City::DisplayVersionWarning = 0;
 		}
 	}
 
@@ -490,6 +507,11 @@ package CityRPG_MainPackage
 
 	function player::damage(%this, %obj, %pos, %damage, %damageType)
 	{
+		if(isObject(%this.client) && %this.client.isCityAdmin() && %damageType != $DamageType::Suicide)
+		{
+			return;
+		}
+
 		if(isObject(%obj.client) && isObject(%this.client) && isObject(%this))
 		{
 			if(%obj.getDatablock().getName() $= "deathVehicle")
@@ -657,7 +679,7 @@ package CityRPG_MainPackage
 
 		if(%hitObj.getClassName() $= "fxDTSBrick" && %hitObj.getDataBlock().CityRPGBrickType == $CityBrick_Lot)
 		{
-			if(%player.client.isAdmin)
+			if(CityRPGData.getData(%player.client.bl_id).valueJobID == $City::AdminJobID)
 				$CityLotKillOverride = 1;
 			else
 			{
@@ -767,14 +789,21 @@ package CityRPG_MainPackage
 	}
 
 	// Always-in-Minigame Overrides
-	function miniGameCanDamage(%obj1, %obj2)
+	function miniGameCanDamage(%client, %victimObject)
 	{
-		if(%obj2.getClassName() $= "WheeledVehicle")
+		if(%client.getId() == CityRPGEventClient.getId() || %victimObject.getId() == CityRPGEventClient.getId())
+		{
+			// If we're dealing with CityRPGEventClient, *always* return 0.
+			// This prevents evented projectiles and explosions from doing any sort of damage.
+			return 0;
+		}
+
+		if(%victimObject.getClassName() $= "WheeledVehicle")
 		{
 			// Only allow vehicle damage if a passenger is wanted.
-			for(%i = 0; %i <= %obj2.getMountedObjectCount()-1; %i++)
+			for(%i = 0; %i <= %victimObject.getMountedObjectCount()-1; %i++)
 			{
-				if(%obj2.getMountedObject(%i).client.getWantedLevel())
+				if(%victimObject.getMountedObject(%i).client.getWantedLevel())
 				{
 					return 1;
 				}
@@ -844,7 +873,7 @@ package CityRPG_MainPackage
 			}
 			else
 			{
-				messageCityRadio(%client.getJobSO().track, '', %client.name @ "<color:FFFFFF>:" SPC %text);
+				messageCityRadio(%client.getJobSO().track, '', %client.name @ "\c6:" SPC %text);
 			}
 		}
 	}
@@ -860,8 +889,8 @@ package CityRPG_MainPackage
 
 		if(%client.isAdmin)
 		{
-			messageClient(%client, '', "\c0As an admin, you can use the \"Council Member\" job to build and manage the server.");
-			messageClient(%client, '', "\c0Type \c6/job council member\c0 to change jobs. This will grant you jets and freeze your hunger.");
+			messageClient(%client, '', "\c0As an admin, you can use Admin Mode to build and manage the server.");
+			messageClient(%client, '', "\c0Type \c6/adminMode\c0 to toggle Admin Mode. This will grant you jets and freeze your hunger.");
 		}
 	}
 
@@ -953,6 +982,17 @@ package CityRPG_MainPackage
 				// Use serverCmdsuicide so the other hook for /suicide can intercept this if necessary
 				serverCmdsuicide(%client);
 		 }
+	}
+
+	// If a menu is open, hide the player's typing status.
+	function serverCmdStartTalking(%client)
+	{
+		if(%client.cityMenuOpen)
+		{
+			return;
+		}
+
+		Parent::serverCmdStartTalking(%client);
 	}
 };
 deactivatePackage(CityRPG_MainPackage);

@@ -54,6 +54,9 @@ CityRPG 4 is being built fully open source, and we encourage you to fork the rep
 
 Below is an incomplete documentation of key functions in CityRPG 4.
 
+Note that this documentation is applicable to **Alpha 2**. For Alpha 1 docs, see here:
+https://github.com/cityrpg/CityRPG-4-Alpha/tree/0.1.0
+
 ## GameConnection::cityMenuOpen(names, functions, exitMsg, autoClose)
 Displays a generic menu, currently using a chat-based approach. Returns true if the menu opens successfully. No eval or script object handling is necessary.
 
@@ -62,7 +65,7 @@ While this currently resembles the mechanics of classic CityRPG menus (chat-base
 **Args:**
 - exitMsg: The message to display when the menu closes
 - menu: A set of fields containing names for each menu item.
-- functions: The function that will be called corresponding with each name option. The %client argument and user input will be respectively passed to this function.
+- functions: The function that will be called corresponding with each name option. The following are passed to this function, in order: %client (Client object), %input (User input that triggered this menu option), %id (The active ID for the current menu).
 - menuID: A unique identifier for the menu, for reference elsewhere. Generally set to the brick that triggered it.
 - autoClose: (Bool) If set to 'true', the menu will close as soon as the function executes.
 
@@ -79,13 +82,16 @@ Typing "2" will show the client's ID with a "CONSOLE: " chat message. ("talk()
 
 To prompt the user for text, direct client.cityMenuFunction to a new function with the arguments `client` and `input`. The user's next raw text input will be passed to the function as `input`.
 
-For further reference, check lotRegistry.cs for a complex utilization of the cityMenuOpen function.
+Check `server/cityModules/lotRegistry.cs` and `server/brickScripts/info/jobs.cs` for complex utilizations of the cityMenuOpen function.
 
 ### Pre-existing generic functions
 This is a list of existing functions for menus. These functions should be used where possible to avoid redundancy in creating extra menu functions.
 
 - CityMenu_Close - Closes the menu.
 - CityMenu_Placeholder - Displays the text "Sorry, this feature is currently not available. Please try again later."
+
+## GameConnection::isCityAdmin()
+Returns true or false whether the target client is in Admin Mode. For most uses, it is recommended that you use this in place of checking isAdmin.
 
 ## CityRPGBatonImage::onCityPlayerHit(obj, slot, col, pos, normal)
 Allows the creation of additional checks when players are batoned. MUST return `true` if a check is passed, otherwise baton actions will overlap each other.

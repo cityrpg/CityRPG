@@ -1,3 +1,5 @@
+$City::StartingCash = 250;
+
 function gameConnection::arrest(%client, %cop)
 {
 	%client.cityLog("Arrested by '" @ %cop.bl_id @ "'");
@@ -156,46 +158,46 @@ function gameConnection::setGameBottomPrint(%client)
 		%client.CityRPGPrint = %client.CityRPGPrint;
 	}
 
-	$Economics::replayCount = $Economics::replayCount + 1;
-	$Economics::randomUporDown = getRandom(1,5);
-	$Economics::positiveNegative = getRandom(1,2);
+	$City::Economics::replayCount = $City::Economics::replayCount + 1;
+	$City::Economics::randomUporDown = getRandom(1,5);
+	$City::Economics::positiveNegative = getRandom(1,2);
 
 	if($Pref::Server::City::Economics::Relay < 1)
 		$Pref::Server::City::Economics::Relay = ClientGroup.getCount();
 
-	if($Economics::replayCount > $Pref::Server::City::Economics::Relay)
+	if($City::Economics::replayCount > $Pref::Server::City::Economics::Relay)
 	{
-		if($Economics::Condition > $Pref::Server::City::Economics::Greatest)
+		if($City::Economics::Condition > $Pref::Server::City::Economics::Greatest)
 		{
-			$Economics::Condition = $Economics::Condition - $Economics::randomUporDown;
-			$Economics::replayCount = 0;
+			$City::Economics::Condition = $City::Economics::Condition - $City::Economics::randomUporDown;
+			$City::Economics::replayCount = 0;
 		}
-		else if($Economics::Condition < $Pref::Server::City::Economics::Least)
+		else if($City::Economics::Condition < $Pref::Server::City::Economics::Least)
 		{
-			$Economics::Condition = $Economics::Condition + $Economics::randomUporDown;
-			$Economics::replayCount = 0;
+			$City::Economics::Condition = $City::Economics::Condition + $City::Economics::randomUporDown;
+			$City::Economics::replayCount = 0;
 		}
-		else if($Economics::positiveNegative == 1)
+		else if($City::Economics::positiveNegative == 1)
 		{
-			$Economics::Condition = $Economics::Condition + $Economics::randomUporDown;
-			$Economics::replayCount = 0;
+			$City::Economics::Condition = $City::Economics::Condition + $City::Economics::randomUporDown;
+			$City::Economics::replayCount = 0;
 		}
-		else if($Economics::positiveNegative == 2)
+		else if($City::Economics::positiveNegative == 2)
 		{
-			$Economics::Condition = $Economics::Condition - $Economics::randomUporDown;
-			$Economics::replayCount = 0;
+			$City::Economics::Condition = $City::Economics::Condition - $City::Economics::randomUporDown;
+			$City::Economics::replayCount = 0;
 		}
 	}
 
-	if($Economics::Condition > $Pref::Server::City::Economics::Cap)
+	if($City::Economics::Condition > $Pref::Server::City::Economics::Cap)
 	{
-		$Economics::Condition = $Pref::Server::City::Economics::Cap;
+		$City::Economics::Condition = $Pref::Server::City::Economics::Cap;
 	}
 
-	if($Economics::Condition $= "")
+	if($City::Economics::Condition $= "")
 	{
 		error("ERROR: GameMode_CityRPG4 - Economics condition is blank! Resetting to 0.");
-		$Economics::Condition = 0;
+		$City::Economics::Condition = 0;
 	}
 
 	commandToClient(%client, 'bottomPrint', %client.CityRPGPrint, 0, true);
@@ -554,6 +556,7 @@ function jobset(%client, %job, %name)
 	%client.player.giveDefaultEquipment();
 	%client.applyForcedBodyColors();
 	%client.applyForcedBodyParts();
+	%client.player.setDatablock(%client.getJobSO().db);
 
 	if(%job == $City::MayorJobID)
 	{
@@ -571,7 +574,7 @@ function resetFree(%client)
 		CityRPGData.removeData(%client.bl_id);
 	CityRPGData.addData(%client.bl_id);
 
-	CityRPGData.getData(%client.bl_id).valueBank = 250;
+	CityRPGData.getData(%client.bl_id).valueBank = $City::StartingCash;
 
 	if(isObject(%client.player))
 	{
@@ -622,4 +625,9 @@ function GameConnection::cityEnroll(%client)
 function GameConnection::getCityRecordClearCost(%client)
 {
 	return 250 * (CityRPGData.getData(%client.bl_id).valueEducation+1);
+}
+
+function GameConnection::isCityAdmin(%client)
+{
+	return CityRPGData.getData(%client.bl_id).valueJobID == $City::AdminJobID;
 }
