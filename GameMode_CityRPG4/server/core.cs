@@ -21,6 +21,9 @@ function GameConnection::cityMenuOpen(%client, %menu, %functions, %menuID, %exit
 
 		deleteOnExit = 1;
 
+		fontA = "<font:palatino linotype:24>\c6";
+		fontB = "<font:palatino linotype:24><div:1>\c6";
+
 		menuOptionCount = getFieldCount(%menu);
 	};
 	MissionCleanup.add(%menuObj);
