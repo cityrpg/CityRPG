@@ -34,6 +34,47 @@ package CityRPG_Overrides
 
 		Parent::onHoleSpawnPlanted(%obj);
 	}
+
+	// Write our own version of confirmCenterprintMenu.
+	// For compatibility, the original function will be used if any other add-ons use menus.
+	function serverCmdPlantBrick(%cl)
+	{
+		if(%cl.cityMenuOpen)
+		{
+			%cl.confirmCityMenu();
+			return;
+		}
+
+		return parent::serverCmdPlantBrick(%cl);
+	}
+
+	function GameConnection::confirmCityMenu(%client)
+	{
+		if (!%client.isInCenterprintMenu)
+		{
+			return;
+		}
+
+		%menu = %client.centerprintMenu;
+		%option = %client.currOption;
+
+		%client.exitCenterprintMenu();
+		%func = %menu.menuFunction[%option];
+		if (%menu.playSelectAudio)
+		{
+			playCenterprintMenuSound(%client, 'MsgAdminForce');
+		}
+
+		if (%func !$= "" && !isFunction(%func))
+		{
+			error("ERROR: confirmCityMenu: cannot find function " @ %func @ "!");
+			return;
+		}
+		else
+		{
+			call(%func, %client, %option, %client.cityMenuID);
+		}
+	}
 };
 
 // No need to activate yet--this will be done in City_Init

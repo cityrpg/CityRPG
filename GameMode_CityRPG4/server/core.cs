@@ -48,6 +48,7 @@ function GameConnection::cityMenuOpen(%client, %menu, %functions, %menuID, %exit
 	}
 
 	// Set the necessary values to the client
+	// Most of these are covered by the centerprint menu system, but we're retaining them for flexibility.
 	%client.cityMenuOpen = true; // Package checks for this
 	%client.cityMenuFunction = %functions;
 	%client.cityMenuAutoClose = %autoClose;
