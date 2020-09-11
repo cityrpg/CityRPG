@@ -12,14 +12,26 @@ function GameConnection::cityMenuOpen(%client, %menu, %functions, %menuID, %exit
 		return;
 	}
 
-	// Account for empty menus
-	if(%menu !$= "")
-		messageClient(%client, '', "\c6Type a number in chat:");
+	%menuObj = new ScriptObject()
+	{
+		isCenterprintMenu = 1;
+		menuName = ""; // Leave it blank.
+
+		justify = "<just:center>";
+
+		deleteOnExit = 1;
+
+		menuOptionCount = getFieldCount(%menu);
+	};
+	MissionCleanup.add(%menuObj);
 
 	for(%i = 0; %i < getFieldCount(%menu); %i++)
 	{
-		messageClient(%client, '', "\c3" @ %i+1 @ " \c6- " @ getField(%menu, %i));
+		%menuObj.menuOption[%i] = getField(%menu, %i);
+		%menuObj.menuFunction[%i] = getField(%functions, %i);
 	}
+
+	%client.startCenterprintMenu(%menuObj);
 
 	// Set the necessary values to the client
 	%client.cityMenuOpen = true; // Package checks for this
@@ -74,6 +86,8 @@ function GameConnection::cityMenuClose(%client, %silent)
 {
 	if(%client.cityMenuOpen)
 	{
+		%client.exitCenterprintMenu();
+		
 		// Use a 1ms delay so the 'closed' message shows after any other messages
 		if(!%silent)
 			schedule(1, 0, messageClient, %client, '', %client.cityMenuExitMsg);
