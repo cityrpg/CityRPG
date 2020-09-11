@@ -226,7 +226,11 @@ package CityRPG_MainPackage
 		if(isObject(CityRPGMini))
 			CityRPGMini.addMember(%client);
 		else
+		{
+			warn("CityRPG - No mini-game! Creating one...");
 			City_Init_Minigame();
+			CityRPGMini.addMember(%client);
+		}
 
 		//applyForcedBodyParts();
 
