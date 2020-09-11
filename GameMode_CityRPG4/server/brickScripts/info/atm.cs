@@ -21,7 +21,6 @@ datablock fxDTSBrickData(CityRPGATMBrickData : brick2x4FData)
 // ============================================================
 function CityMenu_ATM(%client, %brick)
 {
-	%client.cityMenuMessage("\c3ATM");
 	%client.cityMenuMessage("\c6You have \c3$" @ CityRPGData.getData(%client.bl_id).valueBank SPC "\c6in your account.");
 
 	%client.cityLog("Enter ATM");
@@ -30,7 +29,7 @@ function CityMenu_ATM(%client, %brick)
 	// We can call directly on the same prompt that the bank uses.
 	%functions = "CityMenu_BankWithdrawPrompt";
 
-	%client.cityMenuOpen(%menu, %functions, %brick, "\c6Thanks, come again.");
+	%client.cityMenuOpen(%menu, %functions, %brick, "\c6Thanks, come again.", 0, "\c3ATM");
 }
 
 // ============================================================

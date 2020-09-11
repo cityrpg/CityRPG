@@ -210,6 +210,7 @@ exec($City::ScriptPath @ "cityModules/security.cs");
 exec($City::ScriptPath @ "support/spacecasts.cs");
 exec($City::ScriptPath @ "support/extraResources.cs");
 exec($City::ScriptPath @ "support/formatNumber.cs");
+exec($City::ScriptPath @ "support/Support_CenterprintMenuSystem.cs");
 
 // Global saving
 exec($City::ScriptPath @ "globalSaving/mayorSaving.cs");

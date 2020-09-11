@@ -34,7 +34,7 @@ function CityMenu_Bank(%client, %brick)
 
 	%client.cityLog("Enter bank");
 
-	%client.cityMenuOpen(%menu, %functions, %brick, "\c6Thanks, come again.");
+	%client.cityMenuOpen(%menu, %functions, %brick, "\c6Thanks, come again.", 0, "Bank");
 }
 
 // Withdraw money.
@@ -158,7 +158,7 @@ function CityRPGBankBrickData::parseData(%this, %brick, %client, %triggerStatus,
 			return;
 		}
 
-		%client.cityMenuMessage("\c6Welcome to the " @ $Pref::Server::City::name @ " Bank. Your account balance is \c3$" @ CityRPGData.getData(%client.bl_id).valueBank @ "\c6. Current economy value: \c3" @ %econColor @ $City::Economics::Condition @ "\c6%");
+		%client.cityMenuMessage("\c6Welcome to the " @ $Pref::Server::City::name @ " Bank.<br>Your account balance is \c3$" @ CityRPGData.getData(%client.bl_id).valueBank @ "\c6. Current economy value: \c3" @ %econColor @ $City::Economics::Condition @ "\c6%");
 
 		CityMenu_Bank(%client, %brick);
 	}

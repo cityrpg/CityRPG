@@ -22,8 +22,6 @@ datablock fxDTSBrickData(CityRPGREBrickData : brick2x4FData)
 // ============================================================
 function CityMenu_RealEstate(%client, %brick)
 {
-	%client.cityMenuMessage("\c3" @ $Pref::Server::City::name @ "\c3 Real Estate Office");
-
 	%lotCount = $City::RealEstate::TotalLots || 0;
 	%lotCountUnclaimed = $City::RealEstate::UnclaimedLots || 0;
 	%lotCountSale = $City::RealEstate::LotCountSale;
@@ -54,7 +52,7 @@ function CityMenu_RealEstate(%client, %brick)
 	}
 
 	%client.cityMenuMessage(%message);
-	%client.cityMenuOpen(%menu, %functions, %brick, "\c6Thanks, come again.");
+	%client.cityMenuOpen(%menu, %functions, %brick, "\c6Thanks, come again.", 0, "\c3" @ $Pref::Server::City::name @ "\c3 Real Estate Office");
 }
 
 // List for sale

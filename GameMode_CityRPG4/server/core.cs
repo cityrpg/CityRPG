@@ -5,28 +5,30 @@
 // Client.cityMenuOpen(names, functions, exitMsg, autoClose)
 // Modular function hook for displaying menus in-game.
 // Currently utilizes chat just like classic CityRPG, however this is subject to change.
-function GameConnection::cityMenuOpen(%client, %menu, %functions, %menuID, %exitMsg, %autoClose)
+function GameConnection::cityMenuOpen(%client, %menu, %functions, %menuID, %exitMsg, %autoClose, %title)
 {
 	if(%client.cityMenuOpen)
 	{
 		return;
 	}
 
-	%menuObj = new ScriptObject()
+	if(getFieldCount(%menu) != 0)
 	{
-		isCenterprintMenu = 1;
-		menuName = ""; // Leave it blank.
+		%menuObj = new ScriptObject()
+		{
+			isCenterprintMenu = 1;
+			menuName = %title; // Leave it blank.
 
-		justify = "<just:center>";
+			justify = "<just:center>";
 
-		deleteOnExit = 1;
+			deleteOnExit = 1;
 
-		fontA = "<font:palatino linotype:24>\c6";
-		fontB = "<font:palatino linotype:24><div:1>\c6";
+			fontA = "<font:palatino linotype:24>\c6";
+			fontB = "<font:palatino linotype:24><div:1>\c6";
 
-		menuOptionCount = getFieldCount(%menu);
-	};
-	MissionCleanup.add(%menuObj);
+			menuOptionCount = getFieldCount(%menu);
+		};
+		MissionCleanup.add(%menuObj);
 
 	if(%menuID $= "")
 	{
@@ -42,7 +44,8 @@ function GameConnection::cityMenuOpen(%client, %menu, %functions, %menuID, %exit
 		%menuObj.menuFunction[%i] = getField(%functions, %i);
 	}
 
-	%client.startCenterprintMenu(%menuObj);
+		%client.startCenterprintMenu(%menuObj);
+	}
 
 	// Set the necessary values to the client
 	%client.cityMenuOpen = true; // Package checks for this
@@ -134,6 +137,8 @@ function GameConnection::cityMenuClose(%client, %silent)
 // msg: (str) Message to display to the client. Accepts color codes (\c3, etc.)
 function GameConnection::cityMenuMessage(%client, %msg)
 {
+	%client.cityMenuLastMsg = %msg;
+	%client.cityMenuMsgTime = atof(getSimTime());
 	// We're using messageClient for now--simple enough, but this is subject to change.
 	messageClient(%client, '', %msg);
 }

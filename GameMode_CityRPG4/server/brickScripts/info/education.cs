@@ -48,7 +48,7 @@ function CityMenu_Education(%client, %brick)
 		%menu = "Enroll for \c3$" @ %client.getCityEnrollCost();
 		%functions = "CityMenu_EducationEnroll";
 
-		%client.cityMenuOpen(%menu, %functions, %brick, "\c6Thanks, come again.");
+		%client.cityMenuOpen(%menu, %functions, %brick, "\c6Thanks, come again.", 0, $Pref::Server::City::name @ " College of Education");
 	}
 }
 

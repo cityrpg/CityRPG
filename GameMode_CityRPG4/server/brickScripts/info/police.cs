@@ -70,7 +70,7 @@ function CityMenu_Police(%client, %brick)
 
 	}
 
-	%client.cityMenuOpen(%menu, %functions, %brick, "\c6Thanks, come again.");
+	%client.cityMenuOpen(%menu, %functions, %brick, "\c6Thanks, come again.", 0, "Police Department");
 }
 
 function CityMenu_Police_ViewCrims(%client)

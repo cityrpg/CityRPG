@@ -22,7 +22,6 @@ datablock fxDTSBrickData(CityRPGBountyBrickData : brick2x4FData)
 // ============================================================
 function CityMenu_Bounty(%client, %brick)
 {
-	%client.cityMenuMessage("\c3Hit Office");
 	%client.cityMenuMessage("\c0Note:\c6 Placing a bounty (as a non-official) is criminal activity.");
 
 	%menu =	"View bounties."
@@ -31,7 +30,7 @@ function CityMenu_Bounty(%client, %brick)
 	%functions = 	"CityMenu_Bounty_List"
 						TAB "CityMenu_Bounty_PlacePromptA";
 
-	%client.cityMenuOpen(%menu, %functions, %brick, "\c6Thanks, come again.");
+	%client.cityMenuOpen(%menu, %functions, %brick, "\c6Thanks, come again.", 0, "\c3Hit Office");
 }
 
 function CityMenu_Bounty_List(%client, %brick)
