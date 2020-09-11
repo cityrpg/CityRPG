@@ -72,7 +72,7 @@ package CityRPG_Overrides
 		}
 		else
 		{
-			call(%func, %client, %option, %client.cityMenuID);
+			call(%func, %client, %option+1, %client.cityMenuID);
 		}
 	}
 };
