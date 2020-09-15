@@ -6,7 +6,7 @@
 
 // Init prefs without registering them
 function City_InitPrefs() {
-	$Pref::Server::City::name = "Blocko City";
+	$Pref::Server::City::name = "Blocko Town";
 
 	// Game
 	$Pref::Server::City::misc::cashdrop									= 1;
@@ -48,7 +48,7 @@ if(!isFile("Add-Ons/System_ReturnToBlockland/server.cs"))
 	// For the sake of reverse compatibility, the old RTB pref function is being used for now.
 
 	// City Prefs
-	RTB_registerPref("City name", "CityRPG 4|Game", "$Pref::Server::City::name", "string 64", "GameMode_CityRPG4", "Blocko City", 0, 0);
+	RTB_registerPref("City name", "CityRPG 4|Game", "$Pref::Server::City::name", "string 64", "GameMode_CityRPG4", "Blocko Town", 0, 0);
 
 	RTB_registerPref("Drop Cash on Death", "CityRPG 4|Game", "$Pref::Server::City::misc::cashdrop", "bool", "GameMode_CityRPG4", 1, 0, 0);
 	RTB_registerPref("Max Lots", "CityRPG 4|Game", "$Pref::Server::City::realestate::maxLots", "int 0 999", "GameMode_CityRPG4", 5, 0, 0);
