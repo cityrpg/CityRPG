@@ -23,7 +23,6 @@ datablock fxDTSBrickData(CityRPGJobBrickData : brick2x4FData)
 // ============================================================
 function CityMenu_Jobs(%client, %brick)
 {
-	talk(%client);
 	%client.cityMenuMessage("\c3" @ $Pref::Server::City::name @ " Employment Office");
 	%client.cityMenuMessage("\c6Your current job is\c3" SPC %client.getJobSO().name @ "\c6 with an income of \c3$" @ %client.getJobSO().pay @ "\c6.");
 
