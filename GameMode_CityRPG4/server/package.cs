@@ -1260,6 +1260,16 @@ package CityRPG_MainPackage
 				serverCmdsuicide(%client);
 		 }
 	}
+
+	function EventDNC_RoutineCheck()
+	{
+		// weehee wacky hacky fun time
+		// This fixes the day/night cycle events not triggering until the GUI is opened by an admin.
+		%oldVal = $EnvGuiServer::DayCycleEnabled;
+		$EnvGuiServer::DayCycleEnabled = ($Sky::DayCycleEnabled && $EnvGuiServer::SimpleMode) || ($EnvGuiServer::DayCycleEnabled && !$EnvGuiServer::SimpleMode);
+		Parent::EventDNC_RoutineCheck();
+		$EnvGuiServer::DayCycleEnabled = %oldVal;
+	}
 };
 deactivatePackage(CityRPG_MainPackage);
 activatepackage(CityRPG_MainPackage);

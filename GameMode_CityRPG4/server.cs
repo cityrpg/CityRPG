@@ -88,9 +88,6 @@ if(%error == $Error::AddOn_NotFound)
   return;
 }
 
-// Additional compatibility
-$EnvGuiServer::DayCycleEnabled = $Sky::DayCycleEnabled;
-
 if($GameModeArg $= "Add-Ons/GameMode_CityRPG4/gamemode.txt")
 {
   // Optionals to always load on a vanilla configuration if they exist:
