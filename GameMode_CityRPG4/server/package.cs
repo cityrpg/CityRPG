@@ -1052,6 +1052,34 @@ package CityRPG_MainPackage
 		return parent::onServerDestroyed();
 	}
 
+	function ServerLoadSaveFile_End()
+	{
+		Parent::ServerLoadSaveFile_End();
+
+		for(%i = 0; %i < clientGroup.getCount(); %i++)
+		{
+			%client = ClientGroup.getObject(%i);
+			if(%client.waitingForLoad)
+			{
+				serverCmdMissionStartPhase3Ack(%client, 1);
+			}
+		}
+	}
+
+	function serverCmdMissionStartPhase3Ack(%client, %seq)
+	{
+		if($LoadingBricks_Client !$= "")
+		{
+			%client.waitingForLoad = 1;
+			messageClient(%client, '', "\c2Waiting for bricks to load - you will spawn in a moment.");
+			return;
+		}
+		else
+		{
+			Parent::serverCmdMissionStartPhase3Ack(%client, %seq);
+		}
+	}
+
 	// Always-in-Minigame Overrides
 	function miniGameCanDamage(%obj1, %obj2)
 	{
