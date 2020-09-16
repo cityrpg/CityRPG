@@ -5,9 +5,8 @@
 		<li>Replaced the default colorset with Trueno's Colorset</li>
 		<li>Drastically optimized the antiquated data saver. CPU usage and response times have significantly improved, fixing instances of the server choking with higher player counts and/or larger maps. This is only a band-aid fix until the saver is replaced, but it brings significant performance improvements.</li>
 		<li>The game-mode now modifies the doPlayerTeleport add-on if it is enabled; the "Relative" option is disabled to prevent players from phasing through walls with it.</li>
+		<li><a:https://lakeys.net/cityrpg/roadmap>More on the way! View update progress on our roadmap.</a></li>
 	</ul>
-
-	<a:https://lakeys.net/cityrpg/roadmap>More on the way! View update progress on our roadmap.</a>
 </version>
 
 <version:0.1.0>
