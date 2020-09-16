@@ -8,4 +8,4 @@ Directors: PunisherLex, Qauk, and Sargeras
 Special thanks to:
 The CityRPG 4 testers: Alphabite, Dglider, Jasa, Luigi609, Mega Bear, Remurr, Snack Nsack Chocolate, Stargatefan
 The previous CityRPG developers: Jookia/PeopleMods, Iban, Diggy/Wentworth, McTwist, Gadgethm, Aoki, /Ty, and many more.
-Dglider for bugfixes and tips, Sentry for replacing missing assets, port for creating the extraResources library.
+Dglider for bugfixes and tips, Sentry for replacing missing assets, and Cookie Monster for buildings.

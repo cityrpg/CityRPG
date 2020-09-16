@@ -1,3 +1,15 @@
+<version:0.1.1>
+	<b>Alpha 1 Patch</b>
+	<ul>
+		<li>Added a new default CityRPG build.</li>
+		<li>Replaced the default colorset with Trueno's Colorset</li>
+		<li>Drastically optimized the antiquated data saver. CPU usage and response times have significantly improved, fixing instances of the server choking with higher player counts and/or larger maps. This is only a band-aid fix until the saver is replaced, but it brings significant performance improvements.</li>
+		<li>The game-mode now modifies the doPlayerTeleport add-on if it is enabled; the "Relative" option is disabled to prevent players from phasing through walls with it.</li>
+	</ul>
+
+	<a:https://lakeys.net/cityrpg/roadmap>More on the way! View update progress on our roadmap.</a>
+</version>
+
 <version:0.1.0>
 	<b>CityRPG 4 Alpha 1 - Initial Release</b>
 	<b>Features</b>
@@ -6,6 +18,6 @@
 		<li>A variety of jobs and roles to partake in</li>
 		<li>Shops that are built and run entirely by players</li>
 		<li>A dynamic real estate system for player-created buildings</li>
-		<li><a:trello.com/b/36wGp6ow/cityrpg-4-roadmap>More on the way! View our update progress on Trello.</a></li>
+		<li><a:https://lakeys.net/cityrpg/roadmap>More on the way! View update progress on our roadmap.</a></li>
 	</ul>
 </version>

@@ -792,6 +792,34 @@ package CityRPG_MainPackage
 		return parent::onServerDestroyed();
 	}
 
+	function ServerLoadSaveFile_End()
+	{
+		Parent::ServerLoadSaveFile_End();
+
+		for(%i = 0; %i < clientGroup.getCount(); %i++)
+		{
+			%client = ClientGroup.getObject(%i);
+			if(%client.waitingForLoad)
+			{
+				serverCmdMissionStartPhase3Ack(%client, 1);
+			}
+		}
+	}
+
+	function serverCmdMissionStartPhase3Ack(%client, %seq)
+	{
+		if($LoadingBricks_Client !$= "")
+		{
+			%client.waitingForLoad = 1;
+			messageClient(%client, '', "\c2Waiting for bricks to load - you will spawn in a moment.");
+			return;
+		}
+		else
+		{
+			Parent::serverCmdMissionStartPhase3Ack(%client, %seq);
+		}
+	}
+
 	// Always-in-Minigame Overrides
 	function miniGameCanDamage(%client, %victimObject)
 	{
@@ -997,6 +1025,16 @@ package CityRPG_MainPackage
 		}
 
 		Parent::serverCmdStartTalking(%client);
+	}
+
+	function EventDNC_RoutineCheck()
+	{
+		// weehee wacky hacky fun time
+		// This fixes the day/night cycle events not triggering until the GUI is opened by an admin.
+		%oldVal = $EnvGuiServer::DayCycleEnabled;
+		$EnvGuiServer::DayCycleEnabled = ($Sky::DayCycleEnabled && $EnvGuiServer::SimpleMode) || ($EnvGuiServer::DayCycleEnabled && !$EnvGuiServer::SimpleMode);
+		Parent::EventDNC_RoutineCheck();
+		$EnvGuiServer::DayCycleEnabled = %oldVal;
 	}
 };
 deactivatePackage(CityRPG_MainPackage);

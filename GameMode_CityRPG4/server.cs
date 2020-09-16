@@ -16,8 +16,8 @@ $City::ScriptPath = "Add-Ons/GameMode_CityRPG4/server/";
 $City::DataPath = "Add-Ons/GameMode_CityRPG4/data/";
 $City::SavePath = "config/server/CityRPG4_A2/";
 
-$City::Version = "0.2.0";
-$City::VersionTitle = "Alpha 2";
+$City::Version = "0.1.1";
+$City::VersionTitle = "Alpha 1.1";
 $City::isGitBuild = !isFile("Add-Ons/GameMode_CityRPG4/README.md");
 
 $City::VersionWarning = "!!!!! WARNING: You are using save data from a different version of CityRPG. You are likely to encounter compatibility issues. To fix this, move or delete the save file located in your Blockland folder:" SPC $City::SavePath;
@@ -164,6 +164,18 @@ else
       unregisterOutputEvent("fxDTSBrick","doPlayerTeleport");
       registerOutputEvent("fxDTSBrick","doPlayerTeleport","string 200 90\tlist Relative 0 North 1 East 2 South 3 West 4\tbool",1);
     }
+  }
+
+  // Event_doPlayerTeleport (Optional)
+  // If doPlayerTeleport is enabled, re-register it without the "relative" option.
+  // This prevents players from exploiting doPlayerTeleport to move through walls.
+
+  if($AddOn__Event_doPlayerTeleport)
+  {
+    ForceRequiredAddOn("Event_doPlayerTeleport");
+
+    unregisterOutputEvent("fxDTSBrick","doPlayerTeleport");
+    registerOutputEvent("fxDTSBrick","doPlayerTeleport","string 200 90\tlist Relative 0 North 1 East 2 South 3 West 4\tbool",1);
   }
 }
 
