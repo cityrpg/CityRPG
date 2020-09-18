@@ -258,7 +258,7 @@ function City_Init_AssembleEvents()
 	}
 
 	registerOutputEvent("fxDTSBrick", "doJobTest", "list NONE 0" @ %doJobTest_List TAB "list NONE 0" @ %doJobTest_List TAB "bool");
-	for(%c = 0; %c <= $CityRPG::guns-1; %c++)
+	for(%c = 0; %c <= $CityRPG::guns; %c++)
 	{
 		%sellItem_List = %sellItem_List SPC strreplace($CityRPG::prices::weapon::name[%c].uiName, " ", "") SPC %c;
 	}
