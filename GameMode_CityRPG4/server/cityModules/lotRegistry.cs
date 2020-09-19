@@ -1,3 +1,6 @@
+// TODO: Pref for servers that have the original save files and want to override conversion
+// TODO: Test the setNTObjectName calls one by one to find the problematic bastard
+
 // ============================================================
 // Base Function
 // ============================================================
@@ -358,6 +361,8 @@ function fxDTSBrick::initCityLot(%brick)
 		%brick.initExistingCityLot();
 	}
 
+	%brick.cityLotInit = 0;
+
 	// Cache the brick.
 	CityRPGLotRegistry.getData(%brick.getCityLotID()).brick = %brick;
 }
@@ -672,7 +677,6 @@ package CityRPG_LotRegistry
 
 			// Init value will be set back to 0 from initCityLot()
 			%obj.initCityLot();
-			%brick.cityLotInit = 0;
 
 			return;
 		}
