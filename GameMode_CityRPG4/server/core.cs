@@ -404,7 +404,7 @@ function City_TickLoop(%loop)
 				if((CalendarSO.date % 2) == 0)
 				{
 					// No hunger effects for admin jobs
-					if(%client.isCityAdmin())
+					if(!%client.isCityAdmin())
 					{
 						%so.valueHunger--;
 
