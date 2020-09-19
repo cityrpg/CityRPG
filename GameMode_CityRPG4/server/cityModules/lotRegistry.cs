@@ -1,5 +1,4 @@
 // TODO: Pref for servers that have the original save files and want to override conversion
-// TODO: Test the setNTObjectName calls one by one to find the problematic bastard
 
 // ============================================================
 // Base Function
@@ -412,7 +411,7 @@ function fxDTSBrick::initExistingCityLot(%brick)
 	%brick.cityLotOverride = 1;
 	// Note that for an existing lot, the owner ID is always derived from the lot registry, NOT the brick's saved name.
 	// This rules out any potential error in the brick's saved name.
-	%brick.setNTObjectName(getNumKeyID() @ "_" @ %ownerID @ "_" @ %lotID);
+	%brick.SetNTObjectNameOverride(getNumKeyID() @ "_" @ %ownerID @ "_" @ %lotID);
 
 	if(%ownerID != -1)
 	{
@@ -428,7 +427,7 @@ function fxDTSBrick::initNewCityLot(%brick)
 		warn("Lot registry - Attempting to initialize a lot that already exists. Re-initializing as a new lot.");
 		backtrace();
 		%brick.cityLotOverride = 1;
-		%brick.setNTObjectName("");
+		%brick.SetNTObjectNameOverride("");
 	}
 
 	// 1. Initialize lot data with default values
@@ -459,7 +458,7 @@ function fxDTSBrick::initNewCityLot(%brick)
 	}
 
 	%brick.cityLotOverride = 1;
-	%brick.setNTObjectName(%publicID @ "_" @ "none" @ "_" @ %newID);
+	%brick.SetNTObjectNameOverride(%publicID @ "_" @ "none" @ "_" @ %newID);
 
 	echo("City: Registered new lot, #" @ %newID);
 
@@ -616,7 +615,7 @@ function fxDTSBrick::setCityLotOwnerID(%brick, %value)
 	%lotID = getWord(%nameRaw, 2);
 
 	%brick.cityLotOverride = 1;
-	%brick.setNTObjectName(%lotHost @ "_" @ (%valueNew == -1?"none":%valueNew) @ "_" @ %lotID);
+	%brick.SetNTObjectNameOverride(%lotHost @ "_" @ (%valueNew == -1?"none":%valueNew) @ "_" @ %lotID);
 
 	return %valueNew;
 }
@@ -666,22 +665,29 @@ package CityRPG_LotRegistry
 		Parent::serverCmdSetWrenchData(%client, %fields);
 	}
 
+	function fxDTSBrick::SetNTObjectNameOverride(%obj, %name)
+	{
+		%obj.setNTObjectName(%name, 1);
+	}
+
 	// Brick rename blocking
-	function SimObject::SetNTObjectName(%obj, %name)
+	// TODO: See if we can package this only for fxDTSBrick to make it less error prone?
+	function SimObject::SetNTObjectName(%obj, %name, %override)
 	{
 		// Special override to handle lots when they are loaded from a save.
 		// We're packaging SetNTObjectName because this isn't called until after the loading tick.
-		if(%obj.cityLotInit && !%obj.cityLotOverride)
+		if(%obj.cityLotInit && !%override)
 		{
-			Parent::SetNTObjectName(%obj, %name);
+			Parent::SetNTObjectName(%obj, %name, 1);
 
 			// Init value will be set back to 0 from initCityLot()
 			%obj.initCityLot();
+			%obj.cityLotInit = 0;
 
 			return;
 		}
 
-		if(!%obj.cityLotOverride && !%obj.cityLotOverrideReset && %obj.dataBlock !$= "" && %obj.dataBlock.CityRPGBrickType == $CityBrick_Lot)
+		if(!%override && !%obj.cityLotOverrideReset && %obj.dataBlock !$= "" && %obj.dataBlock.CityRPGBrickType == $CityBrick_Lot)
 		{
 			%client = %obj.cityLastWrench;
 
@@ -695,7 +701,6 @@ package CityRPG_LotRegistry
 		}
 
 		Parent::SetNTObjectName(%obj, %name);
-		%obj.cityLotOverride = 0;
 		%obj.cityLotOverrideReset = 0;
 	}
 
