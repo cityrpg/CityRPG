@@ -398,21 +398,12 @@ function fxDTSBrick::initExistingCityLot(%brick)
 
 	%ownerID = %brick.getCityLotOwnerID();
 
-	$City::RealEstate::TotalLots++;
-	// Count it as a pre-owned lot for sale if applicable.
-	if(%brick.setCityLotPreownedPrice() == -1)
-	{
-		$City::RealEstate::LotCountSale++;
-	}
-
 	if(%lotID == -1)
 	{
 		warn("CityRPG 4 - Attempt to initialize existing lot " @ %brick @ ", but lot ID is blank! Aborting init.");
 		return;
 	}
 
-	%brick.cityLotInit = 0;
-	%brick.cityLotOverride = 1;
 	// Note that for an existing lot, the owner ID is always derived from the lot registry, NOT the brick's saved name.
 	// This rules out any potential error in the brick's saved name.
 	%brick.setNTObjectName(getNumKeyID() @ "_" @ %ownerID @ "_" @ %lotID);
@@ -421,10 +412,6 @@ function fxDTSBrick::initExistingCityLot(%brick)
 	{
 		// Add the lot to the owner's list, initializing the list with our first value if it's blank.
 		$City::Cache::LotsOwnedBy[%ownerID] = $City::Cache::LotsOwnedBy[%ownerID] $= "" ? %brick : $City::Cache::LotsOwnedBy[%ownerID] SPC %brick;
-	}
-	else
-	{
-		$City::RealEstate::UnclaimedLots++;
 	}
 }
 
@@ -467,8 +454,6 @@ function fxDTSBrick::initNewCityLot(%brick)
 
 	%brick.cityLotOverride = 1;
 	%brick.setNTObjectName(%publicID @ "_" @ "none" @ "_" @ %newID);
-
-	$City::RealEstate::UnclaimedLots++;
 
 	echo("City: Registered new lot, #" @ %newID);
 
@@ -591,8 +576,6 @@ function fxDTSBrick::setCityLotOwnerID(%brick, %value)
 	{
 		// If transferring from the city to a player, automatically rename the lot.
 		%brick.setCityLotName(%brick.getGroup().name @ "\c6's Lot");
-
-		$City::RealEstate::UnclaimedLots--;
 	}
 
 	// ## Caching
@@ -602,11 +585,7 @@ function fxDTSBrick::setCityLotOwnerID(%brick, %value)
 		%brick.cityLotCacheRemove();
 	}
 
-	if(%value == -1)
-	{
-		$City::RealEstate::UnclaimedLots++;
-	}
-	else
+	if(%value != -1)
 	{
 		// If transferring to a player, add it to their cache.
 		// Initialize if the cache is blank.
@@ -685,12 +664,14 @@ package CityRPG_LotRegistry
 	function SimObject::SetNTObjectName(%obj, %name)
 	{
 		// Special override to handle lots when they are loaded from a save.
-		if(%obj.cityLotInit)
+		// We're packaging SetNTObjectName because this isn't called until after the loading tick.
+		if(%obj.cityLotInit && !%obj.cityLotOverride)
 		{
 			Parent::SetNTObjectName(%obj, %name);
 
 			// Init value will be set back to 0 from initCityLot()
 			%obj.initCityLot();
+			%brick.cityLotInit = 0;
 
 			return;
 		}
@@ -777,18 +758,10 @@ package CityRPG_LotRegistry
 			// Always override on remove
 			%brick.cityLotOverride = 1;
 
-			$City::RealEstate::TotalLots--;
-			if(%ownerID == -1)
-				$City::RealEstate::UnclaimedLots--;
-			else
+			if(%ownerID != -1)
 			{
 				// Now, we have to remove this lot from the owner's cache of owned lots.
 				%brick.cityLotCacheRemove();
-			}
-
-			if(%brick.getCityLotPreownedPrice() == -1)
-			{
-				$City::RealEstate::LotCountSale--;
 			}
 
 			// This lot will exist in the memory, but it will no-longer have a brick associated with it.
