@@ -404,6 +404,7 @@ function fxDTSBrick::initExistingCityLot(%brick)
 		return;
 	}
 
+	%brick.cityLotOverride = 1;
 	// Note that for an existing lot, the owner ID is always derived from the lot registry, NOT the brick's saved name.
 	// This rules out any potential error in the brick's saved name.
 	%brick.setNTObjectName(getNumKeyID() @ "_" @ %ownerID @ "_" @ %lotID);
