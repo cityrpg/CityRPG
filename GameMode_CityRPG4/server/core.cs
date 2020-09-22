@@ -347,7 +347,7 @@ function City_Tick(%brick)
 	messageAll('', "\c6 - The current economy value is " @ %econColor @ $City::Economics::Condition @ "\c6%.");
 
 	City_Init_Spawns();
-	City_TickEcon();
+	City_Tick_Econ();
 	City_TickLoop(0);
 	CityRPGData.scheduleTick = schedule((60000 * $Pref::Server::City::tick::speed), false, "City_Tick");
 
