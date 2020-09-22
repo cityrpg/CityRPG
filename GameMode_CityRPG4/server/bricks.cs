@@ -577,6 +577,11 @@ function CityRPGInputTriggerData::onEnterTrigger(%this, %trigger, %obj)
 		return;
 	}
 
+	if(%obj.client.cityMenuOpen)
+	{
+		%obj.client.cityMenuClose();
+	}
+
 	%obj.client.cityLog(%trigger.parent.getDatablock().getName() SPC "enter");
 
 	%obj.client.CityRPGTrigger = %trigger;
