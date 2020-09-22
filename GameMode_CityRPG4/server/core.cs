@@ -274,6 +274,51 @@ function City_illegalAttackTest(%atkr, %vctm)
 	return false;
 }
 
+function City_Tick_Econ()
+{
+	$City::Economics::replayCount = $City::Economics::replayCount + 1;
+	$City::Economics::randomUporDown = getRandom(1,5);
+	$City::Economics::positiveNegative = getRandom(1,2);
+
+	if($Pref::Server::City::Economics::Relay < 1)
+		$Pref::Server::City::Economics::Relay = ClientGroup.getCount();
+
+	if($City::Economics::replayCount > $Pref::Server::City::Economics::Relay)
+	{
+		if($City::Economics::Condition > $Pref::Server::City::Economics::Greatest)
+		{
+			$City::Economics::Condition = $City::Economics::Condition - $City::Economics::randomUporDown;
+			$City::Economics::replayCount = 0;
+		}
+		else if($City::Economics::Condition < $Pref::Server::City::Economics::Least)
+		{
+			$City::Economics::Condition = $City::Economics::Condition + $City::Economics::randomUporDown;
+			$City::Economics::replayCount = 0;
+		}
+		else if($City::Economics::positiveNegative == 1)
+		{
+			$City::Economics::Condition = $City::Economics::Condition + $City::Economics::randomUporDown;
+			$City::Economics::replayCount = 0;
+		}
+		else if($City::Economics::positiveNegative == 2)
+		{
+			$City::Economics::Condition = $City::Economics::Condition - $City::Economics::randomUporDown;
+			$City::Economics::replayCount = 0;
+		}
+	}
+
+	if($City::Economics::Condition > $Pref::Server::City::Economics::Cap)
+	{
+		$City::Economics::Condition = $Pref::Server::City::Economics::Cap;
+	}
+
+	if($City::Economics::Condition $= "")
+	{
+		error("ERROR: GameMode_CityRPG4 - Economics condition is blank! Resetting to 0.");
+		$City::Economics::Condition = 0;
+	}
+}
+
 function City_Tick(%brick)
 {
 	CalendarSO.date++;
@@ -302,6 +347,7 @@ function City_Tick(%brick)
 	messageAll('', "\c6 - The current economy value is " @ %econColor @ $City::Economics::Condition @ "\c6%.");
 
 	City_Init_Spawns();
+	City_TickEcon();
 	City_TickLoop(0);
 	CityRPGData.scheduleTick = schedule((60000 * $Pref::Server::City::tick::speed), false, "City_Tick");
 
