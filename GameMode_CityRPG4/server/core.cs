@@ -95,9 +95,8 @@ function GameConnection::cityMenuClose(%client, %silent)
 {
 	if(%client.cityMenuOpen)
 	{
-		// Use a 1ms delay so the 'closed' message shows after any other messages
 		if(!%silent)
-			%client.schedule(1, cityMenuMessage, %client.cityMenuExitMsg);
+			%client.cityMenuMessage(%client.cityMenuExitMsg);
 
 		// Event
 		if(isObject(%client.cityMenuID) && %client.cityMenuID.getClassName() $= "fxDTSBrick")
