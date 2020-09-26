@@ -351,6 +351,13 @@ function fxDTSBrick::getCityLotSaveName(%brick)
 // Determines the state of the lot and directs the corresponding init process.
 function fxDTSBrick::initCityLot(%brick)
 {
+	if(%brick.lotInitialized)
+	{
+		error("CityRPG Lot Registry - Attempting to re-initialize a lot! Something's gone wrong. Aborting...");
+		return;
+	}
+
+	%brick.lotInitialized = 1;
 	if(%brick.getCityLotID() == -1)
 	{
 		%brick.initNewCityLot();
@@ -680,9 +687,7 @@ package CityRPG_LotRegistry
 		{
 			Parent::SetNTObjectName(%obj, %name, 1);
 
-			// Init value will be set back to 0 from initCityLot()
 			%obj.initCityLot();
-			%obj.cityLotInit = 0;
 
 			return;
 		}
