@@ -57,6 +57,7 @@ function City_InitPrefs()
 	City_RegisterPref("Game", "Lot Rules", "$Pref::Server::City::LotRules", "string", "256", "No spam. No excessive FX, emitters, or lights.");
 	City_RegisterPref("Game", "Min Bounty", "$Pref::Server::City::demerits::minBounty", "int", "0 1000", 100);
 	City_RegisterPref("Game", "Max Bounty", "$Pref::Server::City::demerits::maxBounty", "int", "0 1000000", 7500);
+	City_RegisterPref("Game", "Disable tumble on starve", "$Pref::Server::City::DisableHungerTumble", "bool", "", false);
 
 	City_RegisterPref("Server Management", "Logging Enabled", "$Pref::Server::City::loggerEnabled", "bool", "", true);
 	City_RegisterPref("Server Management", "Always show radio chat to admins", "$Pref::Server::City::AdminsAlwaysMonitorChat", "bool", "", false);

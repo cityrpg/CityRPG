@@ -408,8 +408,11 @@ function GameConnection::doCityHungerEffects(%client)
 		messageClient(%client, '', "\c6 - Hunger cramps sieze hold of your body...");
 		%player = %client.player;
 
-		%player.addVelocity("0 0 " @ getRandom(1,3));
-		tumble(%player);
+		if($Pref::Server::City::DisableHungerTumble)
+		{
+			%player.addVelocity("0 0 " @ getRandom(1,3));
+			tumble(%player);
+		}
 
 		%damage = %player.dataBlock.maxDamage*0.50;
 		%client.player.schedule(2000, damage, %player, %player.getPosition(), %damage, $DamageType::Starvation);
