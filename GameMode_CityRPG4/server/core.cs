@@ -408,7 +408,7 @@ function GameConnection::doCityHungerEffects(%client)
 		messageClient(%client, '', "\c6 - Hunger cramps sieze hold of your body...");
 		%player = %client.player;
 
-		if($Pref::Server::City::DisableHungerTumble)
+		if(!$Pref::Server::City::DisableHungerTumble)
 		{
 			%player.addVelocity("0 0 " @ getRandom(1,3));
 			tumble(%player);
