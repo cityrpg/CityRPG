@@ -674,13 +674,17 @@ package CityRPG_LotRegistry
 
 	function fxDTSBrick::SetNTObjectNameOverride(%obj, %name)
 	{
-		%obj.setNTObjectName(%name, 1);
+		%obj.cityNameOverride = 1;
+		%obj.setNTObjectName(%name);
+		%obj.cityNameOverride = 0;
 	}
 
 	// Brick rename blocking
 	// TODO: See if we can package this only for fxDTSBrick to make it less error prone?
-	function SimObject::SetNTObjectName(%obj, %name, %override)
+	function SimObject::SetNTObjectName(%obj, %name)
 	{
+		%override = %obj.cityNameOverride;
+
 		// Special override to handle lots when they are loaded from a save.
 		// We're packaging SetNTObjectName because this isn't called until after the loading tick.
 		if(%obj.cityLotInit && !%override)
