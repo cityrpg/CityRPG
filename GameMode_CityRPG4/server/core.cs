@@ -392,6 +392,11 @@ function GameConnection::doCityHungerStatus(%client)
 	{
 		%client.centerPrint("\c6" @ %msg, 3);
 	}
+
+	if(%data.valueHunger < 3)
+	{
+		messageClient(%client, '', "\c6 - You will not receive a paycheck while you are starving.");
+	}
 }
 
 function GameConnection::doCityHungerEffects(%client)
