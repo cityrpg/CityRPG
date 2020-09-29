@@ -59,14 +59,14 @@ package CityRPG_MainPackage
 	{
 		%brick = Parent::plantBrick(%this, %i, %position, %angleID, %brickGroup, %client, %bl_id);
 
-		if(%brick != -1 && %brick.getDataBlock().CityRPGBrickType == $CityBrick_Lot)
-		{
-			// Force init as a new lot
-			%brick.initNewCityLot();
-		}
-
 		if(isObject(%brick))
 		{
+			if(%brick != -1 && %brick.getDataBlock().CityRPGBrickType == $CityBrick_Lot)
+			{
+				// Force init as a new lot
+				%brick.initNewCityLot();
+			}
+			
 			%check = %brick.cityBrickCheck();
 			if(%check == 0)
 			{
