@@ -370,7 +370,7 @@ function fxDTSBrick::initCityLot(%brick)
 	%brick.cityLotInit = 0;
 
 	// Cache the brick.
-	CityRPGLotRegistry.getData(%brick.getCityLotID()).brick = %brick;
+	CityRPGLotRegistry.findData(%brick.getCityLotID()).brick = %brick;
 }
 
 function fxDTSBrick::initExistingCityLot(%brick)
@@ -429,7 +429,7 @@ function fxDTSBrick::initExistingCityLot(%brick)
 
 function fxDTSBrick::initNewCityLot(%brick)
 {
-	if(CityRPGLotRegistry.getData(%brick.getCityLotID()) != 0)
+	if(CityRPGLotRegistry.findData(%brick.getCityLotID()) != 0)
 	{
 		warn("Lot registry - Attempting to initialize a lot that already exists. Re-initializing as a new lot.");
 		backtrace();
@@ -442,7 +442,7 @@ function fxDTSBrick::initNewCityLot(%brick)
 
 	%newID = CityLots_GetLotCount()+1;
 
-	if(CityRPGLotRegistry.getData(%newID) != 0)
+	if(CityRPGLotRegistry.findData(%newID) != 0)
 	{
 		error("CityRPG Lot Registry - Attempting to initialize the lot '" @ %newID @ "' but the ID already exists! This lot may not have registered correctly.");
 	}
@@ -518,7 +518,7 @@ function fxDTSBrick::getCityLotID(%brick)
 
 	// If the lot's brick name is blank at this stage, for whatever reason, lotID will  be -1 due to getWord failing.
 
-	if(CityRPGLotRegistry.getData(%lotID) == 0)
+	if(CityRPGLotRegistry.findData(%lotID) == 0)
 	{
 		// Doesn't exist in the registry
 		return -1;
@@ -529,41 +529,41 @@ function fxDTSBrick::getCityLotID(%brick)
 
 function findLotBrickByID(%value)
 {
-	return CityRPGLotRegistry.getData(%value).brick;
+	return CityRPGLotRegistry.findData(%value).brick;
 }
 
 // ## Getters
 
 function fxDTSBrick::getCityLotName(%brick)
 {
-	return CityRPGLotRegistry.getData(%brick.getCityLotID()).valueName;
+	return CityRPGLotRegistry.findData(%brick.getCityLotID()).valueName;
 }
 
 function fxDTSBrick::getCityLotOwnerID(%brick)
 {
-	return CityRPGLotRegistry.getData(%brick.getCityLotID()).valueOwnerID;
+	return CityRPGLotRegistry.findData(%brick.getCityLotID()).valueOwnerID;
 }
 
 function fxDTSBrick::getCityLotRuleStr(%brick)
 {
-	return CityRPGLotRegistry.getData(%brick.getCityLotID()).valueRuleStr;
+	return CityRPGLotRegistry.findData(%brick.getCityLotID()).valueRuleStr;
 }
 
 function fxDTSBrick::getCityLotTransferDate(%brick)
 {
-	return CityRPGLotRegistry.getData(%brick.getCityLotID()).valueTransferDate;
+	return CityRPGLotRegistry.findData(%brick.getCityLotID()).valueTransferDate;
 }
 
 function fxDTSBrick::getCityLotPreownedPrice(%brick)
 {
-	return CityRPGLotRegistry.getData(%brick.getCityLotID()).valuePreownedSalePrice;
+	return CityRPGLotRegistry.findData(%brick.getCityLotID()).valuePreownedSalePrice;
 }
 
 // ## Setters
 
 function fxDTSBrick::setCityLotName(%brick, %value)
 {
-	%valueNew = CityRPGLotRegistry.getData(%brick.getCityLotID()).valueName = getSubStr(%value, 0, 40);
+	%valueNew = CityRPGLotRegistry.findData(%brick.getCityLotID()).valueName = getSubStr(%value, 0, 40);
 
 	if(CityRPGLotRegistry.dataCount > 0)
 	{
@@ -580,7 +580,7 @@ function fxDTSBrick::setCityLotName(%brick, %value)
 function fxDTSBrick::setCityLotOwnerID(%brick, %value)
 {
 	%lotID = %brick.getCityLotID();
-	%data = CityRPGLotRegistry.getData(%lotID);
+	%data = CityRPGLotRegistry.findData(%lotID);
 	%valueOld = %data.valueOwnerID;
 
 	// ## Display name handling
@@ -629,12 +629,12 @@ function fxDTSBrick::setCityLotOwnerID(%brick, %value)
 
 function fxDTSBrick::setCityLotTransferDate(%brick, %value)
 {
-	CityRPGLotRegistry.getData(%brick.getCityLotID()).valueTransferDate = %value;
+	CityRPGLotRegistry.findData(%brick.getCityLotID()).valueTransferDate = %value;
 }
 
 function fxDTSBrick::setCityLotPreownedPrice(%brick, %value)
 {
-	CityRPGLotRegistry.getData(%brick.getCityLotID()).valuePreownedSalePrice = %value;
+	CityRPGLotRegistry.findData(%brick.getCityLotID()).valuePreownedSalePrice = %value;
 }
 
 // ============================================================
@@ -786,7 +786,7 @@ package CityRPG_LotRegistry
 			// This lot will exist in the memory, but it will no-longer have a brick associated with it.
 			// Therefore, we need to remove the brick from the cache.
 			// If the lot is re-loaded later, it will be restored on init.
-			CityRPGLotRegistry.getData(%lotID).brick = -1;
+			CityRPGLotRegistry.findData(%lotID).brick = -1;
 		}
 
 		Parent::onRemove(%brick);
