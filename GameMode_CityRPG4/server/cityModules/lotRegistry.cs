@@ -375,6 +375,18 @@ function fxDTSBrick::initCityLot(%brick)
 
 function fxDTSBrick::initExistingCityLot(%brick)
 {
+	$City::RealEstate::TotalLots++;
+
+	if(%brick.getCityLotPreownedPrice() != -1)
+	{
+		$City::RealEstate::LotCountSale++;
+	}
+
+	if(%brick.getCityLotOwnerID() == -1)
+	{
+		$City::RealEstate::UnclaimedLots++;
+	}
+
 	%nameRaw = %brick.getCityLotSaveName();
 
 	%lotHost = getWord(%nameRaw, 0);
@@ -429,6 +441,9 @@ function fxDTSBrick::initExistingCityLot(%brick)
 
 function fxDTSBrick::initNewCityLot(%brick)
 {
+	$City::RealEstate::TotalLots++;
+	$City::RealEstate::UnclaimedLots++;
+
 	if(CityRPGLotRegistry.findData(%brick.getCityLotID()) != 0)
 	{
 		warn("Lot registry - Attempting to initialize a lot that already exists. Re-initializing as a new lot.");
@@ -591,13 +606,21 @@ function fxDTSBrick::setCityLotOwnerID(%brick, %value)
 	}
 
 	// ## Caching
-	if(%valueOld != -1)
+	if(%valueOld == -1)
+	{
+		$City::RealEstate::UnclaimedLots--;
+	}
+	else
 	{
 		// If transferring from a player, clear the cache.
 		%brick.cityLotCacheRemove();
 	}
 
-	if(%value != -1)
+	if(%value == -1)
+	{
+		$City::RealEstate::UnclaimedLots++;
+	}
+	else
 	{
 		// If transferring to a player, add it to their cache.
 		// Initialize if the cache is blank.
@@ -776,11 +799,21 @@ package CityRPG_LotRegistry
 
 			// Always override on remove
 			%brick.cityLotOverride = 1;
+			$City::RealEstate::TotalLots--;
 
 			if(%ownerID != -1)
 			{
 				// Now, we have to remove this lot from the owner's cache of owned lots.
 				%brick.cityLotCacheRemove();
+			}
+			else
+			{
+				$City::RealEstate::UnclaimedLots--;
+			}
+
+			if(%brick.getCityLotPreownedPrice() != -1)
+			{
+				$City::RealEstate::LotCountSale--;
 			}
 
 			// This lot will exist in the memory, but it will no-longer have a brick associated with it.
