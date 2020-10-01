@@ -78,7 +78,7 @@ findClientByName(Blockhead).cityMenuOpen(%menu, %functions, "", "", true);
 
 Result:
 Typing "1" will show the client's ID in yellow text. ("announce()")
-Typing "2" will show the client's ID with a "CONSOLE: " chat message. ("talk()
+Typing "2" will show the client's ID with a "CONSOLE: " chat message. ("talk()")
 
 To prompt the user for text, direct client.cityMenuFunction to a new function with the arguments `client` and `input`. The user's next raw text input will be passed to the function as `input`.
 
