@@ -165,18 +165,6 @@ else
       registerOutputEvent("fxDTSBrick","doPlayerTeleport","string 200 90\tlist Relative 0 North 1 East 2 South 3 West 4\tbool",1);
     }
   }
-
-  // Event_doPlayerTeleport (Optional)
-  // If doPlayerTeleport is enabled, re-register it without the "relative" option.
-  // This prevents players from exploiting doPlayerTeleport to move through walls.
-
-  if($AddOn__Event_doPlayerTeleport)
-  {
-    ForceRequiredAddOn("Event_doPlayerTeleport");
-
-    unregisterOutputEvent("fxDTSBrick","doPlayerTeleport");
-    registerOutputEvent("fxDTSBrick","doPlayerTeleport","string 200 90\tlist Relative 0 North 1 East 2 South 3 West 4\tbool",1);
-  }
 }
 
 
