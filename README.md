@@ -54,8 +54,8 @@ CityRPG 4 is being built fully open source, and we encourage you to fork the rep
 
 Below is an incomplete documentation of key functions in CityRPG 4.
 
-Note that this documentation is applicable to **Alpha 2**. For Alpha 1 docs, see here:
-https://github.com/cityrpg/CityRPG-4-Alpha/tree/0.1.0
+Note that this documentation is applicable to **0.2.0**. For the latest release docs, see here:
+https://github.com/cityrpg/CityRPG-4-Alpha/tree/0.1.1
 
 ## GameConnection::cityMenuOpen(names, functions, exitMsg, autoClose)
 Displays a generic menu, currently using a chat-based approach. Returns true if the menu opens successfully. No eval or script object handling is necessary.
