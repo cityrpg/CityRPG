@@ -243,7 +243,7 @@ function CityMenu_LotAdmin_SetName(%client, %input)
 		return;
 	}
 
-	%client.cityMenuID.setCityLotName(%name);
+	%client.cityMenuID.setCityLotName(%input);
 	%client.cityMenuMessage("\c6Lot name changed to \c3" @ %client.cityMenuID.getCityLotName() @ "\c6.");
 
 	%client.cityMenuClose();
