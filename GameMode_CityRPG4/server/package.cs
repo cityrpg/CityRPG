@@ -66,7 +66,7 @@ package CityRPG_MainPackage
 				// Force init as a new lot
 				%brick.initNewCityLot();
 			}
-			
+
 			%check = %brick.cityBrickCheck();
 			if(%check == 0)
 			{
@@ -197,6 +197,15 @@ package CityRPG_MainPackage
 	{
 		// Replace the source client with a generic one that always fails minigameCanDamage.
 		Parent::spawnExplosion(%obj, %projectileData, %scale, CityRPGEventClient);
+	}
+
+	// Does nothing if doPlayerTeleport does not exist
+	// Removes the %rel (relative) option and overrides it as 0.
+	function fxDTSBrick::doPlayerTeleport(%obj, %target, %dir, %velocityop, %client)
+	{
+		Parent::doPlayerTeleport(%obj, %target, %dir, %velocityop, 0, %client);
+		// I forsee nothing that could go wrong with this in the package stack.
+		// Absolutely nothing.
 	}
 
 	// ============================================================
