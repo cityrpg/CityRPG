@@ -49,7 +49,7 @@ function CityMenu_Lot(%client, %notitle)
 
 	if(!%notitle)
 	{
-		%client.cityMenuMessage("\c3Lot Management\c6 for: " @ %brick.getCityLotName() @ "\c6 - " @ %brick.getDataBlock().uiName);
+		%client.cityMenuMessage("\c3" @ %brick.getCityLotName() @ "\c6 - " @ %brick.getDataBlock().uiName);
 	}
 
 	// ## Options for all lots ## //
@@ -223,7 +223,7 @@ function CityMenu_LotAdmin(%client)
 						TAB "CityMenu_LotAdmin_TransferCity"
 						TAB "CityMenu_LotAdmin_TransferPlayerPrompt";
 
-	%client.cityMenuOpen(%menu, %functions, %brick, "\c3Lot management menu closed.");
+	%client.cityMenuOpen(%menu, %functions, %brick, "\c3Lot menu closed.");
 }
 
 function CityMenu_LotAdmin_SetNamePrompt(%client)
