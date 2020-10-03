@@ -77,6 +77,17 @@ function CityMenu_Lot(%client, %notitle)
 
 		%functions = %functions
 				TAB "CityMenu_LotSetNamePrompt";
+
+		if(%brick.getCityLotPreownedPrice() == -1)
+		{
+			%menu = %menu TAB "List this lot for sale.";
+			%functions = %functions TAB "CityMenu_Lot_ListForSalePrompt";
+		}
+		else
+		{
+			%menu = %menu TAB "Take this lot off sale.";
+			%functions = %functions TAB "CityMenu_Placeholder";
+		}
 	}
 
 	// ## Options for admins ## //
@@ -193,6 +204,72 @@ function CityMenu_LotSetName(%client, %input)
 	%brick.setCityLotName(%name);
 	%client.cityMenuMessage("\c6Lot name changed to \c3" @ %brick.getCityLotName() @ "\c6.");
 
+	%client.cityMenuClose();
+}
+
+// ### Listing for sale ### //
+function CityMenu_Lot_ListForSalePrompt(%client, %input)
+{
+	%lotBrick = %client.cityMenuID;
+
+	%client.cityMenuMessage("\c6Listing this lot for sale will allow someone to buy it for the price of your choosing.");
+	%client.cityMenuMessage("\c6How much money would you like to sell this lot for? Enter a number, or leave to cancel.");
+
+	%client.cityMenuFunction = CityMenu_Lot_ListForSaleConfirmPrompt;
+}
+
+function CityMenu_Lot_ListForSaleConfirmPrompt(%client, %input)
+{
+	%price = atof(%input);
+	%lotBrick = %client.cityMenuID;
+
+	if(%price < 0)
+		%price = 0;
+
+	%client.cityMenuMessage("\c6You are listing the lot \c3" @ %lotBrick.getCityLotName() @ "\c6 on sale for \c3$" @ strFormatNumber(%price));
+	%client.cityMenuMessage("\c0Warning!\c6 Once a player purchases this lot, they will become the permanent owner of your lot. Are you sure?");
+
+	%client.cityLotPrice = %price;
+
+	if(%price == 0)
+		%client.cityMenuMessage("\c0You are about to list this lot for free. Are you sure?");
+
+	%client.cityMenuMessage("\c6Type \c31\c6 to confirm, or \c32\c6 to cancel.");
+
+	%client.cityMenuFunction = CityMenu_Lot_ListForSale;
+}
+
+function CityMenu_Lot_ListForSale(%client, %input)
+{
+	%lotBrick = %client.cityMenuID;
+	%lotID = %lotBrick.getCityLotID();
+
+	if(%input !$= "1")
+	{
+		%client.cityMenuMessage("\c0Lot listing cancelled.");
+		%client.cityMenuClose();
+		return;
+	}
+
+	// Security check
+	if(%lotBrick.getCityLotOwnerID() != %client.bl_id)
+	{
+		talk(%lotBrick.getCityLotOwnerID SPC %client.bl_id SPC "test");
+		%client.cityLog("Lot " @ %lotBrick.getCityLotID() @ " sale listing fell through", 0, 1);
+
+		// Security check falls through
+		%client.cityMenuMessage("\c0Sorry, you are no-longer able to list that lot for sale at this time.");
+		%client.cityMenuClose();
+		return;
+	}
+
+	$City::RealEstate::LotCountSale++;
+
+	// Append the lot to the fields under CitySO.lotListings.
+	CitySO.lotListings = CitySO.lotListings $= ""? CitySO.lotListings = %lotID : CitySO.lotListings = CitySO.lotListings SPC %lotID;
+	%lotBrick.setCityLotPreownedPrice(%client.cityLotPrice);
+
+	%client.cityMenuMessage("\c6You have listed your lot for sale.");
 	%client.cityMenuClose();
 }
 
