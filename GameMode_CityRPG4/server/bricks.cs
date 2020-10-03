@@ -532,16 +532,18 @@ function CityRPGLotTriggerData::onEnterTrigger(%this, %trigger, %obj)
 
 	%lotStr = "<just:right><font:palatino linotype:18>\c6" @ %trigger.parent.getCityLotName();
 
+	%duration = 2;
 	if(%trigger.parent.getCityLotOwnerID() == -1)
 	{
 		%lotStr = %lotStr @ "<br>\c2For sale!\c6 Type /lot for info";
 	}
 	else if(%trigger.parent.getCityLotPreownedPrice() != -1)
 	{
-		%lotStr = %lotStr @ "<br>\c2For sale!\c6 Visit Real Estate for info";
+		%lotStr = %lotStr @ "<br>\c2For sale by owner!\c6 Type /lot for info";
+		%duration = 3;
 	}
 
-	%client.centerPrint(%lotStr, 2);
+	%client.centerPrint(%lotStr, %duration);
 
 	//%client.SetInfo();
 }
