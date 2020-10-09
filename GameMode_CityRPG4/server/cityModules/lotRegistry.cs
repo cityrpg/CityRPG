@@ -81,7 +81,8 @@ function CityMenu_Lot(%client, %notitle)
 		if(%brick.getCityLotPreownedPrice() == -1)
 		{
 			%menu = %menu TAB "List this lot for sale.";
-			%functions = %functions TAB "CityMenu_Lot_ListForSalePrompt";
+			%functions = %functions TAB CityMenu_Placeholder;
+			//%functions = %functions TAB "CityMenu_Lot_ListForSalePrompt";
 		}
 		else
 		{
