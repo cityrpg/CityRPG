@@ -241,6 +241,15 @@ unRegisterOutputEvent("Player", "SetVelocity");
 unRegisterOutputEvent("Player", "SpawnExplosion");
 unRegisterOutputEvent("Player", "SpawnProjectile");
 
+unRegisterOutputEvent("Bot", "AddHealth");
+unRegisterOutputEvent("Bot", "BurnPlayer");
+unRegisterOutputEvent("Bot", "ChangeDatablock");
+unRegisterOutputEvent("Bot", "ClearBurn");
+unRegisterOutputEvent("Bot", "ClearTools");
+unRegisterOutputEvent("Bot", "SetHealth");
+unRegisterOutputEvent("Bot", "SpawnExplosion");
+unRegisterOutputEvent("Bot", "SpawnProjectile");
+
 unRegisterOutputEvent("GameConnection", "ChatMessage");
 unRegisterOutputEvent("GameConnection", "IncScore");
 
