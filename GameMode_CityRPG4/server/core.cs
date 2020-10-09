@@ -343,13 +343,14 @@ function City_Tick(%brick)
 		%econColor = "<color:ee0000>";
 	}
 
-	messageAll('', "\c6 - The current economy value is " @ %econColor @ $City::Economics::Condition @ "\c6%.");
 
 	City_Init_Spawns();
 	City_Tick_Econ();
 	City_TickLoop(0);
 	CityRPGData.scheduleTick = schedule((60000 * $Pref::Server::City::tick::speed), false, "City_Tick");
 
+	messageAll('', "\c6 - The current economy value is " @ %econColor @ $City::Economics::Condition @ "\c6%.");
+	
 	if(CityRPGData.datacount > 0)
 	{
 		CityRPGData.saveData();
