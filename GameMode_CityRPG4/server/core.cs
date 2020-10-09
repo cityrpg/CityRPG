@@ -515,7 +515,7 @@ function City_TickLoop(%loop)
 				else
 					%include = -0.025;
 
-				if(CityRPGData.data[%loop].valueHunger < 3 && CityRPGData.data[%loop].valueBank > 30)
+				if(CityRPGData.data[%loop].valueHunger < 2 && CityRPGData.data[%loop].valueBank > 30)
 				{
 					messageClient(%client,'',"\c6 - You were unable to collect your paycheck because you are starving.");
 				}
