@@ -277,8 +277,8 @@ function CityMenu_Lot_ListForSale(%client, %input)
 // ## Functions for admins ## //
 function CityMenu_LotAdmin(%client)
 {
+	%brick = %client.CityMenuID;
 	%client.cityMenuClose(true);
-	%brick = %client.CityRPGLotBrick;
 	%ownerID = %brick.getCityLotOwnerID();
 
 	%client.cityMenuMessage("\c3Lot Admin\c6 for: \c3" @ %brick.getCityLotName() @ "\c6 - Lot ID: \c3" @ %brick.getCityLotID() @ "\c6 - Brick ID: \c3" @ %brick.getID() @ "\c6 - Lot purchase date: \c3" @ %brick.getCityLotTransferDate());
