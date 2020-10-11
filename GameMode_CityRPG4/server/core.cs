@@ -61,22 +61,20 @@ function GameConnection::cityMenuInput(%client, %input)
 	{
 		%function = getField(%client.cityMenuFunction, %input-1);
 
-		if(isFunction(%function))
-		{
-			%id = %client.cityMenuID;
-			if(%client.cityMenuAutoClose)
-				%client.cityMenuClose();
-
-			// It's important to do this after closing in case the function we're calling opens another menu.
-			call(%function, %client, %input, %id);
-
-			return true;
-		}
-		else
+		if(!isFunction(%function))
 		{
 			messageClient(%client, '', "\c3" @ %input @ "\c6 is not a valid option. Please try again.");
 			return false;
 		}
+		
+		%id = %client.cityMenuID;
+		if(%client.cityMenuAutoClose)
+			%client.cityMenuClose();
+
+		// It's important to do this after closing in case the function we're calling opens another menu.
+		call(%function, %client, %input, %id);
+
+		return true;
 	}
 	else
 	{
@@ -350,7 +348,7 @@ function City_Tick(%brick)
 	CityRPGData.scheduleTick = schedule((60000 * $Pref::Server::City::tick::speed), false, "City_Tick");
 
 	messageAll('', "\c6 - The current economy value is " @ %econColor @ $City::Economics::Condition @ "\c6%.");
-	
+
 	if(CityRPGData.datacount > 0)
 	{
 		CityRPGData.saveData();
