@@ -28,16 +28,33 @@ function CityLots_TransferLot(%brick, %targetBL_ID)
 // ============================================================
 // Menu Functions
 // ============================================================
-function CityMenu_Lot(%client, %notitle)
+function CityMenu_Lot(%client, %input)
 {
-	if(%client.CityRPGLotBrick $= "")
+	if(%input !$= "")
 	{
-		%client.cityMenuMessage("\c6You are currently not on a lot.");
-		return;
+		// If there's input, we're picking a lot from real estate. Match it accordingly.
+		%brick = getWord($City::Cache::LotsOwnedBy[%client.bl_id], %input-1);
+
+		// Indicate that we're a sub-menu so we can display "Back" instead of "Close" later.
+		// cityMenuBack identifies the real estate office by its brick.
+		%isSubMenu = 1;
+		%client.cityMenuBack = %client.cityMenuID;
+
+		%client.cityMenuClose(1);
+	}
+	else
+	{
+		// No input, we're running via /lot.
+		if(%client.CityRPGLotBrick $= "")
+		{
+			%client.cityMenuMessage("\c6You are currently not on a lot.");
+			return;
+		}
+
+		%brick = %client.CityRPGLotBrick;
 	}
 
 	// ## Initial display ## //
-	%brick = %client.CityRPGLotBrick;
 	%price = %brick.dataBlock.initialPrice;
 
 	if(%brick.getCityLotID() == -1)
@@ -99,10 +116,19 @@ function CityMenu_Lot(%client, %notitle)
 	}
 
 	// ## Finalization ## //
-	%menu = %menu TAB "Close menu.";
-	%functions = %functions TAB "CityMenu_Close";
+	if(%isSubMenu)
+	{
+		%menu = %menu TAB "Go back.";
+		%functions = %functions TAB "CityMenu_RealEstate";
+	}
+	else
+	{
+		%menu = %menu TAB "Close menu.";
+		%functions = %functions TAB "CityMenu_Close";
+	}
 
-	%client.cityMenuOpen(%menu, %functions, %client.CityRPGLotBrick, "\c3Lot management menu closed.");
+	// Use the lot brick as the menu ID
+	%client.cityMenuOpen(%menu, %functions, %brick, "\c3Lot management menu closed.");
 }
 
 // ## Functions for all lots ## //

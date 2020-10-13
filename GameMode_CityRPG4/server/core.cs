@@ -66,7 +66,7 @@ function GameConnection::cityMenuInput(%client, %input)
 			messageClient(%client, '', "\c3" @ %input @ "\c6 is not a valid option. Please try again.");
 			return false;
 		}
-		
+
 		%id = %client.cityMenuID;
 		if(%client.cityMenuAutoClose)
 			%client.cityMenuClose();
@@ -89,6 +89,8 @@ function GameConnection::cityMenuInput(%client, %input)
 
 // Client.cityMenuClose(silent)
 // silent: (bool) If set to true, the exit message will not show even if defined.
+// Automatically called if the client leaves a trigger with an ID corresponding to
+// either the menu's ID or the ID of %client.cityMenuBack.
 function GameConnection::cityMenuClose(%client, %silent)
 {
 	if(%client.cityMenuOpen)
