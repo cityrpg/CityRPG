@@ -401,8 +401,6 @@ function CityMenu_LotAdmin_TransferPlayer(%client, %input)
 // ============================================================
 // Registry
 // ============================================================
-// TODO We are currently using the included Sassy saver, however this is planned to be replaced in the future.
-
 function CityLots_InitRegistry()
 {
 	if(!isObject(CityLotRegistry))
