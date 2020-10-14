@@ -290,8 +290,6 @@ function CityMenu_Lot_ListForSale(%client, %input)
 		return;
 	}
 
-	$City::RealEstate::LotCountSale++;
-
 	// Append the lot to the fields under CitySO.lotListings.
 	CitySO.lotListings = CitySO.lotListings $= ""? CitySO.lotListings = %lotID : CitySO.lotListings = CitySO.lotListings SPC %lotID;
 	%lotBrick.setCityLotPreownedPrice(%client.cityLotPrice);
@@ -725,6 +723,19 @@ function fxDTSBrick::setCityLotTransferDate(%brick, %value)
 
 function fxDTSBrick::setCityLotPreownedPrice(%brick, %value)
 {
+	%valueOld = CityLotRegistry.get(%brick.getCityLotID(), "preownedSalePrice");
+
+	if(%valueOld != -1 && %value == -1)
+	{
+		// The value has changed from a number to -1, meaning the lot has gone off sale.
+		$City::RealEstate::LotCountSale--;
+	}
+	else if(%valueOld == -1 && %value != -1)
+	{
+		// The value has changed from -1 to a number, meaning the lot has been listed for sale.
+		$City::RealEstate::LotCountSale++;
+	}
+
 	CityLotRegistry.set(%brick.getCityLotID(), "preownedSalePrice", %value);
 }
 
