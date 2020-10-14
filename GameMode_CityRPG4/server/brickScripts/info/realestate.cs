@@ -112,7 +112,7 @@ function CityMenu_RealEstate_ViewLotListings(%client, %input, %brick)
 		talk(%lotID SPC %lotBrick);
 
 		// Hide lots that are in the registry, but don't have an existing brick.
-		if(%lotBrick == -1)
+		if(%lotBrick == 0)
 			continue;
 
 		if(%i == 0)

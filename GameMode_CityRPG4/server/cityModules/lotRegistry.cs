@@ -405,33 +405,28 @@ function CityMenu_LotAdmin_TransferPlayer(%client, %input)
 
 function CityLots_InitRegistry()
 {
-	if(!isObject(CityRPGLotRegistry))
+	if(!isObject(CityLotRegistry))
 	{
-		new scriptObject(CityRPGLotRegistry)
+		%newRegistry = new scriptObject(CityLotRegistry)
 		{
-			class = Sassy;
-			dataFile = $City::SavePath @ "CityLots.dat";
+			class = Saver;
+			file = $City::SavePath @ "LotKeys.txt";
+			defFile = $City::SavePath @ "LotDefaults.txt";
+			folder = $City::SavePath @ "LotData/Lot";
+			saveExt = "txt";
 		};
 
-		// Also use valueCount as a fallback check.
-		// Externally deleted files still return 1 for isFile (and thus loadedSaveFile) until the game restarts.
-		// This fixes the registry breaking if the file is deleted via external method mid-game, or if any other trickery occurs.
-		if(!CityRPGLotRegistry.loadedSaveFile || CityRPGLotRegistry.valueCount != 5)
-		{
-			CityRPGLotRegistry.addValue("name", "Unclaimed Lot");
-			CityRPGLotRegistry.addValue("ownerID", -1);
-			CityRPGLotRegistry.addValue("ruleStr", "This lot currently has no rules.");
-			CityRPGLotRegistry.addValue("transferDate", "None");
-			CityRPGLotRegistry.addValue("preownedSalePrice", -1);
-
-			// Instead of using the getData function directly, these values are generally called upon using setter and getter functions.
-		}
+		%newRegistry.addValue("name", "Unclaimed Lot");
+		%newRegistry.addValue("ownerID", -1);
+		%newRegistry.addValue("ruleStr", "This lot currently has no rules.");
+		%newRegistry.addValue("transferDate", "None");
+		%newRegistry.addValue("preownedSalePrice", -1);
 	}
 }
 
 function CityLots_GetLotCount()
 {
-	%count = CityRPGLotRegistry.dataCount;
+	%count = CityLotRegistry.countKeys;
 
 	if(%count $= "")
 	{
@@ -473,8 +468,9 @@ function fxDTSBrick::initCityLot(%brick)
 
 	%brick.cityLotInit = 0;
 
-	// Cache the brick.
-	CityRPGLotRegistry.findData(%brick.getCityLotID()).brick = %brick;
+	// Cache and identify the brick.
+	%obj = CityLotRegistry.makeOnline(%brick.getCityLotID());
+	%obj.brick = %brick;
 }
 
 function fxDTSBrick::initExistingCityLot(%brick)
@@ -548,7 +544,7 @@ function fxDTSBrick::initNewCityLot(%brick)
 	$City::RealEstate::TotalLots++;
 	$City::RealEstate::UnclaimedLots++;
 
-	if(CityRPGLotRegistry.findData(%brick.getCityLotID()) != 0)
+	if(CityLotRegistry.keyExists(%brick.getCityLotID()) != 0)
 	{
 		warn("Lot registry - Attempting to initialize a lot that already exists. Re-initializing as a new lot.");
 		backtrace();
@@ -556,26 +552,9 @@ function fxDTSBrick::initNewCityLot(%brick)
 		%brick.SetNTObjectNameOverride("");
 	}
 
-	// 1. Initialize lot data with default values
-	// 2. Increment the lot index
-
 	%newID = CityLots_GetLotCount()+1;
 
-	if(CityRPGLotRegistry.findData(%newID) != 0)
-	{
-		error("CityRPG Lot Registry - Attempting to initialize the lot '" @ %newID @ "' but the ID already exists! This lot may not have registered correctly.");
-	}
-
-	CityRPGLotRegistry.addData(%newID);
-
-	if(CityRPGLotRegistry.dataCount > 0)
-	{
-		CityRPGLotRegistry.saveData();
-	}
-	else
-	{
-		error("Lot registry is blank or missing! Will not export.");
-	}
+	CityLotRegistry.addKey(%newID);
 
 	%publicID = getNumKeyID();
 	if(%brick.getGroup().bl_id != %publicID)
@@ -637,7 +616,7 @@ function fxDTSBrick::getCityLotID(%brick)
 
 	// If the lot's brick name is blank at this stage, for whatever reason, lotID will  be -1 due to getWord failing.
 
-	if(CityRPGLotRegistry.findData(%lotID) == 0)
+	if(CityLotRegistry.existKey[%lotID] == 0)
 	{
 		// Doesn't exist in the registry
 		return -1;
@@ -646,61 +625,57 @@ function fxDTSBrick::getCityLotID(%brick)
 	return %lotID;
 }
 
+// findLotBrickByID(Lot ID)
+// Returns 0 if the brick does not exist.
 function findLotBrickByID(%value)
 {
-	return CityRPGLotRegistry.findData(%value).brick;
+	if(CityLotRegistry.data[%key] $= "")
+	{
+		return 0;
+	}
+
+	return CityLotRegistry.data[%key].brick;
 }
 
 // ## Getters
 
 function fxDTSBrick::getCityLotName(%brick)
 {
-	return CityRPGLotRegistry.findData(%brick.getCityLotID()).valueName;
+	return CityLotRegistry.get(%brick.getCityLotID(), "name");
 }
 
 function fxDTSBrick::getCityLotOwnerID(%brick)
 {
-	return CityRPGLotRegistry.findData(%brick.getCityLotID()).valueOwnerID;
+	return CityLotRegistry.get(%brick.getCityLotID(), "ownerID");
 }
 
 function fxDTSBrick::getCityLotRuleStr(%brick)
 {
-	return CityRPGLotRegistry.findData(%brick.getCityLotID()).valueRuleStr;
+	return CityLotRegistry.get(%brick.getCityLotID(), "ruleStr");
 }
 
 function fxDTSBrick::getCityLotTransferDate(%brick)
 {
-	return CityRPGLotRegistry.findData(%brick.getCityLotID()).valueTransferDate;
+	return CityLotRegistry.get(%brick.getCityLotID(), "transferDate");
 }
 
 function fxDTSBrick::getCityLotPreownedPrice(%brick)
 {
-	return CityRPGLotRegistry.findData(%brick.getCityLotID()).valuePreownedSalePrice;
+	return CityLotRegistry.get(%brick.getCityLotID(), "preownedSalePrice");
 }
 
 // ## Setters
 
 function fxDTSBrick::setCityLotName(%brick, %value)
 {
-	%valueNew = CityRPGLotRegistry.findData(%brick.getCityLotID()).valueName = getSubStr(%value, 0, 40);
-
-	if(CityRPGLotRegistry.dataCount > 0)
-	{
-		CityRPGLotRegistry.saveData();
-	}
-	else
-	{
-		error("Lot registry is blank or missing! Will not export.");
-	}
-
+	%valueNew = CityLotRegistry.set(%brick.getCityLotID(), "name", getSubStr(%value, 0, 40));
 	return %valueNew;
 }
 
 function fxDTSBrick::setCityLotOwnerID(%brick, %value)
 {
 	%lotID = %brick.getCityLotID();
-	%data = CityRPGLotRegistry.findData(%lotID);
-	%valueOld = %data.valueOwnerID;
+	%valueOld = CityLotRegistry.get(%lotID, "ownerID");
 
 	// ## Display name handling
 	if(%valueOld == -1 && %value != -1)
@@ -731,16 +706,7 @@ function fxDTSBrick::setCityLotOwnerID(%brick, %value)
 		$City::Cache::LotsOwnedBy[%value] = $City::Cache::LotsOwnedBy[%value] $= "" ? %brick : $City::Cache::LotsOwnedBy[%value] SPC %brick;
 	}
 
-	%valueNew = %data.valueOwnerID = %value;
-
-	if(CityRPGLotRegistry.dataCount > 0)
-	{
-		CityRPGLotRegistry.saveData();
-	}
-	else
-	{
-		error("Lot registry is blank or missing! Will not export.");
-	}
+	CityLotRegistry.set(%lotID, "ownerID", %value);
 
 	// ## Brick name handling
 	// The brick's name needs to match the new owner ID, so we need to update it.
@@ -751,17 +717,17 @@ function fxDTSBrick::setCityLotOwnerID(%brick, %value)
 	%brick.cityLotOverride = 1;
 	%brick.SetNTObjectNameOverride(%lotHost @ "_" @ (%valueNew == -1?"none":%valueNew) @ "_" @ %lotID);
 
-	return %valueNew;
+	return %value;
 }
 
 function fxDTSBrick::setCityLotTransferDate(%brick, %value)
 {
-	CityRPGLotRegistry.findData(%brick.getCityLotID()).valueTransferDate = %value;
+	CityLotRegistry.set(%brick.getCityLotID(), "transferDate", %value);
 }
 
 function fxDTSBrick::setCityLotPreownedPrice(%brick, %value)
 {
-	CityRPGLotRegistry.findData(%brick.getCityLotID()).valuePreownedSalePrice = %value;
+	CityLotRegistry.set(%brick.getCityLotID(), "preownedSalePrice", %value);
 }
 
 // ============================================================
@@ -922,8 +888,8 @@ package CityRPG_LotRegistry
 
 			// This lot will exist in the memory, but it will no-longer have a brick associated with it.
 			// Therefore, we need to remove the brick from the cache.
-			// If the lot is re-loaded later, it will be restored on init.
-			CityRPGLotRegistry.findData(%lotID).brick = -1;
+			// If the lot is re-loaded later, it will "log in" on init.
+			CityLotRegistry.makeOffline(%lotID);
 		}
 
 		Parent::onRemove(%brick);
@@ -931,7 +897,7 @@ package CityRPG_LotRegistry
 
 	function disconnect(%a)
 	{
-		CityRPGLotRegistry.delete();
+		CityLotRegistry.delete();
 		return parent::disconnect(%a);
 	}
 
@@ -939,6 +905,12 @@ package CityRPG_LotRegistry
 	{
 		CityLots_InitRegistry();
 		Parent::City_Init();
+	}
+
+	// Saver functions for sanity
+	function Saver::keyExists(%this)
+	{
+		return %this.existKey[%this];
 	}
 };
 

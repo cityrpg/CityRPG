@@ -363,6 +363,7 @@ function City_Tick(%brick)
 
 	CalendarSO.saveData();
 	CitySO.saveData();
+	CityLotRegistry.save();
 
 	CityMayor_refresh();
 

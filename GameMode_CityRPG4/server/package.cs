@@ -785,6 +785,7 @@ package CityRPG_MainPackage
 
 		CalendarSO.saveData();
 		CitySO.saveData();
+		// Lot registry automatically saves on deletion
 
 		deleteVariables("$City::*");
 		deleteVariables("$CityRPG::*");
