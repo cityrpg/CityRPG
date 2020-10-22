@@ -254,7 +254,7 @@ function CityMenu_Lot_ListForSaleConfirmPrompt(%client, %input)
 		%price = 0;
 
 	%client.cityMenuMessage("\c6You are listing the lot \c3" @ %lotBrick.getCityLotName() @ "\c6 on sale for \c3$" @ strFormatNumber(%price));
-	%client.cityMenuMessage("\c0Warning!\c6 Once a player purchases this lot, they will become the permanent owner of your lot. Are you sure?");
+	%client.cityMenuMessage("\c0Warning!\c6 Once someone purchases this lot, they will become the permanent owner of your lot. Are you sure?");
 
 	%client.cityLotPrice = %price;
 
