@@ -336,13 +336,14 @@ package CityRPG_MainPackage
 		%client.cityLog("Joined game");
 
 		// multi-client check
+		// This takes effect and v20 and servers with the multi-client check disabled.
 		for(%a = 0; %a < ClientGroup.getCount(); %a++)
 		{
 			%subClient = ClientGroup.getObject(%a);
 
 			if(%client.bl_id == %subClient.bl_id)
 			{
-				if(%client.getID() > %subClient.getID())
+				if(%client.getID() > %subClient.getID() && !%subClient.isLocal())
 				{
 					%subClient.delete();
 				}
