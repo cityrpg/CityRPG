@@ -37,9 +37,17 @@ function CityLots_TransferLot(%brick, %targetBL_ID)
 // ============================================================
 function CityMenu_Lot(%client, %input)
 {
-	if(%input !$= "")
+	if(%client.cityMenuBack !$= "")
 	{
-		// If there's input, we're picking a lot from one of the real estate menus. Match it accordingly.
+		// "Go back" support for sub-menus
+		%brick = %client.cityMenuBack;
+		%client.cityMenuBack = "";
+
+		%client.cityMenuClose(1);
+	}
+	else if(%input !$= "")
+	{
+		// If not going back and there's input, we're picking a lot from one of the real estate menus. Match it accordingly.
 		%lotID = %client.cityLotIndex[%input];
 		%brick = findLotBrickByID(%lotID);
 
@@ -312,6 +320,8 @@ function CityMenu_LotAdmin(%client)
 	%client.cityMenuClose(true);
 	%ownerID = %brick.getCityLotOwnerID();
 
+	%client.cityMenuBack = %brick;
+
 	%client.cityMenuMessage("\c3Lot Admin\c6 for: \c3" @ %brick.getCityLotName() @ "\c6 - Lot ID: \c3" @ %brick.getCityLotID() @ "\c6 - Brick ID: \c3" @ %brick.getID() @ "\c6 - Lot purchase date: \c3" @ %brick.getCityLotTransferDate());
 
 	if(%ownerID != -1)
@@ -326,11 +336,13 @@ function CityMenu_LotAdmin(%client)
 
 	%menu = "Force rename."
 			TAB "Transfer lot to the city."
-			TAB "Transfer lot to a player.";
+			TAB "Transfer lot to a player."
+			TAB "Go back.";
 
 	%functions =	"CityMenu_LotAdmin_SetNamePrompt"
 						TAB "CityMenu_LotAdmin_TransferCity"
-						TAB "CityMenu_LotAdmin_TransferPlayerPrompt";
+						TAB "CityMenu_LotAdmin_TransferPlayerPrompt"
+						TAB "CityMenu_Lot";
 
 	%client.cityMenuOpen(%menu, %functions, %brick, "\c3Lot menu closed.");
 }
