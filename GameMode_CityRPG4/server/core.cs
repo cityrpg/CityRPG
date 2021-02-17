@@ -90,7 +90,7 @@ function GameConnection::cityMenuInput(%client, %input)
 // Client.cityMenuClose(silent)
 // silent: (bool) If set to true, the exit message will not show even if defined.
 // Automatically called if the client leaves a trigger with an ID corresponding to
-// either the menu's ID or the ID of %client.cityMenuBack.
+// either the menu's ID or the ID of %client.cityMenuBack via CityRPGInputTriggerData::onLeaveTrigger.
 function GameConnection::cityMenuClose(%client, %silent)
 {
 	if(%client.cityMenuOpen)
