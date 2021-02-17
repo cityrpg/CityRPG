@@ -1,3 +1,9 @@
+// ============================================================
+// CityRPG 4 Lot Registry
+// ============================================================
+
+// There are two major components at play here: McTwist's Chown tool, and McTwist's saver (Thanks, McTwist)
+// TODO: Ability to convert lots that are saved from other servers.
 // TODO: Pref for servers that have the original save files and want to override conversion
 
 // ============================================================
@@ -23,6 +29,7 @@ function CityLots_TransferLot(%brick, %targetBL_ID)
 	%chown.setStartBrick(%brick);
 
 	%brick.setCityLotOwnerID(%targetBL_ID);
+	%brick.setCityLotPreownedPrice(-1); // Take the lot off sale if it was listed.
 }
 
 // ============================================================
@@ -32,8 +39,9 @@ function CityMenu_Lot(%client, %input)
 {
 	if(%input !$= "")
 	{
-		// If there's input, we're picking a lot from real estate. Match it accordingly.
-		%brick = getWord($City::Cache::LotsOwnedBy[%client.bl_id], %input-1);
+		// If there's input, we're picking a lot from one of the real estate menus. Match it accordingly.
+		%lotID = %client.cityLotIndex[%input];
+		%brick = findLotBrickByID(%lotID);
 
 		// Indicate that we're a sub-menu so we can display "Back" instead of "Close" later.
 		// cityMenuBack identifies the real estate office by its brick.
@@ -98,8 +106,7 @@ function CityMenu_Lot(%client, %input)
 		if(%brick.getCityLotPreownedPrice() == -1)
 		{
 			%menu = %menu TAB "List this lot for sale.";
-			%functions = %functions TAB CityMenu_Placeholder;
-			//%functions = %functions TAB "CityMenu_Lot_ListForSalePrompt";
+			%functions = %functions TAB "CityMenu_Lot_ListForSalePrompt";
 		}
 		else
 		{
@@ -234,6 +241,7 @@ function CityMenu_LotSetName(%client, %input)
 	%client.cityMenuClose();
 }
 
+
 // ### Listing for sale ### //
 function CityMenu_Lot_ListForSalePrompt(%client, %input)
 {
@@ -281,7 +289,6 @@ function CityMenu_Lot_ListForSale(%client, %input)
 	// Security check
 	if(%lotBrick.getCityLotOwnerID() != %client.bl_id)
 	{
-		talk(%lotBrick.getCityLotOwnerID SPC %client.bl_id SPC "test");
 		%client.cityLog("Lot " @ %lotBrick.getCityLotID() @ " sale listing fell through", 0, 1);
 
 		// Security check falls through
@@ -291,7 +298,7 @@ function CityMenu_Lot_ListForSale(%client, %input)
 	}
 
 	// Append the lot to the fields under CitySO.lotListings.
-	CitySO.lotListings = CitySO.lotListings $= ""? CitySO.lotListings = %lotID : CitySO.lotListings = CitySO.lotListings SPC %lotID;
+	CitySO.lotListings = CitySO.lotListings = CitySO.lotListings @ %lotID @ " ";
 	%lotBrick.setCityLotPreownedPrice(%client.cityLotPrice);
 
 	%client.cityMenuMessage("\c6You have listed your lot for sale.");

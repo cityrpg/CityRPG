@@ -85,6 +85,10 @@ function CityMenu_RealEstate_ViewLotsOwned(%client, %input, %brick)
 			%menu = %menu TAB %option;
 			%functions = %functions TAB CityMenu_Lot;
 		}
+
+		// Record the available options so we know which one to pick.
+		// This will always correspond to an item in the menu -- The menu options will ensure the client cannot pick an invalid value.
+		%client.cityLotIndex[%i+1] = %lotBrick.getCityLotID();
 	}
 
 	if(getFieldCount(%menu) == 0)
@@ -109,8 +113,6 @@ function CityMenu_RealEstate_ViewLotListings(%client, %input, %brick)
 		%lotID = getWord(CitySO.lotListings, %i);
 		%lotBrick = findLotBrickByID(%lotID);
 
-		talk(%lotID SPC %lotBrick);
-
 		// Hide lots that are in the registry, but don't have an existing brick.
 		if(%lotBrick == 0)
 			continue;
@@ -126,7 +128,7 @@ function CityMenu_RealEstate_ViewLotListings(%client, %input, %brick)
 			%functions = %functions TAB CityMenu_RealEstate_ViewLotDetail;
 		}
 
-		// Record the available options so we know which one to pick.
+		// Record the available options -- See: CityMenu_RealEstate_ViewLotsOwned
 		%client.cityLotIndex[%i+1] = %lotID;
 	}
 
@@ -138,8 +140,13 @@ function CityMenu_RealEstate_ViewLotListings(%client, %input, %brick)
 function CityMenu_RealEstate_ViewLotDetail(%client, %input, %brick)
 {
 	%lotID = %client.cityLotIndex[%input];
+	%lotBrick = findLotBrickByID(%lotID);
 
-	CityMenu_Placeholder(%client);
+	if(%lotBrick.getCityLotOwnerID() == %client.bl_id) {
+		%client.cityMenuMessage("\c3This is your lot.");
+	}
+
+	CityMenu_Lot(%client, %input);
 }
 
 
