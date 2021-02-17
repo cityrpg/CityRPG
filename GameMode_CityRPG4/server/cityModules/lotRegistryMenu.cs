@@ -85,7 +85,7 @@ function CityMenu_Lot(%client, %input)
 		else
 		{
 			%menu = %menu TAB "Take this lot off sale.";
-			%functions = %functions TAB "CityMenu_Placeholder";
+			%functions = %functions TAB "CityMenu_Lot_RemoveFromSale";
 		}
 	}
 
@@ -220,7 +220,7 @@ function CityMenu_Lot_RemoveFromSale(%client)
 	%lotBrick = %client.cityMenuID;
 	%lotBrick.setCityLotPreownedPrice(-1);
 
-	CitySO.lotListings = removeWord(CitySO.lotListings, %lotBrick.getCityLotID());
+	CitySO.lotListings = removeWord(CitySO.lotListings, getWord(CitySO.lotListings, %lotBrick.getCityLotID()));
 
 	%client.cityMenuMessage("\c6You have taken this lot off sale.");
 	%client.cityMenuClose();
