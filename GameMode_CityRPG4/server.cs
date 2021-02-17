@@ -137,6 +137,7 @@ if($GameModeArg $= "Add-Ons/GameMode_CityRPG4/gamemode.txt")
 else
 {
   // Optionals that only need to load in a Custom configuration for compatibility
+  // These are only loaded if they are enabled.
 
   // Brick_Checkpoint (Optional)
   // If enabled, we would like checkpoints to execute first.
@@ -165,6 +166,17 @@ else
       registerOutputEvent("fxDTSBrick","doPlayerTeleport","string 200 90\tlist Relative 0 North 1 East 2 South 3 West 4\tbool",1);
     }
     // See package.cs for the function arg fix
+  }
+
+  if($AddOn__Event_Zones)
+  {
+    %error = ForceRequiredAddOn("Event_Zones");
+
+    if(%error == $Error::None)
+    {
+      unregisterOutputEvent("fxDTSBrick","setZone");
+      unregisterOutputEvent("fxDTSBrick","setZoneVelocityMod");
+    }
   }
 }
 
@@ -218,6 +230,7 @@ exec($City::ScriptPath @ "globalSaving/mayorSaving.cs");
 // Restricted Events
 // ============================================================
 // Remove events that can be abused
+// Non-default event restrictions are defined above in optional add-on loading.
 echo("*** De-registering events for CityRPG... ***");
 unRegisterOutputEvent("fxDTSBrick", "RadiusImpulse");
 unRegisterOutputEvent("fxDTSBrick", "SetItem");
