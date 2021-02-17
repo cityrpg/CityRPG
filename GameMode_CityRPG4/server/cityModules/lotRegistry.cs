@@ -625,12 +625,12 @@ function fxDTSBrick::getCityLotID(%brick)
 // Returns 0 if the brick does not exist.
 function findLotBrickByID(%value)
 {
-	if(CityLotRegistry.data[%key] $= "")
+	if(CityLotRegistry.data[%value] $= "")
 	{
 		return 0;
 	}
 
-	return CityLotRegistry.data[%key].brick;
+	return CityLotRegistry.data[%value].brick;
 }
 
 // ## Getters
