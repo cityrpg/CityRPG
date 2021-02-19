@@ -41,7 +41,7 @@ function CityMenu_Lot(%client, %input)
 
 	if(%brick.getCityLotID() == -1)
 	{
-		error("Attempting to access a blank lot! Re-initializing it...");
+		error("Attempting to access a blank lot on brick '" @ %brick @ "'! Re-initializing it...");
 
 		%brick.initNewCityLot();
 	}
