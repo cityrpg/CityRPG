@@ -347,7 +347,7 @@ function fxDTSBrick::setCityLotOwnerID(%brick, %value)
 	%lotID = getWord(%nameRaw, 2);
 
 	%brick.cityLotOverride = 1;
-	%brick.SetNTObjectNameOverride(%lotHost @ "_" @ (%valueNew == -1?"none":%valueNew) @ "_" @ %lotID);
+	%brick.SetNTObjectNameOverride(%lotHost @ "_" @ (%value == -1?"none":%value) @ "_" @ %lotID);
 
 	return %value;
 }
