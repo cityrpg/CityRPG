@@ -95,7 +95,7 @@ function CityMenu_RealEstate_ViewLotsOwned(%client, %input, %brick)
 
 	if(getFieldCount(%menu) == 0)
 	{
-		%client.cityMenuMessage("\c0You do not own any lots to manage.");
+		%client.cityMenuMessage("\c6You don't own any lots yet! Look for lots marked as \"For sale\" to purchase one.");
 		return;
 	}
 	else
