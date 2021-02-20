@@ -1,7 +1,7 @@
 // ============================================================
 // Brick Data
 // ============================================================
-datablock fxDTSBrickData(CityRPGREBrickData : brick2x4FData)
+datablock fxDTSBrickData(CityRPGRealEstateBrickData : brick2x4FData)
 {
 	category = "CityRPG";
 	subCategory = "City Info Bricks";
@@ -156,7 +156,7 @@ function CityMenu_RealEstate_ViewLotDetail(%client, %input, %brick)
 // ============================================================
 // Trigger Data
 // ============================================================
-function CityRPGREBrickData::parseData(%this, %brick, %client, %triggerStatus, %text)
+function CityRPGRealEstateBrickData::parseData(%this, %brick, %client, %triggerStatus, %text)
 {
 	if(%triggerStatus == true && !%client.cityMenuOpen)
 	{
