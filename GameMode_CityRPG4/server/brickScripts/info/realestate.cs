@@ -110,6 +110,12 @@ function CityMenu_RealEstate_ViewLotsOwned(%client, %input, %brick)
 // View & Purchase
 function CityMenu_RealEstate_ViewLotListings(%client, %input, %brick)
 {
+	if(getWordCount(CitySO.lotListings) == 0)
+	{
+		%client.cityMenuMessage("\c6There are no lots available for sale at this time. Check back later!");
+		return;
+	}
+
 	for(%i = 0; %i <= getWordCount(CitySO.lotListings)-1; %i++)
 	{
 		%lotID = getWord(CitySO.lotListings, %i);
@@ -137,7 +143,7 @@ function CityMenu_RealEstate_ViewLotListings(%client, %input, %brick)
 
 	%client.cityMenuClose(1);
 	%client.cityMenuOpen(%menu, %functions, %brick, "\c6Thanks, come again.");
-	%client.cityMenuMessage("\c6Type the number for a listing to view more info. Use the PG UP and PG DOWN keys to scroll.");
+	%client.cityMenuMessage("\c6Type the number to view more info. Use the PG UP and PG DOWN keys to scroll.");
 }
 
 function CityMenu_RealEstate_ViewLotDetail(%client, %input, %brick)
