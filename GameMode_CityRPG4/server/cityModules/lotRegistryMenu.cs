@@ -1,6 +1,14 @@
 // ============================================================
 // CityRPG 4 Lot Registry Menu Functions
 // ============================================================
+function GameConnection::cityLotIndexClear()
+{
+	for(%i = 0; %i <= %client.cityLotIndexCount; %i++)
+	{
+		%client.cityLotIndex[%i] = 0;
+	}
+}
+
 function CityMenu_Lot(%client, %input)
 {
 	if(%client.cityMenuBack !$= "")
@@ -22,6 +30,7 @@ function CityMenu_Lot(%client, %input)
 		%isSubMenu = 1;
 		%client.cityMenuBack = %client.cityMenuID;
 
+		%client.cityLotIndexClear();
 		%client.cityMenuClose(1);
 	}
 	else

@@ -91,6 +91,8 @@ function CityMenu_RealEstate_ViewLotsOwned(%client, %input, %brick)
 		%client.cityLotIndex[%i+1] = %lotBrick.getCityLotID();
 	}
 
+	%client.cityLotIndexCount = %i+1;
+
 	if(getFieldCount(%menu) == 0)
 	{
 		%client.cityMenuMessage("\c0You do not own any lots to manage.");
@@ -131,6 +133,7 @@ function CityMenu_RealEstate_ViewLotListings(%client, %input, %brick)
 		// Record the available options -- See: CityMenu_RealEstate_ViewLotsOwned
 		%client.cityLotIndex[%i+1] = %lotID;
 	}
+	%client.cityLotIndexCount = %i+1;
 
 	%client.cityMenuClose(1);
 	%client.cityMenuOpen(%menu, %functions, %brick, "\c6Thanks, come again.");
