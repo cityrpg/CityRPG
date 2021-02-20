@@ -173,6 +173,12 @@ function fxDTSBrick::initExistingCityLot(%brick)
 
 function fxDTSBrick::initNewCityLot(%brick)
 {
+	if(%brick.getDataBlock.CityRPGBrickType != $CityBrick_Lot)
+	{
+		error("Lot registry - Attempting to initialize non-lot brick '" @ %brick @ "' as a lot! Aborting init.");
+		return;
+	}
+
 	$City::RealEstate::TotalLots++;
 	$City::RealEstate::UnclaimedLots++;
 
