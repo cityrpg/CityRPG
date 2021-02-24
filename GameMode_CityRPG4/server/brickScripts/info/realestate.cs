@@ -20,6 +20,9 @@ datablock fxDTSBrickData(CityRPGRealEstateBrickData : brick2x4FData)
 // ============================================================
 // Menu
 // ============================================================
+// These are menus for the real estate brick.
+// Most of this simply refers to the menus in cityModules/lotRegistryMenu.cs
+
 function CityMenu_RealEstate(%client, %input, %brick)
 {
 	// Note that %brick doubles as the menu's identifier.
@@ -110,12 +113,10 @@ function CityMenu_RealEstate_ViewLotsOwned(%client, %input, %brick)
 // View & Purchase
 function CityMenu_RealEstate_ViewLotListings(%client, %input, %brick)
 {
-	if(getWordCount(CitySO.lotListings) == 0)
-	{
-		%client.cityMenuMessage("\c6There are no lots available for sale at this time. Check back later!");
-		return;
-	}
+	%client.cityLotIndexClear();
 
+	// This is a slightly more complex task than the "Manage a lot" menu.
+	// We need to filter through the lot listings to find the ones that actually exist in the world.
 	for(%i = 0; %i <= getWordCount(CitySO.lotListings)-1; %i++)
 	{
 		%lotID = getWord(CitySO.lotListings, %i);
@@ -125,8 +126,15 @@ function CityMenu_RealEstate_ViewLotListings(%client, %input, %brick)
 		if(%lotBrick == 0)
 			continue;
 
-		if(%i == 0)
+		// Record the available options -- See: CityMenu_RealEstate_ViewLotsOwned
+		// Important: This depends on us knowing that this lot actually exists, as checked above.
+		%client.cityLotIndexCount++;
+		%client.cityLotIndex[%client.cityLotIndexCount] = %lotID;
+
+		if(%client.cityLotIndexCount == 1)
 		{
+			// First option
+
 			%menu = %lotBrick.getCityLotName();
 			%functions = CityMenu_RealEstate_ViewLotDetail;
 		}
@@ -135,11 +143,13 @@ function CityMenu_RealEstate_ViewLotListings(%client, %input, %brick)
 			%menu = %menu TAB %lotBrick.getCityLotName();
 			%functions = %functions TAB CityMenu_RealEstate_ViewLotDetail;
 		}
-
-		// Record the available options -- See: CityMenu_RealEstate_ViewLotsOwned
-		%client.cityLotIndex[%i+1] = %lotID;
 	}
-	%client.cityLotIndexCount = %i+1;
+
+	if(%client.cityLotIndexCount == 0)
+	{
+		%client.cityMenuMessage("\c6There are no lots available for sale at this time. Check back later!");
+		return;
+	}
 
 	%client.cityMenuClose(1);
 	%client.cityMenuOpen(%menu, %functions, %brick, "\c6Thanks, come again.");
