@@ -174,7 +174,7 @@ function CitySO::loadData(%so)
 		exec($City::SavePath @ "City.cs");
 		%so.minerals		= $CityRPG::temp::citydata::datumminerals;
 		%so.lumber			= $CityRPG::temp::citydata::datumlumber;
-		%so.lotListings	= $CityRPG::temp::citydata["LotListings"];
+		%so.lotListings	= $CityRPG::temp::citydata::lotListings;
 		%so.economy			= $Economics::Condition;
 
 		%so.version			= $CityRPG::temp::citydata::version;
@@ -196,7 +196,7 @@ function CitySO::saveData(%so)
 
 	$CityRPG::temp::citydata::datum["minerals"]		= %so.minerals;
 	$CityRPG::temp::citydata::datum["lumber"]		= %so.lumber;
-	$CityRPG::temp::citydata["lotListings"] = %so.lotListings;
+	$CityRPG::temp::citydata::lotListings = %so.lotListings;
 	export("$CityRPG::temp::citydata::*", $City::SavePath @ "City.cs");
 }
 
