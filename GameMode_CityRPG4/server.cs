@@ -105,11 +105,14 @@ if(%error == $Error::AddOn_NotFound)
 }
 
 // Event_DayNightCycle
-%error = ForceRequiredAddOn("Event_DayNightCycle");
-if(%error == $Error::AddOn_NotFound)
+if(getBuildNumber() > 1511)//This add-on only works in v21.
 {
-  error("ERROR: GameMode_CityRPG4 - required add-on Event_DayNightCycle not found");
-  return;
+  %error = ForceRequiredAddOn("Event_DayNightCycle");
+  if(%error == $Error::AddOn_NotFound)
+  {
+    error("ERROR: GameMode_CityRPG4 - required add-on Event_DayNightCycle not found");
+    return;
+  }
 }
 
 if($GameModeArg $= "Add-Ons/GameMode_CityRPG4/gamemode.txt")
