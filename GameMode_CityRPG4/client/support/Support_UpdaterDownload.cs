@@ -1,5 +1,6 @@
-//No thanks, lets not.
-return;
+//Don't use the updater on old versions of Blockland.
+if(getBuildNumber() <= 1511)
+	return;
 
 //Support_UpdaterMigration
 //By Greek2me.
