@@ -1,4 +1,5 @@
 $CityRPG::jobs::name = "Lumberjack";
+$CityRPG::jobs::track = "Labor";
 $CityRPG::jobs::initialInvestment = 25;
 $CityRPG::jobs::pay = 25;
 $CityRPG::jobs::tools = "CityRPGLumberjackItem";
@@ -20,7 +21,6 @@ $CityRPG::jobs::claimer = false;
 
 $CityRPG::jobs::labor = true;
 
-$CityRPG::jobs::tmHexColor = "802A2A";
 $CityRPG::jobs::helpline = "\c6Self-employed lumberjacks that earn profit directly by selling lumber.";
 
 $CityRPG::jobs::outfit = "none none none none greenShirt blueShirt skin blackPants brownShoes ChefSmiley hoodie ";

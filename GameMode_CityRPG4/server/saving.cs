@@ -1,5 +1,6 @@
 //--------------------
 // Purpose:	Saves a user's data.
+// Deprecated - Modified for legacy access and temporary use in CityRPG 4 Alpha
 //--------------------
 
 
@@ -60,6 +61,8 @@ function Sassy::onRemove(%this)
 	{
 		%this.data[%b].delete();
 	}
+
+	deleteVariables("$City::SaverCache" @ %this.getID() @ "*");
 
 	return true;
 }
@@ -141,7 +144,7 @@ function Sassy::loadData(%this)
 
 			if(getWord(%line, 0) $= "ID")
 			{
-				if(!%this.getData(getWord(%line, 1)))
+				if(!%this.findData(getWord(%line, 1)))
 				{
 					%this.dataCount++;
 
@@ -152,6 +155,7 @@ function Sassy::loadData(%this)
 						ID = getWord(%line, 1);
 						parent = %this;
 					};
+
 				}
 			}
 		}
@@ -192,7 +196,7 @@ function Sassy::addValue(%this, %value, %defaultValue)
 
 	if(%this.findvalue(%value))
 	{
-		error("Sassy::addValue([value: " @ %value @ "]): Value '" @ %value @ "' is already in the database! Aborting..");
+		//error("Sassy::addValue([value: " @ %value @ "]): Value '" @ %value @ "' is already in the database! Aborting..");
 
 		return false;
 	}
@@ -287,7 +291,7 @@ function Sassy::addData(%this, %ID)
 		return false;
 	}
 
-	if(%this.getData(%ID))
+	if(%this.findData(%ID))
 	{
 		error(%this.getName() @ "::addData([ID: " @ %ID @ "]): Data for ID '" @ %ID @ "' is already in the database! Aborting..");
 
@@ -304,6 +308,7 @@ function Sassy::addData(%this, %ID)
 
 	%this.dataCount++;
 
+	$City::SaverCache[%this.getID(), %id] = %data;
 	%this.data[%this.dataCount] = %data;
 
 	return true;
@@ -318,7 +323,7 @@ function Sassy::removeData(%this, %ID)
 		return false;
 	}
 
-	if(!%this.getData(%ID))
+	if(!%this.findData(%ID))
 	{
 		error(%this.getName() @ "::removeData([ID: " @ %ID @ "]): Data for ID " @ %ID @ " is not found in the database! Aborting..");
 
@@ -333,6 +338,8 @@ function Sassy::removeData(%this, %ID)
 		{
 			%foundID = true;
 
+			$City::SaverCache[%this.getID(), %this.data[%a].ID] = "";
+
 			%this.data[%a].delete();
 
 			%this.data[%a] = "";
@@ -345,6 +352,7 @@ function Sassy::removeData(%this, %ID)
 			%this.data[%a - 1] = %this.data[%a];
 
 			%this.data[%a] = "";
+
 		}
 	}
 
@@ -354,6 +362,18 @@ function Sassy::removeData(%this, %ID)
 }
 
 function Sassy::getData(%this, %ID)
+{
+	if($City::SaverCache[%this.getID(), %id] $= "")
+	{
+		return false;
+	}
+	else
+	{
+		return $City::SaverCache[%this.getID(), %id];
+	}
+}
+
+function Sassy::findData(%this, %ID)
 {
 	for(%a = 0; %a <= %this.dataCount; %a++)
 	{
@@ -387,6 +407,8 @@ function SassyData::onAdd(%this)
 	}
 
 	SassyGroup.add(%this);
+
+	$City::SaverCache[%this.parent.getID(), %this.ID] = %this;
 
 	for(%a = 1; %a <= %this.parent.valueCount; %a++)
 	{

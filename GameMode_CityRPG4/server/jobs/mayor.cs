@@ -1,4 +1,6 @@
 $CityRPG::jobs::name = "Mayor";
+$CityRPG::jobs::track = "Government";
+$CityRPG::jobs::title = "Mayor";
 $CityRPG::jobs::initialInvestment = 0;
 $CityRPG::jobs::pay = 150;
 $CityRPG::jobs::tools = "";
@@ -23,7 +25,6 @@ $CityRPG::jobs::claimer = true;
 
 $CityRPG::jobs::labor = false;
 
-$CityRPG::jobs::tmHexColor = "0000CC";
 $CityRPG::jobs::helpline = "\c6The mayor of the city. Makes a handsome salary and governs the people.";
 $CityRPG::jobs::flavortext = "Thaaaaaat's politics!";
 

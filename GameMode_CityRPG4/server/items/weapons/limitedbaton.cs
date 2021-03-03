@@ -95,7 +95,7 @@ datablock ProjectileData(CityRPGLBProjectile)
 //////////
 datablock ItemData(CityRPGLBItem)
 {
-	shapeFile = $City::DataPath @ "/shapes/LB.dts";
+	shapeFile = $City::DataPath @ "shapes/LB.dts";
 	mass = 1;
 	density = 0.2;
 	elasticity = 0.2;
@@ -104,7 +104,7 @@ datablock ItemData(CityRPGLBItem)
 
 	//gui stuff
 	uiName = "Limited Baton";
-	iconName = $City::DataPath @ "/ui/ItemIcons/baton";
+	iconName = $City::DataPath @ "ui/ItemIcons/baton";
 	doColorShift = false;
 	colorShiftColor = "0.471 0.471 0.471 1.000";
 
@@ -134,7 +134,7 @@ datablock ShapeBaseImageData(CityRPGLBImage)
 	raycastExplosionProjectile = CityRPGLBProjectile;
 	raycastExplosionSound = CityRPGBatonHitSound;
 	// SpaceCasts
-	shapeFile = $City::DataPath @ "/shapes/LB.dts";
+	shapeFile = $City::DataPath @ "shapes/LB.dts";
 
 	emap = true;
 

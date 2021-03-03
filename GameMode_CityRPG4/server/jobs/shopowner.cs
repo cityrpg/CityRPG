@@ -1,4 +1,5 @@
 $CityRPG::jobs::name = "Store Manager";
+$CityRPG::jobs::track = "Business";
 $CityRPG::jobs::initialInvestment = 125;
 $CityRPG::jobs::pay = 45;
 $CityRPG::jobs::tools = "";
@@ -21,7 +22,6 @@ $CityRPG::jobs::claimer = false;
 
 $CityRPG::jobs::labor = false;
 
-$CityRPG::jobs::tmHexColor = "0066CC";
 $CityRPG::jobs::helpline = "\c6Store managers are experienced businessmen that can sell any type of merchandise.";
 
 $CityRPG::jobs::outfit = "none none none none whitet whitet skin blackPants blackShoes Male07Smiley Mod-Suit";

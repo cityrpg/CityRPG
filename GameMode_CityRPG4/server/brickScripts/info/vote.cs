@@ -4,13 +4,12 @@
 datablock fxDTSBrickData(CityRPGVoteBrickData : brick2x4FData)
 {
 	category = "CityRPG";
-	subCategory = "Info Bricks";
+	subCategory = "City Info Bricks";
 
 	uiName = "Vote Brick";
 
 	CityRPGBrickType = $CityBrick_Info;
 	CityRPGBrickAdmin = true;
-	CityRPGBrickPlayerPrivliage = true;
 	CityRPGBrickCost = 1000;
 
 	triggerDatablock = CityRPGInputTriggerData;
@@ -19,86 +18,60 @@ datablock fxDTSBrickData(CityRPGVoteBrickData : brick2x4FData)
 };
 
 // ============================================================
+// Menu
+// ============================================================
+function CityMenu_Vote(%client, %brick)
+{
+	if($City::Mayor::Voting == 1)
+	{
+		%menu = "Apply for Mayor. (Costs: $" @ $Pref::Server::City::Mayor::Cost @ ")"
+				TAB "Vote"
+				TAB "View candidates"
+				TAB "View scores";
+
+		%functions =	"serverCmdRegisterCandidates"
+							TAB "CityMenu_Vote_VotePrompt"
+							TAB "CityMayor_getCandidates"
+							TAB "serverCmdtopC";
+	} else {
+		if($City::Mayor::ID != -1 && $City::Mayor::ID !$= "") {
+			messageClient(%client, '', "\c6City mayor: " @ $City::Mayor::String);
+
+			%menu = "Vote to remove the Mayor from office \c3($" @ $Pref::Server::City::Mayor::ImpeachCost @ ")";
+
+			%functions = "CityMayor_VoteImpeach";
+		}
+
+		%client.cityMenuMessage("\c6There currently isn't an election. Check back later.");
+	}
+
+	// Open the menu even if there are no options.
+	// This way, we can use the cityMenuMessage calls, and the exit message still shows up.
+	%client.cityMenuOpen(%menu, %functions, %brick, "\c6Thanks, come again.");
+}
+
+function CityMenu_Vote_VotePrompt(%client, %input)
+{
+	%client.cityMenuMessage("\c6Type the candidate's name you'd like to vote for:");
+
+	%client.cityMenuFunction = "serverCmdvoteElection";
+}
+
+// ============================================================
 // Trigger Data
 // ============================================================
 function CityRPGVoteBrickData::parseData(%this, %brick, %client, %triggerStatus, %text)
 {
-	if(%triggerStatus !$= "")
+	if(%triggerStatus == true && !%client.cityMenuOpen)
 	{
-		if(%triggerStatus == true && %client.stage $= "")
+		if(%client.getWantedLevel())
 		{
-			messageClient(%client, '', "\c3" @ $Pref::Server::City::name @ " Voting Booth");
-			if($City::Mayor::Voting == 1)
-			{
-				messageClient(%client, '', "\c6Type a number in chat:");
-				messageClient(%client, '', "\c31 \c6- Apply for Mayor. (Costs: $" @ $Pref::Server::City::Mayor::Cost @ ")");
-				messageClient(%client, '', "\c32 \c6- Vote");
-				messageClient(%client, '', "\c33 \c6- View candidates");
-				messageClient(%client, '', "\c34 \c6- View scores");
-			} else {
-				if($City::Mayor::ID != -1 && $City::Mayor::ID !$= "") {
-					messageClient(%client, '', "\c6City mayor: " @ $City::Mayor::String);
-					messageClient(%client, '', "\c6Type a number in chat:");
-					messageClient(%client, '', "\c31 \c6- Vote to remove the Mayor from office! \c3($" @ $Pref::Server::City::Mayor::ImpeachCost @ ")");
-				}
-
-				messageClient(%client, '', "\c6There currently isn't an election. Check back later.");
-			}
-
-			%client.stage = 0;
-		}
-
-		if(%triggerStatus == false && %client.stage !$= "")
-		{
-			messageClient(%client, '', "\c6Thanks, come again.");
-
-			%client.stage = "";
-		}
-
-		return;
-	}
-
-	%input = strLwr(%text);
-
-	if(mFloor(%client.stage) == 0)
-	{
-		if(strReplace(%input, "1", "") !$= %input || strReplace(%input, "one", "") !$= %input)
-		{
-			if($City::Mayor::Voting == 0 && $City::Mayor::ID != -1)
-				CityMayor_VoteImpeach(%client);
-			else
-				serverCmdRegisterCandidates(%client, %text);
+			%client.cityMenuMessage("\c6The service refuses to serve you.");
 			return;
 		}
+		
+		%client.cityMenuMessage("\c3" @ $Pref::Server::City::name @ " Voting Booth");
 
-		if(strReplace(%input, "2", "") !$= %input || strReplace(%input, "two", "") !$= %input)
-		{
-			%client.stage = 1.1;
-
-			messageClient(%client, '', "\c6Type the candidate's name you'd like to vote for:");
-			return;
-		}
-
-		if(strReplace(%input, "3", "") !$= %input || strReplace(%input, "three", "") !$= %input)
-		{
-			CityMayor_getCandidates(%client);
-			return;
-		}
-
-		if(strReplace(%input, "4", "") !$= %input || strReplace(%input, "four", "") !$= %input)
-		{
-			serverCmdtopC(%client);
-			return;
-		}
-
-		messageClient(%client, '', "\c3" @ %text SPC "\c6is not a valid option!");
-
-		return;
-	}
-
-	if(%client.stage == 1.1)
-	{
-		serverCmdvoteElection(%client, %text);
-					return;
+		CityMenu_Vote(%client, %brick);
 	}
 }

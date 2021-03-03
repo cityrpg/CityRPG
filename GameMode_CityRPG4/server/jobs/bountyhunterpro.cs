@@ -1,4 +1,5 @@
 $CityRPG::jobs::name = "Vigilante";
+$CityRPG::jobs::track = "Bounty Hunter";
 $CityRPG::jobs::initialInvestment = 50;
 $CityRPG::jobs::pay = 75;
 $CityRPG::jobs::tools = "CityRPGLBItem TacticalVestItem";
@@ -20,7 +21,8 @@ $CityRPG::jobs::claimer = true;
 
 $CityRPG::jobs::labor = false;
 
-$CityRPG::jobs::tmHexColor = "FF7F00";
 $CityRPG::jobs::helpline = "\c6Skilled bounty hunters that earn a stipend for cleaning the streets.";
+$CityRPG::jobs::flavortext = "\"I'm whatever " @ $Pref::Server::City::name @ " needs me to be\".";
+
 
 $CityRPG::jobs::outfit = "none none none none blackShirt blackShirt skin blackPants blackShoes smileyEvil1 Alyx";

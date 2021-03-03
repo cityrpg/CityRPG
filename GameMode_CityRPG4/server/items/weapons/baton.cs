@@ -3,14 +3,14 @@
 // ============================================================
 datablock AudioProfile(CityRPGBatonDrawSound)
 {
-	filename    = $City::DataPath @ "/sounds/BatonDraw.wav";
+	filename    = $City::DataPath @ "sounds/BatonDraw.wav";
 	description = AudioClosest3d;
 	preload = true;
 };
 
 datablock AudioProfile(CityRPGBatonHitSound)
 {
-	filename    = $City::DataPath @ "/sounds/BatonHit.wav";
+	filename    = $City::DataPath @ "sounds/BatonHit.wav";
 	description = AudioClosest3d;
 	preload = true;
 };
@@ -91,14 +91,14 @@ datablock ProjectileData(CityRPGBatonProjectile)
 
 datablock ItemData(CityRPGBatonItem)
 {
-	shapeFile = $City::DataPath @ "/shapes/baton.dts";
+	shapeFile = $City::DataPath @ "shapes/baton.dts";
 	mass = 1;
 	density = 0.2;
 	elasticity = 0.2;
 	friction = 0.6;
 	emap = true;
 	uiName = "Baton";
-	iconName = $City::DataPath @ "/ui/ItemIcons/baton";
+	iconName = $City::DataPath @ "ui/ItemIcons/baton";
 	doColorShift = false;
 	colorShiftColor = "0.471 0.471 0.471 1.000";
 	image = CityRPGBatonImage;
@@ -113,12 +113,12 @@ datablock ItemData(CityRPGBatonItem)
 datablock ShapeBaseImageData(CityRPGBatonImage)
 {
 	raycastWeaponRange = 6;
-	raycastWeaponTargets = $TypeMasks::All;
+	raycastWeaponTargets = $TypeMasks::VehicleObjectType | $TypeMasks::PlayerObjectType | $TypeMasks::FxBrickObjectType;
 	raycastDirectDamage = 25;
 	raycastDirectDamageType = $DamageType::CityRPGBaton;
 	raycastExplosionProjectile = CityRPGBatonProjectile;
 	raycastExplosionSound = CityRPGBatonHitSound;
-	shapeFile = $City::DataPath @ "/shapes/baton.dts";
+	shapeFile = $City::DataPath @ "shapes/baton.dts";
 	emap = true;
 	mountPoint = 0;
 	correctMuzzleVector = false;

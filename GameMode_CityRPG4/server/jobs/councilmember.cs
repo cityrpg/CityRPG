@@ -2,7 +2,7 @@ $CityRPG::jobs::name = "Council Member";
 $CityRPG::jobs::initialInvestment = 0;
 $CityRPG::jobs::pay = 25;
 $CityRPG::jobs::tools = "CityRPGBatonItem";
-$CityRPG::jobs::datablock = playerStandardArmor;
+$CityRPG::jobs::datablock = Player9SlotJetPlayer;
 $CityRPG::jobs::education = 0;
 $CityRPG::jobs::adminonly = 1;
 
@@ -24,7 +24,6 @@ $CityRPG::jobs::claimer = true;
 
 $CityRPG::jobs::labor = false;
 
-$CityRPG::jobs::tmHexColor = "0000CC";
 $CityRPG::jobs::helpline = "\c6Council Members are for Admins only.";
 
 $CityRPG::jobs::outfit = "none none none none blueShirt blueShirt skin blackPants blackShoes smileyBlonde Mod-Suit";

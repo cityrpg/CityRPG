@@ -13,41 +13,41 @@ function City_Init()
 		new scriptObject(CityRPGData)
 		{
 			class = Sassy;
-			dataFile = "config/server/CityRPG/CityRPG/Data.dat";
+			dataFile = $City::SavePath @ "Profiles.dat";
 		};
 
 		if(!isObject($DamageType::Starvation))
 			AddDamageType("Starvation", '%1 starved', '%1 starved', 0.5, 0);
 
-		if(!CityRPGData.loadedSaveFile)
-		{
-			CityRPGData.addValue("bank", 0);
-			CityRPGData.addValue("bounty", "0");
-			CityRPGData.addValue("demerits", "0");
-			CityRPGData.addValue("education", "0");
-			CityRPGData.addValue("gender", "Male");
-			CityRPGData.addValue("hunger", "7");
-			CityRPGData.addValue("jailData", "0 0");
-			CityRPGData.addValue("jobID", "1");
-			CityRPGData.addValue("lotData", "0");
-			CityRPGData.addValue("money", "0");
-			CityRPGData.addValue("name", "noName");
-			CityRPGData.addValue("outfit", "none none none none whitet whitet skin bluejeans blackshoes");
-			CityRPGData.addValue("reincarnated", "0");
-			CityRPGData.addValue("resources", "0 0");
-			CityRPGData.addValue("student", "0");
-			CityRPGData.addValue("tools", "");
-			CityRPGData.addValue("Relationship", "None");
-			CityRPGData.addValue("Tickets", "0");
-			CityRPGData.addValue("Rep", "0");
-			CityRPGData.addValue("BusPosition", "0");
-			CityRPGData.addValue("BusStocks", "0");
-			CityRPGData.addValue("BusID", "0");
-			CityRPGData.addValue("ElectionID", "0");
-			CityRPGData.addValue("BoughtLumber", "0");
-			CityRPGData.addValue("Layout", "<color:3C9EFF>");
-		}
-		else
+		// Since the active values change so often, we'll re-attempt to add them each time.
+		CityRPGData.addValue("bank", 0);
+		CityRPGData.addValue("bounty", "0");
+		CityRPGData.addValue("demerits", "0");
+		CityRPGData.addValue("education", "0");
+		CityRPGData.addValue("gender", "Male");
+		CityRPGData.addValue("hunger", "7");
+		CityRPGData.addValue("jailData", "0 0");
+		CityRPGData.addValue("jobID", "1");
+		CityRPGData.addValue("jobRevert", "1");
+		CityRPGData.addValue("lotData", "0");
+		CityRPGData.addValue("money", "0");
+		CityRPGData.addValue("name", "noName");
+		CityRPGData.addValue("outfit", "none none none none whitet whitet skin bluejeans blackshoes");
+		CityRPGData.addValue("reincarnated", "0");
+		CityRPGData.addValue("resources", "0 0");
+		CityRPGData.addValue("student", "0");
+		CityRPGData.addValue("tools", "");
+		CityRPGData.addValue("Relationship", "None");
+		CityRPGData.addValue("Tickets", "0");
+		CityRPGData.addValue("Rep", "0");
+		CityRPGData.addValue("BusPosition", "0");
+		CityRPGData.addValue("BusStocks", "0");
+		CityRPGData.addValue("BusID", "0");
+		CityRPGData.addValue("ElectionID", "0");
+		CityRPGData.addValue("BoughtLumber", "0");
+		CityRPGData.addValue("Layout", "<color:3C9EFF>");
+		
+		if(CityRPGData.loadedSaveFile)
 		{
 			for(%a = 1; %a <= CityRPGData.dataCount; %a++)
 			{
@@ -84,12 +84,22 @@ function City_Init()
 		};
 	}
 
+	// Generic client to run events such as spawnProjectile. See: minigameCanDamage
+	if(!isObject(CityRPGEventClient))
+	{
+		new ScriptObject(CityRPGEventClient)
+		{
+		};
+	}
+
 	if(!isObject(CityRPGMini))
 	{
 		City_Init_Minigame();
 	}
 
 	CityMayor_refresh();
+
+	activatePackage("CityRPG_Overrides");
 
 	echo("CityRPG initialization complete.");
 }
@@ -194,7 +204,7 @@ function City_Init_Spawns_Tick(%bgi, %bi)
 		for(%bi;%bi<%bgc;%bi++)
 		{
 			%b = %bg.getObject(%bi);
-			if(%b.getDatablock().CityRPGBrickType == 3)
+			if(%b.getDatablock().CityRPGBrickType == $CityBrick_Spawn)
 			{
 				$CityRPG::temp::spawnPointsTemp = (!$CityRPG::temp::spawnPointsTemp ? %b : $CityRPG::temp::spawnPointsTemp SPC %b);
 			}
@@ -222,7 +232,9 @@ function City_Init_AssembleEvents()
 	registerInputEvent("fxDTSBrick", "onTransferSuccess", "Self fxDTSBrick" TAB "Player Player" TAB "Client GameConnection");
 	registerInputEvent("fxDTSBrick", "onTransferDecline", "Self fxDTSBrick" TAB "Client GameConnection");
 	registerInputEvent("fxDTSBrick", "onJobTestPass", "Self fxDTSBrick" TAB "Player Player" TAB "Client GameConnection");
-	registerInputEvent("fxDTSBrick", "onJobTestFail", "Self fxDTSBrick" TAB "Player Player" TAB "Client GameConnection");
+	registerInputEvent("fxDTSBrick", "onMenuOpen", "Self fxDTSBrick" TAB "Player Player" TAB "Client GameConnection");
+	registerInputEvent("fxDTSBrick", "onMenuClose", "Self fxDTSBrick" TAB "Player Player" TAB "Client GameConnection");
+	registerInputEvent("fxDTSBrick", "onMenuInput", "Self fxDTSBrick" TAB "Player Player" TAB "Client GameConnection");
 
 	// Basic Output
 	registerOutputEvent("fxDTSBrick", "requestFunds", "string 80 200" TAB "int 1 9000 1");
@@ -245,7 +257,7 @@ function City_Init_AssembleEvents()
 	}
 
 	registerOutputEvent("fxDTSBrick", "doJobTest", "list NONE 0" @ %doJobTest_List TAB "list NONE 0" @ %doJobTest_List TAB "bool");
-	for(%c = 1; %c <= $CityRPG::guns-1; %c++)
+	for(%c = 0; %c <= $CityRPG::guns-1; %c++)
 	{
 		%sellItem_List = %sellItem_List SPC strreplace($CityRPG::prices::weapon::name[%c].uiName, " ", "") SPC %c;
 	}

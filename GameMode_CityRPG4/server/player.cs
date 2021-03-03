@@ -1,3 +1,5 @@
+$City::StartingCash = 250;
+
 function gameConnection::arrest(%client, %cop)
 {
 	%client.cityLog("Arrested by '" @ %cop.bl_id @ "'");
@@ -123,11 +125,15 @@ function gameConnection::setGameBottomPrint(%client)
 	%mainFont = "<font:palatino linotype:24>";
 
 	%client.CityRPGPrint = %mainFont;
-	%health = 100 - %client.player.getDamageLevel();
 
-	%client.CityRPGPrint = %client.CityRPGPrint @ "<bitmap:" @ $City::DataPath @ "ui/health.png>\c6" SPC mFloor(100 - %client.player.getDamageLevel()) @ "%";
+	if(!isObject(%client.player))
+		%health = 0;
+	else
+		%health = mFloor(100 - %client.player.getDamageLevel());
 
-	%client.CityRPGPrint = %client.CityRPGPrint @ " <bitmap:" @ $City::DataPath @ "ui/cash.png>" SPC %client.getCashString();
+	%client.CityRPGPrint = %client.CityRPGPrint @ "<bitmap:" @ $City::DataPath @ "ui/health.png>\c6 Health:" SPC %health @ "%";
+
+	%client.CityRPGPrint = %client.CityRPGPrint @ "   <bitmap:" @ $City::DataPath @ "ui/cash.png>\c6 Cash:" SPC %client.getCashString();
 
 	// Placeholder
 	//%client.CityRPGPrint = %client.CityRPGPrint @ "<just:right>\c6Day";
@@ -150,48 +156,6 @@ function gameConnection::setGameBottomPrint(%client)
 			%client.CityRPGPrint = %client.CityRPGPrint @ "*";
 
 		%client.CityRPGPrint = %client.CityRPGPrint;
-	}
-
-	$Economics::replayCount = $Economics::replayCount + 1;
-	$Economics::randomUporDown = getRandom(1,5);
-	$Economics::positiveNegative = getRandom(1,2);
-
-	if($Pref::Server::City::Economics::Relay < 1)
-		$Pref::Server::City::Economics::Relay = ClientGroup.getCount();
-
-	if($Economics::replayCount > $Pref::Server::City::Economics::Relay)
-	{
-		if($Economics::Condition > $Pref::Server::City::Economics::Greatest)
-		{
-			$Economics::Condition = $Economics::Condition - $Economics::randomUporDown;
-			$Economics::replayCount = 0;
-		}
-		else if($Economics::Condition < $Pref::Server::City::Economics::Least)
-		{
-			$Economics::Condition = $Economics::Condition + $Economics::randomUporDown;
-			$Economics::replayCount = 0;
-		}
-		else if($Economics::positiveNegative == 1)
-		{
-			$Economics::Condition = $Economics::Condition + $Economics::randomUporDown;
-			$Economics::replayCount = 0;
-		}
-		else if($Economics::positiveNegative == 2)
-		{
-			$Economics::Condition = $Economics::Condition - $Economics::randomUporDown;
-			$Economics::replayCount = 0;
-		}
-	}
-
-	if($Economics::Condition > $Pref::Server::City::Economics::Cap)
-	{
-		$Economics::Condition = $Pref::Server::City::Economics::Cap;
-	}
-
-	if($Economics::Condition $= "")
-	{
-		error("ERROR: GameMode_CityRPG4 - Economics condition is blank! Resetting to 0.");
-		$Economics::Condition = 0;
 	}
 
 	commandToClient(%client, 'bottomPrint', %client.CityRPGPrint, 0, true);
@@ -278,9 +242,9 @@ function gameConnection::applyForcedBodyParts(%client)
 function gameConnection::getCashString(%client)
 {
 	if(CityRPGData.getData(%client.bl_id).valueMoney >= 0)
-		%money = "\c6$" @ CityRPGData.getData(%client.bl_id).valueMoney;
+		%money = "\c6$" @ strFormatNumber(CityRPGData.getData(%client.bl_id).valueMoney);
 	else
-		%money = "\c0($" @ strreplace(CityRPGData.getData(%client.bl_id).valueMoney, "-", "")  @ ")";
+		%money = "\c0($" @ strreplace(strFormatNumber(CityRPGData.getData(%client.bl_id).valueMoney), "-", "")  @ ")";
 
 	return %money;
 }
@@ -307,9 +271,11 @@ function gameConnection::getSalary(%client)
 
 function gameConnection::getWantedLevel(%client)
 {
-	if(CityRPGData.getData(%client.bl_id).valueDemerits >= $Pref::Server::City::demerits::wantedLevel)
+	%data = CityRPGData.getData(%client.bl_id);
+
+	if(%data.valueDemerits >= $Pref::Server::City::demerits::wantedLevel)
 	{
-		%div = CityRPGData.getData(%client.bl_id).valueDemerits / $Pref::Server::City::demerits::wantedLevel;
+		%div = %data.valueDemerits / $Pref::Server::City::demerits::wantedLevel;
 
 	if(%div <= 3)
 		return 1;
@@ -370,19 +336,21 @@ function gameConnection::sellFood(%client, %sellerID, %servingID, %foodName, %pr
 				messageClient(%client, '', '\c6You %1 %2 \c3%3\c6 serving of \c3%4\c6.', %eatName, City_DetectVowel(%portionName), %portionName, %foodName);
 				CityRPGData.getData(%client.bl_id).valueHunger += %servingID;
 
+				%client.player.setHealth(%client.player.getdataBlock().maxDamage);
+
 				if(CityRPGData.getData(%client.bl_id).valueHunger > 10)
 				{
 					CityRPGData.getData(%client.bl_id).valueHunger = 10;
 				}
 
 				CityRPGData.getData(%client.bl_id).valueMoney -= %price;
+				CityRPGData.getData(%sellerID).valueBank += %profit;
 
 				if(%profit)
 				{
 					if(isObject(%seller = findClientByBL_ID(%sellerID)))
 					{
 						messageClient(%seller, '', '\c6You just gained \c3$%1\c6 for providing \c3%3\c6 to \c3%2\c6.', %profit, %client.name, %foodName);
-						CityRPGData.getData(%sellerID).valueBank += %profit;
 					}
 				}
 
@@ -465,6 +433,7 @@ function gameConnection::sellClothes(%client, %sellerID, %brick, %item, %price)
 			messageClient(%client, '', "\c6Enjoy the new look!");
 			%client.cityLog("Evnt buy clothing " @ %item @ " for " @ %price @ " from " @ %sellerID);
 			CityRPGData.getData(%client.bl_id).valueMoney -= %price;
+			CityRPGData.getData(%sellerID).valueBank += %price;
 			ClothesSO.giveItem(%client, %item);
 
 			if(%price)
@@ -472,7 +441,6 @@ function gameConnection::sellClothes(%client, %sellerID, %brick, %item, %price)
 				if(isObject(%seller = FindClientByBL_ID(%sellerID)))
 				{
 					messageClient(%seller, '', '\c6You just gained \c3$%1\c6 for selling clothes to \c3%2\c6.', %price, %client.name);
-					CityRPGData.getData(%sellerID).valueBank += %price;
 				}
 			}
 
@@ -541,36 +509,20 @@ function player::giveDefaultEquipment(%this)
 
 function jobset(%client, %job, %name)
 {
-	if(%name $= "")
+	CityRPGData.getData(%client.bl_id).valueJobID = %job;
+	serverCmdunUseTool(%client);
+	%client.player.giveDefaultEquipment();
+	%client.applyForcedBodyColors();
+	%client.applyForcedBodyParts();
+	%client.player.setDatablock(%client.getJobSO().db);
+
+	if(%job == $City::MayorJobID)
 	{
-		CityRPGData.getData(%client.bl_id).valueJobID = %job;
-		serverCmdunUseTool(%client);
-		%client.player.giveDefaultEquipment();
-		%client.applyForcedBodyColors();
-		%client.applyForcedBodyParts();
-
-		if(%job == 14)
-		{
-			$City::Mayor::String = %client.name;
-			$City::Mayor::Enabled = 0;
-			serverCmdClearImpeach(%client);
-		}
-		%client.SetInfo();
+		$City::Mayor::String = %client.name;
+		$City::Mayor::Enabled = 0;
+		serverCmdClearImpeach(%client);
 	}
-	else
-	{
-		%target = findClientByName(%name);
-		CityRPGData.getData(%target.bl_id).valueJobID = %job;
-		serverCmdunUseTool(%target);
-		%target.player.giveDefaultEquipment();
-		%target.applyForcedBodyColors();
-		%target.applyForcedBodyParts();
-
-		if(%job == 14)
-			$City::Mayor::String = %target.name;
-
-		%target.SetInfo();
-	}
+	%client.SetInfo();
 }
 
 function resetFree(%client)
@@ -580,7 +532,7 @@ function resetFree(%client)
 		CityRPGData.removeData(%client.bl_id);
 	CityRPGData.addData(%client.bl_id);
 
-	CityRPGData.getData(%client.bl_id).valueBank = 250;
+	CityRPGData.getData(%client.bl_id).valueBank = $City::StartingCash;
 
 	if(isObject(%client.player))
 	{
@@ -600,9 +552,7 @@ function GameConnection::getCityEnrollCost(%client)
 
 function GameConnection::cityEnroll(%client)
 {
-	%client.cityLog("/education" SPC %do);
-
-	if(!isObject(%client.player) || CityRPGData.getData(%client.bl_id).valueEducation >= 6)
+	if(!isObject(%client.player) || CityRPGData.getData(%client.bl_id).valueEducation >= $City::EducationCap)
 		return;
 
 	%price = %client.getCityEnrollCost();
@@ -620,10 +570,22 @@ function GameConnection::cityEnroll(%client)
 
 			messageClient(%client, '', "\c6You are now enrolled. You will complete your education in \c3" @ %valueStudent @ "\c6 days.");
 			%client.setInfo();
+
+			%client.cityLog("Enroll for edu worth " @ %price);
 		}
 		else
 		{
 			messageClient(%client, '', "\c6It costs \c3$" @ %price SPC "\c6to get enrolled. You do not have enough money.");
 		}
 	}
+}
+
+function GameConnection::getCityRecordClearCost(%client)
+{
+	return 250 * (CityRPGData.getData(%client.bl_id).valueEducation+1);
+}
+
+function GameConnection::isCityAdmin(%client)
+{
+	return CityRPGData.getData(%client.bl_id).valueJobID == $City::AdminJobID;
 }

@@ -4,3 +4,5 @@ Beware that the existing job system is deprecated. There are plans to replace it
 
 The outfit order is as follows:
 accent hat pack secondPack chest arms gloves hip feet facedecal chestdecal
+
+For global job tree options, see "jobTrees.cs" in the server/ folder.

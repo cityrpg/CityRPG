@@ -4,7 +4,7 @@
 datablock fxDTSBrickData(CityRPGPoliceBrickData : brick2x4FData)
 {
 	category = "CityRPG";
-	subCategory = "Info Bricks";
+	subCategory = "City Info Bricks";
 
 	uiName = "Police Brick";
 
@@ -16,6 +16,139 @@ datablock fxDTSBrickData(CityRPGPoliceBrickData : brick2x4FData)
 	trigger = 0;
 };
 
+function GameConnection::refreshCityDemeritCosts(%client)
+{
+	%data = CityRPGData.getData(%client.bl_id);
+
+	%client.dems = %data.valueDemerits;
+	%client.demsAffordableTotal = mFloor(%data.valueMoney / $Pref::Server::City::demerits::demeritCost);
+	%client.demsAffordable = (%client.demsAffordableTotal > %client.dems ? %client.dems : %client.demsAffordableTotal);
+	%client.demCost = mFloor(%client.demsAffordable * $Pref::Server::City::demerits::demeritCost);
+}
+
+// ============================================================
+// Menu
+// ============================================================
+function CityMenu_Police(%client, %brick)
+{
+	%data = CityRPGData.getData(%client.bl_id);
+
+	%menu =	"View active criminals";
+	%functions = "CityMenu_Police_ViewCrims";
+
+	%client.cityLog("Enter police");
+
+	// Record clear option
+	if(getWord(%data.valueJailData, 0))
+	{
+		%menu = %menu TAB "Clear your record (\c3$" @ %client.getCityRecordClearCost() @ "\c6)";
+		%functions = %functions TAB "CityMenu_Police_ClearRecord";
+	}
+
+	// Demerits clear option
+	if(CityRPGData.getData(%client.bl_id).valueDemerits)
+	{
+		%client.refreshCityDemeritCosts();
+
+		if(%client.demsAffordable >= %client.dems)
+		{
+			%menu = %menu TAB "Pay off Demerits (\c3$" @ %client.demCost @ "\c6)";
+		}
+		else
+		{
+			%menu = %menu TAB "Pay Partial Demerits (\c3" @ %client.demsAffordable @ "\c6 out of \c3" @ %client.dems @ "\c6 for \c3$" @ %client.demCost @ "\c6)";
+		}
+
+		%functions = %functions TAB "CityMenu_Police_PayDems";
+	}
+
+	// Crime evidence option (currently unused in default CityRPG)
+	if(CityRPGData.getData(%client.bl_id).valueEvidence)
+	{
+		%menu = %menu TAB "Turn in evidence";
+		%functions = %functions TAB "CityMenu_Police_TurnInEvidence";
+
+	}
+
+	%client.cityMenuOpen(%menu, %functions, %brick, "\c6Thanks, come again.");
+}
+
+function CityMenu_Police_ViewCrims(%client)
+{
+	%noCriminals = true;
+
+	for(%a = 0; %a < clientGroup.getCount(); %a++)
+	{
+		%criminal = clientGroup.getObject(%a);
+
+		if(CityRPGData.getData(%criminal.bl_id).valueDemerits >= $Pref::Server::City::demerits::wantedLevel)
+		{
+			%client.cityMenuMessage("\c3" @ %criminal.name SPC "\c6- \c3" @ CityRPGData.getData(%criminal.bl_id).valueDemerits);
+
+			%noCriminals = false;
+		}
+	}
+
+	if(%noCriminals)
+	{
+		messageClient(%client, '', "\c6There are no criminals online.");
+	}
+
+	%client.cityMenuClose();
+
+	return;
+}
+
+function CityMenu_Police_ClearRecord(%client)
+{
+	serverCmdbuyErase(%client);
+	return;
+}
+
+function CityMenu_Police_PayDems(%client)
+{
+	%client.refreshCityDemeritCosts();
+
+	if(%client.demsAffordable <= 0)
+	{
+		messageClient(%client, '', "\c6You cant afford to pay off any demerits!");
+
+		%brick.trigger.getDatablock().onLeaveTrigger(%brick.trigger, (isObject(%client.player) ? %client.player : 0));
+
+		return;
+	}
+
+	if(CityRPGData.getData(%client.bl_id).valueMoney - %demCost < 0)
+	{
+		messageClient(%client, '', "\c6You don't have enough money to do that.");
+
+		return;
+	}
+
+	CityRPGData.getData(%client.bl_id).valueMoney -= %client.demCost;
+	CityRPGData.getData(%client.bl_id).valueDemerits -= %client.demsAffordable;
+
+	messageClient(%client, '', "\c6You have paid \c3$" @ %client.demCost @ "\c6. You now have\c3" SPC (CityRPGData.getData(%client.bl_id).valueDemerits ? CityRPGData.getData(%client.bl_id).valueDemerits : "no") SPC "\c6demerits.");
+
+	%client.setInfo();
+	%client.cityMenuClose();
+	%client.cityLog("Pay off " @ %client.demsAffordable @ " dems -$" @ %client.demCost);
+
+	return;
+}
+
+function CityMenu_Police_TurnInEvidence(%client)
+{
+	%cash = CityRPGData.getData(%client.bl_id).valueevidence * $CityRPG::evidenceWorth;
+	messageClient(%client,'',"\c6You have turned in your \c3Evidence \c6for \c3$" @ CityRPGData.getData(%client.bl_id).valueevidence * $CityRPG::evidenceWorth @ "\c6.");
+	CityRPGData.getData(%client.bl_id).valueevidence = 0;
+	CityRPGData.getData(%client.bl_id).valueMoney += %cash;
+	%client.setInfo();
+
+	%client.cityLog("Turn in evidence for $" @ %cash);
+	%client.cityMenuClose();
+}
+
 // ============================================================
 // Trigger Data
 // ============================================================
@@ -23,163 +156,33 @@ function CityRPGPoliceBrickData::parseData(%this, %brick, %client, %triggerStatu
 {
 	if(%triggerStatus !$= "")
 	{
-		if(%triggerStatus == true)
+		if(%triggerStatus == true && !%client.cityMenuOpen)
 		{
-			if(CityRPGData.getData(%client.bl_id).valueDemerits)
+			%data = CityRPGData.getData(%client.bl_id);
+
+			%client.cityMenuMessage("\c3" @ $Pref::Server::City::name @ " Police Department");
+
+			// Show their name and title (if it exists) if the user is an officer.
+			%job = %client.getJobSO();
+
+			%titleStr = "";
+			if(%job.title !$= "")
 			{
-				%yourDemerits = CityRPGData.getData(%client.bl_id).valueDemerits;
-				%totalPrice = mFloor(CityRPGData.getData(%client.bl_id).valueDemerits * $Pref::Server::City::demerits::demeritCost);
-				%demsYouCanAfford = mFloor(CityRPGData.getData(%client.bl_id).valueMoney / $Pref::Server::City::demerits::demeritCost);
-				%demsYouCanBuy = (%demsYouCanAfford > %yourDemerits ? %yourDemerits : %demsYouCanAfford);
-				%demCost = mFloor(%demsYouCanBuy * $Pref::Server::City::demerits::demeritCost);
+				%titleStr = %job.title @ " ";
 			}
 
-			messageClient(%client, '', "\c3" @ $Pref::Server::City::name @ " Police Department");
-			messageClient(%client, '', "\c6Type a number in chat:");
-
-			if(CityRPGData.getData(%client.bl_id).valueDemerits > 0)
+			if(%job.track $= "Police")
 			{
-				messageClient(%client, '', "\c6You have \c3" @ CityRPGData.getData(%client.bl_id).valueDemerits SPC "\c6demerits.");
+				%client.cityMenuMessage("\c6Welcome, \c3" @ %titleStr @ %client.name @ "\c6.");
 			}
 
-			messageClient(%client, '', "\c31 \c6- View Online Criminals");
-
-			%cost = 500 * CityRPGData.getData(%client.bl_id).valueEducation;
-			messageClient(%client, '', "\c32 \c6- Clear your record! (\c3$" @ %cost @ "\c6)");
-
-
-			if(CityRPGData.getData(%client.bl_id).valueDemerits)
+			// Show their demerits if they have any
+			if(%data.valueDemerits > 0)
 			{
-				if(%demsYouCanBuy >= %yourDemerits)
-				{
-					messageClient(%client, '', "\c33 \c6- Pay off Demerits (\c3$" @ %demCost @ "\c6)");
-				}
-				else
-				{
-					messageClient(%client, '', "\c33 \c6- Pay Partial Demerits (\c3" @ %demsYouCanBuy @ "\c6 out of \c3" @ %yourDemerits @ "\c6 for \c3$" @ %demCost @ "\c6)");
-				}
-			}
-			if(CityRPGData.getData(%client.bl_id).valueevidence)
-			{
-				if(CityRPGData.getData(%client.bl_id).valueDemerits)
-				{
-					messageClient(%client,'',"\c34 \c6- Turn in evidence");
-				}
-				else
-				{
-					messageClient(%client,'',"\c33 \c6- Turn in evidence");
-				}
+				%client.cityMenuMessage("\c6You have \c3" @ CityRPGData.getData(%client.bl_id).valueDemerits SPC "\c6demerits.");
 			}
 		}
 
-		if(%triggerStatus == false)
-		{
-			messageClient(%client, '', "\c6Thanks, come again.");
-		}
-
-		return;
-	}
-
-	%input = strLwr(%text);
-
-	if(strReplace(%input, "1", "") !$= %input || strReplace(%input, "one", "") !$= %input)
-	{
-		%noCriminals = true;
-
-		for(%a = 0; %a < clientGroup.getCount(); %a++)
-		{
-			%criminal = clientGroup.getObject(%a);
-
-			if(CityRPGData.getData(%criminal.bl_id).valueDemerits >= $Pref::Server::City::demerits::wantedLevel)
-			{
-				messageClient(%client, '', "\c3" @ %criminal.name SPC "\c6- \c3" @ CityRPGData.getData(%criminal.bl_id).valueDemerits);
-
-				%noCriminals = false;
-			}
-		}
-
-		if(%noCriminals)
-		{
-			messageClient(%client, '', "\c6There are no criminals online.");
-		}
-
-		%brick.trigger.getDatablock().onLeaveTrigger(%brick.trigger, (isObject(%client.player) ? %client.player : 0));
-
-		return;
-	}
-
-	if(strReplace(%input, "2", "") !$= %input || strReplace(%input, "two", "") !$= %input)
-	{
-					serverCmdbuyErase(%client);
-					return;
-	}
-
-	if((strReplace(%input, "3", "") !$= %input || strReplace(%input, "three", "") !$= %input) && CityRPGData.getData(%client.bl_id).valueDemerits > 0)
-	{
-		%yourDemerits = CityRPGData.getData(%client.bl_id).valueDemerits;
-		%totalPrice = mFloor(CityRPGData.getData(%client.bl_id).valueDemerits * $Pref::Server::City::demerits::demeritCost);
-		%demsYouCanAfford = mFloor(CityRPGData.getData(%client.bl_id).valueMoney / $Pref::Server::City::demerits::demeritCost);
-		%demsYouCanBuy = (%demsYouCanAfford > %yourDemerits ? %yourDemerits : %demsYouCanAfford);
-		%demCost = mFloor(%demsYouCanBuy * $Pref::Server::City::demerits::demeritCost);
-
-		if(%demsYouCanBuy <= 0)
-		{
-			messageClient(%client, '', "\c6You cant afford to pay off any demerits!");
-
-			%brick.trigger.getDatablock().onLeaveTrigger(%brick.trigger, (isObject(%client.player) ? %client.player : 0));
-
-			return;
-		}
-
-		if(CityRPGData.getData(%client.bl_id).valueMoney - %demCost < 0)
-		{
-			messageClient(%client, '', "\c6You don't have enough money to do that.");
-
-			return;
-		}
-
-		CityRPGData.getData(%client.bl_id).valueMoney -= %demCost;
-		CityRPGData.getData(%client.bl_id).valueDemerits -= %demsYouCanBuy;
-
-		messageClient(%client, '', "\c6You have paid \c3$" @ %demCost @ "\c6. You now have\c3" SPC (CityRPGData.getData(%client.bl_id).valueDemerits ? CityRPGData.getData(%client.bl_id).valueDemerits : "no") SPC "\c6demerits.");
-
-		%client.setInfo();
-
-		%brick.trigger.getDatablock().onLeaveTrigger(%brick.trigger, (isObject(%client.player) ? %client.player : 0));
-
-		return;
-	}
-	else if((strReplace(%input, "3", "") !$= %input || strReplace(%input, "three", "") !$= %input) && CityRPGData.getData(%client.bl_id).valueDemerits == 0)
-	{
-		// Crime evidence
-		%cash = CityRPGData.getData(%client.bl_id).valueevidence * $CityRPG::evidenceWorth;
-		messageClient(%client,'',"\c6You have turned in your \c3Evidence \c6for \c3$" @ CityRPGData.getData(%client.bl_id).valueevidence * $CityRPG::evidenceWorth @ "\c6.");
-		CityRPGData.getData(%client.bl_id).valueevidence = 0;
-		CityRPGData.getData(%client.bl_id).valueMoney += %cash;
-		%client.setInfo();
-
-		%brick.trigger.getDatablock().onLeaveTrigger(%brick.trigger, (isObject(%client.player) ? %client.player : 0));
-
-		%client.cityLog("Turn in evidence for $" @ %cash);
-	}
-
-	else if((strReplace(%input, "4", "") !$= %input || strReplace(%input, "four", "") !$= %input) && CityRPGData.getData(%client.bl_id).valueDemerits > 0)
-	{
-		%cash = CityRPGData.getData(%client.bl_id).valueevidence * $CityRPG::evidenceWorth;
-		messageClient(%client,'',"\c6You have turned in your \c3Evidence \c6for \c3$" @ CityRPGData.getData(%client.bl_id).valueevidence * $CityRPG::evidenceWorth @ "\c6.");
-		CityRPGData.getData(%client.bl_id).valueevidence = 0;
-		CityRPGData.getData(%client.bl_id).valueMoney += %cash;
-		%client.setInfo();
-
-		%brick.trigger.getDatablock().onLeaveTrigger(%brick.trigger, (isObject(%client.player) ? %client.player : 0));
-
-		%client.cityLog("Turn in evidence for $" @ %cash);
-	}
-	else
-	{
-
-	messageClient(%client, '', "\c3" @ %text SPC "\c6is not a valid option!");
-
-	return;
+		CityMenu_Police(%client, %brick);
 	}
 }

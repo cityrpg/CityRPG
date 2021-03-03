@@ -1,4 +1,6 @@
 $CityRPG::jobs::name = "Police Chief";
+$CityRPG::jobs::track = "Police";
+$CityRPG::jobs::title = "Chief";
 $CityRPG::jobs::initialInvestment = 100;
 $CityRPG::jobs::pay = 85;
 $CityRPG::jobs::tools = "CityRPGBatonItem gunItem taserItem TacticalVestItem DoughnutItem";
@@ -21,7 +23,6 @@ $CityRPG::jobs::claimer = true;
 
 $CityRPG::jobs::labor = false;
 
-$CityRPG::jobs::tmHexColor = "0000CC";
 $CityRPG::jobs::helpline = "\c6A prestigious rank in the police department.";
 
 $CityRPG::jobs::outfit = "none copHat none none copShirt copShirt skin blackPants blackShoes default Mod-Police";

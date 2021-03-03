@@ -41,11 +41,49 @@ datablock triggerData(CityRPGInputTriggerData)
 };
 
 // ============================================================
+// Bricks
+// ============================================================
+// Player info bricks
+exec($City::ScriptPath @ "brickScripts/info/atm.cs");
+
+// Personal spawns
+datablock fxDtsBrickData(CityRPGPersonalSpawnBrickData : brickSpawnPointData)
+{
+	category = "CityRPG";
+	subCategory = "Personal";
+
+	uiName = "Personal Spawn";
+
+	specialBrickType = "";
+
+	CityRPGBrickType = $CityBrick_Spawn;
+	CityRPGBrickAdmin = false;
+
+	spawnData = "personalSpawn";
+};
+
+// Resources
+exec($City::ScriptPath @ "brickScripts/resources/tree.cs");
+exec($City::ScriptPath @ "brickScripts/resources/ore.cs");
+exec($City::ScriptPath @ "brickScripts/resources/smallore.cs");
+
+// City info bricks
+exec($City::ScriptPath @ "brickScripts/info/bank.cs");
+exec($City::ScriptPath @ "brickScripts/info/police.cs");
+exec($City::ScriptPath @ "brickScripts/info/bounty.cs");
+exec($City::ScriptPath @ "brickScripts/info/labor.cs");
+exec($City::ScriptPath @ "brickScripts/info/realestate.cs");
+exec($City::ScriptPath @ "brickScripts/info/criminalbank.cs");
+exec($City::ScriptPath @ "brickScripts/info/education.cs");
+exec($City::ScriptPath @ "brickScripts/info/job.cs");
+exec($City::ScriptPath @ "brickScripts/info/vote.cs");
+
+// ============================================================
 // Lots
 // ============================================================
 datablock fxDTSBrickData(CityRPGSmallLotBrickData : brick16x16FData)
 {
-	iconName = $City::DataPath @ "/ui/BrickIcons/16x16LotIcon";
+	iconName = $City::DataPath @ "ui/BrickIcons/16x16LotIcon";
 
 	category = "CityRPG";
 	subCategory = "Lots";
@@ -53,7 +91,7 @@ datablock fxDTSBrickData(CityRPGSmallLotBrickData : brick16x16FData)
 	uiName = "16x16 Lot";
 
 	CityRPGBrickType = $CityBrick_Lot;
-	CityRPGBrickAdmin = false;
+	CityRPGBrickAdmin = true;
 
 	triggerDatablock = CityRPGLotTriggerData;
 	triggerSize = "16 16 4800";
@@ -64,7 +102,7 @@ datablock fxDTSBrickData(CityRPGSmallLotBrickData : brick16x16FData)
 
 datablock fxDTSBrickData(CityRPGHalfSmallLotBrickData : brick16x32FData)
 {
-	iconName = $City::DataPath @ "/ui/BrickIcons/16x32LotIcon";
+	iconName = $City::DataPath @ "ui/BrickIcons/16x32LotIcon";
 
 	category = "CityRPG";
 	subCategory = "Lots";
@@ -72,7 +110,7 @@ datablock fxDTSBrickData(CityRPGHalfSmallLotBrickData : brick16x32FData)
 	uiName = "16x32 Lot";
 
 	CityRPGBrickType = $CityBrick_Lot;
-	CityRPGBrickAdmin = false;
+	CityRPGBrickAdmin = true;
 
 	triggerDatablock = CityRPGLotTriggerData;
 	triggerSize = "16 32 4800";
@@ -83,7 +121,7 @@ datablock fxDTSBrickData(CityRPGHalfSmallLotBrickData : brick16x32FData)
 
 datablock fxDTSBrickData(CityRPGMediumLotBrickData : brick32x32FData)
 {
-	iconName = $City::DataPath @ "/ui/BrickIcons/32x32LotIcon";
+	iconName = $City::DataPath @ "ui/BrickIcons/32x32LotIcon";
 
 	category = "CityRPG";
 	subCategory = "Lots";
@@ -91,7 +129,7 @@ datablock fxDTSBrickData(CityRPGMediumLotBrickData : brick32x32FData)
 	uiName = "32x32 Lot";
 
 	CityRPGBrickType = $CityBrick_Lot;
-	CityRPGBrickAdmin = false;
+	CityRPGBrickAdmin = true;
 
 	triggerDatablock = CityRPGLotTriggerData;
 	triggerSize = "32 32 6400";
@@ -102,8 +140,8 @@ datablock fxDTSBrickData(CityRPGMediumLotBrickData : brick32x32FData)
 
 datablock fxDTSBrickData(CityRPGHalfLargeLotBrickData)
 {
-	brickFile = $City::DataPath @ "/bricks/32x64F.blb";
-	iconName = $City::DataPath @ "/ui/BrickIcons/32x64LotIcon";
+	brickFile = $City::DataPath @ "bricks/32x64F.blb";
+	iconName = $City::DataPath @ "ui/BrickIcons/32x64LotIcon";
 
 	category = "CityRPG";
 	subCategory = "Lots";
@@ -111,7 +149,7 @@ datablock fxDTSBrickData(CityRPGHalfLargeLotBrickData)
 	uiName = "32x64 Lot";
 
 	CityRPGBrickType = $CityBrick_Lot;
-	CityRPGBrickAdmin = false;
+	CityRPGBrickAdmin = true;
 
 	triggerDatablock = CityRPGLotTriggerData;
 	triggerSize = "32 64 6400";
@@ -122,7 +160,7 @@ datablock fxDTSBrickData(CityRPGHalfLargeLotBrickData)
 
 datablock fxDTSBrickData(CityRPGLargeLotBrickData : brick64x64FData)
 {
-	iconName = $City::DataPath @ "/ui/BrickIcons/64x64LotIcon";
+	iconName = $City::DataPath @ "ui/BrickIcons/64x64LotIcon";
 
 	category = "CityRPG";
 	subCategory = "Lots";
@@ -130,7 +168,7 @@ datablock fxDTSBrickData(CityRPGLargeLotBrickData : brick64x64FData)
 	uiName = "64x64 Lot";
 
 	CityRPGBrickType = $CityBrick_Lot;
-	CityRPGBrickAdmin = false;
+	CityRPGBrickAdmin = true;
 
 	triggerDatablock = CityRPGLotTriggerData;
 	triggerSize = "64 64 12800";
@@ -142,7 +180,7 @@ datablock fxDTSBrickData(CityRPGLargeLotBrickData : brick64x64FData)
 // Sale Lots
 //datablock fxDTSBrickData(CityRPGSmallZoneBrickData : brick16x16FData)
 //{
-//	iconName = $City::DataPath @ "/ui/BrickIcons/16x16ZoneIcon";
+//	iconName = $City::DataPath @ "ui/BrickIcons/16x16ZoneIcon";
 //
 //	category = "CityRPG";
 //	subCategory = "CityRPG Zones";
@@ -155,7 +193,7 @@ datablock fxDTSBrickData(CityRPGLargeLotBrickData : brick64x64FData)
 //
 //datablock fxDTSBrickData(CityRPGHalfSmallZoneBrickData : brick16x32FData)
 //{
-//	iconName = $City::DataPath @ "/ui/BrickIcons/16x32ZoneIcon";
+//	iconName = $City::DataPath @ "ui/BrickIcons/16x32ZoneIcon";
 //
 //	category = "CityRPG";
 //	subCategory = "CityRPG Zones";
@@ -168,7 +206,7 @@ datablock fxDTSBrickData(CityRPGLargeLotBrickData : brick64x64FData)
 //
 //datablock fxDTSBrickData(CityRPGMediumZoneBrickData : brick32x32FData)
 //{
-//	iconName = $City::DataPath @ "/ui/BrickIcons/32x32ZoneIcon";
+//	iconName = $City::DataPath @ "ui/BrickIcons/32x32ZoneIcon";
 //
 //	category = "CityRPG";
 //	subCategory = "CityRPG Zones";
@@ -181,7 +219,7 @@ datablock fxDTSBrickData(CityRPGLargeLotBrickData : brick64x64FData)
 //
 //datablock fxDTSBrickData(CityRPGLargeZoneBrickData : brick64x64FData)
 //{
-//	iconName = $City::DataPath @ "/ui/BrickIcons/64x64ZoneIcon";
+//	iconName = $City::DataPath @ "ui/BrickIcons/64x64ZoneIcon";
 //
 //	category = "CityRPG";
 //	subCategory = "CityRPG Zones";
@@ -192,40 +230,7 @@ datablock fxDTSBrickData(CityRPGLargeLotBrickData : brick64x64FData)
 //	CityRPGMatchingLot = CityRPGLargeLotBrickData;
 //};
 
-// ============================================================
-// Data Bricks
-// ============================================================
-exec($City::ScriptPath @ "brickScripts/info/bank.cs");
-exec($City::ScriptPath @ "brickScripts/info/police.cs");
-exec($City::ScriptPath @ "brickScripts/info/bounty.cs");
-exec($City::ScriptPath @ "brickScripts/info/labor.cs");
-//exec($City::ScriptPath @ "brickScripts/info/realestate.cs");
-exec($City::ScriptPath @ "brickScripts/info/criminalbank.cs");
-exec($City::ScriptPath @ "brickScripts/info/atm.cs");
-exec($City::ScriptPath @ "brickScripts/info/playeratm.cs");
-exec($City::ScriptPath @ "brickScripts/info/education.cs");
-exec($City::ScriptPath @ "brickScripts/info/job.cs");
-
-exec($City::ScriptPath @ "brickScripts/info/vote.cs");
-
-// ============================================================
-// Spawns
-// ============================================================
-datablock fxDtsBrickData(CityRPGPersonalSpawnBrickData : brickSpawnPointData)
-{
-	category = "CityRPG";
-	subCategory = "Spawns";
-
-	uiName = "Personal Spawn";
-
-	specialBrickType = "";
-
-	CityRPGBrickType = $CityBrick_Spawn;
-	CityRPGBrickAdmin = false;
-
-	spawnData = "personalSpawn";
-};
-
+// Jail spawn
 datablock fxDtsBrickData(CityRPGJailSpawnBrickData : brickSpawnPointData)
 {
 	category = "CityRPG";
@@ -242,19 +247,12 @@ datablock fxDtsBrickData(CityRPGJailSpawnBrickData : brickSpawnPointData)
 };
 
 // ============================================================
-// Resources
-// ============================================================
-exec($City::ScriptPath @ "brickScripts/resources/tree.cs");
-exec($City::ScriptPath @ "brickScripts/resources/ore.cs");
-exec($City::ScriptPath @ "brickScripts/resources/smallore.cs");
-
-// ============================================================
 // Other
 // ============================================================
 datablock fxDTSBrickData(CityRPGPermaSpawnData : brick2x2FData)
 {
 	category = "CityRPG";
-	subCategory = "Info Bricks";
+	subCategory = "City Info Bricks";
 
 	uiName = "Item Spawn Brick";
 
@@ -299,7 +297,7 @@ function fxDTSBrick::createCityTrigger(%brick, %data)
 		%brick.trigger = new trigger()
 		{
 			datablock = %datablock.triggerDatablock;
-			position = getWords(%brick.getWorldBoxCenter(), 0, 1) SPC getWord(%brick.getWorldBoxCenter(), 2) + ((getWord(%datablock.triggerSize, 2) / 4) + (%datablock.brickSizeZ * 0.1));
+			position = getWords(%brick.getWorldBoxCenter(), 0, 1) SPC getWord(%brick.getWorldBox(), 2) + ((getWord(%datablock.triggerSize, 2) / 4));
 			rotation = "1 0 0 0";
 			scale = %scale;
 			polyhedron = "-0.5 -0.5 -0.5 1 0 0 0 1 0 0 0 1";
@@ -318,7 +316,179 @@ function fxDTSBrick::createCityTrigger(%brick, %data)
 	}
 }
 
-function fxDTSBrick::handleCityRPGBrickDelete(%brick, %data)
+function fxDTSBrick::cityBrickInit(%brick)
+{
+	%client = %brick.getGroup().client;
+
+	if(!%brick.isPlanted || !isObject(%brick))
+		return;
+
+	switch(%brick.getDatablock().CityRPGBrickType)
+	{
+		case $CityBrick_Lot:
+			%brick.schedule(1, "createCityTrigger");
+		case $CityBrick_Info:
+			%brick.schedule(1, "createCityTrigger");
+		case $CityBrick_Spawn:
+			$CityRPG::temp::spawnPoints = ($CityRPG::temp::spawnPoints $= "") ? %brick : $CityRPG::temp::spawnPoints SPC %brick;
+		case $CityBrick_ResourceLumber:
+			%seed = getRandom(1, ResourceSO.treeCount);
+			%brick.id = ResourceSO.tree[%seed].id;
+			%brick.BPH = ResourceSO.tree[%seed].BPH;
+			%brick.name = ResourceSO.tree[%seed].name;
+			%brick.totalHits = ResourceSO.tree[%seed].totalHits;
+			%brick.color = getClosestPaintColor(ResourceSO.tree[%seed].color);
+			%brick.setColor(%brick.color);
+		case $CityBrick_ResourceOre:
+			%seed = getRandom(1, ResourceSO.mineralCount);
+			%brick.id = ResourceSO.mineral[%seed].id;
+			%brick.BPH = ResourceSO.mineral[%seed].BPH;
+			%brick.name = ResourceSO.mineral[%seed].name;
+			%brick.totalHits = ResourceSO.mineral[%seed].totalHits;
+			%brick.color = getClosestPaintColor(ResourceSO.mineral[%seed].color);
+			%brick.setColor(%brick.color);
+		default:
+			if(%brick.getDatablock().getID() == brickVehicleSpawnData.getID() && !%client.isCityAdmin())
+			{
+				commandToClient(%client, 'centerPrint', "\c6You have paid \c3$" @ mFloor($CityRPG::prices::vehicleSpawn) @ "\c6 to plant this vehicle spawn.", 3);
+				CityRPGData.getData(%client.bl_id).valueMoney -= mFloor($CityRPG::prices::vehicleSpawn);
+				%client.setInfo();
+			}
+	}
+}
+
+// Brick::getCityLotTrigger(this/brick)
+// Returns the lot trigger containing the brick. Caches the value on %brick.cityLotTrigger.
+// If the brick overlaps in multiple lots, the first trigger found is returned.
+function fxDTSBrick::getCityLotTrigger(%brick)
+{
+	if(%brick.isPlanted && %brick.cityLotTrigger !$= "")
+	{
+		return %brick.cityLotTrigger;
+	}
+
+	// If not already cached, determine the lot trigger.
+	if(mFloor(getWord(%brick.rotation, 3)) == 90)
+		%boxSize = getWord(%brick.getDatablock().brickSizeY, 1) / 2.5 SPC getWord(%brick.getDatablock().brickSizeX, 0) / 2.5 SPC getWord(%brick.getDatablock().brickSizeZ, 2) / 2.5;
+	else
+		%boxSize = getWord(%brick.getDatablock().brickSizeX, 1) / 2.5 SPC getWord(%brick.getDatablock().brickSizeY, 0) / 2.5 SPC getWord(%brick.getDatablock().brickSizeZ, 2) / 2.5;
+
+	initContainerBoxSearch(%brick.getWorldBoxCenter(), %boxSize, $typeMasks::triggerObjectType);
+
+	while(isObject(%trigger = containerSearchNext()))
+	{
+		if(%trigger.getDatablock() == CityRPGLotTriggerData.getID())
+		{
+			%brick.cityLotTrigger = %trigger;
+			return %trigger;
+		}
+	}
+}
+
+// Brick::getCityBrickUnstable(this/brick, lotTrigger)
+function fxDTSBrick::getCityBrickUnstable(%brick, %lotTrigger)
+{
+	%lotTriggerMinX = getWord(%lotTrigger.getWorldBox(), 0);
+	%lotTriggerMinY = getWord(%lotTrigger.getWorldBox(), 1);
+	%lotTriggerMinZ = getWord(%lotTrigger.getWorldBox(), 2);
+
+	%lotTriggerMaxX = getWord(%lotTrigger.getWorldBox(), 3);
+	%lotTriggerMaxY = getWord(%lotTrigger.getWorldBox(), 4);
+	%lotTriggerMaxZ = getWord(%lotTrigger.getWorldBox(), 5);
+
+	%brickMinX = getWord(%brick.getWorldBox(), 0) + 0.0016;
+	%brickMinY = getWord(%brick.getWorldBox(), 1) + 0.0013;
+	%brickMinZ = getWord(%brick.getWorldBox(), 2) + 0.00126;
+
+	%brickMaxX = getWord(%brick.getWorldBox(), 3) - 0.0016;
+	%brickMaxY = getWord(%brick.getWorldBox(), 4) - 0.0013;
+	%brickMaxZ = getWord(%brick.getWorldBox(), 5) - 0.00126;
+
+	if(%brickMinX < %lotTriggerMinX || %brickMinY < %lotTriggerMinY || %brickMinZ < %lotTriggerMinZ || %brickMaxX > %lotTriggerMaxX || %brickMaxY > %lotTriggerMaxY || %brickMaxZ > %lotTriggerMaxZ)
+	{
+		return 1;
+	}
+
+	return 0;
+}
+
+// Brick::cityBrickCheck(this/brick)
+// Checks if the current brick can be planted by the client that owns it.
+// Typically called on a client's temp brick, except when using the duplicator.
+// Displays an error and returns -1 if there are any problems.
+function fxDTSBrick::cityBrickCheck(%brick)
+{
+	%client = %brick.getGroup().client;
+
+	if(!isObject(%client))
+	{
+		// City brick checks are never called while loading.
+		// Therefore, if the client doesn't exist, something went wrong. Refuse to plant for security.
+		return 0;
+	}
+
+	// Set %brickType and check it.
+	%brickType = %brick.getDataBlock().CityRPGBrickType;
+
+	if(%brickType !$= "" && isObject(%brick.client))
+	{
+		// Log if it's a CityRPG brick
+		%brick.client.cityLog("Attempt to plant " @ %brick.getDatablock().getName());
+	}
+
+	if(%client.isCityAdmin())
+	{
+		return 1;
+	}
+
+	%brickData = %brick.getDatablock();
+
+	if(%brickData.CityRPGBrickType == $CityBrick_Lot)
+	{
+		commandToClient(%client, 'centerPrint', "\c6You cannot place new lot bricks.<br>\c6To purchase a lot, find an unclaimed lot and type /lot while standing on it.", 5);
+		return 0;
+	}
+
+	if(%brickData.CityRPGBrickAdmin)
+	{
+		commandToClient(%client, 'centerPrint', "\c6You cannot place this type of brick.", 3);
+		return 0;
+	}
+
+	// Lot zone check
+	%lotTrigger = %brick.getCityLotTrigger();
+
+	if(!%lotTrigger && %brickData.CityRPGBrickType != $CityBrick_Lot)
+	{
+		commandToClient(%client, 'centerPrint', "You cannot plant a brick outside of a lot.\n\c6Use a lot brick to start your build!", 3);
+		return 0;
+	}
+
+	if(CityRPGData.getData(%client.bl_id).valueMoney < mFloor(%brick.getDatablock().initialPrice))
+	{
+		commandToClient(%client, 'centerPrint', "\c6You need at least \c3$" @ mFloor(%brick.getDatablock().initialPrice) SPC "\c6in order to plant this brick!", 3);
+		return 0;
+	}
+
+	if(%brick.getDatablock().CityRPGBrickType != $CityBrick_Lot && %brick.getCityBrickUnstable(%lotTrigger))
+	{
+		commandToClient(%client, 'ServerMessage', 'MsgPlantError_Unstable');
+		return 0;
+	}
+
+	if(%lotTrigger && %brickData.getID() == brickVehicleSpawnData.getID() && CityRPGData.getData(%client.bl_id).valueMoney < mFloor($CityRPG::prices::vehicleSpawn))
+	{
+		commandToClient(%client, 'centerPrint', "\c6You need at least \c3$" @ mFloor($CityRPG::prices::vehicleSpawn) SPC "\c6in order to plant this vehicle spawn!", 3);
+		return 0;
+	}
+
+	if(%brick.getDatablock().CityRPGBrickType && isObject(%brick.client)) {
+		return 1;
+		%brick.client.cityLog("---- Passed CityRPG checks", 1);
+	}
+}
+
+function fxDTSBrick::onCityBrickRemove(%brick, %data)
 {
 	if(isObject(%brick.trigger))
 	{
@@ -336,162 +506,6 @@ function fxDTSBrick::handleCityRPGBrickDelete(%brick, %data)
 			%brick.trigger.getDatablock().onLeaveTrigger(%brick.trigger, %player);
 		%brick.trigger.delete();
 	}
-}
-
-// Input Events
-function fxDTSBrick::OnEnterLot(%brick, %obj)
-{
-	$inputTarget_self = %brick;
-
-	$inputTarget_client = %obj.client;
-	$inputTarget_player = %obj.client.player;
-
-	$inputTarget_miniGame = (isObject(getMiniGameFromObject(%obj.client))) ? getMiniGameFromObject(%obj.client) : 0;
-
-	%brick.processInputEvent("OnEnterLot", %obj.client);
-}
-
-function fxDTSBrick::onLeaveLot(%brick, %obj)
-{
-	$inputTarget_self = %brick;
-
-	$inputTarget_client = %obj.client;
-	$inputTarget_player = %obj.client.player;
-
-	$inputTarget_miniGame = (isObject(getMiniGameFromObject(%obj.client))) ? getMiniGameFromObject(%obj.client) : 0;
-
-	%brick.processInputEvent("OnLeaveLot", %obj.client);
-}
-
-function fxDTSBrick::onTransferSuccess(%brick, %client)
-{
-	$inputTarget_self	= %brick;
-	$inputTarget_player	= %client.player;
-	$inputTarget_client	= %client;
-
-	%brick.processInputEvent("onTransferSuccess", %client);
-}
-
-function fxDTSBrick::onTransferDecline(%brick, %client)
-{
-	$inputTarget_self	= %brick;
-	$inputTarget_client	= %client;
-
-	// Repeated Service Offer Hack
-	for(%i = 0; %i < %brick.numEvents; %i++)
-	{
-		if(%brick.eventInput[%i] $= "onTransferDecline" && (%brick.eventOutput[%i] $= "requestFunds" || %brick.eventOutput[%i] $= "sellItem" || %brick.eventOutput[%i] $= "sellFood"))
-		%brick.eventEnabled[%i] = false;
-	}
-
-	%brick.processInputEvent("onTransferDecline", %client);
-}
-
-function fxDTSBrick::onJobTestPass(%brick, %client)
-{
-	$inputTarget_self	= %brick;
-	$inputTarget_player	= %client.player;
-	$inputTarget_client	= %client;
-
-	%brick.processInputEvent("onJobTestPass", %client);
-}
-
-function fxDTSBrick::onJobTestFail(%brick, %client)
-{
-	$inputTarget_self	= %brick;
-	$inputTarget_player	= %client.player;
-	$inputTarget_client	= %client;
-
-	%brick.processInputEvent("onJobTestFail", %client);
-}
-
-// Output Events
-function fxDTSBrick::doJobTest(%brick, %job, %job2, %convicts, %client)
-{
-	%convictStatus = getWord(CityRPGData.getData(%client.bl_id).valueJailData, 1);
-
-	if(!%job && !%job2 && (%convicts ? (!%convictStatus ? true : false) : true))
-		%brick.onJobTestPass(%client);
-	else if((CityRPGData.getData(%client.bl_id).valueJobID == %job || CityRPGData.getData(%client.bl_id).valueJobID == %job2) && (%convicts ? (!%convictStatus ? true : false) : true))
-		%brick.onJobTestPass(%client);
-	else
-		%brick.onJobTestFail(%client);
-}
-
-function fxDTSBrick::requestFunds(%brick, %serviceName, %fund, %client)
-{
-	if(isObject(%client.player) && !%client.player.serviceOrigin && isObject(%brick))
-	{
-		%client.player.serviceOrigin = %brick;
-		%client.player.serviceFee = %fund;
-		%client.player.serviceType = "service";
-
-		messageClient(%client,'',"\c6Service \"\c3" @ %serviceName @ "\c6\" requests \c3$" @ %fund SPC "\c6.");
-		messageClient(%client,'',"\c6Accept with \c3/yes\c6, decline with \c3/no\c6.");
-	}
-	else if(%client.player.serviceOrigin && %client.player.serviceOrigin != %brick)
-	{
-		messageClient(%client, '', "\c6You already have a charge request from another service! Type \c3/no\c6 to reject it.");
-	}
-}
-
-function fxDTSBrick::sellFood(%brick, %portion, %food, %markup, %client)
-{
-	if(isObject(%client.player) && !%client.player.serviceOrigin  && isObject(%brick))
-	{
-		%client.player.serviceType = "food";
-		%client.player.serviceItem = %food;
-		%client.player.serviceSize = %portion;
-		%client.player.serviceFee = (5 * %portion - mFloor(%portion * 0.75)) +  %markup;
-		%client.player.serviceMarkup = %markup;
-		%client.player.serviceOrigin = %brick;
-
-		messageClient(%client,'','\c6A service is offering to feed you %1 \c3%2\c6 portion of \c3%3\c6 for \c3$%4\c6.', City_DetectVowel($CityRPG::portion[%portion]), strreplace($CityRPG::portion[%portion], "_", " "), %food, %client.player.serviceFee);
-		messageClient(%client,'',"\c6Accept with \c3/yes\c6, decline with \c3/no\c6.");
-	}
-	else if(%client.player.serviceOrigin && %client.player.serviceOrigin != %brick)
-		messageClient(%client, '', "\c6You already have a charge request from another service! Type \c3/no\c6 to reject it.");
-}
-
-function fxDTSBrick::sellItem(%brick, %item, %markup, %client)
-{
-	if(isObject(%client.player) && !%client.player.serviceOrigin  && isObject(%brick))
-	{
-		%name = $CityRPG::prices::weapon::name[%item].uiName;
-
-		if(CitySO.minerals >= $CityRPG::prices::weapon::mineral[%item])
-		{
-			%client.player.serviceType = "item";
-			%client.player.serviceItem = %item;
-			%client.player.serviceFee = $CityRPG::prices::weapon::price[%item] + %markup;
-			%client.player.serviceMarkup = %markup;
-			%client.player.serviceOrigin = %brick;
-
-			messageClient(%client,'',"\c6A service is offering to sell you one \c3" @ %name SPC "\c6for \c3$" @ %client.player.serviceFee SPC "\c6.");
-			messageClient(%client,'',"\c6Accept with \c3/yes\c6, decline with \c3/no\c6.");
-		}
-		else
-			messageClient(%client, '', '\c6A service is trying to offer you %1 \c3%2\c6, but the city needs \c3%3\c6 more minerals to produce it!', City_DetectVowel(%name), %name, ($CityRPG::prices::weapon::mineral[%item] - CitySO.minerals));
-	}
-	else if(%client.player.serviceOrigin && %client.player.serviceOrigin != %brick)
-		messageClient(%client, '', "\c6You already have a charge request from another service! Type \c3/no\c6 to reject it.");
-}
-
-function fxDTSBrick::sellClothes(%brick, %item, %markup, %client)
-{
-	if(isObject(%client.player) && !%client.player.serviceOrigin  && isObject(%brick))
-	{
-		%client.player.serviceType = "clothes";
-		%client.player.serviceItem = %item;
-		%client.player.serviceFee = %markup;
-		%client.player.serviceMarkup = %markup;
-		%client.player.serviceOrigin = %brick;
-
-		messageClient(%client,'', '\c6A clothing service is offering to dress you in %1 \c3%2 \c6for \c3$%3\c6.', City_DetectVowel(ClothesSO.sellName[%item]), ClothesSO.sellName[%item], %client.player.serviceFee);
-		messageClient(%client,'', "\c6Accept with \c3/yes\c6, decline with \c3/no\c6.");
-	}
-	else if(%client.player.serviceOrigin && %client.player.serviceOrigin != %brick)
-		messageClient(%client, '', "\c6You already have a charge request from another service! Type \c3/no\c6 to reject it.");
 }
 
 // ============================================================
@@ -516,14 +530,20 @@ function CityRPGLotTriggerData::onEnterTrigger(%this, %trigger, %obj)
 	%client.CityRPGTrigger = %trigger;
 	%client.CityRPGLotBrick = %trigger.parent;
 
-	%lotStr = "<just:right><font:palatino linotype:24>\c6" @ %trigger.parent.getCityLotName();
+	%lotStr = "<just:right><font:palatino linotype:18>\c6" @ %trigger.parent.getCityLotName();
 
+	%duration = 2;
 	if(%trigger.parent.getCityLotOwnerID() == -1)
 	{
-		%lotStr = %lotStr @ "<br>\c3For sale! \c6Type /lot for more info";
+		%lotStr = %lotStr @ "<br>\c2For sale!\c6 Type /lot for info";
+	}
+	else if(%trigger.parent.getCityLotPreownedPrice() != -1)
+	{
+		%lotStr = %lotStr @ "<br>\c2For sale by owner!\c6 Type /lot for info";
+		%duration = 3;
 	}
 
-	%client.centerPrint(%lotStr, 2);
+	%client.centerPrint(%lotStr, %duration);
 
 	//%client.SetInfo();
 }
@@ -559,6 +579,11 @@ function CityRPGInputTriggerData::onEnterTrigger(%this, %trigger, %obj)
 		return;
 	}
 
+	if(%obj.client.cityMenuOpen)
+	{
+		%obj.client.cityMenuClose();
+	}
+
 	%obj.client.cityLog(%trigger.parent.getDatablock().getName() SPC "enter");
 
 	%obj.client.CityRPGTrigger = %trigger;
@@ -578,5 +603,10 @@ function CityRPGInputTriggerData::onLeaveTrigger(%this, %trigger, %obj, %a)
 	{
 		%trigger.parent.getDatablock().parseData(%trigger.parent, %obj.client, false, "");
 		%obj.client.CityRPGTrigger = "";
+
+		if(%obj.client.cityMenuID == %trigger.parent.getID() || %obj.client.cityMenuBack == %trigger.parent.getID())
+		{
+			%obj.client.cityMenuClose();
+		}
 	}
 }

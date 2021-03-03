@@ -113,7 +113,7 @@ datablock ItemData(knifeItem)
 	className = "Weapon"; // For inventory system
 
 	// Basic Item Properties
-	shapeFile = $City::DataPath @ "/shapes/knife2.dts";
+	shapeFile = $City::DataPath @ "shapes/knife2.dts";
 	mass = 1;
 	density = 0.2;
 	elasticity = 0.2;
@@ -122,7 +122,7 @@ datablock ItemData(knifeItem)
 
 	//gui stuff
 	uiName = "Knife";
-	iconName = $City::DataPath @ "/shapes/knifeicon";
+	iconName = $City::DataPath @ "ui/ItemIcons/knife";
 	doColorShift = true;
 	colorShiftColor = "0.471 0.471 0.471 1.000";
 
@@ -138,7 +138,7 @@ datablock ItemData(knifeItem)
 datablock ShapeBaseImageData(knifeImage)
 {
 	// Basic Item properties
-	shapeFile = $City::DataPath @ "/shapes/knife2.dts";
+	shapeFile = $City::DataPath @ "shapes/knife2.dts";
 	emap = true;
 
 	// Specify mount point & offset for 3rd person, and eye offset

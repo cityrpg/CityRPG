@@ -24,6 +24,8 @@ package CityRPG_Cash
 					value = %cashval;
 				};
 
+				%cash.setShapeName("Drop $" @ %cash.value @ " from death");
+
 				%cash.setTransform(setWord(%client.player.getTransform(), 2, getWord(%client.player.getTransform(), 2) + 2));
 				%cash.setVelocity(VectorScale(%client.player.getEyeVector(), 10));
 
@@ -77,7 +79,7 @@ package CityRPG_Cash
 	function CashItem::onAdd(%this, %item, %b, %c, %d, %e, %f, %g)
 	{
 		parent::onAdd(%this, %item, %b, %c, %d, %e, %f, %g);
-		schedule($Pref::Server::City::moneyDieTime, 0, "eval", "if(isObject(" @ %item.getID() @ ")) { " @ %item.getID() @ ".delete(); }");
+		%item.schedule($Pref::Server::City::moneyDieTime, delete);
 	}
 };
 activatePackage(CityRPG_Cash);
