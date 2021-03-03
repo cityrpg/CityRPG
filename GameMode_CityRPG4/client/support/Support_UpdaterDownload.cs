@@ -1,3 +1,6 @@
+//No thanks, lets not.
+return;
+
 //Support_UpdaterMigration
 //By Greek2me.
 
