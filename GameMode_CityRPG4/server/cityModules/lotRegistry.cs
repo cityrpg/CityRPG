@@ -327,7 +327,7 @@ function fxDTSBrick::setCityLotOwnerID(%brick, %value)
 	{
 		$City::RealEstate::UnclaimedLots--;
 	}
-	else
+	else if(%valueOld != "")
 	{
 		// If transferring from a player, clear the cache.
 		%brick.cityLotCacheRemove();
