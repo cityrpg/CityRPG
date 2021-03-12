@@ -80,6 +80,8 @@ City_InitPrefs();
 
 $City::CommandRateLimitMS = 128;
 
+$Pref::Server::City::DisableIntroMessage = true;
+
 $ATM::Min = 25;
 $ATM::Max = 300;
 $ATM::Demerits = 500;
