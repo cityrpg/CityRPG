@@ -241,6 +241,9 @@ function CityMenu_LotSetName(%client, %input)
 function CityMenu_Lot_RemoveFromSale(%client)
 {
 	%lotBrick = %client.cityMenuID;
+
+	%client.cityLog("Lot " @ %lotBrick.getCityLotID() @ " remove from sale");
+
 	// This will remove it from CitySO.lotListings as well.
 	%lotBrick.setCityLotPreownedPrice(-1);
 
@@ -252,6 +255,8 @@ function CityMenu_Lot_RemoveFromSale(%client)
 function CityMenu_Lot_ListForSalePrompt(%client, %input)
 {
 	%lotBrick = %client.cityMenuID;
+
+	%client.cityLog("Lot " @ %lotBrick.getCityLotID() @ " list for sale prompt");
 
 	%client.cityMenuMessage("\c6Listing this lot for sale will allow someone to buy it for the price of your choosing.");
 	%client.cityMenuMessage("\c6How much money would you like to sell this lot for? Enter a number, or leave to cancel.");
@@ -302,6 +307,8 @@ function CityMenu_Lot_ListForSale(%client, %input)
 		%client.cityMenuClose();
 		return;
 	}
+
+	%client.cityLog("Lot " @ %lotID @ " listing success");
 
 	// This will append the lot to the fields under CitySO.lotListings.
 	%lotBrick.setCityLotPreownedPrice(%client.cityLotPrice);
