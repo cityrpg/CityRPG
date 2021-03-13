@@ -131,16 +131,18 @@ function CityMenu_RealEstate_ViewLotListings(%client, %input, %brick)
 		%client.cityLotIndexCount++;
 		%client.cityLotIndex[%client.cityLotIndexCount] = %lotID;
 
+		%lotStr = %lotBrick.getCityLotName() @ " - Cost: \c2$" @ %lotBrick.getCityLotPreownedPrice() @ "\c6 - Owner: \c3" @ %lotBrick.getGroup().name @ "\c6";
+
 		if(%client.cityLotIndexCount == 1)
 		{
 			// First option
 
-			%menu = %lotBrick.getCityLotName();
+			%menu = %lotStr;
 			%functions = CityMenu_RealEstate_ViewLotDetail;
 		}
 		else
 		{
-			%menu = %menu TAB %lotBrick.getCityLotName();
+			%menu = %menu TAB %lotStr;
 			%functions = %functions TAB CityMenu_RealEstate_ViewLotDetail;
 		}
 	}
