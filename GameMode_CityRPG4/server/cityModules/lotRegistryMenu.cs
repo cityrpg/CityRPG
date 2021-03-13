@@ -63,6 +63,11 @@ function CityMenu_Lot(%client, %input)
 		%client.cityMenuMessage("\c3" @ %brick.getCityLotName() @ "\c6 - " @ %brick.getDataBlock().uiName);
 	}
 
+	if(%brick.getCityLotPreownedPrice() != -1)
+	{
+		%client.cityMenuMessage("\c6This lot is listed for sale by owner for \c2$" @ %brick.getCityLotPreownedPrice() @ "\c6.");
+	}
+
 	// ## Options for all lots ## //
 	%menu = "View lot rules.";
 			//TAB "View warning log."
@@ -73,7 +78,7 @@ function CityMenu_Lot(%client, %input)
 	// ## Options for unclaimed lots ## //
 	if(%brick.getCityLotOwnerID() == -1)
 	{
-		%client.cityMenuMessage("\c6This lot is for sale! It can be purchased for \c3$" @ %price @ "\c6.");
+		%client.cityMenuMessage("\c6This lot is for sale! It can be purchased for \c2$" @ %price @ "\c6.");
 
 		// Place these options first.
 		%menu = "Purchase this lot. " TAB %menu;
@@ -99,6 +104,12 @@ function CityMenu_Lot(%client, %input)
 			%menu = %menu TAB "Take this lot off sale.";
 			%functions = %functions TAB "CityMenu_Lot_RemoveFromSale";
 		}
+	}
+	// ## Options for non-owners only ## //
+	else if(%brick.getCityLotPreownedPrice() != -1)
+	{
+		%menu = %menu TAB "Purchase this lot.";
+		%functions = %functions TAB "CityMenu_Lot_PurchasePreownedPrompt";
 	}
 
 	// ## Options for admins ## //
@@ -142,7 +153,7 @@ function CityMenu_LotPurchasePrompt(%client)
 
 	if(CityRPGData.getData(%client.bl_id).valueMoney >= %lot.dataBlock.initialPrice)
 	{
-		%client.cityMenuMessage("\c6You are purchasing this lot for \c3$" @ %lot.dataBlock.initialPrice @ "\c6. Make sure you have read the lot rules. Lot sales are final!");
+		%client.cityMenuMessage("\c6You are purchasing this lot for \c2$" @ %lot.dataBlock.initialPrice @ "\c6. Make sure you have read the lot rules. Lot sales are final!");
 		%client.cityMenuMessage("\c6Type \c31\c6 to confirm, or leave the lot to cancel.");
 
 		%client.cityMenuFunction = CityLots_PurchaseLot;
@@ -180,7 +191,7 @@ function CityLots_PurchaseLot(%client, %input, %lot)
 		%client.cityLog("Lot " @ %lot.getCityLotID() @ " purchase success");
 
 		CityRPGData.getData(%client.bl_id).valueMoney -= %lot.dataBlock.initialPrice;
-		%client.cityMenuMessage("\c6You have purchased this lot for \c3$" @ %lot.dataBlock.initialPrice @ "\c6!");
+		%client.cityMenuMessage("\c6You have purchased this lot for \c2$" @ %lot.dataBlock.initialPrice @ "\c6!");
 
 		%client.setInfo();
 
@@ -230,9 +241,8 @@ function CityMenu_LotSetName(%client, %input)
 function CityMenu_Lot_RemoveFromSale(%client)
 {
 	%lotBrick = %client.cityMenuID;
+	// This will remove it from CitySO.lotListings as well.
 	%lotBrick.setCityLotPreownedPrice(-1);
-
-	CitySO.lotListings = removeWord(CitySO.lotListings, getWord(CitySO.lotListings, %lotBrick.getCityLotID()));
 
 	%client.cityMenuMessage("\c6You have taken this lot off sale.");
 	%client.cityMenuClose();
@@ -257,7 +267,7 @@ function CityMenu_Lot_ListForSaleConfirmPrompt(%client, %input)
 	if(%price < 0)
 		%price = 0;
 
-	%client.cityMenuMessage("\c6You are listing the lot \c3" @ %lotBrick.getCityLotName() @ "\c6 on sale for \c3$" @ strFormatNumber(%price));
+	%client.cityMenuMessage("\c6You are listing the lot \c3" @ %lotBrick.getCityLotName() @ "\c6 on sale for \c2$" @ strFormatNumber(%price));
 	%client.cityMenuMessage("\c0Warning!\c6 Once someone purchases this lot, they will become the permanent owner of your lot. Are you sure?");
 
 	%client.cityLotPrice = %price;
@@ -293,12 +303,88 @@ function CityMenu_Lot_ListForSale(%client, %input)
 		return;
 	}
 
-	// Append the lot to the fields under CitySO.lotListings.
-	CitySO.lotListings = CitySO.lotListings = CitySO.lotListings @ %lotID @ " ";
+	// This will append the lot to the fields under CitySO.lotListings.
 	%lotBrick.setCityLotPreownedPrice(%client.cityLotPrice);
 
 	%client.cityMenuMessage("\c6You have listed your lot for sale.");
 	%client.cityMenuClose();
+}
+
+// ## Functions for on-sale lots ## //
+function CityMenu_Lot_PurchasePreownedPrompt(%client)
+{
+	%lot = %client.cityMenuID;
+
+	%client.cityLog("Lot " @ %lot.getCityLotID() @ " pre-owned purchase prompt");
+
+	if(CityRPGData.getData(%client.bl_id).valueMoney >= %lot.getCityLotPreownedPrice())
+	{
+		%client.cityMenuMessage("\c6You are purchasing this lot from \c3" @ %lot.getGroup().name @ "\c6 for \c2$" @ %lot.getCityLotPreownedPrice() @ "\c6. Make sure you have read the lot rules. Lot sales are final!");
+		%client.cityMenuMessage("\c6Type \c31\c6 to confirm, or leave the lot to cancel.");
+
+		%client.cityMenuFunction = CityMenu_Lot_PurchasePreowned;
+		%client.cityMenuID = %lot;
+
+		// Lock in the purchase details -- this is necessary in case they change mid-purchase
+		%client.cityLotPurchasePrice = %lot.getCityLotPreownedPrice();
+		%client.cityLotPurchaseOwner = %lot.getCityLotOwnerID();
+	}
+	else
+	{
+		%client.cityMenuMessage("\c6You need \c3$" @ %lot.getCityLotPreownedPrice() @ "\c6 on hand to purchase this lot.");
+		%client.cityMenuClose();
+	}
+}
+
+function CityMenu_Lot_PurchasePreowned(%client, %input, %lot)
+{
+	if(%lot $= "")
+	{
+		%lot = %client.cityMenuID;
+	}
+
+	%lotOwner = %client.cityLotPurchaseOwner;
+	%lotPrice = %client.cityLotPurchasePrice;
+
+	if(%input !$= "1")
+	{
+		%client.cityMenuMessage("\c0Lot purchase cancelled.");
+		%client.cityMenuClose();
+	}
+	else if(%lotOwner != %lot.getCityLotOwnerID() || %lotPrice != %lot.getCityLotPreownedPrice() || CityRPGData.getData(%client.bl_id).valueMoney < %lotPrice)
+	{
+		%client.cityLog("Lot " @ %lot.getCityLotID() @ " pre-owned purchase fell through", 0, 1);
+
+		// Security check falls through
+		%client.cityMenuMessage("\c0Sorry, you are no-longer able to purchase this lot at this time.");
+		%client.cityMenuClose();
+	}
+	else if(CityRPGData.getData(%client.bl_id).valueMoney >= %lotPrice)
+	{
+		%client.cityLog("Lot " @ %lot.getCityLotID() @ " pre-owned purchase success");
+
+		// Transfer the money between buyer and owner.
+		CityRPGData.getData(%client.bl_id).valueMoney -= %lotPrice;
+		CityRPGData.getData(%lotOwner).valueBank += %lotPrice;
+
+		%ownerClient = findClientByBL_ID(%lotOwner);
+		if(%ownerClient != 0)
+		{
+			messageClient(%ownerClient, '', "\c6Your lot, \c3" @ %lot.getCityLotName() @ "\c6, has been purchased by \c3" @ %client.name @ "\c6 for \c2$" @ %lotPrice @ "\c6. The money has been deposited into your bank.");
+		}
+
+		%client.cityMenuMessage("\c6You have purchased this lot from \c3" @ %lot.getGroup().name @ "\c6 for \c2$" @ %lotPrice @ "\c6.");
+
+		%client.setInfo();
+
+		// This transfer will automatically reset the state of the lot as 'not for sale'.
+		CityLots_TransferLot(%client.cityMenuID, %client.bl_id); // The menu ID is the lot brick ID
+		%client.cityMenuID.setCityLotTransferDate(getDateTime());
+
+		// Open the menu for the new lot
+		%client.cityMenuClose(1);
+		CityMenu_Lot(%client);
+	}
 }
 
 // ## Functions for admins ## //

@@ -371,11 +371,15 @@ function fxDTSBrick::setCityLotPreownedPrice(%brick, %value)
 	{
 		// The value has changed from a number to -1, meaning the lot has gone off sale.
 		$City::RealEstate::LotCountSale--;
+
+		CitySO.lotListings = strreplace(CitySO.lotListings, %brick.getCityLotID() @ " ", "");
 	}
 	else if(%valueOld == -1 && %value != -1)
 	{
 		// The value has changed from -1 to a number, meaning the lot has been listed for sale.
 		$City::RealEstate::LotCountSale++;
+
+		CitySO.lotListings = CitySO.lotListings = CitySO.lotListings @ %brick.getCityLotID() @ " ";
 	}
 
 	CityLotRegistry.set(%brick.getCityLotID(), "preownedSalePrice", %value);
