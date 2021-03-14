@@ -1047,6 +1047,12 @@ package CityRPG_MainPackage
 		Parent::EventDNC_RoutineCheck();
 		$EnvGuiServer::DayCycleEnabled = %oldVal;
 	}
+
+	function serverCmdclearBricks(%client, %confirm)
+	{
+		messageClient (%client, '', "Can\'t clear bricks in CityRPG. You must clear your lots manually.");
+		return;
+	}
 };
 deactivatePackage(CityRPG_MainPackage);
 activatepackage(CityRPG_MainPackage);
