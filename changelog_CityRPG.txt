@@ -1,3 +1,70 @@
+<version:0.2.0>
+	<b>Job Trees, Radio, & Real Estate Improvements</b>
+	<b>Real Estate</b>
+	The real estate office is back. Real estate has been rewritten, hooking into the existing lot system established in Alpha 1. This means quick, seamless lot sales. You can visit the real estate office to view city-wide stats, manage and list your own lots, or purchase someone else's lot listing.
+
+	<b>Job tracks & radio</b>
+	Jobs are now sorted into individual job trees. They show up individually in the jobs menu and have their own team chat. Team chat now functions as a radio that you can use to communicate with other players within your job track. For example, all Police jobs now have a single police radio.
+
+	<b>Bugfixes</b>
+	This update contains plenty of bugfixes and general polish. See below for the full changes.
+
+	<b>Full Changelog</b>
+	<ul>
+		<li>Re-organized the bricks menu to place important non-admin bricks at the top</li>
+		<li>Overhauled the job viewer menu - Jobs are now organized into job tracks.</li>
+		<li>Updated the job descriptions for several existing jobs.</li>
+		<li>Cash now displays with formatting in the HUD. (For example, you will see "$10,000" instead of "10000"). This currently only applies to the HUD and a select few other areas.</li>
+		<li>Vehicles no-longer take damage or explode unless either the driver or a passenger is wanted.</li>
+		<li>Official jobs now have formal titles, such as Police Officer ("Officer (playername)"). Your job title is shown under stats and in your respective department.</li>
+		<li>Players no-longer show as typing in chat when interacting with menus.</li>
+		<li>Brick_ModTer_InvertedPack is now enabled with the game-mode by default.</li>
+		<li>Bot holes are now enabled by default, and Event_Bot_Relay is now optionally enabled by the game-mode.</li>
+		<li>Removed unused add-ons from the default game-mode: Player_Leap_Jet, Player_Quake</li>
+		<li>The spawnProjectile and spawnExplosion events are no-longer disabled for players. This comes under the restriction that evented explosions do no damage to players, vehicles, bots, or bricks that belong to other players.</li>
+		<li>Added new input events for info bricks (ATMs, bank bricks, etc.): onMenuOpen, onMenuInput, and onMenuClose.</li>
+		<li>The boundaries of a lot now include the brick itself. This means you can now have ModTer bricks that dip into the lot brick</li>
+		<li>The /clearBricks command is now disabled to prevent lot bricks from being deleted.</li>
+		<li>The /reset command now displays a confirmation prompt before resetting your profile.</li>
+		<li>Updated the default Blocko Town map: Added more spawns and improved the lot layout.</li>
+		<li>Corrected typo in "Hunter cramps seize..."</li>
+	</ul>
+
+	<b>Changes for Hosting</b>
+	<ul>
+		<li>The way lots work has seen another overhaul. Changes have been made to the way lots are stored, both in your .bls saves and in the config folder. Old lot saves are not compatible and will load as Unclaimed lots.</li>
+		<li>Added Admin Mode, a new toggle for Council Member and its features. Admin mode disables building restrictions, hunger effects, and makes the admin invincible.</li>
+		<li>The game-mode package is now split into two releases, Full and Minimal--Full is a package for hosting a very simple, playable CityRPG, and Minimal acts as a toolkit for setting up a customized CityRPG server.</li>
+		<li>Admins must now be in Admin Mode/Council Member in order to bypass building restrictions. This includes brick placement, item spawning, and many other cases.</li>
+		<li>Added Server_NewBrickTool as an optional add-on in the Full configuration.</li>
+		<li>Added "/admin", a new central menu for admin commands</li>
+		<li>The "Clear record" option no-longer shows up at the police station if you do not have a criminal record.</li>
+		<li>Player_DifferentSlotPlayers is now **required**, taking the place of the built-in playertype.</li>
+		<li>Admins can now add ML tags to a lot name when force renaming.</li>
+		<li>The lot admin menu now shows lot owner information and the lot's brick ID.</li>
+		<li>Playertype now changes immediately when changing jobs.</li>
+		<li>Hunger effects no-longer apply while admin mode is active.</li>
+		<li>Added a back button to the Lot Admin menu.</li>
+		<li>Restricted the following events from Event_Zones: setZone, setZoneVelocityMod.</li>
+		<li>Fixed the multi-client check having the potential to kick the host from the game, breaking their game entirely. Note that this can still happen if the default game's multi-client check is enabled in the current version of Blockland.</li>
+		<li>The directory for save files has moved to config/server/CityRPG4_A2.</li>
+		<li>The game-mode now detects if the active save file is from an older version of CityRPG and displays a warning about compatibility accordingly.</li>
+		<li>Fixed settings not registering correctly when Blockland Glass is disabled.</li>
+	</ul>
+
+	<b>Bugfixes</b>
+	<ul>
+		<li>Internally reworked a lot more code -- most notably including menus and processing of bricks on plant/load. The new reworked menus fix compatibility issues with the latest version of Blockland.</li>
+		<li>Fixed the missing icon for the Knife item.</li>
+		<li>Added Item_Skis to the required add-ons. (Ski code is used for taser and hunger effects; errors would occur if skis were disabled for whatever reason)</li>
+		<li>You can no-longer vote or sign up for an election while wanted.</li>
+		<li>Fixed certain instances of the damage % on the HUD not updating.</li>
+		<li>Fixed blank values under the /stats command.</li>
+		<li>Fixed admins being able to spawn items (via override) only on an admin's bricks.</li>
+		<li>Fixed the economy bugging out and moving rapidly with higher player counts.</li>
+	</ul>
+</version>
+
 <version:0.1.1>
 	<b>Alpha 1 Patch</b>
 	<ul>
