@@ -3,6 +3,7 @@
 // ============================================================
 
 // There are two major components at play here: McTwist's Chown tool, and McTwist's saver (Thanks, McTwist)
+// Any functions that deal directly with the CityLotRegistry object are contained here.
 // TODO: Ability to convert lots that are saved from other servers.
 // TODO: Pref for servers that have the original save files and want to override conversion
 
