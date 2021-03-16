@@ -133,14 +133,14 @@ function fxDTSBrick::initExistingCityLot(%brick)
 			if(!$City::WarningMessageDisplay)
 			{
 				$City::WarningMessageDisplay = 1;
-				// TODO Clarify "See the prefs panel"
-				%warningMsg = "!!!! WARNING: This save appears to be from a different CityRPG server, or an older version. Lot data (names, etc.) may not carry over, but ownership will be converted. If you would like to override this (i.e. you have the CityRPG data files from the original server), see the prefs panel.";
+				%warningMsg = "!!!! WARNING: This save appears to be from a different CityRPG server or an older version of CityRPG. Lots will be registered as Unclaimed lots.";
 
 				warn(%warningMsg);
 				messageAll('', %warningMsg);
 			}
 
 			%brick.convertCityLotOwnership();
+			return;
 		}
 		else
 		{
@@ -210,7 +210,8 @@ function fxDTSBrick::initNewCityLot(%brick)
 
 function fxDTSBrick::convertCityLotOwnership(%brick)
 {
-	talk("TODO: Lot ownership conversion not implemented");
+	%brick.initNewCityLot();
+
 	// 1. Check the lot's brick name for the original owner. Assign.
 	// 2. Initialize the lot as a new lot to give it an ID on the current server, flushing out the old one.
 	// 3. Call a transfer of the lot's ownership via CityLots_TransferLot to the original owner.
