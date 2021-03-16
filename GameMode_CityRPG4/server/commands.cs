@@ -49,7 +49,7 @@ package CityRPG_Commands
 					%suffix = " (Git build)";
 				}
 
-				messageClient(%client, '', %sentenceStr SPC $City::VersionTitle @ " (\c3" @ $City::Version @ "\c6)" @ %suffix);
+				messageClient(%client, '', %sentenceStr @ " (\c3" @ $City::Version @ "\c6)" @ %suffix);
 			case "starters":
 				messageClient(%client, '', "\c6Welcome! To get started, you'll want to explore and familiarize yourself with the map.");
 				messageClient(%client, '', "\c6Some of the places most important to you will include the jobs office, the education office, and the bank.");
