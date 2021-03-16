@@ -21,8 +21,7 @@ function CityMenu_Lot(%client, %input)
 
 		%client.cityMenuClose(1);
 	}
-
-	if(%input !$= "")
+	else if(%input !$= "")
 	{
 		// If not going back and there's input, we're picking a lot from one of the real estate menus. Match it accordingly.
 		%lotID = %client.cityLotIndex[%input];
