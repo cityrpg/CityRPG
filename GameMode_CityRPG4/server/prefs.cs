@@ -46,7 +46,10 @@ function City_RegisterPref(%category, %name, %variable, %type, %params, %default
 
 function City_InitPrefs()
 {
-	registerPreferenceAddon("GameMode_CityRPG4", "CityRPG 4", "building");
+	if($City::UsePrefObjects)
+	{
+		registerPreferenceAddon("GameMode_CityRPG4", "CityRPG 4", "building");
+	}
 
 	// City Prefs
 	City_RegisterPref("Game", "City name", "$Pref::Server::City::name", "string", "64", "Blocko Town");
