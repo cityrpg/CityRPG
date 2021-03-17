@@ -38,7 +38,7 @@ function City_RegisterPref(%category, %name, %variable, %type, %params, %default
 
 		// If the value does not exist, automatically set it to its default value.
 		if(%varRef $= "")
-			eval("$" @ %variable @ " = " @ %defaultValue @ ";");
+			eval(%variable @ " = \"" @ %defaultValue @ "\";");
 	}
 
 
