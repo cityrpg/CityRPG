@@ -39,12 +39,6 @@ function CityRPGATMBrickData::parseData(%this, %brick, %client, %triggerStatus, 
 {
 	if(%triggerStatus == true && !%client.cityMenuOpen)
 	{
-		if(%client.getWantedLevel())
-		{
-			%client.cityMenuMessage("\c6The service refuses to serve you.");
-			return;
-		}
-
 		%client.cityMenuMessage("\c6Welcome to the " @ $Pref::Server::City::name @ " Bank. Your account balance is \c3$" @ CityRPGData.getData(%client.bl_id).valueBank @ "\c6. Current economy value: \c3" @ %econColor @ $City::Economics::Condition @ "\c6%");
 
 		CityMenu_ATM(%client, %brick);

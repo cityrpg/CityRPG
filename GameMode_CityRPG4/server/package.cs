@@ -59,14 +59,14 @@ package CityRPG_MainPackage
 	{
 		%brick = Parent::plantBrick(%this, %i, %position, %angleID, %brickGroup, %client, %bl_id);
 
-		if(%brick != -1 && %brick.getDataBlock().CityRPGBrickType == $CityBrick_Lot)
-		{
-			// Force init as a new lot
-			%brick.initNewCityLot();
-		}
-
 		if(isObject(%brick))
 		{
+			if(%brick != -1 && %brick.getDataBlock().CityRPGBrickType == $CityBrick_Lot)
+			{
+				// Force init as a new lot
+				%brick.initNewCityLot();
+			}
+
 			%check = %brick.cityBrickCheck();
 			if(%check == 0)
 			{
@@ -199,6 +199,15 @@ package CityRPG_MainPackage
 		Parent::spawnExplosion(%obj, %projectileData, %scale, CityRPGEventClient);
 	}
 
+	// Does nothing if doPlayerTeleport does not exist
+	// Removes the %rel (relative) option and overrides it as 0.
+	function fxDTSBrick::doPlayerTeleport(%obj, %target, %dir, %velocityop, %client)
+	{
+		Parent::doPlayerTeleport(%obj, %target, %dir, %velocityop, 0, %client);
+		// I forsee nothing that could go wrong with this in the package stack.
+		// Absolutely nothing.
+	}
+
 	// ============================================================
 	// Client Packages
 	// ============================================================
@@ -226,7 +235,11 @@ package CityRPG_MainPackage
 		if(isObject(CityRPGMini))
 			CityRPGMini.addMember(%client);
 		else
+		{
+			warn("CityRPG - No mini-game! Creating one...");
 			City_Init_Minigame();
+			CityRPGMini.addMember(%client);
+		}
 
 		//applyForcedBodyParts();
 
@@ -323,13 +336,14 @@ package CityRPG_MainPackage
 		%client.cityLog("Joined game");
 
 		// multi-client check
+		// This takes effect and v20 and servers with the multi-client check disabled.
 		for(%a = 0; %a < ClientGroup.getCount(); %a++)
 		{
 			%subClient = ClientGroup.getObject(%a);
 
 			if(%client.bl_id == %subClient.bl_id)
 			{
-				if(%client.getID() > %subClient.getID())
+				if(%client.getID() > %subClient.getID() && !%subClient.isLocal())
 				{
 					%subClient.delete();
 				}
@@ -772,6 +786,7 @@ package CityRPG_MainPackage
 
 		CalendarSO.saveData();
 		CitySO.saveData();
+		// Lot registry automatically saves on deletion
 
 		deleteVariables("$City::*");
 		deleteVariables("$CityRPG::*");
@@ -786,6 +801,34 @@ package CityRPG_MainPackage
 		ResourceSO.delete();
 
 		return parent::onServerDestroyed();
+	}
+
+	function ServerLoadSaveFile_End()
+	{
+		Parent::ServerLoadSaveFile_End();
+
+		for(%i = 0; %i < clientGroup.getCount(); %i++)
+		{
+			%client = ClientGroup.getObject(%i);
+			if(%client.waitingForLoad)
+			{
+				serverCmdMissionStartPhase3Ack(%client, 1);
+			}
+		}
+	}
+
+	function serverCmdMissionStartPhase3Ack(%client, %seq)
+	{
+		if($LoadingBricks_Client !$= "")
+		{
+			%client.waitingForLoad = 1;
+			messageClient(%client, '', "\c2Waiting for bricks to load - you will spawn in a moment.");
+			return;
+		}
+		else
+		{
+			Parent::serverCmdMissionStartPhase3Ack(%client, %seq);
+		}
 	}
 
 	// Always-in-Minigame Overrides
@@ -993,6 +1036,22 @@ package CityRPG_MainPackage
 		}
 
 		Parent::serverCmdStartTalking(%client);
+	}
+
+	function EventDNC_RoutineCheck()
+	{
+		// weehee wacky hacky fun time
+		// This fixes the day/night cycle events not triggering until the GUI is opened by an admin.
+		%oldVal = $EnvGuiServer::DayCycleEnabled;
+		$EnvGuiServer::DayCycleEnabled = ($Sky::DayCycleEnabled && $EnvGuiServer::SimpleMode) || ($EnvGuiServer::DayCycleEnabled && !$EnvGuiServer::SimpleMode);
+		Parent::EventDNC_RoutineCheck();
+		$EnvGuiServer::DayCycleEnabled = %oldVal;
+	}
+
+	function serverCmdclearBricks(%client, %confirm)
+	{
+		messageClient (%client, '', "Can\'t clear bricks in CityRPG. You must clear your lots manually.");
+		return;
 	}
 };
 deactivatePackage(CityRPG_MainPackage);

@@ -80,22 +80,20 @@ function GameConnection::cityMenuInput(%client, %input)
 	{
 		%function = getField(%client.cityMenuFunction, %input-1);
 
-		if(isFunction(%function))
-		{
-			%id = %client.cityMenuID;
-			if(%client.cityMenuAutoClose)
-				%client.cityMenuClose();
-
-			// It's important to do this after closing in case the function we're calling opens another menu.
-			call(%function, %client, %input, %id);
-
-			return true;
-		}
-		else
+		if(!isFunction(%function))
 		{
 			messageClient(%client, '', "\c3" @ %input @ "\c6 is not a valid option. Please try again.");
 			return false;
 		}
+
+		%id = %client.cityMenuID;
+		if(%client.cityMenuAutoClose)
+			%client.cityMenuClose();
+
+		// It's important to do this after closing in case the function we're calling opens another menu.
+		call(%function, %client, %input, %id);
+
+		return true;
 	}
 	else
 	{
@@ -110,6 +108,8 @@ function GameConnection::cityMenuInput(%client, %input)
 
 // Client.cityMenuClose(silent)
 // silent: (bool) If set to true, the exit message will not show even if defined.
+// Automatically called if the client leaves a trigger with an ID corresponding to
+// either the menu's ID or the ID of %client.cityMenuBack via CityRPGInputTriggerData::onLeaveTrigger.
 function GameConnection::cityMenuClose(%client, %silent)
 {
 	if(%client.cityMenuOpen)
@@ -118,7 +118,7 @@ function GameConnection::cityMenuClose(%client, %silent)
 
 		// Use a 1ms delay so the 'closed' message shows after any other messages
 		if(!%silent)
-			%client.schedule(1, cityMenuMessage, %client.cityMenuExitMsg);
+			%client.cityMenuMessage(%client.cityMenuExitMsg);
 
 		// Event
 		if(isObject(%client.cityMenuID) && %client.cityMenuID.getClassName() $= "fxDTSBrick")
@@ -297,6 +297,51 @@ function City_illegalAttackTest(%atkr, %vctm)
 	return false;
 }
 
+function City_Tick_Econ()
+{
+	$City::Economics::replayCount = $City::Economics::replayCount + 1;
+	$City::Economics::randomUporDown = getRandom(1,5);
+	$City::Economics::positiveNegative = getRandom(1,2);
+
+	if($Pref::Server::City::Economics::Relay < 1)
+		$Pref::Server::City::Economics::Relay = ClientGroup.getCount();
+
+	if($City::Economics::replayCount > $Pref::Server::City::Economics::Relay)
+	{
+		if($City::Economics::Condition > $Pref::Server::City::Economics::Greatest)
+		{
+			$City::Economics::Condition = $City::Economics::Condition - $City::Economics::randomUporDown;
+			$City::Economics::replayCount = 0;
+		}
+		else if($City::Economics::Condition < $Pref::Server::City::Economics::Least)
+		{
+			$City::Economics::Condition = $City::Economics::Condition + $City::Economics::randomUporDown;
+			$City::Economics::replayCount = 0;
+		}
+		else if($City::Economics::positiveNegative == 1)
+		{
+			$City::Economics::Condition = $City::Economics::Condition + $City::Economics::randomUporDown;
+			$City::Economics::replayCount = 0;
+		}
+		else if($City::Economics::positiveNegative == 2)
+		{
+			$City::Economics::Condition = $City::Economics::Condition - $City::Economics::randomUporDown;
+			$City::Economics::replayCount = 0;
+		}
+	}
+
+	if($City::Economics::Condition > $Pref::Server::City::Economics::Cap)
+	{
+		$City::Economics::Condition = $Pref::Server::City::Economics::Cap;
+	}
+
+	if($City::Economics::Condition $= "")
+	{
+		error("ERROR: GameMode_CityRPG4 - Economics condition is blank! Resetting to 0.");
+		$City::Economics::Condition = 0;
+	}
+}
+
 function City_Tick(%brick)
 {
 	CalendarSO.date++;
@@ -322,11 +367,13 @@ function City_Tick(%brick)
 		%econColor = "<color:ee0000>";
 	}
 
-	messageAll('', "\c6 - The current economy value is " @ %econColor @ $City::Economics::Condition @ "\c6%.");
 
 	City_Init_Spawns();
+	City_Tick_Econ();
 	City_TickLoop(0);
 	CityRPGData.scheduleTick = schedule((60000 * $Pref::Server::City::tick::speed), false, "City_Tick");
+
+	messageAll('', "\c6 - The current economy value is " @ %econColor @ $City::Economics::Condition @ "\c6%.");
 
 	if(CityRPGData.datacount > 0)
 	{
@@ -340,6 +387,7 @@ function City_Tick(%brick)
 
 	CalendarSO.saveData();
 	CitySO.saveData();
+	CityLotRegistry.save();
 
 	CityMayor_refresh();
 
@@ -370,6 +418,11 @@ function GameConnection::doCityHungerStatus(%client)
 	{
 		%client.centerPrint("\c6" @ %msg, 3);
 	}
+
+	if(%data.valueHunger == 3 || %data.valueHunger == 2)
+	{
+		messageClient(%client, '', "\c6 - \c0You will not be able to collect your paycheck if you are starving.");
+	}
 }
 
 function GameConnection::doCityHungerEffects(%client)
@@ -383,11 +436,14 @@ function GameConnection::doCityHungerEffects(%client)
 	%data = CityRPGData.getData(%client.bl_id);
 
 	if(isObject(%client.player) && %rand != 1 && %data.valueHunger < 3) {
-		messageClient(%client, '', "\c6 - Hunger cramps sieze hold of your body...");
+		messageClient(%client, '', "\c6 - Hunger cramps seize hold of your body...");
 		%player = %client.player;
 
-		%player.addVelocity("0 0 " @ getRandom(1,3));
-		tumble(%player);
+		if(!$Pref::Server::City::DisableHungerTumble)
+		{
+			%player.addVelocity("0 0 " @ getRandom(1,3));
+			tumble(%player);
+		}
 
 		%damage = %player.dataBlock.maxDamage*0.50;
 		%client.player.schedule(2000, damage, %player, %player.getPosition(), %damage, $DamageType::Starvation);
@@ -427,7 +483,7 @@ function City_TickLoop(%loop)
 				if((CalendarSO.date % 2) == 0)
 				{
 					// No hunger effects for admin jobs
-					if(%client.isCityAdmin())
+					if(!%client.isCityAdmin())
 					{
 						%so.valueHunger--;
 
@@ -485,7 +541,7 @@ function City_TickLoop(%loop)
 				else
 					%include = -0.025;
 
-				if(CityRPGData.data[%loop].valueHunger < 3 && CityRPGData.data[%loop].valueBank > 30)
+				if(CityRPGData.data[%loop].valueHunger < 2 && CityRPGData.data[%loop].valueBank > 30)
 				{
 					messageClient(%client,'',"\c6 - You were unable to collect your paycheck because you are starving.");
 				}

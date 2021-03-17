@@ -196,7 +196,7 @@ function Sassy::addValue(%this, %value, %defaultValue)
 
 	if(%this.findvalue(%value))
 	{
-		error("Sassy::addValue([value: " @ %value @ "]): Value '" @ %value @ "' is already in the database! Aborting..");
+		//error("Sassy::addValue([value: " @ %value @ "]): Value '" @ %value @ "' is already in the database! Aborting..");
 
 		return false;
 	}

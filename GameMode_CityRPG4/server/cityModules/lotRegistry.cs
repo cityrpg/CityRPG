@@ -1,4 +1,13 @@
 // ============================================================
+// CityRPG 4 Lot Registry
+// ============================================================
+
+// There are two major components at play here: McTwist's Chown tool, and McTwist's saver (Thanks, McTwist)
+// Any functions that deal directly with the CityLotRegistry object are contained here.
+// TODO: Ability to convert lots that are saved from other servers.
+// TODO: Pref for servers that have the original save files and want to override conversion
+
+// ============================================================
 // Base Function
 // ============================================================
 function CityLots_TransferLot(%brick, %targetBL_ID)
@@ -21,311 +30,36 @@ function CityLots_TransferLot(%brick, %targetBL_ID)
 	%chown.setStartBrick(%brick);
 
 	%brick.setCityLotOwnerID(%targetBL_ID);
-}
-
-// ============================================================
-// Menu Functions
-// ============================================================
-function CityMenu_Lot(%client, %notitle)
-{
-	if(%client.CityRPGLotBrick $= "")
-	{
-		%client.cityMenuMessage("\c6You are currently not on a lot.");
-		return;
-	}
-
-	// ## Initial display ## //
-	%brick = %client.CityRPGLotBrick;
-	%price = %brick.dataBlock.initialPrice;
-
-	if(%brick.getCityLotID() == -1)
-	{
-		error("Attempting to access a blank lot! Re-initializing it...");
-
-		%brick.initNewCityLot();
-	}
-
-	if(!%notitle)
-	{
-		%client.cityMenuMessage("\c3Lot Management\c6 for: " @ %brick.getCityLotName() @ "\c6 - " @ %brick.getDataBlock().uiName);
-	}
-
-	// ## Options for all lots ## //
-	%menu = "View lot rules.";
-			//TAB "View warning log."
-
-	%functions =	"CityMenu_LotRules";
-						//TAB "CityMenu_Placeholder"
-
-	// ## Options for unclaimed lots ## //
-	if(%brick.getCityLotOwnerID() == -1)
-	{
-		%client.cityMenuMessage("\c6This lot is for sale! It can be purchased for \c3$" @ %price @ "\c6.");
-
-		// Place these options first.
-		%menu = "Purchase this lot. " TAB %menu;
-		%functions = "CityMenu_LotPurchasePrompt" TAB %functions;
-	}
-
-	// ## Options for lot owners ## //
-	if(%brick.getCityLotOwnerID() == %client.bl_id)
-	{
-		%menu = %menu
-				TAB "Rename lot.";
-
-		%functions = %functions
-				TAB "CityMenu_LotSetNamePrompt";
-	}
-
-	// ## Options for admins ## //
-	if(%client.isAdmin)
-	{
-		%menu = %menu TAB "\c4Open admin menu.";
-		%functions = %functions TAB "CityMenu_LotAdmin";
-	}
-
-	// ## Finalization ## //
-	%menu = %menu TAB "Close menu.";
-	%functions = %functions TAB "CityMenu_Close";
-
-	%client.cityMenuOpen(%menu, %functions, %client.CityRPGLotBrick, "\c3Lot management menu closed.");
-}
-
-// ## Functions for all lots ## //
-function CityMenu_LotRules(%client)
-{
-	%client.cityMenuMessage("\c3Code enforcement requires following restrictions on this lot:");
-
-	%lotRules = $Pref::Server::City::LotRules;
-	%client.cityMenuMessage("\c6" @ %lotRules);
-}
-
-// ## Functions for unclaimed lots ## //
-function CityMenu_LotPurchasePrompt(%client)
-{
-	%lot = %client.cityMenuID;
-
-	%client.cityLog("Lot " @ %lot.getCityLotID() @ " purchase prompt");
-
-	if(CityRPGData.getData(%client.bl_id).valueMoney >= %lot.dataBlock.initialPrice)
-	{
-		%client.cityMenuMessage("\c6You are purchasing this lot for \c3$" @ %lot.dataBlock.initialPrice @ "\c6. Make sure you have read the lot rules. Lot sales are final!");
-		%client.cityMenuMessage("\c6Type \c31\c6 to confirm, or leave the lot to cancel.");
-
-		%client.cityMenuFunction = CityLots_PurchaseLot;
-		%client.cityMenuID = %lot;
-	}
-	else
-	{
-		%client.cityMenuMessage("\c6You need \c3$" @ %lot.dataBlock.initialPrice @ "\c6 on hand to purchase this lot.");
-		%client.cityMenuClose();
-	}
-}
-
-function CityLots_PurchaseLot(%client, %input, %lot)
-{
-	if(%lot $= "")
-	{
-		%lot = %client.cityMenuID;
-	}
-
-	if(%input !$= "1")
-	{
-		%client.cityMenuMessage("\c0Lot purchase cancelled.");
-		%client.cityMenuClose();
-	}
-	else if(%lot.getCityLotOwnerID() != -1 || CityRPGData.getData(%client.bl_id).valueMoney < %lot.dataBlock.initialPrice)
-	{
-		%client.cityLog("Lot " @ %lot.getCityLotID() @ " purchase fell through", 0, 1);
-
-		// Security check falls through
-		%client.cityMenuMessage("\c0Sorry, you are no-longer able to purchase this lot at this time.");
-		%client.cityMenuClose();
-	}
-	else if(CityRPGData.getData(%client.bl_id).valueMoney >= %lot.dataBlock.initialPrice)
-	{
-		%client.cityLog("Lot " @ %lot.getCityLotID() @ " purchase success");
-
-		CityRPGData.getData(%client.bl_id).valueMoney -= %lot.dataBlock.initialPrice;
-		%client.cityMenuMessage("\c6You have purchased this lot for \c3$" @ %lot.dataBlock.initialPrice @ "\c6!");
-
-		%client.setInfo();
-
-		CityLots_TransferLot(%client.cityMenuID, %client.bl_id); // The menu ID is the lot brick ID
-		%client.cityMenuID.setCityLotTransferDate(getDateTime());
-
-		// Open the menu for the new lot
-		%client.cityMenuClose(1);
-		CityMenu_Lot(%client);
-	}
-}
-
-// ## Functions for lot owners ## //
-function CityMenu_LotSetNamePrompt(%client)
-{
-	%client.cityLog("Lot " @ %client.cityMenuID.getCityLotID() @ " rename prompt");
-
-	%client.cityMenuMessage("\c6Enter a new name for your lot.");
-	%client.cityMenuFunction = CityMenu_LotSetName;
-}
-
-function CityMenu_LotSetName(%client, %input)
-{
-	%brick = %client.cityMenuID;
-
-	%client.cityLog("Lot " @ %brick.getCityLotID() @ " rename '" @ %input @ "'");
-
-	if(%brick.getCityLotOwnerID() != %client.bl_id)
-	{
-		return;
-	}
-
-	if(strlen(%input) > 40)
-	{
-		%client.cityMenuMessage("\c6Sorry, that name exceeds the length limit. Please try again.");
-		return;
-	}
-
-	%name = StripMLControlChars(%input);
-
-	%brick.setCityLotName(%name);
-	%client.cityMenuMessage("\c6Lot name changed to \c3" @ %brick.getCityLotName() @ "\c6.");
-
-	%client.cityMenuClose();
-}
-
-// ## Functions for admins ## //
-function CityMenu_LotAdmin(%client)
-{
-	%client.cityMenuClose(true);
-	%brick = %client.CityRPGLotBrick;
-	%ownerID = %brick.getCityLotOwnerID();
-
-	%client.cityMenuMessage("\c3Lot Admin\c6 for: \c3" @ %brick.getCityLotName() @ "\c6 - Lot ID: \c3" @ %brick.getCityLotID() @ "\c6 - Brick ID: \c3" @ %brick.getID() @ "\c6 - Lot purchase date: \c3" @ %brick.getCityLotTransferDate());
-
-	if(%ownerID != -1)
-	{
-		%owner = CityRPGData.getData(%ownerID);
-		%client.cityMenuMessage("\c6Owner: \c3" @ %owner.valueName @ "\c6 (ID \c3" @ %brick.getCityLotOwnerID() @ "\c6)");
-	}
-	else
-	{
-		%client.cityMenuMessage("\c6Lot is owned by the city.");
-	}
-
-	%menu = "Force rename."
-			TAB "Transfer lot to the city."
-			TAB "Transfer lot to a player.";
-
-	%functions =	"CityMenu_LotAdmin_SetNamePrompt"
-						TAB "CityMenu_LotAdmin_TransferCity"
-						TAB "CityMenu_LotAdmin_TransferPlayerPrompt";
-
-	%client.cityMenuOpen(%menu, %functions, %brick, "\c3Lot management menu closed.");
-}
-
-function CityMenu_LotAdmin_SetNamePrompt(%client)
-{
-	%client.cityLog("Lot MOD " @ %client.cityMenuID.getCityLotID() @ " rename prompt");
-	%client.cityMenuMessage("\c6Enter a new name for the lot \c3" @ %client.cityMenuID.getCityLotName() @ "\c6. ML tags are allowed.");
-	%client.cityMenuFunction = CityMenu_LotAdmin_SetName;
-}
-
-function CityMenu_LotAdmin_SetName(%client, %input)
-{
-	%client.cityLog("Lot MOD " @ %client.cityMenuID.getCityLotID() @ " rename '" @ %input @ "'");
-
-	if(strlen(%input) > 40)
-	{
-		%client.cityMenuMessage("\c6Sorry, that name exceeds the length limit. Please try again.");
-		return;
-	}
-
-	%client.cityMenuID.setCityLotName(%name);
-	%client.cityMenuMessage("\c6Lot name changed to \c3" @ %client.cityMenuID.getCityLotName() @ "\c6.");
-
-	%client.cityMenuClose();
-}
-
-function CityMenu_LotAdmin_TransferCity(%client)
-{
-	%hostID = getNumKeyID();
-
-	%brick = %client.cityMenuID;
-
-	%client.cityLog("Lot MOD " @ %brick.getCityLotID() @ " transfer city");
-
-	CityLots_TransferLot(%brick, %hostID);
-	%brick.setCityLotTransferDate(getDateTime());
-
-	%brick.setCityLotName("Unclaimed Lot");
-	%brick.setCityLotOwnerID(-1);
-
-	%client.cityMenuMessage("\c6Lot transferred to the city successfully.");
-	%client.cityMenuClose();
-}
-
-function CityMenu_LotAdmin_TransferPlayerPrompt(%client)
-{
-	%client.cityLog("Lot MOD " @ %client.cityMenuID.getCityLotID() @ " transfer pl prompt");
-
-	%client.cityMenuMessage("\c6Enter a Blockland ID of the player to transfer the lot to.");
-	%client.cityMenuFunction = CityMenu_LotAdmin_TransferPlayer;
-}
-
-function CityMenu_LotAdmin_TransferPlayer(%client, %input)
-{
-	%client.cityLog("Lot MOD " @ %client.cityMenuID.getCityLotID() @ " transfer pl '" @ %input @ "'");
-
-	%target = findClientByBL_ID(%input);
-
-	// Hacky workaround to detect if a non-number is passed to avoid pain.
-	if(%input == 0 && %input !$= "0")
-	{
-		%client.cityMenuMessage("\c3" @ %input @ "\c6 is not a valid Blockland ID. Please try again.");
-		return;
-	}
-
-	CityLots_TransferLot(%client.cityMenuID, %input);
-	%client.cityMenuID.setCityLotTransferDate(getDateTime());
-
-	%client.cityMenuClose();
+	%brick.setCityLotPreownedPrice(-1); // Take the lot off sale if it was listed.
 }
 
 // ============================================================
 // Registry
 // ============================================================
-// TODO We are currently using the included Sassy saver, however this is planned to be replaced in the future.
-
 function CityLots_InitRegistry()
 {
-	if(!isObject(CityRPGLotRegistry))
+	if(!isObject(CityLotRegistry))
 	{
-		new scriptObject(CityRPGLotRegistry)
+		%newRegistry = new scriptObject(CityLotRegistry)
 		{
-			class = Sassy;
-			dataFile = $City::SavePath @ "CityLots.dat";
+			class = Saver;
+			file = $City::SavePath @ "LotKeys.txt";
+			defFile = $City::SavePath @ "LotDefaults.txt";
+			folder = $City::SavePath @ "LotData/Lot";
+			saveExt = "txt";
 		};
 
-		// Also use valueCount as a fallback check.
-		// Externally deleted files still return 1 for isFile (and thus loadedSaveFile) until the game restarts.
-		// This fixes the registry breaking if the file is deleted via external method mid-game, or if any other trickery occurs.
-		if(!CityRPGLotRegistry.loadedSaveFile || CityRPGLotRegistry.valueCount != 5)
-		{
-			CityRPGLotRegistry.addValue("name", "Unclaimed Lot");
-			CityRPGLotRegistry.addValue("ownerID", -1);
-			CityRPGLotRegistry.addValue("ruleStr", "This lot currently has no rules.");
-			CityRPGLotRegistry.addValue("transferDate", "None");
-			CityRPGLotRegistry.addValue("preownedSalePrice", -1);
-
-			// Instead of using the getData function directly, these values are generally called upon using setter and getter functions.
-		}
+		%newRegistry.addValue("name", "Unclaimed Lot");
+		%newRegistry.addValue("ownerID", -1);
+		%newRegistry.addValue("ruleStr", "This lot currently has no rules.");
+		%newRegistry.addValue("transferDate", "None");
+		%newRegistry.addValue("preownedSalePrice", -1);
 	}
 }
 
 function CityLots_GetLotCount()
 {
-	%count = CityRPGLotRegistry.dataCount;
+	%count = CityLotRegistry.countKeys;
 
 	if(%count $= "")
 	{
@@ -349,6 +83,13 @@ function fxDTSBrick::getCityLotSaveName(%brick)
 // Determines the state of the lot and directs the corresponding init process.
 function fxDTSBrick::initCityLot(%brick)
 {
+	if(%brick.lotInitialized)
+	{
+		error("CityRPG Lot Registry - Attempting to re-initialize a lot! Something's gone wrong. Aborting...");
+		return;
+	}
+
+	%brick.lotInitialized = 1;
 	if(%brick.getCityLotID() == -1)
 	{
 		%brick.initNewCityLot();
@@ -358,12 +99,27 @@ function fxDTSBrick::initCityLot(%brick)
 		%brick.initExistingCityLot();
 	}
 
-	// Cache the brick.
-	CityRPGLotRegistry.getData(%brick.getCityLotID()).brick = %brick;
+	%brick.cityLotInit = 0;
+
+	// Cache and identify the brick.
+	%obj = CityLotRegistry.makeOnline(%brick.getCityLotID());
+	%obj.brick = %brick;
 }
 
 function fxDTSBrick::initExistingCityLot(%brick)
 {
+	$City::RealEstate::TotalLots++;
+
+	if(%brick.getCityLotPreownedPrice() != -1)
+	{
+		$City::RealEstate::LotCountSale++;
+	}
+
+	if(%brick.getCityLotOwnerID() == -1)
+	{
+		$City::RealEstate::UnclaimedLots++;
+	}
+
 	%nameRaw = %brick.getCityLotSaveName();
 
 	%lotHost = getWord(%nameRaw, 0);
@@ -378,14 +134,14 @@ function fxDTSBrick::initExistingCityLot(%brick)
 			if(!$City::WarningMessageDisplay)
 			{
 				$City::WarningMessageDisplay = 1;
-				// TODO Clarify "See the prefs panel"
-				%warningMsg = "!!!! WARNING: This save appears to be from a different CityRPG server, or an older version. Lot data (names, etc.) may not carry over, but ownership will be converted. If you would like to override this (i.e. you have the CityRPG data files from the original server), see the prefs panel.";
+				%warningMsg = "!!!! WARNING: This save appears to be from a different CityRPG server or an older version of CityRPG. Lots will be registered as Unclaimed lots.";
 
 				warn(%warningMsg);
 				messageAll('', %warningMsg);
 			}
 
 			%brick.convertCityLotOwnership();
+			return;
 		}
 		else
 		{
@@ -398,66 +154,46 @@ function fxDTSBrick::initExistingCityLot(%brick)
 
 	%ownerID = %brick.getCityLotOwnerID();
 
-	$City::RealEstate::TotalLots++;
-	// Count it as a pre-owned lot for sale if applicable.
-	if(%brick.setCityLotPreownedPrice() == -1)
-	{
-		$City::RealEstate::LotCountSale++;
-	}
-
 	if(%lotID == -1)
 	{
 		warn("CityRPG 4 - Attempt to initialize existing lot " @ %brick @ ", but lot ID is blank! Aborting init.");
 		return;
 	}
 
-	%brick.cityLotInit = 0;
 	%brick.cityLotOverride = 1;
 	// Note that for an existing lot, the owner ID is always derived from the lot registry, NOT the brick's saved name.
 	// This rules out any potential error in the brick's saved name.
-	%brick.setNTObjectName(getNumKeyID() @ "_" @ %ownerID @ "_" @ %lotID);
+	%brick.SetNTObjectNameOverride(getNumKeyID() @ "_" @ %ownerID @ "_" @ %lotID);
 
 	if(%ownerID != -1)
 	{
 		// Add the lot to the owner's list, initializing the list with our first value if it's blank.
 		$City::Cache::LotsOwnedBy[%ownerID] = $City::Cache::LotsOwnedBy[%ownerID] $= "" ? %brick : $City::Cache::LotsOwnedBy[%ownerID] SPC %brick;
 	}
-	else
-	{
-		$City::RealEstate::UnclaimedLots++;
-	}
 }
 
 function fxDTSBrick::initNewCityLot(%brick)
 {
-	if(CityRPGLotRegistry.getData(%brick.getCityLotID()) != 0)
+	if(%brick.getDataBlock().CityRPGBrickType != $CityBrick_Lot)
+	{
+		error("Lot registry - Attempting to initialize non-lot brick '" @ %brick @ "' as a lot! Aborting init.");
+		return;
+	}
+
+	$City::RealEstate::TotalLots++;
+	$City::RealEstate::UnclaimedLots++;
+
+	if(CityLotRegistry.keyExists(%brick.getCityLotID()) != 0)
 	{
 		warn("Lot registry - Attempting to initialize a lot that already exists. Re-initializing as a new lot.");
 		backtrace();
 		%brick.cityLotOverride = 1;
-		%brick.setNTObjectName("");
+		%brick.SetNTObjectNameOverride("");
 	}
-
-	// 1. Initialize lot data with default values
-	// 2. Increment the lot index
 
 	%newID = CityLots_GetLotCount()+1;
 
-	if(CityRPGLotRegistry.getData(%newID) != 0)
-	{
-		error("CityRPG Lot Registry - Attempting to initialize the lot '" @ %newID @ "' but the ID already exists! This lot may not have registered correctly.");
-	}
-
-	CityRPGLotRegistry.addData(%newID);
-
-	if(CityRPGLotRegistry.dataCount > 0)
-	{
-		CityRPGLotRegistry.saveData();
-	}
-	else
-	{
-		error("Lot registry is blank or missing! Will not export.");
-	}
+	CityLotRegistry.addKey(%newID);
 
 	%publicID = getNumKeyID();
 	if(%brick.getGroup().bl_id != %publicID)
@@ -466,9 +202,7 @@ function fxDTSBrick::initNewCityLot(%brick)
 	}
 
 	%brick.cityLotOverride = 1;
-	%brick.setNTObjectName(%publicID @ "_" @ "none" @ "_" @ %newID);
-
-	$City::RealEstate::UnclaimedLots++;
+	%brick.SetNTObjectNameOverride(%publicID @ "_" @ "none" @ "_" @ %newID);
 
 	echo("City: Registered new lot, #" @ %newID);
 
@@ -477,7 +211,8 @@ function fxDTSBrick::initNewCityLot(%brick)
 
 function fxDTSBrick::convertCityLotOwnership(%brick)
 {
-	talk("TODO: Lot ownership conversion not implemented");
+	%brick.initNewCityLot();
+
 	// 1. Check the lot's brick name for the original owner. Assign.
 	// 2. Initialize the lot as a new lot to give it an ID on the current server, flushing out the old one.
 	// 3. Call a transfer of the lot's ownership via CityLots_TransferLot to the original owner.
@@ -521,7 +256,7 @@ function fxDTSBrick::getCityLotID(%brick)
 
 	// If the lot's brick name is blank at this stage, for whatever reason, lotID will  be -1 due to getWord failing.
 
-	if(CityRPGLotRegistry.getData(%lotID) == 0)
+	if(CityLotRegistry.existKey[%lotID] == 0)
 	{
 		// Doesn't exist in the registry
 		return -1;
@@ -530,73 +265,71 @@ function fxDTSBrick::getCityLotID(%brick)
 	return %lotID;
 }
 
+// findLotBrickByID(Lot ID)
+// Returns 0 if the brick does not exist.
 function findLotBrickByID(%value)
 {
-	return CityRPGLotRegistry.getData(%value).brick;
+	if(CityLotRegistry.data[%value] $= "")
+	{
+		return 0;
+	}
+
+	return CityLotRegistry.data[%value].brick;
 }
 
 // ## Getters
 
 function fxDTSBrick::getCityLotName(%brick)
 {
-	return CityRPGLotRegistry.getData(%brick.getCityLotID()).valueName;
+	return CityLotRegistry.get(%brick.getCityLotID(), "name");
 }
 
 function fxDTSBrick::getCityLotOwnerID(%brick)
 {
-	return CityRPGLotRegistry.getData(%brick.getCityLotID()).valueOwnerID;
+	return CityLotRegistry.get(%brick.getCityLotID(), "ownerID");
 }
 
 function fxDTSBrick::getCityLotRuleStr(%brick)
 {
-	return CityRPGLotRegistry.getData(%brick.getCityLotID()).valueRuleStr;
+	return CityLotRegistry.get(%brick.getCityLotID(), "ruleStr");
 }
 
 function fxDTSBrick::getCityLotTransferDate(%brick)
 {
-	return CityRPGLotRegistry.getData(%brick.getCityLotID()).valueTransferDate;
+	return CityLotRegistry.get(%brick.getCityLotID(), "transferDate");
 }
 
 function fxDTSBrick::getCityLotPreownedPrice(%brick)
 {
-	return CityRPGLotRegistry.getData(%brick.getCityLotID()).valuePreownedSalePrice;
+	return CityLotRegistry.get(%brick.getCityLotID(), "preownedSalePrice");
 }
 
 // ## Setters
 
 function fxDTSBrick::setCityLotName(%brick, %value)
 {
-	%valueNew = CityRPGLotRegistry.getData(%brick.getCityLotID()).valueName = getSubStr(%value, 0, 40);
-
-	if(CityRPGLotRegistry.dataCount > 0)
-	{
-		CityRPGLotRegistry.saveData();
-	}
-	else
-	{
-		error("Lot registry is blank or missing! Will not export.");
-	}
-
+	%valueNew = CityLotRegistry.set(%brick.getCityLotID(), "name", getSubStr(%value, 0, 40));
 	return %valueNew;
 }
 
 function fxDTSBrick::setCityLotOwnerID(%brick, %value)
 {
 	%lotID = %brick.getCityLotID();
-	%data = CityRPGLotRegistry.getData(%lotID);
-	%valueOld = %data.valueOwnerID;
+	%valueOld = CityLotRegistry.get(%lotID, "ownerID");
 
 	// ## Display name handling
 	if(%valueOld == -1 && %value != -1)
 	{
 		// If transferring from the city to a player, automatically rename the lot.
 		%brick.setCityLotName(%brick.getGroup().name @ "\c6's Lot");
-
-		$City::RealEstate::UnclaimedLots--;
 	}
 
 	// ## Caching
-	if(%valueOld != -1)
+	if(%valueOld == -1)
+	{
+		$City::RealEstate::UnclaimedLots--;
+	}
+	else if(%valueOld !$= "")
 	{
 		// If transferring from a player, clear the cache.
 		%brick.cityLotCacheRemove();
@@ -613,16 +346,7 @@ function fxDTSBrick::setCityLotOwnerID(%brick, %value)
 		$City::Cache::LotsOwnedBy[%value] = $City::Cache::LotsOwnedBy[%value] $= "" ? %brick : $City::Cache::LotsOwnedBy[%value] SPC %brick;
 	}
 
-	%valueNew = %data.valueOwnerID = %value;
-
-	if(CityRPGLotRegistry.dataCount > 0)
-	{
-		CityRPGLotRegistry.saveData();
-	}
-	else
-	{
-		error("Lot registry is blank or missing! Will not export.");
-	}
+	CityLotRegistry.set(%lotID, "ownerID", %value);
 
 	// ## Brick name handling
 	// The brick's name needs to match the new owner ID, so we need to update it.
@@ -631,19 +355,36 @@ function fxDTSBrick::setCityLotOwnerID(%brick, %value)
 	%lotID = getWord(%nameRaw, 2);
 
 	%brick.cityLotOverride = 1;
-	%brick.setNTObjectName(%lotHost @ "_" @ (%valueNew == -1?"none":%valueNew) @ "_" @ %lotID);
+	%brick.SetNTObjectNameOverride(%lotHost @ "_" @ (%value == -1?"none":%value) @ "_" @ %lotID);
 
-	return %valueNew;
+	return %value;
 }
 
 function fxDTSBrick::setCityLotTransferDate(%brick, %value)
 {
-	CityRPGLotRegistry.getData(%brick.getCityLotID()).valueTransferDate = %value;
+	CityLotRegistry.set(%brick.getCityLotID(), "transferDate", %value);
 }
 
 function fxDTSBrick::setCityLotPreownedPrice(%brick, %value)
 {
-	CityRPGLotRegistry.getData(%brick.getCityLotID()).valuePreownedSalePrice = %value;
+	%valueOld = CityLotRegistry.get(%brick.getCityLotID(), "preownedSalePrice");
+
+	if(%valueOld != -1 && %value == -1)
+	{
+		// The value has changed from a number to -1, meaning the lot has gone off sale.
+		$City::RealEstate::LotCountSale--;
+
+		CitySO.lotListings = strreplace(CitySO.lotListings, %brick.getCityLotID() @ " ", "");
+	}
+	else if(%valueOld == -1 && %value != -1)
+	{
+		// The value has changed from -1 to a number, meaning the lot has been listed for sale.
+		$City::RealEstate::LotCountSale++;
+
+		CitySO.lotListings = CitySO.lotListings = CitySO.lotListings @ %brick.getCityLotID() @ " ";
+	}
+
+	CityLotRegistry.set(%brick.getCityLotID(), "preownedSalePrice", %value);
 }
 
 // ============================================================
@@ -681,21 +422,31 @@ package CityRPG_LotRegistry
 		Parent::serverCmdSetWrenchData(%client, %fields);
 	}
 
+	function fxDTSBrick::SetNTObjectNameOverride(%obj, %name)
+	{
+		%obj.cityNameOverride = 1;
+		%obj.setNTObjectName(%name);
+		%obj.cityNameOverride = 0;
+	}
+
 	// Brick rename blocking
+	// TODO: See if we can package this only for fxDTSBrick to make it less error prone?
 	function SimObject::SetNTObjectName(%obj, %name)
 	{
-		// Special override to handle lots when they are loaded from a save.
-		if(%obj.cityLotInit)
-		{
-			Parent::SetNTObjectName(%obj, %name);
+		%override = %obj.cityNameOverride;
 
-			// Init value will be set back to 0 from initCityLot()
+		// Special override to handle lots when they are loaded from a save.
+		// We're packaging SetNTObjectName because this isn't called until after the loading tick.
+		if(%obj.cityLotInit && !%override)
+		{
+			Parent::SetNTObjectName(%obj, %name, 1);
+
 			%obj.initCityLot();
 
 			return;
 		}
 
-		if(!%obj.cityLotOverride && !%obj.cityLotOverrideReset && %obj.dataBlock !$= "" && %obj.dataBlock.CityRPGBrickType == $CityBrick_Lot)
+		if(!%override && !%obj.cityLotOverrideReset && %obj.dataBlock !$= "" && %obj.dataBlock.CityRPGBrickType == $CityBrick_Lot)
 		{
 			%client = %obj.cityLastWrench;
 
@@ -709,7 +460,6 @@ package CityRPG_LotRegistry
 		}
 
 		Parent::SetNTObjectName(%obj, %name);
-		%obj.cityLotOverride = 0;
 		%obj.cityLotOverrideReset = 0;
 	}
 
@@ -776,25 +526,27 @@ package CityRPG_LotRegistry
 
 			// Always override on remove
 			%brick.cityLotOverride = 1;
-
 			$City::RealEstate::TotalLots--;
-			if(%ownerID == -1)
-				$City::RealEstate::UnclaimedLots--;
-			else
+
+			if(%ownerID != -1)
 			{
 				// Now, we have to remove this lot from the owner's cache of owned lots.
 				%brick.cityLotCacheRemove();
 			}
+			else
+			{
+				$City::RealEstate::UnclaimedLots--;
+			}
 
-			if(%brick.getCityLotPreownedPrice() == -1)
+			if(%brick.getCityLotPreownedPrice() != -1)
 			{
 				$City::RealEstate::LotCountSale--;
 			}
 
 			// This lot will exist in the memory, but it will no-longer have a brick associated with it.
 			// Therefore, we need to remove the brick from the cache.
-			// If the lot is re-loaded later, it will be restored on init.
-			CityRPGLotRegistry.getData(%lotID).brick = -1;
+			// If the lot is re-loaded later, it will "log in" on init.
+			CityLotRegistry.makeOffline(%lotID);
 		}
 
 		Parent::onRemove(%brick);
@@ -802,7 +554,7 @@ package CityRPG_LotRegistry
 
 	function disconnect(%a)
 	{
-		CityRPGLotRegistry.delete();
+		CityLotRegistry.delete();
 		return parent::disconnect(%a);
 	}
 
@@ -810,6 +562,12 @@ package CityRPG_LotRegistry
 	{
 		CityLots_InitRegistry();
 		Parent::City_Init();
+	}
+
+	// Saver functions for sanity
+	function Saver::keyExists(%this)
+	{
+		return %this.existKey[%this];
 	}
 };
 

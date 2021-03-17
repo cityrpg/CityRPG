@@ -113,7 +113,7 @@ datablock ItemData(CityRPGBatonItem)
 datablock ShapeBaseImageData(CityRPGBatonImage)
 {
 	raycastWeaponRange = 6;
-	raycastWeaponTargets = $TypeMasks::All;
+	raycastWeaponTargets = $TypeMasks::VehicleObjectType | $TypeMasks::PlayerObjectType | $TypeMasks::FxBrickObjectType;
 	raycastDirectDamage = 25;
 	raycastDirectDamageType = $DamageType::CityRPGBaton;
 	raycastExplosionProjectile = CityRPGBatonProjectile;
