@@ -33,13 +33,7 @@ if(%error == $Error::AddOn_NotFound)
   return;
 }
 
-// Weapon_Shotgun
-%error = ForceRequiredAddOn("Weapon_Shotgun");
-if(%error == $Error::AddOn_NotFound)
-{
-  error("ERROR: GameMode_CityRPG4 - required add-on Weapon_Shotgun not found");
-  return;
-}
+
 
 // Weapon_Rocket_Launcher
 %error = ForceRequiredAddOn("Weapon_Rocket_Launcher");
@@ -49,13 +43,6 @@ if(%error == $Error::AddOn_NotFound)
    return;
 }
 
-// Weapon_Sniper_Rifle
-%error = ForceRequiredAddOn("Weapon_Sniper_Rifle");
-if(%error == $Error::AddOn_NotFound)
-{
-  error("ERROR: GameMode_CityRPG4 - required add-on Weapon_Sniper_Rifle not found");
-  return;
-}
 
 // Weapon_Sword
 %error = ForceRequiredAddOn("Weapon_Sword");
@@ -132,6 +119,19 @@ if($GameModeArg $= "Add-Ons/GameMode_CityRPG4/gamemode.txt")
   {
     exec("Add-Ons/Event_Bot_Relay/server.cs");
   }
+
+  // Weapon_Shotgun (Optional)
+  if(isFile("Add-Ons/Weapon_Shotgun/server.cs"))
+  {
+    exec("Add-Ons/Weapon_Shotgun/server.cs");
+  }
+
+  // Weapon_Sniper_Rifle
+  if(isFile("Add-Ons/Weapon_Sniper_Rifle/server.cs"))
+  {
+    exec("Add-Ons/Weapon_Sniper_Rifle/server.cs");
+  }
+
 }
 else
 {

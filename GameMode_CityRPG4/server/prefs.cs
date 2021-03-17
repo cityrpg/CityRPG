@@ -139,15 +139,21 @@ $CityRPG::prices::weapon::name[$CityRPG::guns] = "akimboGunItem";
 $CityRPG::prices::weapon::price[$CityRPG::guns] = 150;
 $CityRPG::prices::weapon::mineral[$CityRPG::guns++] = 1;
 
-$CityRPG::prices::weapon::name[$CityRPG::guns] = "shotgunItem";
-$CityRPG::prices::weapon::price[$CityRPG::guns] = 260;
-$CityRPG::prices::weapon::mineral[$CityRPG::guns++] = 1;
+if(isObject(shotgunItem))
+{
+	$CityRPG::prices::weapon::name[$CityRPG::guns] = "shotgunItem";
+	$CityRPG::prices::weapon::price[$CityRPG::guns] = 260;
+	$CityRPG::prices::weapon::mineral[$CityRPG::guns++] = 1;
+}
 
-$CityRPG::prices::weapon::name[$CityRPG::guns] = "sniperRifleItem";
-$CityRPG::prices::weapon::price[$CityRPG::guns] = 450;
-$CityRPG::prices::weapon::mineral[$CityRPG::guns++] = 1;
+if(isObject(sniperRifleItem))
+{
+	$CityRPG::prices::weapon::name[$CityRPG::guns] = "sniperRifleItem";
+	$CityRPG::prices::weapon::price[$CityRPG::guns] = 450;
+	$CityRPG::prices::weapon::mineral[$CityRPG::guns++] = 1;
+}
 
-//$CityRPG::prices::weapon::name[$CityRPG::guns] = "PillItem";
+
 //$CityRPG::prices::weapon::price[$CityRPG::guns] = 30;
 //$CityRPG::prices::weapon::mineral[$CityRPG::guns++] = 1;
 
