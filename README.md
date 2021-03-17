@@ -13,7 +13,7 @@ In CityRPG 4, you can explore a range of jobs and opportunities as you work your
 ## Features in 0.2.0
 - The classic gameplay that has been shaped by thousands of players within the Blockland community
 - Overhauled real estate and better lot selling
-- Admin Mode for administrators to more easily administrate their server
+- Admin Mode for administrators to more easily moderate and build
 - Job tracks for each type of job: Labor, Business, Bounty Hunter, Police, and Government
 - Improved team chat for players to communicate within their job track
 - Plenty of bugfixes and feature improvements
