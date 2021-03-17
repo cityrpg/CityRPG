@@ -277,33 +277,20 @@ function City_Tick_Econ()
 {
 	$City::Economics::replayCount = $City::Economics::replayCount + 1;
 	$City::Economics::randomUporDown = getRandom(1,5);
-	$City::Economics::positiveNegative = getRandom(1,2);
 
 	if($Pref::Server::City::Economics::Relay < 1)
 		$Pref::Server::City::Economics::Relay = ClientGroup.getCount();
 
 	if($City::Economics::replayCount > $Pref::Server::City::Economics::Relay)
-	{
-		if($City::Economics::Condition > $Pref::Server::City::Economics::Greatest)
+	{	
+		%addition = $City::Economics::randomUporDown;
+		if(getRandom(0,1))
 		{
-			$City::Economics::Condition = $City::Economics::Condition - $City::Economics::randomUporDown;
-			$City::Economics::replayCount = 0;
+			%addition = -%addition;
 		}
-		else if($City::Economics::Condition < $Pref::Server::City::Economics::Least)
-		{
-			$City::Economics::Condition = $City::Economics::Condition + $City::Economics::randomUporDown;
-			$City::Economics::replayCount = 0;
-		}
-		else if($City::Economics::positiveNegative == 1)
-		{
-			$City::Economics::Condition = $City::Economics::Condition + $City::Economics::randomUporDown;
-			$City::Economics::replayCount = 0;
-		}
-		else if($City::Economics::positiveNegative == 2)
-		{
-			$City::Economics::Condition = $City::Economics::Condition - $City::Economics::randomUporDown;
-			$City::Economics::replayCount = 0;
-		}
+
+		$City::Economics::Condition = $City::Economics::Condition + %addition;
+		$City::Economics::replayCount = 0;
 	}
 
 	if($City::Economics::Condition > $Pref::Server::City::Economics::Cap)
