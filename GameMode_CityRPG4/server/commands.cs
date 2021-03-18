@@ -246,7 +246,6 @@ package CityRPG_Commands
 			return;
 		}
 
-		talk("test" SPC CityRPGData.getData(%client.bl_id).valueMoney SPC %cost);
 		if(CityRPGData.getData(%client.bl_id).valueMoney < %cost && !%client.isAdmin)
 		{
 			messageClient(%client, '', "\c6You need at least \c3$" @ %cost SPC "\c6to erase someone's record.");
