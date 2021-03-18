@@ -18,8 +18,6 @@ function CityMenu_Lot(%client, %input)
 		// "Go back" support for sub-menus
 		%brick = %client.cityMenuBack;
 		%client.cityMenuBack = "";
-
-		%client.cityMenuClose(1);
 	}
 	else if(%input !$= "")
 	{
@@ -33,7 +31,6 @@ function CityMenu_Lot(%client, %input)
 		%client.cityMenuBack = %client.cityMenuID;
 
 		%client.cityLotIndexClear();
-		%client.cityMenuClose(1);
 	}
 	else
 	{
@@ -131,7 +128,7 @@ function CityMenu_Lot(%client, %input)
 	}
 
 	// Use the lot brick as the menu ID
-	%client.cityMenuOpen(%menu, %functions, %brick, "\c3Lot management menu closed.");
+	%client.cityMenuOpen(%menu, %functions, %brick, "\c3Lot management menu closed.", 0, 1);
 }
 
 // ## Functions for all lots ## //
@@ -198,7 +195,6 @@ function CityLots_PurchaseLot(%client, %input, %lot)
 		%client.cityMenuID.setCityLotTransferDate(getDateTime());
 
 		// Open the menu for the new lot
-		%client.cityMenuClose(1);
 		CityMenu_Lot(%client);
 	}
 }
@@ -388,7 +384,6 @@ function CityMenu_Lot_PurchasePreowned(%client, %input, %lot)
 		%client.cityMenuID.setCityLotTransferDate(getDateTime());
 
 		// Open the menu for the new lot
-		%client.cityMenuClose(1);
 		CityMenu_Lot(%client);
 	}
 }
@@ -424,7 +419,7 @@ function CityMenu_LotAdmin(%client)
 						TAB "CityMenu_LotAdmin_TransferPlayerPrompt"
 						TAB "CityMenu_Lot";
 
-	%client.cityMenuOpen(%menu, %functions, %brick, "\c3Lot menu closed.");
+	%client.cityMenuOpen(%menu, %functions, %brick, "\c3Lot menu closed.", 0, 1);
 }
 
 function CityMenu_LotAdmin_SetNamePrompt(%client)

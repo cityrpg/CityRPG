@@ -5,9 +5,9 @@
 // Client.cityMenuOpen(names, functions, exitMsg, autoClose)
 // Modular function hook for displaying menus in-game.
 // Currently utilizes chat just like classic CityRPG, however this is subject to change.
-function GameConnection::cityMenuOpen(%client, %menu, %functions, %menuID, %exitMsg, %autoClose)
+function GameConnection::cityMenuOpen(%client, %menu, %functions, %menuID, %exitMsg, %autoClose, %canOverride)
 {
-	if(%client.cityMenuOpen)
+	if(%client.cityMenuOpen && !%client.cityMenuCanOverride)
 	{
 		return;
 	}
@@ -35,6 +35,7 @@ function GameConnection::cityMenuOpen(%client, %menu, %functions, %menuID, %exit
 	%client.cityMenuAutoClose = %autoClose;
 	%client.cityMenuID = %menuID;
 	%client.cityMenuExitMsg = %exitMsg;
+	%client.cityMenuCanOverride = %canOverride;
 
 	// Event
 	if(isObject(%menuID) && %menuID.getClassName() $= "fxDTSBrick")
