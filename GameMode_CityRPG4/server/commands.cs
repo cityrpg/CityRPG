@@ -49,7 +49,7 @@ package CityRPG_Commands
 					%suffix = " (Git build)";
 				}
 
-				messageClient(%client, '', %sentenceStr SPC $City::VersionTitle @ " (\c3" @ $City::Version @ "\c6)" @ %suffix);
+				messageClient(%client, '', %sentenceStr @ " (\c3" @ $City::Version @ "\c6)" @ %suffix);
 			case "starters":
 				messageClient(%client, '', "\c6Welcome! To get started, you'll want to explore and familiarize yourself with the map.");
 				messageClient(%client, '', "\c6Some of the places most important to you will include the jobs office, the education office, and the bank.");
@@ -473,21 +473,31 @@ package CityRPG_Commands
 
 		if(CityRPGData.getData(%client.bl_id).valueMoney - $Pref::Server::City::prices::reset >= 0)
 		{
-			%client.cityLog("***Account reset***");
-			messageClient(%client, '', "\c6Your account has been reset.");
-			messageAll('',"\c3"@ %client.name @" \c6has reset their account.");
-			CityRPGData.removeData(%client.bl_id);
-			CityRPGData.addData(%client.bl_id);
+			%client.cityMenuMessage("\c6Would you like to reset your CityRPG profile?");
+			%client.cityMenuMessage("\c0WARNING: You are about to reset all of your progress on this server. Are you sure?");
 
-			CityRPGData.getData(%client.bl_id).valueBank = 100;
-
-			if(isObject(%client.player))
-			{
-				%client.spawnPlayer();
-			}
+			%menu = "Reset my account." TAB "Cancel.";
+			%functions = CityMenu_Reset_Confirm TAB CityMenu_Close;
+			%client.cityMenuOpen(%menu, %functions, %client, "\c6Your account will not be reset.");
 		}
 		else
 			messageClient(%client, '', "\c6You need at least \c3$" @ $Pref::Server::City::prices::reset SPC "\c6to do that.");
+	}
+
+	function CityMenu_Reset_Confirm(%client)
+	{
+		%client.cityLog("***Account reset***");
+		messageClient(%client, '', "\c6Your account has been reset.");
+		messageAll('',"\c3"@ %client.name @" \c6has reset their account.");
+		CityRPGData.removeData(%client.bl_id);
+		CityRPGData.addData(%client.bl_id);
+
+		CityRPGData.getData(%client.bl_id).valueBank = 100;
+
+		if(isObject(%client.player))
+		{
+			%client.spawnPlayer();
+		}
 	}
 
 	function serverCmdeducation(%client, %do) {

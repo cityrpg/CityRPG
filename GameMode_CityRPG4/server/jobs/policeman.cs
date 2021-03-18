@@ -18,7 +18,7 @@ $CityRPG::jobs::canPardon = false;
 $CityRPG::jobs::thief = false;
 $CityRPG::jobs::hideJobName = false;
 
-$CityRPG::jobs::offerer = false;
+$CityRPG::jobs::offerer = true;
 $CityRPG::jobs::claimer = true;
 
 $CityRPG::jobs::labor = false;

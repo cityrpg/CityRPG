@@ -8,13 +8,15 @@ In CityRPG 4, you can explore a range of jobs and opportunities as you work your
 [Download CityRPG 4](https://github.com/cityrpg/CityRPG-4-Alpha/releases) | [Join us on Discord](https://discord.gg/dHcnHb3) | [View update progress on Trello](https://lakeys.net/cityrpg/roadmap/)
 ------------ | ------------- | ------------- |
 
-![Alpha 1](https://lakeys.net/cityrpg/media/banner.png)
+![Banner](https://lakeys.net/cityrpg/media/banner.png)
 
-## Features in Alpha 1
+## Features in 0.2.0
 - The classic gameplay that has been shaped by thousands of players within the Blockland community
-- A variety of jobs and roles to partake in
-- Shops that are built and run entirely by players
-- A dynamic real estate system for player-created buildings
+- Overhauled real estate and better lot selling
+- Admin Mode for administrators to more easily moderate and build
+- Job tracks for each type of job: Labor, Business, Bounty Hunter, Police, and Government
+- Improved team chat for players to communicate within their job track
+- Plenty of bugfixes and feature improvements
 - [More on the way](https://trello.com/b/36wGp6ow/cityrpg-4-roadmap)
 
 ## Created by the CityRPG 4 Team
@@ -37,6 +39,7 @@ Dglider for bugfixes and tips, Sentry for replacing missing assets.
 - **/reincarnate** - For players in the endgame.
 
 ## Admin Commands
+- **/adminMode** - Toggle Admin Mode, enabling jets and disabling most gameplay effects for administration.
 - **/updateScore** - Updates scores in the player list.
 - **/setMinerals** - Sets the mineral count for the city. This affects item sales.
 - **/setLumber** - Sets the total lumber for the city. This affects item sales.
@@ -53,9 +56,6 @@ Dglider for bugfixes and tips, Sentry for replacing missing assets.
 CityRPG 4 is being built fully open source, and we encourage you to fork the repository and make your own changes. We would love to see your contributions!
 
 Below is an incomplete documentation of key functions in CityRPG 4.
-
-Note that this documentation is applicable to **Alpha 2**. For Alpha 1 docs, see here:
-https://github.com/cityrpg/CityRPG-4-Alpha/tree/0.1.0
 
 ## GameConnection::cityMenuOpen(names, functions, exitMsg, autoClose)
 Displays a generic menu, currently using a chat-based approach. Returns true if the menu opens successfully. No eval or script object handling is necessary.
@@ -78,7 +78,7 @@ findClientByName(Blockhead).cityMenuOpen(%menu, %functions, "", "", true);
 
 Result:
 Typing "1" will show the client's ID in yellow text. ("announce()")
-Typing "2" will show the client's ID with a "CONSOLE: " chat message. ("talk()
+Typing "2" will show the client's ID with a "CONSOLE: " chat message. ("talk()")
 
 To prompt the user for text, direct client.cityMenuFunction to a new function with the arguments `client` and `input`. The user's next raw text input will be passed to the function as `input`.
 
@@ -89,6 +89,9 @@ This is a list of existing functions for menus. These functions should be used w
 
 - CityMenu_Close - Closes the menu.
 - CityMenu_Placeholder - Displays the text "Sorry, this feature is currently not available. Please try again later."
+
+## GameConnection::isCityAdmin()
+Returns true or false whether the target client is in Admin Mode. For most uses, it is recommended that you use this in place of checking isAdmin.
 
 ## CityRPGBatonImage::onCityPlayerHit(obj, slot, col, pos, normal)
 Allows the creation of additional checks when players are batoned. MUST return `true` if a check is passed, otherwise baton actions will overlap each other.

@@ -19,36 +19,35 @@ function City_Init()
 		if(!isObject($DamageType::Starvation))
 			AddDamageType("Starvation", '%1 starved', '%1 starved', 0.5, 0);
 
-		if(!CityRPGData.loadedSaveFile)
-		{
-			CityRPGData.addValue("bank", 0);
-			CityRPGData.addValue("bounty", "0");
-			CityRPGData.addValue("demerits", "0");
-			CityRPGData.addValue("education", "0");
-			CityRPGData.addValue("gender", "Male");
-			CityRPGData.addValue("hunger", "7");
-			CityRPGData.addValue("jailData", "0 0");
-			CityRPGData.addValue("jobID", "1");
-			CityRPGData.addValue("jobRevert", "1");
-			CityRPGData.addValue("lotData", "0");
-			CityRPGData.addValue("money", "0");
-			CityRPGData.addValue("name", "noName");
-			CityRPGData.addValue("outfit", "none none none none whitet whitet skin bluejeans blackshoes");
-			CityRPGData.addValue("reincarnated", "0");
-			CityRPGData.addValue("resources", "0 0");
-			CityRPGData.addValue("student", "0");
-			CityRPGData.addValue("tools", "");
-			CityRPGData.addValue("Relationship", "None");
-			CityRPGData.addValue("Tickets", "0");
-			CityRPGData.addValue("Rep", "0");
-			CityRPGData.addValue("BusPosition", "0");
-			CityRPGData.addValue("BusStocks", "0");
-			CityRPGData.addValue("BusID", "0");
-			CityRPGData.addValue("ElectionID", "0");
-			CityRPGData.addValue("BoughtLumber", "0");
-			CityRPGData.addValue("Layout", "<color:3C9EFF>");
-		}
-		else
+		// Since the active values change so often, we'll re-attempt to add them each time.
+		CityRPGData.addValue("bank", 0);
+		CityRPGData.addValue("bounty", "0");
+		CityRPGData.addValue("demerits", "0");
+		CityRPGData.addValue("education", "0");
+		CityRPGData.addValue("gender", "Male");
+		CityRPGData.addValue("hunger", "7");
+		CityRPGData.addValue("jailData", "0 0");
+		CityRPGData.addValue("jobID", "1");
+		CityRPGData.addValue("jobRevert", "1");
+		CityRPGData.addValue("lotData", "0");
+		CityRPGData.addValue("money", "0");
+		CityRPGData.addValue("name", "noName");
+		CityRPGData.addValue("outfit", "none none none none whitet whitet skin bluejeans blackshoes");
+		CityRPGData.addValue("reincarnated", "0");
+		CityRPGData.addValue("resources", "0 0");
+		CityRPGData.addValue("student", "0");
+		CityRPGData.addValue("tools", "");
+		CityRPGData.addValue("Relationship", "None");
+		CityRPGData.addValue("Tickets", "0");
+		CityRPGData.addValue("Rep", "0");
+		CityRPGData.addValue("BusPosition", "0");
+		CityRPGData.addValue("BusStocks", "0");
+		CityRPGData.addValue("BusID", "0");
+		CityRPGData.addValue("ElectionID", "0");
+		CityRPGData.addValue("BoughtLumber", "0");
+		CityRPGData.addValue("Layout", "<color:3C9EFF>");
+		
+		if(CityRPGData.loadedSaveFile)
 		{
 			for(%a = 1; %a <= CityRPGData.dataCount; %a++)
 			{

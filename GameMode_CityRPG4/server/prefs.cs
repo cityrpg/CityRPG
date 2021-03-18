@@ -38,7 +38,7 @@ function City_RegisterPref(%category, %name, %variable, %type, %params, %default
 
 		// If the value does not exist, automatically set it to its default value.
 		if(%varRef $= "")
-			eval(%variable @ " = " @ defaultValue);
+			eval(%variable @ " = \"" @ %defaultValue @ "\";");
 	}
 
 
@@ -46,7 +46,10 @@ function City_RegisterPref(%category, %name, %variable, %type, %params, %default
 
 function City_InitPrefs()
 {
-	registerPreferenceAddon("GameMode_CityRPG4", "CityRPG 4", "building");
+	if($City::UsePrefObjects)
+	{
+		registerPreferenceAddon("GameMode_CityRPG4", "CityRPG 4", "building");
+	}
 
 	// City Prefs
 	City_RegisterPref("Game", "City name", "$Pref::Server::City::name", "string", "64", "Blocko Town");
@@ -57,6 +60,7 @@ function City_InitPrefs()
 	City_RegisterPref("Game", "Lot Rules", "$Pref::Server::City::LotRules", "string", "256", "No spam. No excessive FX, emitters, or lights.");
 	City_RegisterPref("Game", "Min Bounty", "$Pref::Server::City::demerits::minBounty", "int", "0 1000", 100);
 	City_RegisterPref("Game", "Max Bounty", "$Pref::Server::City::demerits::maxBounty", "int", "0 1000000", 7500);
+	City_RegisterPref("Game", "Disable tumble on starve", "$Pref::Server::City::DisableHungerTumble", "bool", "", false);
 
 	City_RegisterPref("Server Management", "Logging Enabled", "$Pref::Server::City::loggerEnabled", "bool", "", true);
 	City_RegisterPref("Server Management", "Always show radio chat to admins", "$Pref::Server::City::AdminsAlwaysMonitorChat", "bool", "", false);
@@ -78,6 +82,8 @@ City_InitPrefs();
 // ============================================================
 
 $City::CommandRateLimitMS = 128;
+
+$Pref::Server::City::DisableIntroMessage = true;
 
 $ATM::Min = 25;
 $ATM::Max = 300;
@@ -133,15 +139,21 @@ $CityRPG::prices::weapon::name[$CityRPG::guns] = "akimboGunItem";
 $CityRPG::prices::weapon::price[$CityRPG::guns] = 150;
 $CityRPG::prices::weapon::mineral[$CityRPG::guns++] = 1;
 
-$CityRPG::prices::weapon::name[$CityRPG::guns] = "shotgunItem";
-$CityRPG::prices::weapon::price[$CityRPG::guns] = 260;
-$CityRPG::prices::weapon::mineral[$CityRPG::guns++] = 1;
+if(isObject(shotgunItem))
+{
+	$CityRPG::prices::weapon::name[$CityRPG::guns] = "shotgunItem";
+	$CityRPG::prices::weapon::price[$CityRPG::guns] = 260;
+	$CityRPG::prices::weapon::mineral[$CityRPG::guns++] = 1;
+}
 
-$CityRPG::prices::weapon::name[$CityRPG::guns] = "sniperRifleItem";
-$CityRPG::prices::weapon::price[$CityRPG::guns] = 450;
-$CityRPG::prices::weapon::mineral[$CityRPG::guns++] = 1;
+if(isObject(sniperRifleItem))
+{
+	$CityRPG::prices::weapon::name[$CityRPG::guns] = "sniperRifleItem";
+	$CityRPG::prices::weapon::price[$CityRPG::guns] = 450;
+	$CityRPG::prices::weapon::mineral[$CityRPG::guns++] = 1;
+}
 
-//$CityRPG::prices::weapon::name[$CityRPG::guns] = "PillItem";
+
 //$CityRPG::prices::weapon::price[$CityRPG::guns] = 30;
 //$CityRPG::prices::weapon::mineral[$CityRPG::guns++] = 1;
 

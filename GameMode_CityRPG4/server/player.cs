@@ -158,48 +158,6 @@ function gameConnection::setGameBottomPrint(%client)
 		%client.CityRPGPrint = %client.CityRPGPrint;
 	}
 
-	$City::Economics::replayCount = $City::Economics::replayCount + 1;
-	$City::Economics::randomUporDown = getRandom(1,5);
-	$City::Economics::positiveNegative = getRandom(1,2);
-
-	if($Pref::Server::City::Economics::Relay < 1)
-		$Pref::Server::City::Economics::Relay = ClientGroup.getCount();
-
-	if($City::Economics::replayCount > $Pref::Server::City::Economics::Relay)
-	{
-		if($City::Economics::Condition > $Pref::Server::City::Economics::Greatest)
-		{
-			$City::Economics::Condition = $City::Economics::Condition - $City::Economics::randomUporDown;
-			$City::Economics::replayCount = 0;
-		}
-		else if($City::Economics::Condition < $Pref::Server::City::Economics::Least)
-		{
-			$City::Economics::Condition = $City::Economics::Condition + $City::Economics::randomUporDown;
-			$City::Economics::replayCount = 0;
-		}
-		else if($City::Economics::positiveNegative == 1)
-		{
-			$City::Economics::Condition = $City::Economics::Condition + $City::Economics::randomUporDown;
-			$City::Economics::replayCount = 0;
-		}
-		else if($City::Economics::positiveNegative == 2)
-		{
-			$City::Economics::Condition = $City::Economics::Condition - $City::Economics::randomUporDown;
-			$City::Economics::replayCount = 0;
-		}
-	}
-
-	if($City::Economics::Condition > $Pref::Server::City::Economics::Cap)
-	{
-		$City::Economics::Condition = $Pref::Server::City::Economics::Cap;
-	}
-
-	if($City::Economics::Condition $= "")
-	{
-		error("ERROR: GameMode_CityRPG4 - Economics condition is blank! Resetting to 0.");
-		$City::Economics::Condition = 0;
-	}
-
 	commandToClient(%client, 'bottomPrint', %client.CityRPGPrint, 0, true);
 
 	return %client.CityRPGPrint;
@@ -556,6 +514,7 @@ function jobset(%client, %job, %name)
 	%client.player.giveDefaultEquipment();
 	%client.applyForcedBodyColors();
 	%client.applyForcedBodyParts();
+	%client.player.setDatablock(%client.getJobSO().db);
 
 	if(%job == $City::MayorJobID)
 	{
@@ -624,4 +583,9 @@ function GameConnection::cityEnroll(%client)
 function GameConnection::getCityRecordClearCost(%client)
 {
 	return 250 * (CityRPGData.getData(%client.bl_id).valueEducation+1);
+}
+
+function GameConnection::isCityAdmin(%client)
+{
+	return CityRPGData.getData(%client.bl_id).valueJobID == $City::AdminJobID;
 }

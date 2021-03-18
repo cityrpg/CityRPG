@@ -1,7 +1,7 @@
 // ============================================================
 // Brick Data
 // ============================================================
-datablock fxDTSBrickData(CityRPGREBrickData : brick2x4FData)
+datablock fxDTSBrickData(CityRPGRealEstateBrickData : brick2x4FData)
 {
 	category = "CityRPG";
 	subCategory = "City Info Bricks";
@@ -20,8 +20,24 @@ datablock fxDTSBrickData(CityRPGREBrickData : brick2x4FData)
 // ============================================================
 // Menu
 // ============================================================
-function CityMenu_RealEstate(%client, %brick)
+// These are menus for the real estate brick.
+// Most of this simply refers to the menus in cityModules/lotRegistryMenu.cs
+
+function CityMenu_RealEstate(%client, %input, %brick)
 {
+	// Note that %brick doubles as the menu's identifier.
+
+	// If our brick ID is a lot, we've just come back from the lot menu.
+	// We need to use the value assigned in CityMenu_Lot to identify the menu.
+	if(%brick.getDataBlock().CityRPGBrickType == $CityBrick_Lot)
+	{
+		%brick = %client.cityMenuBack;
+
+		// Close the last menu.
+		%client.cityMenuClose(1);
+		%client.cityMenuBack = "";
+	}
+
 	%client.cityMenuMessage("\c3" @ $Pref::Server::City::name @ "\c3 Real Estate Office");
 
 	%lotCount = $City::RealEstate::TotalLots || 0;
@@ -33,24 +49,20 @@ function CityMenu_RealEstate(%client, %brick)
 	else
 		%message = "\c6" @ $Pref::Server::City::name @ "\c6 has \c3" @ %lotCount @ "\c6 total lots. There are no unclaimed lots for sale.";
 
+	%menu = "Manage a lot" TAB "View pre-owned lots for sale";
+
+	%functions = "CityMenu_RealEstate_ViewLotsOwned" TAB "CityMenu_RealEstate_ViewLotListings";
+
 	if($City::RealEstate::LotCountSale > 0)
 	{
 		if($City::RealEstate::LotCountSale == 1)
 			%message = %message SPC "\c6There is \c31\c6 pre-owned lot available for sale.";
 		else
 			%message = %message SPC "\c6There are \c3" @ $City::RealEstate::LotCountSale @ "\c6 pre-owned lots for sale.";
-
-		%menu = "List a lot for sale"
-				TAB "View pre-owned lots for sale";
-
-		%functions = "CityMenu_RealEstate_ListForSalePrompt"
-						 TAB "CityMenu_RealEstate_ViewLots";
 	}
 	else
 	{
 		%message = %message SPC "There are no pre-owned lots for sale at this time.";
-		%menu = "List a lot for sale";
-		%functions = "CityMenu_RealEstate_ListForSalePrompt";
 	}
 
 	%client.cityMenuMessage(%message);
@@ -58,10 +70,8 @@ function CityMenu_RealEstate(%client, %brick)
 }
 
 // List for sale
-function CityMenu_RealEstate_ListForSalePrompt(%client, %input, %brick)
+function CityMenu_RealEstate_ViewLotsOwned(%client, %input, %brick)
 {
-	%client.cityMenuClose(1);
-
 	for(%i = 0; %i <= getWordCount($City::Cache::LotsOwnedBy[%client.bl_id])-1; %i++)
 	{
 		%lotBrick = getWord($City::Cache::LotsOwnedBy[%client.bl_id], %i);
@@ -71,138 +81,103 @@ function CityMenu_RealEstate_ListForSalePrompt(%client, %input, %brick)
 		if(%i == 0)
 		{
 			%menu = %option;
-			%functions = CityMenu_RealEstate_ListForSalePricePrompt;
+			%functions = CityMenu_Lot;
 		}
 		else
 		{
 			%menu = %menu TAB %option;
-			%functions = %functions TAB CityMenu_RealEstate_ListForSalePricePrompt;
+			%functions = %functions TAB CityMenu_Lot;
 		}
+
+		// Record the available options so we know which one to pick.
+		// This will always correspond to an item in the menu -- The menu options will ensure the client cannot pick an invalid value.
+		%client.cityLotIndex[%i+1] = %lotBrick.getCityLotID();
 	}
+
+	%client.cityLotIndexCount = %i+1;
 
 	if(getFieldCount(%menu) == 0)
 	{
-		%client.cityMenuMessage("\c0You do not own any lots that you can list for sale!");
-
-		%client.cityMenuClose(1);
-		CityMenu_RealEstate(%client, %brick);
+		%client.cityMenuMessage("\c6You don't own any lots yet! Look for lots marked as \"For sale\" to purchase one.");
 		return;
+	}
+	else
+	{
+		%client.cityMenuClose(1);
 	}
 
 	%client.cityMenuOpen(%menu, %functions, %brick, "\c6Thanks, come again.");
-	%client.cityMenuMessage("\c6Choose one of your lots to list for sale. Use the PG UP and PG DOWN keys to scroll.");
-}
-
-function CityMenu_RealEstate_ListForSalePricePrompt(%client, %input)
-{
-	%i = atof(%input)-1;
-	%lotBrick = getWord($City::Cache::LotsOwnedBy[%client.bl_id], %i);
-	%client.cityLotSelected = %lotBrick;
-
-	%client.cityMenuMessage("\c6You have chosen the lot: \c3" @ %lotBrick.getCityLotName());
-	%client.cityMenuMessage("\c6How much money would you like to sell this lot for? Enter a number.");
-
-	%client.cityMenuFunction = CityMenu_RealEstate_ListForSaleConfirmPrompt;
-}
-
-function CityMenu_RealEstate_ListForSaleConfirmPrompt(%client, %input)
-{
-	%price = atof(%input);
-	%lotBrick = %client.cityLotSelected;
-
-	if(%price < 0)
-		%price = 0;
-
-	%client.cityMenuMessage("\c6You are listing the lot \c3" @ %lotBrick.getCityLotName() @ "\c6 on sale for \c3$" @ strFormatNumber(%price));
-	%client.cityMenuMessage("\c0Warning!\c6 Once a player purchases this lot, they will become the permanent owner of your lot. Are you sure?");
-
-	if(%price == 0)
-		%client.cityMenuMessage("\c0You are about to list this lot for free. Are you sure?");
-
-	%client.cityMenuMessage("\c6Type \c31\c6 to confirm, or \c32\c6 to cancel.");
-
-	%client.cityMenuFunction = CityMenu_RealEstate_ListForSale;
-}
-
-function CityMenu_RealEstate_ListForSale(%client, %input)
-{
-	%lotBrick = %client.cityLotSelected;
-	%lotID = %lotBrick.getCityLotID();
-
-	if(%input !$= "1")
-	{
-		%client.cityMenuMessage("\c0Lot listing cancelled.");
-		%client.cityMenuClose();
-		return;
-	}
-
-	// Security check
-	if(%lotBrick.getCityLotOwnerID() != %client.bl_id)
-	{
-		%client.cityLog("(!!!) Lot " @ %lotBrick.getCityLotID() @ " sale listing fell through");
-
-		// Security check falls through
-		%client.cityMenuMessage("\c0Sorry, you are no-longer able to list that lot for sale at this time.");
-		%client.cityMenuClose();
-		return;
-	}
-
-	$City::RealEstate::LotCountSale++;
-
-	// Append the lot to the fields under CitySO.lotListings.
-	CitySO.lotListings = CitySO.lotListings $= ""? CitySO.lotListings = %lotID : CitySO.lotListings = CitySO.lotListings SPC %lotID;
-
-	%client.cityMenuMessage("\c6You have listed your lot for sale.");
-	%client.cityMenuClose();
+	%client.cityMenuMessage("\c6Choose one of your lots to manage. Use the PG UP and PG DOWN keys to scroll.");
 }
 
 // View & Purchase
-function CityMenu_RealEstate_ViewLots(%client, %input, %brick)
+function CityMenu_RealEstate_ViewLotListings(%client, %input, %brick)
 {
+	%client.cityLotIndexClear();
+
+	// This is a slightly more complex task than the "Manage a lot" menu.
+	// We need to filter through the lot listings to find the ones that actually exist in the world.
 	for(%i = 0; %i <= getWordCount(CitySO.lotListings)-1; %i++)
 	{
 		%lotID = getWord(CitySO.lotListings, %i);
 		%lotBrick = findLotBrickByID(%lotID);
 
 		// Hide lots that are in the registry, but don't have an existing brick.
-		if(%lotBrick == -1)
+		if(%lotBrick == 0)
 			continue;
 
-		if(%i == 0)
+		// Record the available options -- See: CityMenu_RealEstate_ViewLotsOwned
+		// Important: This depends on us knowing that this lot actually exists, as checked above.
+		%client.cityLotIndexCount++;
+		%client.cityLotIndex[%client.cityLotIndexCount] = %lotID;
+
+		%lotStr = %lotBrick.getCityLotName() @ " - Cost: \c2$" @ %lotBrick.getCityLotPreownedPrice() @ "\c6 - Owner: \c3" @ %lotBrick.getGroup().name @ "\c6";
+
+		if(%client.cityLotIndexCount == 1)
 		{
-			%menu = %lotBrick.getCityLotName();
+			// First option
+
+			%menu = %lotStr;
 			%functions = CityMenu_RealEstate_ViewLotDetail;
 		}
 		else
 		{
-			%menu = %menu TAB %lotBrick.getCityLotName();
+			%menu = %menu TAB %lotStr;
 			%functions = %functions TAB CityMenu_RealEstate_ViewLotDetail;
 		}
+	}
 
-		// Record the available options so we know which one to pick.
-		%client.cityLotIndex[%i+1] = %lotID;
+	if(%client.cityLotIndexCount == 0)
+	{
+		%client.cityMenuMessage("\c6There are no lots available for sale at this time. Check back later!");
+		return;
 	}
 
 	%client.cityMenuClose(1);
 	%client.cityMenuOpen(%menu, %functions, %brick, "\c6Thanks, come again.");
-	%client.cityMenuMessage("\c6Type the number for a listing to view more info. Use the PG UP and PG DOWN keys to scroll.");
+	%client.cityMenuMessage("\c6Type the number to view more info. Use the PG UP and PG DOWN keys to scroll.");
 }
 
 function CityMenu_RealEstate_ViewLotDetail(%client, %input, %brick)
 {
 	%lotID = %client.cityLotIndex[%input];
+	%lotBrick = findLotBrickByID(%lotID);
 
-	CityMenu_Placeholder(%client);
+	if(%lotBrick.getCityLotOwnerID() == %client.bl_id) {
+		%client.cityMenuMessage("\c3This is your lot.");
+	}
+
+	CityMenu_Lot(%client, %input);
 }
 
 
 // ============================================================
 // Trigger Data
 // ============================================================
-function CityRPGREBrickData::parseData(%this, %brick, %client, %triggerStatus, %text)
+function CityRPGRealEstateBrickData::parseData(%this, %brick, %client, %triggerStatus, %text)
 {
 	if(%triggerStatus == true && !%client.cityMenuOpen)
 	{
-		CityMenu_RealEstate(%client, %brick);
+		CityMenu_RealEstate(%client, 0, %brick);
 	}
 }

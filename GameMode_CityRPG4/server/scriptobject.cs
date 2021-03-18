@@ -165,11 +165,16 @@ function JobSO::getJobCount(%so)
 // ============================================================
 function CitySO::loadData(%so)
 {
+	// As an additional caution, use discoverFile.
+	// This covers cases such as the admin deleting the file after the game starts.
+	discoverFile($City::SavePath @ "City.cs");
+
 	if(isFile($City::SavePath @ "City.cs"))
 	{
 		exec($City::SavePath @ "City.cs");
 		%so.minerals		= $CityRPG::temp::citydata::datumminerals;
 		%so.lumber			= $CityRPG::temp::citydata::datumlumber;
+		%so.lotListings	= $CityRPG::temp::citydata::lotListings;
 		%so.economy			= $Economics::Condition;
 
 		%so.version			= $CityRPG::temp::citydata::version;
@@ -179,6 +184,7 @@ function CitySO::loadData(%so)
 		%so.version = $City::Version;
 		%so.value["minerals"] = 0;
 		%so.value["lumber"] = 0;
+		%so.value["lotListings"] = "";
 		%so.value["economy"] = 0;
 	}
 }
@@ -190,6 +196,7 @@ function CitySO::saveData(%so)
 
 	$CityRPG::temp::citydata::datum["minerals"]		= %so.minerals;
 	$CityRPG::temp::citydata::datum["lumber"]		= %so.lumber;
+	$CityRPG::temp::citydata::lotListings = %so.lotListings;
 	export("$CityRPG::temp::citydata::*", $City::SavePath @ "City.cs");
 }
 

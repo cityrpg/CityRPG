@@ -297,7 +297,7 @@ function fxDTSBrick::createCityTrigger(%brick, %data)
 		%brick.trigger = new trigger()
 		{
 			datablock = %datablock.triggerDatablock;
-			position = getWords(%brick.getWorldBoxCenter(), 0, 1) SPC getWord(%brick.getWorldBoxCenter(), 2) + ((getWord(%datablock.triggerSize, 2) / 4) + (%datablock.brickSizeZ * 0.1));
+			position = getWords(%brick.getWorldBoxCenter(), 0, 1) SPC getWord(%brick.getWorldBox(), 2) + ((getWord(%datablock.triggerSize, 2) / 4));
 			rotation = "1 0 0 0";
 			scale = %scale;
 			polyhedron = "-0.5 -0.5 -0.5 1 0 0 0 1 0 0 0 1";
@@ -348,7 +348,7 @@ function fxDTSBrick::cityBrickInit(%brick)
 			%brick.color = getClosestPaintColor(ResourceSO.mineral[%seed].color);
 			%brick.setColor(%brick.color);
 		default:
-			if(%brick.getDatablock().getID() == brickVehicleSpawnData.getID() && !%client.isAdmin)
+			if(%brick.getDatablock().getID() == brickVehicleSpawnData.getID() && !%client.isCityAdmin())
 			{
 				commandToClient(%client, 'centerPrint', "\c6You have paid \c3$" @ mFloor($CityRPG::prices::vehicleSpawn) @ "\c6 to plant this vehicle spawn.", 3);
 				CityRPGData.getData(%client.bl_id).valueMoney -= mFloor($CityRPG::prices::vehicleSpawn);
@@ -408,6 +408,8 @@ function fxDTSBrick::getCityBrickUnstable(%brick, %lotTrigger)
 	{
 		return 1;
 	}
+
+	return 0;
 }
 
 // Brick::cityBrickCheck(this/brick)
@@ -434,7 +436,7 @@ function fxDTSBrick::cityBrickCheck(%brick)
 		%brick.client.cityLog("Attempt to plant " @ %brick.getDatablock().getName());
 	}
 
-	if(CityRPGData.getData(%client.bl_id).valueJobID == $City::AdminJobID)
+	if(%client.isCityAdmin())
 	{
 		return 1;
 	}
@@ -530,12 +532,18 @@ function CityRPGLotTriggerData::onEnterTrigger(%this, %trigger, %obj)
 
 	%lotStr = "<just:right><font:palatino linotype:18>\c6" @ %trigger.parent.getCityLotName();
 
+	%duration = 2;
 	if(%trigger.parent.getCityLotOwnerID() == -1)
 	{
 		%lotStr = %lotStr @ "<br>\c2For sale!\c6 Type /lot for info";
 	}
+	else if(%trigger.parent.getCityLotPreownedPrice() != -1)
+	{
+		%lotStr = %lotStr @ "<br>\c2For sale by owner!\c6 Type /lot for info";
+		%duration = 3;
+	}
 
-	%client.centerPrint(%lotStr, 2);
+	%client.centerPrint(%lotStr, %duration);
 
 	//%client.SetInfo();
 }
@@ -571,6 +579,11 @@ function CityRPGInputTriggerData::onEnterTrigger(%this, %trigger, %obj)
 		return;
 	}
 
+	if(%obj.client.cityMenuOpen)
+	{
+		%obj.client.cityMenuClose();
+	}
+
 	%obj.client.cityLog(%trigger.parent.getDatablock().getName() SPC "enter");
 
 	%obj.client.CityRPGTrigger = %trigger;
@@ -591,7 +604,7 @@ function CityRPGInputTriggerData::onLeaveTrigger(%this, %trigger, %obj, %a)
 		%trigger.parent.getDatablock().parseData(%trigger.parent, %obj.client, false, "");
 		%obj.client.CityRPGTrigger = "";
 
-		if(%obj.client.cityMenuID == %trigger.parent.getID())
+		if(%obj.client.cityMenuID == %trigger.parent.getID() || %obj.client.cityMenuBack == %trigger.parent.getID())
 		{
 			%obj.client.cityMenuClose();
 		}
