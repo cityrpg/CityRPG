@@ -254,7 +254,7 @@ function fxDTSBrick::getCityLotID(%brick)
 
 	%lotID = getWord(%nameRaw, 2);
 
-	// If the lot's brick name is blank at this stage, for whatever reason, lotID will  be -1 due to getWord failing.
+	// If the lot's brick name is blank at this stage, for whatever reason, lotID will be -1 due to getWord failing.
 
 	if(CityLotRegistry.existKey[%lotID] == 0)
 	{
