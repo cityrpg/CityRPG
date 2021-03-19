@@ -135,6 +135,9 @@ function gameConnection::setGameBottomPrint(%client)
 
 	%client.CityRPGPrint = %client.CityRPGPrint @ "   <bitmap:" @ $City::DataPath @ "ui/cash.png>\c6 Cash:" SPC %client.getCashString();
 
+	// TODO: Move wanted level to center print so this doesn't cut off the bottom HUD
+	//%client.CityRPGPrint = %client.CityRPGPrint @ "   <bitmap:" @ $City::DataPath @ "ui/hunger.png>\c6 Hunger: Well-fed";
+
 	// Placeholder
 	//%client.CityRPGPrint = %client.CityRPGPrint @ "<just:right>\c6Day";
 

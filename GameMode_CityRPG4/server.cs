@@ -278,6 +278,7 @@ addExtraResource($City::DataPath @ "ui/cash.png");
 addExtraResource($City::DataPath @ "ui/health.png");
 addExtraResource($City::DataPath @ "ui/location.png");
 addExtraResource($City::DataPath @ "ui/time.png");
+addExtraResource($City::DataPath @ "ui/hunger.png");
 
 // Support_CityRPG_Plus (Optional)
 // This needs to load *after* CityRPG for it to be compatible.
