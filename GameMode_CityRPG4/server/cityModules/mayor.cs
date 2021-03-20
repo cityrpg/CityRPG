@@ -258,3 +258,47 @@ function CityMayor_getWinner()
 	}
 	return %toBeat TAB %toBeatID;
 }
+
+// Menu stuff
+function CityMenu_Mayor(%client)
+{
+	%client.cityMenuMessage("\c3Mayor Actions");
+
+	%menu = "Issue a pardon."
+			TAB "Clear a record."
+			TAB "Go back.";
+
+	%functions = "CityMenu_Mayor_PardonPrompt"
+			 TAB "CityMenu_Mayor_ErasePrompt"
+			 TAB "CityMenu_Player";
+
+	%client.cityMenuOpen(%menu, %functions, %client, "\c3Mayor actions menu closed.", 0, 1);
+}
+
+function CityMenu_Mayor_PardonPrompt(%client)
+{
+	%client.cityLog("Mayor pardon prompt");
+
+	%client.cityMenuMessage("\c6Please enter the name of the player you wish to pardon.");
+	%client.cityMenuFunction = CityMenu_Mayor_Pardon;
+}
+
+function CityMenu_Mayor_Pardon(%client, %input)
+{
+	serverCmdPardon(%client, %input);
+	CityMenu_Mayor(%client);
+}
+
+function CityMenu_Mayor_ErasePrompt(%client)
+{
+	%client.cityLog("Mayor record clear prompt");
+
+	%client.cityMenuMessage("\c6Please enter the name of the player whose record you wish to clear.");
+	%client.cityMenuFunction = CityMenu_Mayor_Erase;
+}
+
+function CityMenu_Mayor_Erase(%client, %input)
+{
+	serverCmdEraseRecord(%client, %input);
+	CityMenu_Mayor(%client);
+}
