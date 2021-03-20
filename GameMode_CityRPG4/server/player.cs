@@ -592,3 +592,20 @@ function GameConnection::isCityAdmin(%client)
 {
 	return CityRPGData.getData(%client.bl_id).valueJobID == $City::AdminJobID;
 }
+
+function CityMenu_Player(%client)
+{
+	%menu = "Player stats."
+		TAB "Close menu.";
+	
+	%functions = "CityMenu_Player_Stats"
+			 TAB "CityMenu_Close";
+	
+	%client.cityMenuOpen(%menu, %functions, %client, "\c3Actions menu closed.");
+}
+
+function CityMenu_Player_Stats(%client)
+{
+	serverCmdStats(%client);
+	%client.cityMenuClose();
+}
