@@ -126,7 +126,7 @@ if($GameModeArg $= "Add-Ons/GameMode_CityRPG4/gamemode.txt")
     exec("Add-Ons/Weapon_Shotgun/server.cs");
   }
 
-  // Weapon_Sniper_Rifle
+  // Weapon_Sniper_Rifle (Optional)
   if(isFile("Add-Ons/Weapon_Sniper_Rifle/server.cs"))
   {
     exec("Add-Ons/Weapon_Sniper_Rifle/server.cs");
