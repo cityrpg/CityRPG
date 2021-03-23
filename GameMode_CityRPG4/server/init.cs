@@ -37,15 +37,9 @@ function City_Init()
 		CityRPGData.addValue("resources", "0 0");
 		CityRPGData.addValue("student", "0");
 		CityRPGData.addValue("tools", "");
-		CityRPGData.addValue("Relationship", "None");
-		CityRPGData.addValue("Tickets", "0");
 		CityRPGData.addValue("Rep", "0");
-		CityRPGData.addValue("BusPosition", "0");
-		CityRPGData.addValue("BusStocks", "0");
-		CityRPGData.addValue("BusID", "0");
 		CityRPGData.addValue("ElectionID", "0");
-		CityRPGData.addValue("BoughtLumber", "0");
-		CityRPGData.addValue("Layout", "<color:3C9EFF>");
+		
 		
 		if(CityRPGData.loadedSaveFile)
 		{
