@@ -569,6 +569,9 @@ function CityRPGLotTriggerData::onEnterTrigger(%this, %trigger, %obj)
 	// This is the player's first visit. Record the visit to this lot
 	if(!%visited)
 	{
+		// Trigger the event
+		%trigger.parent.onEnterLotFirst(%obj);
+		
 		// Initialize if blank
 		if(%lotsVisited == -1)
 		{

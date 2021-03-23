@@ -24,6 +24,18 @@ function fxDTSBrick::onLeaveLot(%brick, %obj)
 	%brick.processInputEvent("OnLeaveLot", %obj.client);
 }
 
+function fxDTSBrick::OnEnterLotFirst(%brick, %obj)
+{
+	$inputTarget_self = %brick;
+
+	$inputTarget_client = %obj.client;
+	$inputTarget_player = %obj.client.player;
+
+	$inputTarget_miniGame = (isObject(getMiniGameFromObject(%obj.client))) ? getMiniGameFromObject(%obj.client) : 0;
+
+	%brick.processInputEvent("OnEnterLotFirst", %obj.client);
+}
+
 function fxDTSBrick::onTransferSuccess(%brick, %client)
 {
 	$inputTarget_self	= %brick;
