@@ -36,7 +36,6 @@ function City_Init()
 		CityRPGData.addValue("reincarnated", "0");
 		CityRPGData.addValue("resources", "0 0");
 		CityRPGData.addValue("student", "0");
-		CityRPGData.addValue("tools", "");
 		CityRPGData.addValue("Rep", "0");
 		CityRPGData.addValue("ElectionID", "0");
 		CityRPGData.addValue("lotsVisited", "-1");

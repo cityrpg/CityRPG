@@ -318,11 +318,6 @@ package CityRPG_MainPackage
 					%tools = (%tools !$= "" ? %tools SPC %tool : %tool);
 				}
 			}
-
-			if(%tools !$= "")
-				CityRPGData.getData(%client.bl_id).valueTools = %tools;
-			else
-				error("No Tool String!");
 		}
 
 		parent::onClientLeaveGame(%client);
@@ -472,7 +467,6 @@ package CityRPG_MainPackage
 			}
 		}
 
-		CityRPGData.getData(%client.bl_id).valueTools = "";
 		CityRPGData.getData(%client.bl_id).valueResources = "0 0";
 		parent::onDeath(%client, %player, %killer, %damageType, %unknownA);
 	}

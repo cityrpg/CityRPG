@@ -467,13 +467,7 @@ function player::giveDefaultEquipment(%this)
 {
 	if(!getWord(CityRPGData.getData(%this.client.bl_id).valueJailData, 1))
 	{
-		if(CityRPGData.getData(%this.client.bl_id).valueTools $= "")
-		{
-			%tools = ($Pref::Server::City::giveDefaultTools ? $Pref::Server::City::defaultTools @ " " : "") @ %this.client.getJobSO().tools;
-			CityRPGData.getData(%this.client.bl_id).valueTools = "";
-		}
-		else
-			%tools = CityRPGData.getData(%this.client.bl_id).valueTools;
+		%tools = ($Pref::Server::City::giveDefaultTools ? $Pref::Server::City::defaultTools @ " " : "") @ %this.client.getJobSO().tools;
 
 		for(%a = 0; %a < %this.getDatablock().maxTools; %a++)
 		{
