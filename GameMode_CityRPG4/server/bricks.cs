@@ -515,10 +515,12 @@ function CityRPGLotTriggerData::onEnterTrigger(%this, %trigger, %obj)
 {
 	parent::onEnterTrigger(%this, %trigger, %obj);
 
+	%lotID = %trigger.parent.getCityLotID();
+
 	if(!isObject(%obj.client))
 	{
 		if(isObject(%obj.getControllingClient()))
-		%client = %obj.getControllingClient();
+			%client = %obj.getControllingClient();
 		else
 			return;
 	}
@@ -545,7 +547,39 @@ function CityRPGLotTriggerData::onEnterTrigger(%this, %trigger, %obj)
 
 	%client.centerPrint(%lotStr, %duration);
 
-	//%client.SetInfo();
+	// Lot visit tracking
+	%lotsVisited = CityRPGData.getData(%client.bl_id).valueLotsVisited;
+	%visited = 0;
+
+	if(%visited !$= "")
+	{
+		// Loop through the lots this player has visited.
+		for(%i = 0; %i <= getWordCount(%lotsVisited); %i++)
+		{
+			%visited = %lotID == getWord(%lotsVisited, %i);
+
+			if(%visited)
+			{
+				// We've found it -- search is done.
+				break;
+			}
+		}
+	}
+
+	// This is the player's first visit. Record the visit to this lot
+	if(!%visited)
+	{
+		// Initialize if blank
+		if(%lotsVisited == -1)
+		{
+			CityRPGData.getData(%client.bl_id).valueLotsVisited = %lotID;
+		}
+		else
+		{
+			// Push to the beginning, listing the lots in reverse order of when first visited.
+			CityRPGData.getData(%client.bl_id).valueLotsVisited = %lotID SPC %lotsVisited;
+		}
+	}
 }
 
 function CityRPGLotTriggerData::onLeaveTrigger(%this, %trigger, %obj)

@@ -39,7 +39,7 @@ function City_Init()
 		CityRPGData.addValue("tools", "");
 		CityRPGData.addValue("Rep", "0");
 		CityRPGData.addValue("ElectionID", "0");
-		
+		CityRPGData.addValue("lotsVisited", "-1");
 		
 		if(CityRPGData.loadedSaveFile)
 		{
