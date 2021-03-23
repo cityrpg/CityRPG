@@ -752,9 +752,6 @@ package CityRPG_Commands
 			// Job
 			%string = %string @ "\n" @ "Job:" SPC %job.name;
 
-			// Wallet
-			%string = %string @ "\n" @ "Money in wallet:" SPC "\c3$" @ %data.valueMoney;
-
 			// Net worth
 			%string = %string @ "\n" @ "Net worth:" SPC "\c3$" @ (%data.valueMoney + %data.valueBank);
 
@@ -772,6 +769,10 @@ package CityRPG_Commands
 				%eduString = "Level " @ %level;
 			}
 			%string = %string @ "\n" @ "Education:" SPC "\c3" @ %eduString;
+			
+			// Lots visited
+			%lotsVisited = getWordCount(%data.valueLotsVisited);
+			%string = %string @ "\nLots visited: " @ (%data.valueLotsVisited == -1? 0 : %lotsVisited);
 
 
 			commandToClient(%client, 'MessageBoxOK', "Stats for " @ %target.name, %string);
