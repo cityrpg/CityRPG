@@ -7,8 +7,6 @@ function fxDTSBrick::OnEnterLot(%brick, %obj)
 	$inputTarget_client = %obj.client;
 	$inputTarget_player = %obj.client.player;
 
-	$inputTarget_miniGame = (isObject(getMiniGameFromObject(%obj.client))) ? getMiniGameFromObject(%obj.client) : 0;
-
 	%brick.processInputEvent("OnEnterLot", %obj.client);
 }
 
@@ -19,8 +17,6 @@ function fxDTSBrick::onLeaveLot(%brick, %obj)
 	$inputTarget_client = %obj.client;
 	$inputTarget_player = %obj.client.player;
 
-	$inputTarget_miniGame = (isObject(getMiniGameFromObject(%obj.client))) ? getMiniGameFromObject(%obj.client) : 0;
-
 	%brick.processInputEvent("OnLeaveLot", %obj.client);
 }
 
@@ -30,8 +26,6 @@ function fxDTSBrick::OnEnterLotFirst(%brick, %obj)
 
 	$inputTarget_client = %obj.client;
 	$inputTarget_player = %obj.client.player;
-
-	$inputTarget_miniGame = (isObject(getMiniGameFromObject(%obj.client))) ? getMiniGameFromObject(%obj.client) : 0;
 
 	%brick.processInputEvent("OnEnterLotFirst", %obj.client);
 }
