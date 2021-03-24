@@ -85,10 +85,12 @@ function CityMenu_Lot(%client, %input)
 	if(%brick.getCityLotOwnerID() == %client.bl_id)
 	{
 		%menu = %menu
-				TAB "Rename lot.";
+				TAB "Rename lot."
+				TAB "Wrench lot.";
 
 		%functions = %functions
-				TAB "CityMenu_LotSetNamePrompt";
+				TAB "CityMenu_LotSetNamePrompt"
+				TAB "CityMenu_LotWrench";
 
 		if(%brick.getCityLotPreownedPrice() == -1)
 		{
@@ -231,6 +233,18 @@ function CityMenu_LotSetName(%client, %input)
 	%client.cityMenuMessage("\c6Lot name changed to \c3" @ %brick.getCityLotName() @ "\c6.");
 
 	%client.cityMenuClose();
+}
+
+function CityMenu_LotWrench(%client)
+{
+	// Set the hit obj to the lot brick
+	%hitObj = %client.cityMenuID;
+
+	// Close the menu -- we're pivoting to a built-in game menu.
+	%client.cityMenuClose();
+
+	// Wacky hacky fun time! We're directly calling WrenchImage.onHitObject to open the dialog as if the player wrenched the brick.
+	WrenchImage.onHitObject(%client.player, 2, %hitObj, %client.player.position, %client.player.getEyePoint());
 }
 
 function CityMenu_Lot_RemoveFromSale(%client)
