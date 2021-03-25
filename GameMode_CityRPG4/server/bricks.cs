@@ -527,7 +527,7 @@ function CityRPGLotTriggerData::onEnterTrigger(%this, %trigger, %obj)
 	else
 		%client = %obj.client;
 
-	%trigger.parent.onEnterLot(%obj);
+	%trigger.parent.onLotEntered(%obj);
 
 	%client.CityRPGTrigger = %trigger;
 	%client.CityRPGLotBrick = %trigger.parent;
@@ -570,7 +570,7 @@ function CityRPGLotTriggerData::onEnterTrigger(%this, %trigger, %obj)
 	if(!%visited)
 	{
 		// Trigger the event
-		%trigger.parent.onEnterLotFirst(%obj);
+		%trigger.parent.onLotFirstEntered(%obj);
 		
 		// Initialize if blank
 		if(%lotsVisited == -1)
@@ -598,7 +598,7 @@ function CityRPGLotTriggerData::onLeaveTrigger(%this, %trigger, %obj)
 		%client = %obj.client;
 
 	%client.cityMenuClose();
-	%trigger.parent.onLeaveLot(%obj);
+	%trigger.parent.onLotLeft(%obj);
 
 	if(%trigger.parent!=%client.CityRPGLotBrick)
 		return;

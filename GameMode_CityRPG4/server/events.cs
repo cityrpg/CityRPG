@@ -1,33 +1,33 @@
 // See City_Init_AssembleEvents() in init.cs for registration
 // Input Events
-function fxDTSBrick::OnEnterLot(%brick, %obj)
+function fxDTSBrick::onLotEntered(%brick, %obj)
 {
 	$inputTarget_self = %brick;
 
 	$inputTarget_client = %obj.client;
 	$inputTarget_player = %obj.client.player;
 
-	%brick.processInputEvent("OnEnterLot", %obj.client);
+	%brick.processInputEvent("onLotEntered", %obj.client);
 }
 
-function fxDTSBrick::onLeaveLot(%brick, %obj)
+function fxDTSBrick::onLotLeft(%brick, %obj)
 {
 	$inputTarget_self = %brick;
 
 	$inputTarget_client = %obj.client;
 	$inputTarget_player = %obj.client.player;
 
-	%brick.processInputEvent("OnLeaveLot", %obj.client);
+	%brick.processInputEvent("onLotLeft", %obj.client);
 }
 
-function fxDTSBrick::OnEnterLotFirst(%brick, %obj)
+function fxDTSBrick::onLotFirstEntered(%brick, %obj)
 {
 	$inputTarget_self = %brick;
 
 	$inputTarget_client = %obj.client;
 	$inputTarget_player = %obj.client.player;
 
-	%brick.processInputEvent("OnEnterLotFirst", %obj.client);
+	%brick.processInputEvent("onLotFirstEntered", %obj.client);
 }
 
 function fxDTSBrick::onTransferSuccess(%brick, %client)

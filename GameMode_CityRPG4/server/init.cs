@@ -220,9 +220,9 @@ function City_Init_Spawns_Tick(%bgi, %bi)
 function City_Init_AssembleEvents()
 {
 	// Basic Input
-	registerInputEvent("fxDTSBrick", "onEnterLot", "Self fxDTSBrick" TAB "Player player" TAB "Client gameConnection");
-	registerInputEvent("fxDTSBrick", "onLeaveLot", "Self fxDTSBrick" TAB "Player player" TAB "Client gameConnection");
-	registerInputEvent("fxDTSBrick", "onEnterLotFirst", "Self fxDTSBrick" TAB "Player player" TAB "Client gameConnection");
+	registerInputEvent("fxDTSBrick", "onLotEntered", "Self fxDTSBrick" TAB "Player player" TAB "Client gameConnection");
+	registerInputEvent("fxDTSBrick", "onLotLeft", "Self fxDTSBrick" TAB "Player player" TAB "Client gameConnection");
+	registerInputEvent("fxDTSBrick", "onLotFirstEntered", "Self fxDTSBrick" TAB "Player player" TAB "Client gameConnection");
 	registerInputEvent("fxDTSBrick", "onTransferSuccess", "Self fxDTSBrick" TAB "Player Player" TAB "Client GameConnection");
 	registerInputEvent("fxDTSBrick", "onTransferDecline", "Self fxDTSBrick" TAB "Client GameConnection");
 	registerInputEvent("fxDTSBrick", "onJobTestPass", "Self fxDTSBrick" TAB "Player Player" TAB "Client GameConnection");
