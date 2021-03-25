@@ -66,7 +66,7 @@ function CityMenu_RealEstate(%client, %input, %brick)
 	}
 
 	%client.cityMenuMessage(%message);
-	%client.cityMenuOpen(%menu, %functions, %brick, "\c6Thanks, come again.");
+	%client.cityMenuOpen(%menu, %functions, %brick, "\c6Thanks, come again.", 0, 1);
 }
 
 // List for sale
@@ -106,7 +106,7 @@ function CityMenu_RealEstate_ViewLotsOwned(%client, %input, %brick)
 		%client.cityMenuClose(1);
 	}
 
-	%client.cityMenuOpen(%menu, %functions, %brick, "\c6Thanks, come again.");
+	%client.cityMenuOpen(%menu, %functions, %brick, "\c6Thanks, come again.", 0, 1);
 	%client.cityMenuMessage("\c6Choose one of your lots to manage. Use the PG UP and PG DOWN keys to scroll.");
 }
 
@@ -153,8 +153,7 @@ function CityMenu_RealEstate_ViewLotListings(%client, %input, %brick)
 		return;
 	}
 
-	%client.cityMenuClose(1);
-	%client.cityMenuOpen(%menu, %functions, %brick, "\c6Thanks, come again.");
+	%client.cityMenuOpen(%menu, %functions, %brick, "\c6Thanks, come again.", 0, 1);
 	%client.cityMenuMessage("\c6Type the number to view more info. Use the PG UP and PG DOWN keys to scroll.");
 }
 
