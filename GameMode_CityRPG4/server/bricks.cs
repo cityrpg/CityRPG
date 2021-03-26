@@ -281,38 +281,40 @@ datablock fxDTSBrickData(CityRPGCrimeVehicleData : brickVehicleSpawnData)
 // ============================================================
 function fxDTSBrick::createCityTrigger(%brick, %data)
 {
-	if(!isObject(%brick.trigger))
+	if(isObject(%brick.trigger))
 	{
-		%datablock = %brick.getDatablock();
+		return;
+	}
+	
+	%datablock = %brick.getDatablock();
 
-		%trigX = getWord(%datablock.triggerSize, 0);
-		%trigY = getWord(%datablock.triggerSize, 1);
-		%trigZ = getWord(%datablock.triggerSize, 2);
+	%trigX = getWord(%datablock.triggerSize, 0);
+	%trigY = getWord(%datablock.triggerSize, 1);
+	%trigZ = getWord(%datablock.triggerSize, 2);
 
-		if(mFloor(getWord(%brick.rotation, 3)) == 90)
-			%scale = (%trigY / 2) SPC (%trigX / 2) SPC (%trigZ / 2);
-		else
-			%scale = (%trigX / 2) SPC (%trigY / 2) SPC (%trigZ / 2);
+	if(mFloor(getWord(%brick.rotation, 3)) == 90)
+		%scale = (%trigY / 2) SPC (%trigX / 2) SPC (%trigZ / 2);
+	else
+		%scale = (%trigX / 2) SPC (%trigY / 2) SPC (%trigZ / 2);
 
-		%brick.trigger = new trigger()
-		{
-			datablock = %datablock.triggerDatablock;
-			position = getWords(%brick.getWorldBoxCenter(), 0, 1) SPC getWord(%brick.getWorldBox(), 2) + ((getWord(%datablock.triggerSize, 2) / 4));
-			rotation = "1 0 0 0";
-			scale = %scale;
-			polyhedron = "-0.5 -0.5 -0.5 1 0 0 0 1 0 0 0 1";
-			parent = %brick;
-		};
+	%brick.trigger = new trigger()
+	{
+		datablock = %datablock.triggerDatablock;
+		position = getWords(%brick.getWorldBoxCenter(), 0, 1) SPC getWord(%brick.getWorldBox(), 2) + ((getWord(%datablock.triggerSize, 2) / 4));
+		rotation = "1 0 0 0";
+		scale = %scale;
+		polyhedron = "-0.5 -0.5 -0.5 1 0 0 0 1 0 0 0 1";
+		parent = %brick;
+	};
 
-		%boxSize = getWord(%scale, 0) / 2.5 SPC getWord(%scale, 1) / 2.5 SPC getWord(%scale, 2) / 2.5;
+	%boxSize = getWord(%scale, 0) / 2.5 SPC getWord(%scale, 1) / 2.5 SPC getWord(%scale, 2) / 2.5;
 
-		if(%brick.getDatablock().CityRPGBrickType == $CityBrick_Lot)
-		{
-			getBrickGroupFromObject(%brick).lotsOwned++;
+	if(%brick.getDatablock().CityRPGBrickType == $CityBrick_Lot)
+	{
+		getBrickGroupFromObject(%brick).lotsOwned++;
 
-			if(isObject(getBrickGroupFromObject(%brick).client))
-				getBrickGroupFromObject(%brick).client.SetInfo();
-		}
+		if(isObject(getBrickGroupFromObject(%brick).client))
+			getBrickGroupFromObject(%brick).client.SetInfo();
 	}
 }
 
@@ -490,22 +492,24 @@ function fxDTSBrick::cityBrickCheck(%brick)
 
 function fxDTSBrick::onCityBrickRemove(%brick, %data)
 {
-	if(isObject(%brick.trigger))
+	if(!isObject(%brick.trigger))
 	{
-		for(%a = 0; %a < clientGroup.getCount(); %a++)
-		{
-			%subClient = ClientGroup.getObject(%a);
-			if(isObject(%subClient.player) && %subClient.CityRPGTrigger == %brick.trigger)
-				%brick.trigger.getDatablock().onLeaveTrigger(%brick.trigger, clientGroup.getObject(%a).player, true);
-		}
-
-		%boxSize = getWord(%brick.trigger.scale, 0) / 2.5 SPC getWord(%brick.trigger.scale, 1) / 2.5 SPC getWord(%brick.trigger.scale, 2) / 2.5;
-
-		initContainerBoxSearch(%brick.trigger.getWorldBoxCenter(), %boxSize, $typeMasks::playerObjectType);
-		while(isObject(%player = containerSearchNext()))
-			%brick.trigger.getDatablock().onLeaveTrigger(%brick.trigger, %player);
-		%brick.trigger.delete();
+		return;
 	}
+	
+	for(%a = 0; %a < clientGroup.getCount(); %a++)
+	{
+		%subClient = ClientGroup.getObject(%a);
+		if(isObject(%subClient.player) && %subClient.CityRPGTrigger == %brick.trigger)
+			%brick.trigger.getDatablock().onLeaveTrigger(%brick.trigger, clientGroup.getObject(%a).player, true);
+	}
+
+	%boxSize = getWord(%brick.trigger.scale, 0) / 2.5 SPC getWord(%brick.trigger.scale, 1) / 2.5 SPC getWord(%brick.trigger.scale, 2) / 2.5;
+
+	initContainerBoxSearch(%brick.trigger.getWorldBoxCenter(), %boxSize, $typeMasks::playerObjectType);
+	while(isObject(%player = containerSearchNext()))
+		%brick.trigger.getDatablock().onLeaveTrigger(%brick.trigger, %player);
+	%brick.trigger.delete();
 }
 
 // ============================================================
