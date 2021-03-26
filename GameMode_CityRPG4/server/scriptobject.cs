@@ -52,106 +52,105 @@ function JobSO::addJobFromFile(%so, %file)
 	if(!isFile(%filePath))
 	{
 		error("JobSO::addJobFromFile - Unable to find the corresponding job file '" @ %file @ "'. This job will not load.");
+		return;
 	}
-	else
+
+	%jobID = %so.getJobCount() + 1;
+	exec(%filePath);
+	%so.job[%jobID] = new scriptObject()
 	{
-		%jobID = %so.getJobCount() + 1;
-		exec(%filePath);
-		%so.job[%jobID] = new scriptObject()
+		id		= %jobID;
+
+		name		= $CityRPG::jobs::name;
+		track		= $CityRPG::jobs::track;
+		title		= $CityRPG::jobs::title;
+
+
+		invest		= $CityRPG::jobs::initialInvestment;
+		pay		= $CityRPG::jobs::pay;
+		tools		= $CityRPG::jobs::tools;
+		education	= $CityRPG::jobs::education;
+		db		= $CityRPG::jobs::datablock;
+		hostonly	= $CityRPG::jobs::hostonly;
+		adminonly	= $CityRPG::jobs::adminonly;
+		usepolicecars	= $CityRPG::jobs::usepolicecars;
+		usecrimecars	= $CityRPG::jobs::usecrimecars;
+		useparacars		= $CityRPG::jobs::useparacars;
+		outfit		= $CityRPG::jobs::outfit;
+
+		sellItems	= $CityRPG::jobs::sellItems;
+		sellFood	= $CityRPG::jobs::sellFood;
+		sellServices 	= $CityRPG::jobs::sellServices; // Unused.
+		sellClothes 	= $CityRPG::jobs::sellClothes;
+
+		law		= $CityRPG::jobs::law;
+		canPardon	= $CityRPG::jobs::canPardon;
+
+		thief		= $CityRPG::jobs::thief;
+		hideJobName	= $CityRPG::jobs::hideJobName;
+
+		bountyOffer	= $CityRPG::jobs::offerer;
+		bountyClaim	= $CityRPG::jobs::claimer;
+
+		laborer		= $CityRPG::jobs::labor;
+
+		tmHexColor	= $CityRPG::jobs::tmHexColor;
+		helpline	= $CityRPG::jobs::helpline;
+		flavortext	= $CityRPG::jobs::flavortext;
+	};
+
+	%track = $CityRPG::jobs::track;
+
+	if(%track $= "")
+	{
+		%track = "Miscellaneous";
+		%so.job[%jobID].track = Miscellaneous;
+	}
+
+	// Default to a neutral grey if there is no color
+	if($City::JobTrackColor[%track] $= "")
+	{
+		$City::JobTrackColor[%track] = "505050";
+	}
+
+
+	// Job track registration for menus
+	// "Invisible" jobs such as admin and mayor are not included
+	if(!$CityRPG::jobs::adminonly)
+	{
+		// Initialize if needed
+		$City::Jobs[%track] = $City::Jobs[%track]!$=""?($City::Jobs[%track] TAB %jobID):%jobID;
+
+		if(!$City::JobTrackExists[%track])
 		{
-			id		= %jobID;
+			// Record the job track to a list so that we can loop through it later.
+			$City::JobTracks = $City::JobTracks!$=""?($City::JobTracks TAB %track):%track;
 
-			name		= $CityRPG::jobs::name;
-			track		= $CityRPG::jobs::track;
-			title		= $CityRPG::jobs::title;
+			$City::JobTrackExists[%track] = true;
+		}
+	}
 
+	if(!isObject("CityRPGJob" @ %jobID @ "SpawnBrickData"))
+	{
+		datablock fxDtsBrickData(CityRPGSpawnBrickData : brickSpawnPointData)
+		{
+			category = "CityRPG";
+			subCategory = "Spawns";
 
-			invest		= $CityRPG::jobs::initialInvestment;
-			pay		= $CityRPG::jobs::pay;
-			tools		= $CityRPG::jobs::tools;
-			education	= $CityRPG::jobs::education;
-			db		= $CityRPG::jobs::datablock;
-			hostonly	= $CityRPG::jobs::hostonly;
-			adminonly	= $CityRPG::jobs::adminonly;
-			usepolicecars	= $CityRPG::jobs::usepolicecars;
-			usecrimecars	= $CityRPG::jobs::usecrimecars;
-			useparacars		= $CityRPG::jobs::useparacars;
-			outfit		= $CityRPG::jobs::outfit;
+			uiName = %so.job[%jobID].name SPC "Spawn";
 
-			sellItems	= $CityRPG::jobs::sellItems;
-			sellFood	= $CityRPG::jobs::sellFood;
-			sellServices 	= $CityRPG::jobs::sellServices; // Unused.
-			sellClothes 	= $CityRPG::jobs::sellClothes;
+			specialBrickType = "";
 
-			law		= $CityRPG::jobs::law;
-			canPardon	= $CityRPG::jobs::canPardon;
+			CityRPGBrickType = $CityBrick_Spawn;
+			CityRPGBrickAdmin = true;
 
-			thief		= $CityRPG::jobs::thief;
-			hideJobName	= $CityRPG::jobs::hideJobName;
-
-			bountyOffer	= $CityRPG::jobs::offerer;
-			bountyClaim	= $CityRPG::jobs::claimer;
-
-			laborer		= $CityRPG::jobs::labor;
-
-			tmHexColor	= $CityRPG::jobs::tmHexColor;
-			helpline	= $CityRPG::jobs::helpline;
-			flavortext	= $CityRPG::jobs::flavortext;
+			spawnData = "jobSpawn" SPC %jobID;
 		};
 
-		%track = $CityRPG::jobs::track;
-
-		if(%track $= "")
-		{
-			%track = "Miscellaneous";
-			%so.job[%jobID].track = Miscellaneous;
-		}
-
-		// Default to a neutral grey if there is no color
-		if($City::JobTrackColor[%track] $= "")
-		{
-			$City::JobTrackColor[%track] = "505050";
-		}
-
-
-		// Job track registration for menus
-		// "Invisible" jobs such as admin and mayor are not included
-		if(!$CityRPG::jobs::adminonly)
-		{
-			// Initialize if needed
-			$City::Jobs[%track] = $City::Jobs[%track]!$=""?($City::Jobs[%track] TAB %jobID):%jobID;
-
-			if(!$City::JobTrackExists[%track])
-			{
-				// Record the job track to a list so that we can loop through it later.
-				$City::JobTracks = $City::JobTracks!$=""?($City::JobTracks TAB %track):%track;
-
-				$City::JobTrackExists[%track] = true;
-			}
-		}
-
-		if(!isObject("CityRPGJob" @ %jobID @ "SpawnBrickData"))
-		{
-			datablock fxDtsBrickData(CityRPGSpawnBrickData : brickSpawnPointData)
-			{
-				category = "CityRPG";
-				subCategory = "Spawns";
-
-				uiName = %so.job[%jobID].name SPC "Spawn";
-
-				specialBrickType = "";
-
-				CityRPGBrickType = $CityBrick_Spawn;
-				CityRPGBrickAdmin = true;
-
-				spawnData = "jobSpawn" SPC %jobID;
-			};
-
-			CityRPGSpawnBrickData.setName("CityRPGJob" @ %jobID @ "SpawnBrickData");
-		}
-
-		deleteVariables("$CityRPG::jobs::*");
+		CityRPGSpawnBrickData.setName("CityRPGJob" @ %jobID @ "SpawnBrickData");
 	}
+
+	deleteVariables("$CityRPG::jobs::*");
 }
 
 function JobSO::getJobCount(%so)
