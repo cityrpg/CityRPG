@@ -40,7 +40,7 @@ function gameConnection::arrest(%client, %cop)
 	if(%client.getJobSO().law)
 	{
 		messageClient(%client, '', "\c6You have been demoted to" SPC City_DetectVowel(JobSO.job[1].name) SPC "\c3" @ JobSO.job[1].name SPC "\c6due to your jailing.");
-		%robSO.valueJobID = 1;
+		%robSO.valueJobID = $City::CivilianJobID;
 	}
 
 	if(%robSO.valueBounty > 0)

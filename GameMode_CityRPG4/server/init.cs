@@ -46,7 +46,7 @@ function City_Init()
 			{
 				if(CityRPGData.data[%a].valueJobID > JobSO.getJobCount() || CityRPGData.data[%a].valueJobID < 0)
 				{
-					CityRPGData.data[%a].valueJobID = 1;
+					CityRPGData.data[%a].valueJobID = $City::CivilianJobID;
 				}
 			}
 		}
@@ -63,7 +63,7 @@ function City_Init()
 		{
 			if(CityRPGData.data[%a].valueJobID > JobSO.getJobCount() || CityRPGData.data[%a].valueJobID < 0)
 			{
-				CityRPGData.data[%a].valueJobID = 1;
+				CityRPGData.data[%a].valueJobID = $City::CivilianJobID;
 			}
 		}
 	}
