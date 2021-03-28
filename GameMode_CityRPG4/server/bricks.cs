@@ -551,6 +551,9 @@ function CityRPGLotTriggerData::onEnterTrigger(%this, %trigger, %obj)
 
 	%client.centerPrint(%lotStr, %duration);
 
+	// Realtime tracking of lot occupants - Add to the index.
+	%trigger.parent.lotOccupants = %trigger.parent.lotOccupants $= "" ? %client TAB "" : %trigger.parent.lotOccupants @ %client TAB "";
+
 	// Lot visit tracking
 	%lotsVisited = CityRPGData.getData(%client.bl_id).valueLotsVisited;
 	%visited = 0;
@@ -606,6 +609,9 @@ function CityRPGLotTriggerData::onLeaveTrigger(%this, %trigger, %obj)
 
 	if(%trigger.parent!=%client.CityRPGLotBrick)
 		return;
+
+	// Realtime tracking of lot occupants - Remove from the index.
+	%trigger.parent.lotOccupants = strreplace(%trigger.parent.lotOccupants, %client TAB "", "");
 
 	%client.CityRPGTrigger = "";
 	%client.CityRPGLotBrick = "";
