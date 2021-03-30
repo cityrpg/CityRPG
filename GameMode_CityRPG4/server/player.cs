@@ -241,6 +241,24 @@ function gameConnection::applyForcedBodyParts(%client)
 	}
 }
 
+function gameConnection::cityLotDisplay(%client, %lotBrick)
+{
+	%lotStr = "<just:right><font:palatino linotype:18>\c6" @ %lotBrick.getCityLotName();
+
+	%duration = 2;
+	if(%lotBrick.getCityLotOwnerID() == -1)
+	{
+		%lotStr = %lotStr @ "<br>\c2For sale!\c6 Type /lot for info";
+	}
+	else if(%lotBrick.getCityLotPreownedPrice() != -1)
+	{
+		%lotStr = %lotStr @ "<br>\c2For sale by owner!\c6 Type /lot for info";
+		%duration = 3;
+	}
+
+	%client.centerPrint(%lotStr, %duration);
+}
+
 // Get Functions
 function gameConnection::getCashString(%client)
 {

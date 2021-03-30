@@ -11,6 +11,18 @@ function GameConnection::cityLotIndexClear(%client)
 	}
 }
 
+// Brick.cityLotDisplayRefresh()
+// Re-displays the lot's info to all players currently on the lot.
+function fxDTSBrick::cityLotDisplayRefresh(%brick)
+{
+	for(%i = 0; %i <= getFieldCount(%brick.lotOccupants)-1; %i++)
+	{
+		%targetClient = getField(%brick.lotOccupants, %i);
+
+		%targetClient.cityLotDisplay(%brick);
+	}
+}
+
 function CityMenu_Lot(%client, %input)
 {
 	if(%client.cityMenuBack !$= "")
@@ -196,6 +208,8 @@ function CityLots_PurchaseLot(%client, %input, %lot)
 		CityLots_TransferLot(%client.cityMenuID, %client.bl_id); // The menu ID is the lot brick ID
 		%client.cityMenuID.setCityLotTransferDate(getDateTime());
 
+		%lot.cityLotDisplayRefresh();
+
 		// Open the menu for the new lot
 		CityMenu_Lot(%client);
 	}
@@ -231,6 +245,7 @@ function CityMenu_LotSetName(%client, %input)
 
 	%brick.setCityLotName(%name);
 	%client.cityMenuMessage("\c6Lot name changed to \c3" @ %brick.getCityLotName() @ "\c6.");
+	%brick.cityLotDisplayRefresh();
 
 	%client.cityMenuClose();
 }
@@ -255,6 +270,7 @@ function CityMenu_Lot_RemoveFromSale(%client)
 
 	// This will remove it from CitySO.lotListings as well.
 	%lotBrick.setCityLotPreownedPrice(-1);
+	%lotBrick.cityLotDisplayRefresh();
 
 	%client.cityMenuMessage("\c6You have taken this lot off sale.");
 	%client.cityMenuClose();
@@ -321,6 +337,7 @@ function CityMenu_Lot_ListForSale(%client, %input)
 
 	// This will append the lot to the fields under CitySO.lotListings.
 	%lotBrick.setCityLotPreownedPrice(%client.cityLotPrice);
+	%lotBrick.cityLotDisplayRefresh();
 
 	%client.cityMenuMessage("\c6You have listed your lot for sale.");
 	%client.cityMenuClose();
@@ -396,6 +413,7 @@ function CityMenu_Lot_PurchasePreowned(%client, %input, %lot)
 		// This transfer will automatically reset the state of the lot as 'not for sale'.
 		CityLots_TransferLot(%client.cityMenuID, %client.bl_id); // The menu ID is the lot brick ID
 		%client.cityMenuID.setCityLotTransferDate(getDateTime());
+		%lot.cityLotDisplayRefresh();
 
 		// Open the menu for the new lot
 		CityMenu_Lot(%client);
@@ -445,7 +463,8 @@ function CityMenu_LotAdmin_SetNamePrompt(%client)
 
 function CityMenu_LotAdmin_SetName(%client, %input)
 {
-	%client.cityLog("Lot MOD " @ %client.cityMenuID.getCityLotID() @ " rename '" @ %input @ "'");
+	%brick = %client.cityMenuID;
+	%client.cityLog("Lot MOD " @ %brick.getCityLotID() @ " rename '" @ %input @ "'");
 
 	if(strlen(%input) > 40)
 	{
@@ -453,8 +472,9 @@ function CityMenu_LotAdmin_SetName(%client, %input)
 		return;
 	}
 
-	%client.cityMenuID.setCityLotName(%input);
+	%brick.setCityLotName(%input);
 	%client.cityMenuMessage("\c6Lot name changed to \c3" @ %client.cityMenuID.getCityLotName() @ "\c6.");
+	%brick.cityLotDisplayRefresh();
 
 	%client.cityMenuClose();
 }
@@ -472,6 +492,7 @@ function CityMenu_LotAdmin_TransferCity(%client)
 
 	%brick.setCityLotName("Unclaimed Lot");
 	%brick.setCityLotOwnerID(-1);
+	%brick.cityLotDisplayRefresh();
 
 	%client.cityMenuMessage("\c6Lot transferred to the city successfully.");
 	%client.cityMenuClose();
@@ -487,7 +508,8 @@ function CityMenu_LotAdmin_TransferPlayerPrompt(%client)
 
 function CityMenu_LotAdmin_TransferPlayer(%client, %input)
 {
-	%client.cityLog("Lot MOD " @ %client.cityMenuID.getCityLotID() @ " transfer pl '" @ %input @ "'");
+	%brick = %client.cityMenuID;
+	%client.cityLog("Lot MOD " @ %brick.getCityLotID() @ " transfer pl '" @ %input @ "'");
 
 	%target = findClientByBL_ID(%input);
 
@@ -499,7 +521,8 @@ function CityMenu_LotAdmin_TransferPlayer(%client, %input)
 	}
 
 	CityLots_TransferLot(%client.cityMenuID, %input);
-	%client.cityMenuID.setCityLotTransferDate(getDateTime());
+	%brick.setCityLotTransferDate(getDateTime());
+	%brick.cityLotDisplayRefresh();
 
 	%client.cityMenuClose();
 }
