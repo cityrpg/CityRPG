@@ -317,148 +317,27 @@ package CityRPG_Commands
 		%target.SetInfo();
 	}
 
-	// TODO: Rewrite this spaghetti mess
-	function serverCmdjobs(%client, %job, %job2, %job3, %job4, %job5)
+	function serverCmdjobs(%client, %str1, %str2, %str3, %str4)
 	{
-		if(%client.cityRateLimitCheck())
+		if(%client.cityRateLimitCheck() || !isObject(%client.player))
 		{
 			return;
 		}
 
 		%client.cityLog("/jobs" SPC %job SPC %job2 SPC %job3 SPC %job4 SPC %job5);
 
-		if(%job !$= "")
+		// Combine the job input.
+		// Trim spaces for args that are not used.
+		%jobInput = rtrim(%str1 SPC %str2 SPC %str3 SPC %str4);
+		%jobObject = findJobByName(%jobInput);
+
+		if(!isObject(%jobObject))
 		{
-			if(!isObject(%client.player))
-				return;
-
-			// Concat Job Words
-			%job = %job @ (%job2 !$= "" ? " " @ %job2 @ (%job3 !$= "" ? " " @ %job3 @ (%job4 !$= "" ? " " @ %job4 @ (%job5 !$= "" ? " " @ %job5 : "") : "") : "") : "");
-
-			for(%a = 1; %a <= JobSO.getJobCount(); %a++)
-			{
-				if(strlwr(%job) $= strLwr(JobSO.job[%a].name))
-				{
-					%foundJob = true;
-
-					if(%a == CityRPGData.getData(%client.bl_id).valueJobID)
-					{
-						messageClient(%client, '', "\c6You are already" SPC City_DetectVowel(JobSO.job[%a].name) SPC "\c3" @ JobSO.job[%a].name @ "\c6!");
-					}
-					else
-					{
-						if(JobSO.job[%a].law && getWord(CityRPGData.getData(%client.bl_id).valueJailData, 0) == 1)
-						{
-							messageClient(%client, '', "\c6You don't have a clean criminal record. You can't become" SPC City_DetectVowel(JobSO.job[%a].name) SPC "\c3" @ JobSO.job[%a].name @ "\c6.");
-						}
-						else
-						{
-							if(mFloor(JobSO.job[%a].education) > 0)
-							{
-								if(CityRPGData.getData(%client.bl_id).valueEducation < JobSO.job[%a].education)
-								{
-									messageClient(%client, '', "\c6You are not educated enough to get this job.");
-								}
-								else
-								{
-									if(CityRPGData.getData(%client.bl_id).valueMoney < JobSO.job[%a].invest)
-									{
-										messageClient(%client, '', "\c6It costs \c3$" @ JobSO.job[%a].invest SPC "\c6to become" SPC City_DetectVowel(JobSO.job[%a].name) SPC JobSO.job[%a].name @ "\c6.");
-									}
-									else
-									{
-										if(JobSO.job[%a].hostonly == 1)
-										{
-											if(%client.BL_ID == getNumKeyID())
-											{
-												%gotTheJob = true;
-												messageClient(%client, '', "\c6Congratulations, you are now" SPC City_DetectVowel(JobSO.job[%a].name) SPC JobSO.job[%a].name @ "\c6. Your new salary is \c3$" @ JobSO.job[%a].pay @ "\c6 per day.");
-												CityRPGData.getData(%client.bl_id).valueMoney -= JobSO.job[%a].invest;
-											}
-											else
-											{
-												messageClient(%client, '', "\c6Sorry, only the Host can be" SPC City_DetectVowel(JobSO.job[%a].name) SPC JobSO.job[%a].name @ "\c6.");
-											}
-										}
-										else if(JobSO.job[%a].adminonly == 1)
-										{
-											if(%client.isAdmin || %client.isSuperAdmin)
-											{
-												%gotTheJob = true;
-												messageClient(%client, '', "\c6Congratulations, you are now" SPC City_DetectVowel(JobSO.job[%a].name) SPC JobSO.job[%a].name @ "\c6. Your new salary is \c3$" @ JobSO.job[%a].pay @ "\c6 per day.");
-												CityRPGData.getData(%client.bl_id).valueMoney -= JobSO.job[%a].invest;
-											}
-											else
-											{
-												messageClient(%client, '', "\c6Sorry, only an Admin or a Super Admin can be" SPC City_DetectVowel(JobSO.job[%a].name) SPC JobSO.job[%a].name @ "\c6.");
-											}
-										}
-										else
-										{
-											%gotTheJob = true;
-											messageClient(%client, '', "\c6Congratulations, you are now" SPC City_DetectVowel(JobSO.job[%a].name) SPC JobSO.job[%a].name @ "\c6. Your new salary is \c3$" @ JobSO.job[%a].pay @ "\c6 per day.");
-											CityRPGData.getData(%client.bl_id).valueMoney -= JobSO.job[%a].invest;
-										}
-									}
-								}
-							}
-							else
-							{
-								if(CityRPGData.getData(%client.bl_id).valueMoney < JobSO.job[%a].invest)
-								{
-									messageClient(%client, '', "\c6It costs \c3$" @ JobSO.job[%a].invest SPC "\c6to become" SPC City_DetectVowel(JobSO.job[%a].name) SPC JobSO.job[%a].name @ "\c6.");
-								}
-								else
-								{
-									if(JobSO.job[%a].hostonly == 1)
-									{
-										if(%client.BL_ID == getNumKeyID())
-										{
-											%gotTheJob = true;
-											messageClient(%client, '', "\c6Congratulations, you are now" SPC City_DetectVowel(JobSO.job[%a].name) SPC JobSO.job[%a].name @ "\c6. Your new salary is \c3$" @ JobSO.job[%a].pay @ "\c6 per day.");
-											CityRPGData.getData(%client.bl_id).valueMoney -= JobSO.job[%a].invest;
-										}
-										else
-										{
-											messageClient(%client, '', "\c6Sorry, only the Host can be" SPC City_DetectVowel(JobSO.job[%a].name) SPC JobSO.job[%a].name @ "\c6.");
-										}
-									}
-									else if(JobSO.job[%a].adminonly == 1)
-									{
-										if(%client.isAdmin || %client.isSuperAdmin)
-										{
-											%gotTheJob = true;
-											messageClient(%client, '', "\c6Congratulations, you are now" SPC City_DetectVowel(JobSO.job[%a].name) SPC JobSO.job[%a].name @ "\c6. Your new salary is \c3$" @ JobSO.job[%a].pay @ "\c6 per day.");
-											CityRPGData.getData(%client.bl_id).valueMoney -= JobSO.job[%a].invest;
-										}
-										else
-										{
-											messageClient(%client, '', "\c6Sorry, only an Admin or a Super Admin can be" SPC City_DetectVowel(JobSO.job[%a].name) SPC JobSO.job[%a].name @ "\c6.");
-										}
-									}
-									else
-									{
-										%gotTheJob = true;
-										messageClient(%client, '', "\c6You have made your own initiative to become" SPC City_DetectVowel(JobSO.job[%a].name) SPC "\c3" @ JobSO.job[%a].name @ "\c6.");
-										CityRPGData.getData(%client.bl_id).valueMoney -= JobSO.job[%a].invest;
-									}
-								}
-							}
-						}
-					}
-
-					if(%gotTheJob)
-					{
-						jobset(%client, %a);
-					}
-				}
-			}
-
-			if(!%foundJob)
-				messageClient(%client, '', "\c6No such job as \c3" @ %job @ "\c6. Please try again.");
+			messageClient(%client, '', "\c6No such job. Please try again.");
+			return;
 		}
-		else
-			messageClient(%client, '', "\c6Visit the employment office to view available jobs.");
+
+		%client.setCityJob(%jobObject.id);
 	}
 
 	function serverCmdreset(%client)

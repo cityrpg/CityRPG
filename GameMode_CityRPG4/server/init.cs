@@ -28,7 +28,7 @@ function City_Init()
 		CityRPGData.addValue("hunger", "7");
 		CityRPGData.addValue("jailData", "0 0");
 		CityRPGData.addValue("jobID", "1");
-		CityRPGData.addValue("jobRevert", "1");
+		CityRPGData.addValue("jobRevert", "0");
 		CityRPGData.addValue("lotData", "0");
 		CityRPGData.addValue("money", "0");
 		CityRPGData.addValue("name", "noName");
@@ -44,7 +44,7 @@ function City_Init()
 		{
 			for(%a = 1; %a <= CityRPGData.dataCount; %a++)
 			{
-				if(CityRPGData.data[%a].valueJobID > JobSO.getJobCount() || CityRPGData.data[%a].valueJobID < 0)
+				if(JobSO.job[CityRPGData.data[%a].valueJobID] $= "")
 				{
 					CityRPGData.data[%a].valueJobID = $City::CivilianJobID;
 				}

@@ -15,37 +15,40 @@ function JobSO::populateJobs(%so)
 
 function JobSO::loadJobFiles(%so)
 {
-	$City::DefaultJobs = 1;
-	$City::CivilianJobID = 1;
-	$City::AdminJobID = 13;
+	$City::DefaultJobs = "StarterCivilian";
+	$City::CivilianJobID = "StarterCivilian";
+	$City::AdminJobID = "Admin";
 
 	exec($City::ScriptPath @ "/jobTrees.cs");
 
-	// NOTE: Order is incredibly important. Jobs are referenced by ID, which is determined by order.
-	// Mixing up the order of these professions will cause save data to reference the wrong job.
-	%so.addJobFromFile("civilian");               // 1
-	%so.addJobFromFile("miner");                  // 2
-	%so.addJobFromFile("lumberjack");             // 3
-	%so.addJobFromFile("grocer");                 // 4
-	%so.addJobFromFile("armsdealer");             // 5
-	%so.addJobFromFile("shopowner");							// 6
-	%so.addJobFromFile("shopceo");           		  // 7
-	%so.addJobFromFile("bountyhunter");           // 8
-	%so.addJobFromFile("bountyhunterpro");        // 9
-	%so.addJobFromFile("policeasst");             // 10
-	%so.addJobFromFile("policeman");              // 11
-	%so.addJobFromFile("policechief");            // 12
-	%so.addJobFromFile("councilmember");          // 13
-	%so.addJobFromFile("mayor");		  						// 14
+	%so.createJob("StarterCivilian");
+	%so.createJob("LaborMiner");
+	%so.createJob("LaborLumberjack");
+	%so.createJob("BusGrocer");
+	%so.createJob("BusArmsDealer");
+	%so.createJob("BusOwner");
+	%so.createJob("BusCEO");
+	%so.createJob("BountyHunter");
+	%so.createJob("BountyVigilante");
+	%so.createJob("PdAsst");
+	%so.createJob("PdOfficer");
+	%so.createJob("PdChief");
+	%so.createJob("Admin");
+	%so.createJob("GovMayor");
 }
 
-function JobSO::addJobFromFile(%so, %file)
+function JobSO::createJob(%so, %file)
 {
+	// The identifier of each job must be unique as it is used to reference the job.
+	%jobID = %file;
+
 	// First check for a path in the game-mode, then check for a direct path
 	%filePath = $City::ScriptPath @ "jobs/" @ %file @ ".cs";
 	if(!isFile(%filePath))
 	{
+		// A full path has likely been passed to %file, process accordingly.
 		%filePath = %file;
+		%jobID = fileBase(%file);
 	}
 
 	// If there's still nothing, throw an error.
@@ -55,7 +58,9 @@ function JobSO::addJobFromFile(%so, %file)
 		return;
 	}
 
-	%jobID = %so.getJobCount() + 1;
+	// Jobs must be indexed so we can loop search through them.
+	%so.jobsIndex = %so.jobsIndex $= ""? %jobID : %so.jobsIndex TAB %jobID;
+
 	exec(%filePath);
 	%so.job[%jobID] = new scriptObject()
 	{
@@ -155,8 +160,7 @@ function JobSO::addJobFromFile(%so, %file)
 
 function JobSO::getJobCount(%so)
 {
-	for(%a = 0; isObject(%so.job[%a + 1]); %a++) { }
-	return %a;
+	return getFieldCount(%so.jobsIndex);
 }
 
 // ============================================================

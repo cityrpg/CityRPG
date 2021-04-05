@@ -521,25 +521,6 @@ function player::giveDefaultEquipment(%this)
 	}
 }
 
-
-function jobset(%client, %job, %name)
-{
-	CityRPGData.getData(%client.bl_id).valueJobID = %job;
-	serverCmdunUseTool(%client);
-	%client.player.giveDefaultEquipment();
-	%client.applyForcedBodyColors();
-	%client.applyForcedBodyParts();
-	%client.player.setDatablock(%client.getJobSO().db);
-
-	if(%job == $City::MayorJobID)
-	{
-		$City::Mayor::String = %client.name;
-		$City::Mayor::Enabled = 0;
-		serverCmdClearImpeach(%client);
-	}
-	%client.SetInfo();
-}
-
 function resetFree(%client)
 {
 	%client.cityLog("***Account auto-reset***");

@@ -46,7 +46,7 @@ function CityMayor_stopElection()
 
 		%client = findClientByBL_ID($City::Mayor::ID);
 		messageClient(%client, '', "\c6Congratulations, you are now the" SPC JobSO.job[$City::MayorJobID].name @ "\c6! Your new salary is \c3$" @ JobSO.job[$City::MayorJobID].pay @ "\c6 per day.");
-		jobset(%client, $City::MayorJobID);
+		%client.setCityJob($City::MayorJobID, 1);
 
 	}
 }
@@ -123,7 +123,7 @@ function serverCmdMeMayor(%client)
 
 	if(%client.name $= $City::Mayor::String)
 	{
-		jobset(%client, $City::MayorJobID);
+		%client.setCityJob($City::MayorJobID, 1);
 	}
 }
 
