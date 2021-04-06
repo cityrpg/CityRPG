@@ -233,7 +233,7 @@ function GameConnection::setCityJob(%client, %jobID, %force)
 			%jobEligible = 0;
 		}
 
-		if(%jobObject.adminonly == 1)
+		if(%jobObject.adminonly == 1 && !%client.isAdmin)
 		{
 			messageClient(%client, '', "\c6- Only an Admin or a Super Admin can become" SPC City_DetectVowel(%jobObject.name) SPC %jobObject.name @ "\c6.");
 			%jobEligible = 0;
