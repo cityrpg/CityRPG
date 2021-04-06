@@ -235,7 +235,7 @@ function GameConnection::setCityJob(%client, %jobID, %force)
 
 		if(%jobObject.adminonly == 1 && !%client.isAdmin)
 		{
-			messageClient(%client, '', "\c6- Only an Admin or a Super Admin can become" SPC City_DetectVowel(%jobObject.name) SPC %jobObject.name @ "\c6.");
+			messageClient(%client, '', "\c6- You cannot directly sign up to become" SPC City_DetectVowel(%jobObject.name) SPC %jobObject.name @ "\c6.");
 			%jobEligible = 0;
 		}
 
@@ -258,7 +258,11 @@ function GameConnection::setCityJob(%client, %jobID, %force)
 		}
 
 		// Operations for player-initiated job changes only.
-		if(%jobObject.education == 0)
+		if(%jobObject.adminonly)
+		{
+			messageClient(%client, '', "\c6You have used your admin powers to become" SPC City_DetectVowel(%jobObject.name) SPC %jobObject.name @ "\c6. Your new salary is \c3$" @ %jobObject.pay @ "\c6 per day.");
+		}
+		else if(%jobObject.education == 0)
 		{
 			messageClient(%client, '', "\c6You have made your own initiative to become" SPC City_DetectVowel(%jobObject.name) SPC "\c3" @ %jobObject.name @ "\c6.");
 		}
