@@ -195,7 +195,7 @@ function City_DetectVowel(%word)
 function City_FindSpawn(%search, %id)
 {
 	%search = strlwr(%search);
-	%fullSearch = %search @ (%id ? " " @ %id : "");
+	%fullSearch = %search @ (%id !$= "" ? " " @ %id : "");
 
 	for(%a = 0; %a < getWordCount($CityRPG::temp::spawnPoints); %a++)
 	{

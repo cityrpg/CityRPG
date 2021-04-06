@@ -737,10 +737,10 @@ package CityRPG_MainPackage
 					%spawn = City_FindSpawn("personalSpawn", %client.bl_id);
 				else
 				{
-					if(City_FindSpawn("jobSpawn", CityRPGData.getData(%client.bl_id).valueJobID) && CityRPGData.getData(%client.bl_id).valueJobID != 1)
+					if(City_FindSpawn("jobSpawn", CityRPGData.getData(%client.bl_id).valueJobID) && CityRPGData.getData(%client.bl_id).valueJobID !$= $City::CivilianJobID)
 						%spawn = City_FindSpawn("jobSpawn", CityRPGData.getData(%client.bl_id).valueJobID);
 					else
-						%spawn = City_FindSpawn("jobSpawn", 1);
+						%spawn = City_FindSpawn("jobSpawn", $City::CivilianJobID);
 				}
 			}
 		}
