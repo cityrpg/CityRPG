@@ -64,44 +64,44 @@ function JobSO::createJob(%so, %file)
 	exec(%filePath);
 	%so.job[%jobID] = new scriptObject()
 	{
-		id		= %jobID;
+		id				= %jobID;
 
-		name		= $CityRPG::jobs::name;
-		track		= $CityRPG::jobs::track;
-		title		= $CityRPG::jobs::title;
+		name			= $CityRPG::jobs::name;
+		track			= $CityRPG::jobs::track;
+		title			= $CityRPG::jobs::title;
 
 
-		invest		= $CityRPG::jobs::initialInvestment;
-		pay		= $CityRPG::jobs::pay;
-		tools		= $CityRPG::jobs::tools;
-		education	= $CityRPG::jobs::education;
-		db		= $CityRPG::jobs::datablock;
-		hostonly	= $CityRPG::jobs::hostonly;
-		adminonly	= $CityRPG::jobs::adminonly;
+		invest			= $CityRPG::jobs::initialInvestment;
+		pay				= $CityRPG::jobs::pay;
+		tools			= $CityRPG::jobs::tools;
+		education		= $CityRPG::jobs::education;
+		db				= $CityRPG::jobs::datablock;
+		hostonly		= $CityRPG::jobs::hostonly;
+		adminonly		= $CityRPG::jobs::adminonly;
 		usepolicecars	= $CityRPG::jobs::usepolicecars;
 		usecrimecars	= $CityRPG::jobs::usecrimecars;
 		useparacars		= $CityRPG::jobs::useparacars;
-		outfit		= $CityRPG::jobs::outfit;
+		outfit			= $CityRPG::jobs::outfit;
 
-		sellItems	= $CityRPG::jobs::sellItems;
-		sellFood	= $CityRPG::jobs::sellFood;
+		sellItems		= $CityRPG::jobs::sellItems;
+		sellFood		= $CityRPG::jobs::sellFood;
 		sellServices 	= $CityRPG::jobs::sellServices; // Unused.
 		sellClothes 	= $CityRPG::jobs::sellClothes;
 
-		law		= $CityRPG::jobs::law;
-		canPardon	= $CityRPG::jobs::canPardon;
+		law				= $CityRPG::jobs::law;
+		canPardon		= $CityRPG::jobs::canPardon;
 
-		thief		= $CityRPG::jobs::thief;
-		hideJobName	= $CityRPG::jobs::hideJobName;
+		thief			= $CityRPG::jobs::thief;
+		hideJobName		= $CityRPG::jobs::hideJobName;
 
-		bountyOffer	= $CityRPG::jobs::offerer;
-		bountyClaim	= $CityRPG::jobs::claimer;
+		bountyOffer		= $CityRPG::jobs::offerer;
+		bountyClaim		= $CityRPG::jobs::claimer;
 
-		laborer		= $CityRPG::jobs::labor;
+		laborer			= $CityRPG::jobs::labor;
 
-		tmHexColor	= $CityRPG::jobs::tmHexColor;
-		helpline	= $CityRPG::jobs::helpline;
-		flavortext	= $CityRPG::jobs::flavortext;
+		tmHexColor		= $CityRPG::jobs::tmHexColor;
+		helpline		= $CityRPG::jobs::helpline;
+		flavortext		= $CityRPG::jobs::flavortext;
 	};
 
 	%track = $CityRPG::jobs::track;
