@@ -205,6 +205,31 @@ function findJobByName(%partialName)
 	}
 }
 
+// buildLicenseStr
+// Builds a plain english string to list which seller licenses a player has gained or lost.
+// conjunction: The conjunction that will be used, typically 'and' or 'or'
+function buildLicenseStr(%words, %conjunctionStr)
+{
+	%wordCount = getWordCount(%words)-1;
+	for(%i = 0; %i <= %wordCount; %i++)
+	{
+		if(%i == %wordCount)
+		{
+			%licenseStr = %licenseStr @ getWord(%words, %i) @ "";
+		}
+		else if(%i == %wordCount-1)
+		{
+			%licenseStr = %licenseStr @ getWord(%words, %i) @ ", " @ %conjunctionStr @ " ";
+		}
+		else
+		{
+			%licenseStr = %licenseStr @ getWord(%words, %i) @ ", ";
+		}
+	}
+
+	return %licenseStr;
+}
+
 // ============================================================
 // Client Functions
 // ============================================================
@@ -212,10 +237,12 @@ function findJobByName(%partialName)
 // Client::setCityJob
 // Attempts to change the player's job.
 // If %force is not enabled, will validate eligibility and display an error if the player is not eligible.
-function GameConnection::setCityJob(%client, %jobID, %force)
+// Messages will not be displayed if %silent is set to true.
+function GameConnection::setCityJob(%client, %jobID, %force, %silent)
 {
 	%jobObject = JobSO.job[%jobID];
 	%data = CityRPGData.getData(%client.bl_id);
+	%oldJob = %data.valueJobID;
 
 	if(!%force)
 	{
@@ -257,18 +284,21 @@ function GameConnection::setCityJob(%client, %jobID, %force)
 			return 0;
 		}
 
-		// Operations for player-initiated job changes only.
-		if(%jobObject.adminonly)
+		if(!%silent)
 		{
-			messageClient(%client, '', "\c6You have used your admin powers to become" SPC City_DetectVowel(%jobObject.name) SPC %jobObject.name @ "\c6. Your new salary is \c3$" @ %jobObject.pay @ "\c6 per day.");
-		}
-		else if(%jobObject.education == 0)
-		{
-			messageClient(%client, '', "\c6You have made your own initiative to become" SPC City_DetectVowel(%jobObject.name) SPC "\c3" @ %jobObject.name @ "\c6.");
-		}
-		else
-		{
-			messageClient(%client, '', "\c6Congratulations, you are now" SPC City_DetectVowel(%jobObject.name) SPC %jobObject.name @ "\c6. Your new salary is \c3$" @ %jobObject.pay @ "\c6 per day.");
+			// Operations for player-initiated job changes only.
+			if(%jobObject.adminonly)
+			{
+				messageClient(%client, '', "\c6You have used your admin powers to become" SPC City_DetectVowel(%jobObject.name) SPC %jobObject.name @ "\c6.");
+			}
+			else if(%jobObject.education == 0)
+			{
+				messageClient(%client, '', "\c6You have made your own initiative to become" SPC City_DetectVowel(%jobObject.name) SPC "\c3" @ %jobObject.name @ "\c6.");
+			}
+			else
+			{
+				messageClient(%client, '', "\c6Congratulations, you are now" SPC City_DetectVowel(%jobObject.name) SPC %jobObject.name @ "\c6.");
+			}
 		}
 
 		CityRPGData.getData(%client.bl_id).valueMoney -= %jobObject.invest;
@@ -276,7 +306,7 @@ function GameConnection::setCityJob(%client, %jobID, %force)
 	else
 	{
 		// Operations for forced job changes only.
-		messageClient(%client, '', "\c6Your job has changed to" SPC City_DetectVowel(%jobObject.name) SPC %jobObject.name @ "\c6. Your new salary is \c3$" @ %jobObject.pay @ "\c6 per day.");
+		messageClient(%client, '', "\c6Your job has changed to" SPC City_DetectVowel(%jobObject.name) SPC %jobObject.name @ "\c6.");
 	}
 
 	%data.valueJobID = %jobObject.id;
@@ -293,8 +323,97 @@ function GameConnection::setCityJob(%client, %jobID, %force)
 		serverCmdClearImpeach(%client);
 	}
 	%client.SetInfo();
+
+	if(!%silent)
+	{
+		%client.cityJobChangeMessage(%oldJob, %jobObject.id);
+	}
+
 	%client.onCityJobChange();
 	return 1;
+}
+
+function GameConnection::cityJobChangeMessage(%client, %oldJob, %newJob)
+{
+	%oldJobObj = JobSO.job[%oldJob];
+	%newJobObj = JobSO.job[%newJob];
+	%positiveBullet = "\c2+";
+	%negativeBullet = "\c0-";
+
+	%sellerGainDisplay = 0;
+	%sellerLostDisplay = 0;
+	%sellerGainWords = "";
+	%sellerLostWords = "";
+	%sellerGainStr = "";
+	%sellerLostStr = "";
+
+	// Notify about how their salary changes, if at all.
+	if(%oldJobObj.pay != %newJobObj.pay)
+	{
+		%salaryBullet = %newJobObj.pay > %oldJobObj.pay ? %positiveBullet : %negativeBullet;
+
+		messageClient(%client, '', %salaryBullet @ "\c6 Your new salary is \c2$" @ %newJobObj.pay @ "\c6 per day.");
+	}
+	else
+	{
+		messageClient(%client, '', "\c6- Your salary has not changed.");
+	}
+
+	// Gain/lose item selling
+	if(!%oldJobObj.sellItems && %newJobObj.sellItems)
+	{
+		%sellerGainDisplay = 1;
+		%sellerGainWords = %sellerGainWords @ "items ";
+	}
+	else if(%oldJobObj.sellItems && !%newJobObj.sellItems)
+	{
+		%sellerLostDisplay = 1;
+		%sellerLostWords = %sellerLostWords @ "items ";
+	}
+
+	// Gain/lose food selling
+	if(!%oldJobObj.sellFood && %newJobObj.sellFood)
+	{
+		%sellerGainDisplay = 1;
+		%sellerGainWords = %sellerGainWords @ "food ";
+	}
+	else if(%oldJobObj.sellFood && !%newJobObj.sellFood)
+	{
+		%sellerLostDisplay = 1;
+		%sellerLostWords = %sellerLostWords @ "food ";
+	}
+
+	// Gain/lose clothing selling
+	if(!%oldJobObj.sellClothes && %newJobObj.sellClothes)
+	{
+		%sellerGainDisplay = 1;
+		%sellerGainWords = %sellerGainWords @ "clothing ";
+	}
+	else if(%oldJobObj.sellClothes && !%newJobObj.sellClothes)
+	{
+		%sellerLostDisplay = 1;
+		%sellerLostWords = %sellerLostWords @ "clothing ";
+	}
+
+	// Final message for gaining the ability to sell things.
+	if(%sellerGainDisplay)
+	{
+		%sellerGainStr = buildLicenseStr(%sellerGainWords, "and");
+		messageClient(%client, '', %positiveBullet @ "\c6 You are now licensed to sell " @ %sellerGainStr @ " on your lots using events.");
+	}
+
+	// Final message for losing the ability to sell things.
+	if(%sellerLostDisplay)
+	{
+		%sellerLostStr = buildLicenseStr(%sellerLostWords, "or");
+		messageClient(%client, '', %negativeBullet @ "\c6 You are no-longer licensed to sell " @ %sellerLostStr @ ".");
+	}
+
+	// If the job track changes, notify about the new radio.
+	if(%oldJobObj.track !$= %newJobObj.track)
+	{
+		messageClient(%client, '', "\c6- You now have access to the \c3" @ %newJobObj.track @ " Radio\c6. You can access it using team chat.");
+	}
 }
 
 function GameConnection::onCityJobChange(%client)

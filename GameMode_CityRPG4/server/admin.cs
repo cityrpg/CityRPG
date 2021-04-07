@@ -33,7 +33,7 @@ function serverCmdAdminMode(%client)
   else
   {
     %data.valueJobRevert = %data.valueJobID;
-    %client.setCityJob($City::AdminJobID, 1);
+    %client.setCityJob($City::AdminJobID, 1, 1);
 
     messageClient(%client, '', "\c6You are now in \c4Admin Mode\c6. Time for crime!");
     %client.adminModeMessage();
