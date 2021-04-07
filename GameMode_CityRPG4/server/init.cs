@@ -232,7 +232,6 @@ function City_Init_AssembleEvents()
 
 	// Basic Output
 	registerOutputEvent("fxDTSBrick", "requestFunds", "string 80 200" TAB "int 1 9000 1");
-	registerOutputEvent("GameConnection", "MessageBoxOK", "string 30 50" TAB "string 80 500");
 
 	for(%a = 1; $CityRPG::portion[%a] !$= ""; %a++)
 	{

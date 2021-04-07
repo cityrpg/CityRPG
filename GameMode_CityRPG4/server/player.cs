@@ -475,12 +475,6 @@ function gameConnection::sellClothes(%client, %sellerID, %brick, %item, %price)
 	}
 }
 
-// Output Events
-function gameConnection::MessageBoxOK(%client, %header, %text)
-{
-	commandToClient(%client, 'MessageBoxOK', %header, %text);
-}
-
 function player::giveDefaultEquipment(%this)
 {
 	if(!getWord(CityRPGData.getData(%this.client.bl_id).valueJailData, 1))
