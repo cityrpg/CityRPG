@@ -566,9 +566,10 @@ package CityRPG_Commands
 		%client.cityLog("/dropmoney" SPC %amt);
 
 		%amt = mFloor(%amt);
-		if(%amt < 50)
+
+		if($City::Cache::DroppedCash[%client.bl_id] > 30)
 		{
-			messageClient(%client,'',"\c6The least you can drop is \c3$50\c6.");
+			messageClient(%client,'',"\c6You're dropping too much cash! Wait a while, or pick up some of your dropped cash before dropping more.");
 			return;
 		}
 
@@ -583,6 +584,7 @@ package CityRPG_Commands
 			datablock = cashItem;
 			canPickup = false;
 			value = %amt;
+			dropper = %client;
 		};
 
 		%cash.setTransform(setWord(%client.player.getTransform(), 2, getWord(%client.player.getTransform(), 2) + 4));
@@ -591,6 +593,8 @@ package CityRPG_Commands
 		%cash.setShapeName("$" @ %cash.value);
 		CityRPGData.getData(%client.bl_id).valueMoney = CityRPGData.getData(%client.bl_id).valueMoney - %amt;
 		%client.setInfo();
+
+		$City::Cache::DroppedCash[%client.bl_id]++;
 
 		messageClient(%client,'',"\c6You drop \c3$" @ %amt @ ".");
 		%client.cityLog("Drop '$" @ %amt @ "'");
