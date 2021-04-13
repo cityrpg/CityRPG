@@ -73,22 +73,17 @@ function serverCmdvoteElection(%client, %arg2)
 
 	if(!isObject(%arg1 = findClientByName(%arg2)))
 	{
-		return;
-	}
-
-	if(%arg1 $= "") // Blank input
-	{
-		messageClient(%client, '', "Please try putting in a user's name.");
+		messageClient(%client, '', "Unable to find that person. Please try again.");
 		return;
 	}
 
 	if($City::Mayor::Voting == 0 || $Pref::Server::City::Mayor::Active == 1) // No election active
 	{
-		messageClient(%client, '', "There isn't an election.");
+		messageClient(%client, '', "There isn't an election. Check back later.");
 		return;
 	}
 
-	if(CityRPGData.getData(%client.bl_id).valueElectionID == $City::Mayor::Mayor::ElectionID) //if hasn't voted
+	if(CityRPGData.getData(%client.bl_id).valueElectionID == $City::Mayor::Mayor::ElectionID) // Already voted
 	{
 		messageClient(%client, '', "You've already voted!");
 		return;
@@ -96,7 +91,7 @@ function serverCmdvoteElection(%client, %arg2)
 
 	if(!CityMayor_getCandidatesTF(%arg1.name))
 	{
-		messageClient(%client, '', "This player isn't a candidate.");
+		messageClient(%client, '', %arg1.name @ " is not a candidate in this election.");
 		return;
 	}
 	
