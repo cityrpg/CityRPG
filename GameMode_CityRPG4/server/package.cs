@@ -766,7 +766,14 @@ package CityRPG_MainPackage
 
 		// Prevents ticks from running post-mission end.
 		if(!$Server::Dedicated && CityRPGData.scheduleTick)
+		{
 			cancel(CityRPGData.scheduleTick);
+		}
+
+		if(isEventPending($City::Mayor::Schedule))
+		{
+			cancel($City::Mayor::Schedule);
+		}
 
 		if(CityRPGData.datacount > 0)
 		{
