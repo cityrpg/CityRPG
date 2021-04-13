@@ -46,7 +46,7 @@ function CityMayor_stopElection()
 
 		%client = findClientByBL_ID($City::Mayor::ID);
 		messageClient(%client, '', "\c6Congratulations, you are now the" SPC JobSO.job[$City::MayorJobID].name @ "\c6! Your new salary is \c3$" @ JobSO.job[$City::MayorJobID].pay @ "\c6 per day.");
-		jobset(%client, $City::MayorJobID);
+		%client.setCityJob($City::MayorJobID, 1);
 
 	}
 }
@@ -123,7 +123,7 @@ function serverCmdMeMayor(%client)
 
 	if(%client.name $= $City::Mayor::String)
 	{
-		jobset(%client, $City::MayorJobID);
+		%client.setCityJob($City::MayorJobID, 1);
 	}
 }
 
@@ -257,4 +257,48 @@ function CityMayor_getWinner()
 		}
 	}
 	return %toBeat TAB %toBeatID;
+}
+
+// Menu stuff
+function CityMenu_Mayor(%client)
+{
+	%client.cityMenuMessage("\c3Mayor Actions");
+
+	%menu = "Issue a pardon."
+			TAB "Clear a record."
+			TAB "Go back.";
+
+	%functions = "CityMenu_Mayor_PardonPrompt"
+			 TAB "CityMenu_Mayor_ErasePrompt"
+			 TAB "CityMenu_Player";
+
+	%client.cityMenuOpen(%menu, %functions, %client, "\c3Mayor actions menu closed.", 0, 1);
+}
+
+function CityMenu_Mayor_PardonPrompt(%client)
+{
+	%client.cityLog("Mayor pardon prompt");
+
+	%client.cityMenuMessage("\c6Please enter the name of the player you wish to pardon.");
+	%client.cityMenuFunction = CityMenu_Mayor_Pardon;
+}
+
+function CityMenu_Mayor_Pardon(%client, %input)
+{
+	serverCmdPardon(%client, %input);
+	CityMenu_Mayor(%client);
+}
+
+function CityMenu_Mayor_ErasePrompt(%client)
+{
+	%client.cityLog("Mayor record clear prompt");
+
+	%client.cityMenuMessage("\c6Please enter the name of the player whose record you wish to clear.");
+	%client.cityMenuFunction = CityMenu_Mayor_Erase;
+}
+
+function CityMenu_Mayor_Erase(%client, %input)
+{
+	serverCmdEraseRecord(%client, %input);
+	CityMenu_Mayor(%client);
 }

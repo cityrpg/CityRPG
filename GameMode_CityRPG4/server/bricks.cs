@@ -276,38 +276,40 @@ datablock fxDTSBrickData(CityRPGCrimeVehicleData : brickVehicleSpawnData)
 // ============================================================
 function fxDTSBrick::createCityTrigger(%brick, %data)
 {
-	if(!isObject(%brick.trigger))
+	if(isObject(%brick.trigger))
 	{
-		%datablock = %brick.getDatablock();
+		return;
+	}
+	
+	%datablock = %brick.getDatablock();
 
-		%trigX = getWord(%datablock.triggerSize, 0);
-		%trigY = getWord(%datablock.triggerSize, 1);
-		%trigZ = getWord(%datablock.triggerSize, 2);
+	%trigX = getWord(%datablock.triggerSize, 0);
+	%trigY = getWord(%datablock.triggerSize, 1);
+	%trigZ = getWord(%datablock.triggerSize, 2);
 
-		if(mFloor(getWord(%brick.rotation, 3)) == 90)
-			%scale = (%trigY / 2) SPC (%trigX / 2) SPC (%trigZ / 2);
-		else
-			%scale = (%trigX / 2) SPC (%trigY / 2) SPC (%trigZ / 2);
+	if(mFloor(getWord(%brick.rotation, 3)) == 90)
+		%scale = (%trigY / 2) SPC (%trigX / 2) SPC (%trigZ / 2);
+	else
+		%scale = (%trigX / 2) SPC (%trigY / 2) SPC (%trigZ / 2);
 
-		%brick.trigger = new trigger()
-		{
-			datablock = %datablock.triggerDatablock;
-			position = getWords(%brick.getWorldBoxCenter(), 0, 1) SPC getWord(%brick.getWorldBoxCenter(), 2) + ((getWord(%datablock.triggerSize, 2) / 4) + (%datablock.brickSizeZ * 0.1));
-			rotation = "1 0 0 0";
-			scale = %scale;
-			polyhedron = "-0.5 -0.5 -0.5 1 0 0 0 1 0 0 0 1";
-			parent = %brick;
-		};
+	%brick.trigger = new trigger()
+	{
+		datablock = %datablock.triggerDatablock;
+		position = getWords(%brick.getWorldBoxCenter(), 0, 1) SPC getWord(%brick.getWorldBox(), 2) + ((getWord(%datablock.triggerSize, 2) / 4));
+		rotation = "1 0 0 0";
+		scale = %scale;
+		polyhedron = "-0.5 -0.5 -0.5 1 0 0 0 1 0 0 0 1";
+		parent = %brick;
+	};
 
-		%boxSize = getWord(%scale, 0) / 2.5 SPC getWord(%scale, 1) / 2.5 SPC getWord(%scale, 2) / 2.5;
+	%boxSize = getWord(%scale, 0) / 2.5 SPC getWord(%scale, 1) / 2.5 SPC getWord(%scale, 2) / 2.5;
 
-		if(%brick.getDatablock().CityRPGBrickType == $CityBrick_Lot)
-		{
-			getBrickGroupFromObject(%brick).lotsOwned++;
+	if(%brick.getDatablock().CityRPGBrickType == $CityBrick_Lot)
+	{
+		getBrickGroupFromObject(%brick).lotsOwned++;
 
-			if(isObject(getBrickGroupFromObject(%brick).client))
-				getBrickGroupFromObject(%brick).client.SetInfo();
-		}
+		if(isObject(getBrickGroupFromObject(%brick).client))
+			getBrickGroupFromObject(%brick).client.SetInfo();
 	}
 }
 
@@ -331,7 +333,7 @@ function fxDTSBrick::cityBrickInit(%brick)
 		case $CityBrick_ResourceOre:
 			%brick.cityInitResource();
 		default:
-			if(%brick.getDatablock().getID() == brickVehicleSpawnData.getID() && !%client.isAdmin)
+			if(%brick.getDatablock().getID() == brickVehicleSpawnData.getID() && !%client.isCityAdmin())
 			{
 				commandToClient(%client, 'centerPrint', "\c6You have paid \c3$" @ mFloor($CityRPG::prices::vehicleSpawn) @ "\c6 to plant this vehicle spawn.", 3);
 				CityRPGData.getData(%client.bl_id).valueMoney -= mFloor($CityRPG::prices::vehicleSpawn);
@@ -391,6 +393,8 @@ function fxDTSBrick::getCityBrickUnstable(%brick, %lotTrigger)
 	{
 		return 1;
 	}
+
+	return 0;
 }
 
 // Brick::cityBrickCheck(this/brick)
@@ -417,7 +421,7 @@ function fxDTSBrick::cityBrickCheck(%brick)
 		%brick.client.cityLog("Attempt to plant " @ %brick.getDatablock().getName());
 	}
 
-	if(CityRPGData.getData(%client.bl_id).valueJobID == $City::AdminJobID)
+	if(%client.isCityAdmin())
 	{
 		return 1;
 	}
@@ -471,22 +475,24 @@ function fxDTSBrick::cityBrickCheck(%brick)
 
 function fxDTSBrick::onCityBrickRemove(%brick, %data)
 {
-	if(isObject(%brick.trigger))
+	if(!isObject(%brick.trigger))
 	{
-		for(%a = 0; %a < clientGroup.getCount(); %a++)
-		{
-			%subClient = ClientGroup.getObject(%a);
-			if(isObject(%subClient.player) && %subClient.CityRPGTrigger == %brick.trigger)
-				%brick.trigger.getDatablock().onLeaveTrigger(%brick.trigger, clientGroup.getObject(%a).player, true);
-		}
-
-		%boxSize = getWord(%brick.trigger.scale, 0) / 2.5 SPC getWord(%brick.trigger.scale, 1) / 2.5 SPC getWord(%brick.trigger.scale, 2) / 2.5;
-
-		initContainerBoxSearch(%brick.trigger.getWorldBoxCenter(), %boxSize, $typeMasks::playerObjectType);
-		while(isObject(%player = containerSearchNext()))
-			%brick.trigger.getDatablock().onLeaveTrigger(%brick.trigger, %player);
-		%brick.trigger.delete();
+		return;
 	}
+	
+	for(%a = 0; %a < clientGroup.getCount(); %a++)
+	{
+		%subClient = ClientGroup.getObject(%a);
+		if(isObject(%subClient.player) && %subClient.CityRPGTrigger == %brick.trigger)
+			%brick.trigger.getDatablock().onLeaveTrigger(%brick.trigger, clientGroup.getObject(%a).player, true);
+	}
+
+	%boxSize = getWord(%brick.trigger.scale, 0) / 2.5 SPC getWord(%brick.trigger.scale, 1) / 2.5 SPC getWord(%brick.trigger.scale, 2) / 2.5;
+
+	initContainerBoxSearch(%brick.trigger.getWorldBoxCenter(), %boxSize, $typeMasks::playerObjectType);
+	while(isObject(%player = containerSearchNext()))
+		%brick.trigger.getDatablock().onLeaveTrigger(%brick.trigger, %player);
+	%brick.trigger.delete();
 }
 
 // ============================================================
@@ -496,31 +502,64 @@ function CityRPGLotTriggerData::onEnterTrigger(%this, %trigger, %obj)
 {
 	parent::onEnterTrigger(%this, %trigger, %obj);
 
+	%lotID = %trigger.parent.getCityLotID();
+
 	if(!isObject(%obj.client))
 	{
 		if(isObject(%obj.getControllingClient()))
-		%client = %obj.getControllingClient();
+			%client = %obj.getControllingClient();
 		else
 			return;
 	}
 	else
 		%client = %obj.client;
 
-	%trigger.parent.onEnterLot(%obj);
+	%trigger.parent.onLotEntered(%obj);
 
 	%client.CityRPGTrigger = %trigger;
 	%client.CityRPGLotBrick = %trigger.parent;
 
-	%lotStr = "<just:right><font:palatino linotype:18>\c6" @ %trigger.parent.getCityLotName();
+	%client.cityLotDisplay(%trigger.parent);
 
-	if(%trigger.parent.getCityLotOwnerID() == -1)
+	// Realtime tracking of lot occupants - Add to the index.
+	%trigger.parent.lotOccupants = %trigger.parent.lotOccupants $= "" ? %client TAB "" : %trigger.parent.lotOccupants @ %client TAB "";
+
+	// Lot visit tracking
+	%lotsVisited = CityRPGData.getData(%client.bl_id).valueLotsVisited;
+	%visited = 0;
+
+	if(%visited !$= "")
 	{
-		%lotStr = %lotStr @ "<br>\c2For sale!\c6 Type /lot for info";
+		// Loop through the lots this player has visited.
+		for(%i = 0; %i <= getWordCount(%lotsVisited); %i++)
+		{
+			%visited = %lotID == getWord(%lotsVisited, %i);
+
+			if(%visited)
+			{
+				// We've found it -- search is done.
+				break;
+			}
+		}
 	}
 
-	%client.centerPrint(%lotStr, 2);
-
-	//%client.SetInfo();
+	// This is the player's first visit. Record the visit to this lot
+	if(!%visited)
+	{
+		// Trigger the event
+		%trigger.parent.onLotFirstEntered(%obj);
+		
+		// Initialize if blank
+		if(%lotsVisited == -1)
+		{
+			CityRPGData.getData(%client.bl_id).valueLotsVisited = %lotID;
+		}
+		else
+		{
+			// Push to the beginning, listing the lots in reverse order of when first visited.
+			CityRPGData.getData(%client.bl_id).valueLotsVisited = %lotID SPC %lotsVisited;
+		}
+	}
 }
 
 function CityRPGLotTriggerData::onLeaveTrigger(%this, %trigger, %obj)
@@ -536,10 +575,13 @@ function CityRPGLotTriggerData::onLeaveTrigger(%this, %trigger, %obj)
 		%client = %obj.client;
 
 	%client.cityMenuClose();
-	%trigger.parent.onLeaveLot(%obj);
+	%trigger.parent.onLotLeft(%obj);
 
 	if(%trigger.parent!=%client.CityRPGLotBrick)
 		return;
+
+	// Realtime tracking of lot occupants - Remove from the index.
+	%trigger.parent.lotOccupants = strreplace(%trigger.parent.lotOccupants, %client TAB "", "");
 
 	%client.CityRPGTrigger = "";
 	%client.CityRPGLotBrick = "";
@@ -552,6 +594,11 @@ function CityRPGInputTriggerData::onEnterTrigger(%this, %trigger, %obj)
 	if(!isObject(%obj.client))
 	{
 		return;
+	}
+
+	if(%obj.client.cityMenuOpen)
+	{
+		%obj.client.cityMenuClose();
 	}
 
 	%obj.client.cityLog(%trigger.parent.getDatablock().getName() SPC "enter");
@@ -574,7 +621,7 @@ function CityRPGInputTriggerData::onLeaveTrigger(%this, %trigger, %obj, %a)
 		%trigger.parent.getDatablock().parseData(%trigger.parent, %obj.client, false, "");
 		%obj.client.CityRPGTrigger = "";
 
-		if(%obj.client.cityMenuID == %trigger.parent.getID())
+		if(%obj.client.cityMenuID == %trigger.parent.getID() || %obj.client.cityMenuBack == %trigger.parent.getID())
 		{
 			%obj.client.cityMenuClose();
 		}

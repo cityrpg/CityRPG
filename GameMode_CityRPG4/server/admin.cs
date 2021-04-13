@@ -25,18 +25,17 @@ function serverCmdAdminMode(%client)
 
   %data = CityRPGData.getData(%client.bl_id);
 
-  if(%data.valueJobID == $City::AdminJobID)
+  if(%data.valueJobID $= $City::AdminJobID)
   {
-    jobset(%client, %data.valueJobRevert || 1);
-
-    messageClient(%client, '', "\c6Admin mode has been disabled. Your job has changed back to \c3" @ JobSO.job[%data.valueJobRevert || 1].name @ "\c6.");
+    %client.setCityJob(%data.valueJobRevert !$= 0 ? %data.valueJobRevert : $City::CivilianJobID, 1);
+    messageClient(%client, '', "\c6Admin mode has been disabled.");
   }
   else
   {
     %data.valueJobRevert = %data.valueJobID;
-    jobset(%client, $City::AdminJobID);
+    %client.setCityJob($City::AdminJobID, 1, 1);
 
-    messageClient(%client, '', "\c6You are now in \c4Admin Mode\c6.");
+    messageClient(%client, '', "\c6You are now in \c4Admin Mode\c6. Time for crime!");
     %client.adminModeMessage();
   }
 }
@@ -44,7 +43,7 @@ function serverCmdAdminMode(%client)
 function GameConnection::AdminModeMessage(%client)
 {
   messageClient(%client, '', "\c2+\c6 Building restrictions are disabled.");
-	messageClient(%client, '', "\c2+\c6 Hunger is frozen.");
+	messageClient(%client, '', "\c2+\c6 You are immune to all damage, and your hunger is frozen.");
 	messageClient(%client, '', "\c2+\c6 You have jets.");
 
   if(!$Pref::Server::City::AdminsAlwaysMonitorChat)

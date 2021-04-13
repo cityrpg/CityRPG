@@ -49,7 +49,7 @@ package CityRPG_Commands
 					%suffix = " (Git build)";
 				}
 
-				messageClient(%client, '', %sentenceStr SPC $City::VersionTitle @ " (\c3" @ $City::Version @ "\c6)" @ %suffix);
+				messageClient(%client, '', %sentenceStr @ " (\c3" @ $City::Version @ "\c6)" @ %suffix);
 			case "starters":
 				messageClient(%client, '', "\c6Welcome! To get started, you'll want to explore and familiarize yourself with the map.");
 				messageClient(%client, '', "\c6Some of the places most important to you will include the jobs office, the education office, and the bank.");
@@ -196,29 +196,29 @@ package CityRPG_Commands
 			%arg1 = mFloor(($Pref::Server::City::Economics::Cap-$City::Economics::Condition)/0.15);
 		}
 
-		if(%arg1 > 0)
+		if(%arg1 <= 0)
 		{
-			if($City::Economics::Condition > $Pref::Server::City::Economics::Cap)
-			{
-				messageClient(%client, '', "\c6The economy is currently at the maxiumum rate. Please try again later.");
-			}
-			else
-			{
-				if((CityRPGData.getData(%client.bl_id).valueMoney - %arg1) >= 0)
-				{
-					%amoutPer = %arg1 * 0.15;
-					CityRPGData.getData(%client.bl_id).valueMoney -= %arg1;
-					messageClient(%client, '', "\c6You've donated \c3$" @ %arg1 SPC "\c6to the economy! (" @ %amoutPer @ "%)");
-					messageAll('',"\c3" @ %client.name SPC "\c6has donated \c3$" @ %arg1 SPC "\c6to the economy! (" @ %amoutPer @ "%)");
-					$City::Economics::Condition = $City::Economics::Condition + %amoutPer;
-					%client.setGameBottomPrint();
-				}
-				else
-				{
-					messageClient(%client, '', "\c6You don't have that much money to donate to the economy.");
-				}
-			}
+			return;
 		}
+
+		if($City::Economics::Condition > $Pref::Server::City::Economics::Cap)
+		{
+			messageClient(%client, '', "\c6The economy is currently at the maxiumum rate. Please try again later.");
+			return;
+		}
+
+		if((CityRPGData.getData(%client.bl_id).valueMoney - %arg1) < 0)
+		{
+			messageClient(%client, '', "\c6You don't have that much money to donate to the economy.");
+			return;
+		}
+
+		%amoutPer = %arg1 * 0.15;
+		CityRPGData.getData(%client.bl_id).valueMoney -= %arg1;
+		messageClient(%client, '', "\c6You've donated \c3$" @ %arg1 SPC "\c6to the economy! (" @ %amoutPer @ "%)");
+		messageAll('',"\c3" @ %client.name SPC "\c6has donated \c3$" @ %arg1 SPC "\c6to the economy! (" @ %amoutPer @ "%)");
+		$City::Economics::Condition = $City::Economics::Condition + %amoutPer;
+		%client.setGameBottomPrint();
 	}
 
 	function serverCmdbuyErase(%client)
@@ -234,32 +234,29 @@ package CityRPG_Commands
 			return;
 
 		%cost = %client.getCityRecordClearCost();
-		if((CityRPGData.getData(%client.bl_id).valueMoney - %cost) >= 0)
-		{
-			if(getWord(CityRPGData.getData(%client.bl_id).valueJailData, 0))
-			{
-				if(CityRPGData.getData(%client.bl_id).valueMoney >= %cost || %client.isAdmin)
-				{
-					CityRPGData.getData(%client.bl_id).valueJailData = "0" SPC getWord(CityRPGData.getData(%client.bl_id).valueJailData, 1);
-					messageClient(%client, '', "\c6You have erased your criminal record.");
-					%client.spawnPlayer();
-					%client.setInfo();
-					CityRPGData.getData(%client.bl_id).valueMoney -= %cost;
-				}
-				else
-				{
-					messageClient(%client, '', "\c6You need at least \c3$" @ %cost SPC "\c6to erase someone's record.");
-				}
-			}
-			else
-			{
-				messageClient(%client, '', %target @ "\c6You do not have a criminal record.");
-			}
-		}
-		else
+		if((CityRPGData.getData(%client.bl_id).valueMoney - %cost) < 0)
 		{
 			messageClient(%client, '', "\c6You don't have $" @ %cost @ ".");
+			return;
 		}
+
+		if(!getWord(CityRPGData.getData(%client.bl_id).valueJailData, 0))
+		{
+			messageClient(%client, '', %target @ "\c6You do not have a criminal record.");
+			return;
+		}
+
+		if(CityRPGData.getData(%client.bl_id).valueMoney < %cost && !%client.isAdmin)
+		{
+			messageClient(%client, '', "\c6You need at least \c3$" @ %cost SPC "\c6to erase someone's record.");
+			return;
+		}
+
+		CityRPGData.getData(%client.bl_id).valueJailData = "0" SPC getWord(CityRPGData.getData(%client.bl_id).valueJailData, 1);
+		messageClient(%client, '', "\c6You have erased your criminal record.");
+		%client.spawnPlayer();
+		%client.setInfo();
+		CityRPGData.getData(%client.bl_id).valueMoney -= %cost;
 	}
 
 	function serverCmdgiveMoney(%client, %money, %name)
@@ -276,187 +273,71 @@ package CityRPG_Commands
 
 		%money = mFloor(%money);
 
-		if(%money > 0)
+		if(%money <= 0)
 		{
-			if((CityRPGData.getData(%client.bl_id).valueMoney - %money) >= 0)
-			{
-				if(isObject(%client.player))
-				{
-					if(%name !$= "")
-					{
-						%target = findclientbyname(%name);
-					}
-					else
-					{
-						%target = containerRayCast(%client.player.getEyePoint(), vectorAdd(vectorScale(vectorNormalize(%client.player.getEyeVector()), 5), %client.player.getEyePoint()), $typeMasks::playerObjectType,%client.player).client;
-					}
-					if(isObject(%target))
-					{
-						%client.cityLog("Give money to " @ %target.bl_id);
-						messageClient(%client, '', "\c6You give \c3$" @ %money SPC "\c6to \c3" @ %target.name @ "\c6.");
-						messageClient(%target, '', "\c3" @ %client.name SPC "\c6has given you \c3$" @ %money @ "\c6.");
+			messageClient(%client, '', "\c6You must enter a valid amount of money to give.");
+			return;
+		}
 
-						CityRPGData.getData(%client.bl_id).valueMoney -= %money;
-						CityRPGData.getData(%target.bl_id).valueMoney += %money;
+		if((CityRPGData.getData(%client.bl_id).valueMoney - %money) < 0)
+		{
+			messageClient(%client, '', "\c6You don't have that much money to give.");
+			return;
+		}
 
-						%client.SetInfo();
-						%target.SetInfo();
-					}
-					else
-						messageClient(%client, '', "\c6You must be looking at and be in a reasonable distance of the player in order to give them money. \nYou can also type in the person's name after the amount.");
-				}
-				else
-					messageClient(%client, '', "\c6Spawn first before you use this command.");
-			}
-			else
-				messageClient(%client, '', "\c6You don't have that much money to give.");
+		if(!isObject(%client.player))
+		{
+			messageClient(%client, '', "\c6Spawn first before you use this command.");
+			return;
+		}
+
+		if(%name !$= "")
+		{
+			%target = findclientbyname(%name);
 		}
 		else
-			messageClient(%client, '', "\c6You must enter a valid amount of money to give.");
+		{
+			%target = containerRayCast(%client.player.getEyePoint(), vectorAdd(vectorScale(vectorNormalize(%client.player.getEyeVector()), 5), %client.player.getEyePoint()), $typeMasks::playerObjectType,%client.player).client;
+		}
+
+		if(!isObject(%target))
+		{
+			messageClient(%client, '', "\c6You must be looking at and be in a reasonable distance of the player in order to give them money. \nYou can also type in the person's name after the amount.");
+			return;
+		}
+
+		%client.cityLog("Give money to " @ %target.bl_id);
+		messageClient(%client, '', "\c6You give \c3$" @ %money SPC "\c6to \c3" @ %target.name @ "\c6.");
+		messageClient(%target, '', "\c3" @ %client.name SPC "\c6has given you \c3$" @ %money @ "\c6.");
+
+		CityRPGData.getData(%client.bl_id).valueMoney -= %money;
+		CityRPGData.getData(%target.bl_id).valueMoney += %money;
+
+		%client.SetInfo();
+		%target.SetInfo();
 	}
 
-	// TODO: Rewrite this spaghetti mess
-	function serverCmdjobs(%client, %job, %job2, %job3, %job4, %job5)
+	function serverCmdjobs(%client, %str1, %str2, %str3, %str4)
 	{
-		if(%client.cityRateLimitCheck())
+		if(%client.cityRateLimitCheck() || !isObject(%client.player))
 		{
 			return;
 		}
 
 		%client.cityLog("/jobs" SPC %job SPC %job2 SPC %job3 SPC %job4 SPC %job5);
 
-		if(%job !$= "")
+		// Combine the job input.
+		// Trim spaces for args that are not used.
+		%jobInput = rtrim(%str1 SPC %str2 SPC %str3 SPC %str4);
+		%jobObject = findJobByName(%jobInput);
+
+		if(!isObject(%jobObject))
 		{
-			if(!isObject(%client.player))
-				return;
-
-			// Concat Job Words
-			%job = %job @ (%job2 !$= "" ? " " @ %job2 @ (%job3 !$= "" ? " " @ %job3 @ (%job4 !$= "" ? " " @ %job4 @ (%job5 !$= "" ? " " @ %job5 : "") : "") : "") : "");
-
-			for(%a = 1; %a <= JobSO.getJobCount(); %a++)
-			{
-				if(strlwr(%job) $= strLwr(JobSO.job[%a].name))
-				{
-					%foundJob = true;
-
-					if(%a == CityRPGData.getData(%client.bl_id).valueJobID)
-					{
-						messageClient(%client, '', "\c6You are already" SPC City_DetectVowel(JobSO.job[%a].name) SPC "\c3" @ JobSO.job[%a].name @ "\c6!");
-					}
-					else
-					{
-						if(JobSO.job[%a].law && getWord(CityRPGData.getData(%client.bl_id).valueJailData, 0) == 1)
-						{
-							messageClient(%client, '', "\c6You don't have a clean criminal record. You can't become" SPC City_DetectVowel(JobSO.job[%a].name) SPC "\c3" @ JobSO.job[%a].name @ "\c6.");
-						}
-						else
-						{
-							if(mFloor(JobSO.job[%a].education) > 0)
-							{
-								if(CityRPGData.getData(%client.bl_id).valueEducation < JobSO.job[%a].education)
-								{
-									messageClient(%client, '', "\c6You are not educated enough to get this job.");
-								}
-								else
-								{
-									if(CityRPGData.getData(%client.bl_id).valueMoney < JobSO.job[%a].invest)
-									{
-										messageClient(%client, '', "\c6It costs \c3$" @ JobSO.job[%a].invest SPC "\c6to become" SPC City_DetectVowel(JobSO.job[%a].name) SPC JobSO.job[%a].name @ "\c6.");
-									}
-									else
-									{
-										if(JobSO.job[%a].hostonly == 1)
-										{
-											if(%client.BL_ID == getNumKeyID())
-											{
-												%gotTheJob = true;
-												messageClient(%client, '', "\c6Congratulations, you are now" SPC City_DetectVowel(JobSO.job[%a].name) SPC JobSO.job[%a].name @ "\c6. Your new salary is \c3$" @ JobSO.job[%a].pay @ "\c6 per day.");
-												CityRPGData.getData(%client.bl_id).valueMoney -= JobSO.job[%a].invest;
-											}
-											else
-											{
-												messageClient(%client, '', "\c6Sorry, only the Host can be" SPC City_DetectVowel(JobSO.job[%a].name) SPC JobSO.job[%a].name @ "\c6.");
-											}
-										}
-										else if(JobSO.job[%a].adminonly == 1)
-										{
-											if(%client.isAdmin || %client.isSuperAdmin)
-											{
-												%gotTheJob = true;
-												messageClient(%client, '', "\c6Congratulations, you are now" SPC City_DetectVowel(JobSO.job[%a].name) SPC JobSO.job[%a].name @ "\c6. Your new salary is \c3$" @ JobSO.job[%a].pay @ "\c6 per day.");
-												CityRPGData.getData(%client.bl_id).valueMoney -= JobSO.job[%a].invest;
-											}
-											else
-											{
-												messageClient(%client, '', "\c6Sorry, only an Admin or a Super Admin can be" SPC City_DetectVowel(JobSO.job[%a].name) SPC JobSO.job[%a].name @ "\c6.");
-											}
-										}
-										else
-										{
-											%gotTheJob = true;
-											messageClient(%client, '', "\c6Congratulations, you are now" SPC City_DetectVowel(JobSO.job[%a].name) SPC JobSO.job[%a].name @ "\c6. Your new salary is \c3$" @ JobSO.job[%a].pay @ "\c6 per day.");
-											CityRPGData.getData(%client.bl_id).valueMoney -= JobSO.job[%a].invest;
-										}
-									}
-								}
-							}
-							else
-							{
-								if(CityRPGData.getData(%client.bl_id).valueMoney < JobSO.job[%a].invest)
-								{
-									messageClient(%client, '', "\c6It costs \c3$" @ JobSO.job[%a].invest SPC "\c6to become" SPC City_DetectVowel(JobSO.job[%a].name) SPC JobSO.job[%a].name @ "\c6.");
-								}
-								else
-								{
-									if(JobSO.job[%a].hostonly == 1)
-									{
-										if(%client.BL_ID == getNumKeyID())
-										{
-											%gotTheJob = true;
-											messageClient(%client, '', "\c6Congratulations, you are now" SPC City_DetectVowel(JobSO.job[%a].name) SPC JobSO.job[%a].name @ "\c6. Your new salary is \c3$" @ JobSO.job[%a].pay @ "\c6 per day.");
-											CityRPGData.getData(%client.bl_id).valueMoney -= JobSO.job[%a].invest;
-										}
-										else
-										{
-											messageClient(%client, '', "\c6Sorry, only the Host can be" SPC City_DetectVowel(JobSO.job[%a].name) SPC JobSO.job[%a].name @ "\c6.");
-										}
-									}
-									else if(JobSO.job[%a].adminonly == 1)
-									{
-										if(%client.isAdmin || %client.isSuperAdmin)
-										{
-											%gotTheJob = true;
-											messageClient(%client, '', "\c6Congratulations, you are now" SPC City_DetectVowel(JobSO.job[%a].name) SPC JobSO.job[%a].name @ "\c6. Your new salary is \c3$" @ JobSO.job[%a].pay @ "\c6 per day.");
-											CityRPGData.getData(%client.bl_id).valueMoney -= JobSO.job[%a].invest;
-										}
-										else
-										{
-											messageClient(%client, '', "\c6Sorry, only an Admin or a Super Admin can be" SPC City_DetectVowel(JobSO.job[%a].name) SPC JobSO.job[%a].name @ "\c6.");
-										}
-									}
-									else
-									{
-										%gotTheJob = true;
-										messageClient(%client, '', "\c6You have made your own initiative to become" SPC City_DetectVowel(JobSO.job[%a].name) SPC "\c3" @ JobSO.job[%a].name @ "\c6.");
-										CityRPGData.getData(%client.bl_id).valueMoney -= JobSO.job[%a].invest;
-									}
-								}
-							}
-						}
-					}
-
-					if(%gotTheJob)
-					{
-						jobset(%client, %a);
-					}
-				}
-			}
-
-			if(!%foundJob)
-				messageClient(%client, '', "\c6No such job as \c3" @ %job @ "\c6. Please try again.");
+			messageClient(%client, '', "\c6No such job. Please try again.");
+			return;
 		}
-		else
-			messageClient(%client, '', "\c6Visit the employment office to view available jobs.");
+
+		%client.setCityJob(%jobObject.id);
 	}
 
 	function serverCmdreset(%client)
@@ -473,21 +354,31 @@ package CityRPG_Commands
 
 		if(CityRPGData.getData(%client.bl_id).valueMoney - $Pref::Server::City::prices::reset >= 0)
 		{
-			%client.cityLog("***Account reset***");
-			messageClient(%client, '', "\c6Your account has been reset.");
-			messageAll('',"\c3"@ %client.name @" \c6has reset their account.");
-			CityRPGData.removeData(%client.bl_id);
-			CityRPGData.addData(%client.bl_id);
+			%client.cityMenuMessage("\c6Would you like to reset your CityRPG profile?");
+			%client.cityMenuMessage("\c0WARNING: You are about to reset all of your progress on this server. Are you sure?");
 
-			CityRPGData.getData(%client.bl_id).valueBank = 100;
-
-			if(isObject(%client.player))
-			{
-				%client.spawnPlayer();
-			}
+			%menu = "Reset my account." TAB "Cancel.";
+			%functions = CityMenu_Reset_Confirm TAB CityMenu_Close;
+			%client.cityMenuOpen(%menu, %functions, %client, "\c6Your account will not be reset.");
 		}
 		else
 			messageClient(%client, '', "\c6You need at least \c3$" @ $Pref::Server::City::prices::reset SPC "\c6to do that.");
+	}
+
+	function CityMenu_Reset_Confirm(%client)
+	{
+		%client.cityLog("***Account reset***");
+		messageClient(%client, '', "\c6Your account has been reset.");
+		messageAll('',"\c3"@ %client.name @" \c6has reset their account.");
+		CityRPGData.removeData(%client.bl_id);
+		CityRPGData.addData(%client.bl_id);
+
+		CityRPGData.getData(%client.bl_id).valueBank = 100;
+
+		if(isObject(%client.player))
+		{
+			%client.spawnPlayer();
+		}
 	}
 
 	function serverCmdeducation(%client, %do) {
@@ -506,67 +397,60 @@ package CityRPG_Commands
 		if(!isObject(%client.player))
 			return;
 
-		if(%client.getJobSO().canPardon || %client.isSuperAdmin)
+		if(!%client.getJobSO().canPardon && !%client.isSuperAdmin)
 		{
-			if(%name !$= "")
-			{
-				%target = findClientByName(%name);
+			messageClient(%client, '', "\c6You can't pardon people.");
+			return;
+		}
 
-				if(isObject(%target))
-				{
-					if(getWord(CityRPGData.getData(%target.bl_id).valueJailData, 1))
-					{
-						%cost = $Pref::Server::City::demerits::pardonCost * getWord(CityRPGData.getData(%target.bl_id).valueJailData, 1);
-						if(CityRPGData.getData(%client.bl_id).valueMoney >= %cost || %client.isAdmin)
-						{
-							if((%client.BL_ID == getNumKeyID() || %target != %client))
-							{
-								CityRPGData.getData(%client.bl_id).valueMoney -= (%client.isAdmin ? 0 : %cost);
-								CityRPGData.getData(%target.bl_id).valueJailData = getWord(CityRPGData.getData(%target.bl_id).valueJailData, 0) SPC 0;
+		if(%name $= "")
+		{
+			messageClient(%client, '' , "\c6Please enter a name.");
+			return;
+		}
 
-								if(%target != %client)
-								{
-									messageClient(%client, '', "\c6You have let\c3" SPC %target.name SPC "\c6out of prison.");
-									messageClient(%target, '', "\c3" @ %client.name SPC "\c6has issued you a pardon.");
-								}
-								else
-								{
-									messageClient(%client, '', "\c6You have pardoned yourself.");
-								}
+		%target = findClientByName(%name);
+		if(!isObject(%target))
+		{
+			messageClient(%client, '', "\c6That person does not exist.");
+			return;
+		}
 
-								%target.buyResources();
-								%target.spawnPlayer();
-								%client.SetInfo();
-							}
-							else
-							{
-								messageClient(%client, '', "\c6The extent of your legal corruption only goes so far. You cannot pardon yourself.");
-							}
-						}
-						else
-						{
-							messageClient(%client, '', "\c6You need at least \c3$" @ %cost SPC "\c6to pardon someone.");
-						}
-					}
-					else
-					{
-						messageClient(%client, '', "\c6That person is not a convict.");
-					}
-				}
-				else
-				{
-					messageClient(%client, '', "\c6That person does not exist.");
-				}
-			}
-			else
-			{
-				messageClient(%client, '' , "\c6Please enter a name.");
-			}
+		if(!getWord(CityRPGData.getData(%target.bl_id).valueJailData, 1))
+		{
+			messageClient(%client, '', "\c6That person is not a convict.");
+			return;
+		}
+
+		%cost = $Pref::Server::City::demerits::pardonCost * getWord(CityRPGData.getData(%target.bl_id).valueJailData, 1);
+		if(CityRPGData.getData(%client.bl_id).valueMoney < %cost && !%client.isAdmin)
+		{
+			messageClient(%client, '', "\c6You need at least \c3$" @ %cost SPC "\c6to pardon someone.");
+			return;
+		}
+
+		if(%client.BL_ID != getNumKeyID() && %target == %client)
+		{
+			messageClient(%client, '', "\c6The extent of your legal corruption only goes so far. You cannot pardon yourself.");
+			return;
+		}
+
+		CityRPGData.getData(%client.bl_id).valueMoney -= (%client.isAdmin ? 0 : %cost);
+		CityRPGData.getData(%target.bl_id).valueJailData = getWord(CityRPGData.getData(%target.bl_id).valueJailData, 0) SPC 0;
+
+		if(%target != %client)
+		{
+			messageClient(%client, '', "\c6You have let\c3" SPC %target.name SPC "\c6out of prison.");
+			messageClient(%target, '', "\c3" @ %client.name SPC "\c6has issued you a pardon.");
 		}
 		else
 		{
-			messageClient(%client, '', "\c6You can't pardon people.");
+			messageClient(%client, '', "\c6You have pardoned yourself.");
 		}
+
+		%target.buyResources();
+		%target.spawnPlayer();
+		%client.SetInfo();
 	}
 
 	function serverCmderaseRecord(%client, %name)
@@ -578,59 +462,54 @@ package CityRPG_Commands
 
 		%client.cityLog("/eraseRecord" SPC %name);
 
-		if(%client.getJobSO().canPardon || %client.BL_ID == getNumKeyID())
-		{
-			if(%name !$= "")
-			{
-				%target = findClientByName(%name);
-
-				if(isObject(%target))
-				{
-					if(getWord(CityRPGData.getData(%target.bl_id).valueJailData, 0))
-					{
-						%cost = $Pref::Server::City::demerits::recordShredCost;
-
-						if(CityRPGData.getData(%client.bl_id).valueMoney >= %cost || %client.isAdmin)
-						{
-							CityRPGData.getData(%target.bl_id).valueJailData = "0" SPC getWord(CityRPGData.getData(%target.bl_id).valueJailData, 1);
-							if(%target != %client)
-							{
-								messageClient(%client, '', "\c6You have ran\c3" SPC %target.name @ "\c6's criminal record through a paper shredder.");
-								messageClient(%target, '', "\c3It seems your criminal record has simply vanished...");
-
-								if(!%client.BL_ID == getNumKeyID())
-									CityRPGData.getData(%client.bl_id).valueMoney -= %cost;
-							}
-							else
-								messageClient(%client, '', "\c6You have erased your criminal record.");
-
-							%target.spawnPlayer();
-							%client.setInfo();
-						}
-						else
-						{
-							messageClient(%client, '', "\c6You need at least \c3$" @ %cost SPC "\c6to erase someone's record.");
-						}
-					}
-					else
-					{
-						messageClient(%client, '', "\c6That person does not have a criminal record.");
-					}
-				}
-				else
-				{
-					messageClient(%client, '', "\c6That person does not exist.");
-				}
-			}
-			else
-			{
-				messageClient(%client, '' , "\c6Please enter a name.");
-			}
-		}
-		else
+		if(!%client.getJobSO().canPardon && %client.BL_ID != getNumKeyID())
 		{
 			messageClient(%client, '', "\c6You can't erase people's record!");
+			return;
 		}
+
+		if(%name $= "")
+		{
+			messageClient(%client, '' , "\c6Please enter a name.");
+			return;
+		}
+
+		%target = findClientByName(%name);
+		if(!isObject(%target))
+		{
+			messageClient(%client, '', "\c6That person does not exist.");
+			return;
+		}
+
+		if(!getWord(CityRPGData.getData(%target.bl_id).valueJailData, 0))
+		{
+			messageClient(%client, '', "\c6That person does not have a criminal record.");
+			return;
+		}
+
+		%cost = $Pref::Server::City::demerits::recordShredCost;
+		if(CityRPGData.getData(%client.bl_id).valueMoney < %cost && !%client.isAdmin)
+		{
+			messageClient(%client, '', "\c6You need at least \c3$" @ %cost SPC "\c6to erase someone's record.");
+			return;
+		}
+
+		CityRPGData.getData(%target.bl_id).valueJailData = "0" SPC getWord(CityRPGData.getData(%target.bl_id).valueJailData, 1);
+		if(%target != %client)
+		{
+			messageClient(%client, '', "\c6You have ran\c3" SPC %target.name @ "\c6's criminal record through a paper shredder.");
+			messageClient(%target, '', "\c3It seems your criminal record has simply vanished...");
+
+			if(!%client.BL_ID == getNumKeyID())
+				CityRPGData.getData(%client.bl_id).valueMoney -= %cost;
+		}
+		else
+			messageClient(%client, '', "\c6You have erased your criminal record.");
+
+		%target.spawnPlayer();
+		%client.setInfo();
+		
+		return true;
 	}
 
 	function serverCmdReincarnate(%client, %do)
@@ -642,38 +521,39 @@ package CityRPG_Commands
 
 		%client.cityLog("/reincarnate" SPC %do);
 
-		if(!CityRPGData.getData(%client.bl_id).valueReincarnated)
+		if(CityRPGData.getData(%client.bl_id).valueReincarnated)
 		{
-			if(%do $= "accept")
+			messageClient(%client, '', "\c6You have already reincarnated.");
+			return;
+		}
+
+		if(%do $= "accept")
+		{
+			if((CityRPGData.getData(%client.bl_id).valueMoney + CityRPGData.getData(%client.bl_id).valueBank) >= 100000)
 			{
-				if((CityRPGData.getData(%client.bl_id).valueMoney + CityRPGData.getData(%client.bl_id).valueBank) >= 100000)
+				CityRPGData.removeData(%client.bl_id);
+				CityRPGData.addData(%client.bl_id);
+				CityRPGData.getData(%client.bl_id).valueReincarnated = 1;
+				CityRPGData.getData(%client.bl_id).valueEducation = $City::EducationReincarnateLevel;
+
+				if(isObject(%client.player))
 				{
-					CityRPGData.removeData(%client.bl_id);
-					CityRPGData.addData(%client.bl_id);
-					CityRPGData.getData(%client.bl_id).valueReincarnated = 1;
-					CityRPGData.getData(%client.bl_id).valueEducation = $City::EducationReincarnateLevel;
-
-					if(isObject(%client.player))
-					{
-						%client.spawnPlayer();
-					}
-
-					messageAllExcept(%client, '', '\c3%1\c6 has been reincarnated!', %client.name);
-					messageClient(%client, '', "\c6You have been reincarnated.");
+					%client.spawnPlayer();
 				}
-			}
-			else
-			{
-				messageClient(%client, '', "\c6Reincarnation is a method for those who are on top to once again replay the game.");
-				messageClient(%client, '', "\c6It costs $100,000 to Reincarnate yourself. Your account will almost completely reset.");
-				messageClient(%client, '', "\c6The perks of doing this are...");
-				messageClient(%client, '', "\c6 - You will start with a level " @ $City::EducationReincarnateLevel @ " education (+" @ $City::EducationReincarnateLevel-$City::EducationCap @ " maximum)");
-				messageClient(%client, '', "\c6 - Your name will be yellow by default and white if you are wanted.");
-				messageClient(%client, '', "\c6Type \c3/reincarnate accept\c6 to start anew!");
+
+				messageAllExcept(%client, '', '\c3%1\c6 has been reincarnated!', %client.name);
+				messageClient(%client, '', "\c6You have been reincarnated.");
 			}
 		}
 		else
-			messageClient(%client, '', "\c6You have already reincarnated.");
+		{
+			messageClient(%client, '', "\c6Reincarnation is a method for those who are on top to once again replay the game.");
+			messageClient(%client, '', "\c6It costs $100,000 to Reincarnate yourself. Your account will almost completely reset.");
+			messageClient(%client, '', "\c6The perks of doing this are...");
+			messageClient(%client, '', "\c6 - You will start with a level " @ $City::EducationReincarnateLevel @ " education (+" @ $City::EducationReincarnateLevel-$City::EducationCap @ " maximum)");
+			messageClient(%client, '', "\c6 - Your name will be yellow by default and white if you are wanted.");
+			messageClient(%client, '', "\c6Type \c3/reincarnate accept\c6 to start anew!");
+		}
 	}
 
 	function serverCmddropmoney(%client,%amt)
@@ -686,32 +566,38 @@ package CityRPG_Commands
 		%client.cityLog("/dropmoney" SPC %amt);
 
 		%amt = mFloor(%amt);
-		if(%amt >= 50)
+
+		if($City::Cache::DroppedCash[%client.bl_id] > 30)
 		{
-			if(CityRPGData.getData(%client.bl_id).valueMoney >= %amt)
-			{
-				%cash = new Item()
-				{
-					datablock = cashItem;
-					canPickup = false;
-					value = %amt;
-				};
-
-				%cash.setTransform(setWord(%client.player.getTransform(), 2, getWord(%client.player.getTransform(), 2) + 4));
-				%cash.setVelocity(VectorScale(%client.player.getEyeVector(), 10));
-				MissionCleanup.add(%cash);
-				%cash.setShapeName("$" @ %cash.value);
-				CityRPGData.getData(%client.bl_id).valueMoney = CityRPGData.getData(%client.bl_id).valueMoney - %amt;
-				%client.setInfo();
-
-				messageClient(%client,'',"\c6You drop \c3$" @ %amt @ ".");
-				%client.cityLog("Drop '$" @ %amt @ "'");
-			}
-			else
-				messageClient(%client,'',"\c6You don't have that much money to drop!");
+			messageClient(%client,'',"\c6You're dropping too much cash! Wait a while, or pick up some of your dropped cash before dropping more.");
+			return;
 		}
-		else
-			messageClient(%client,'',"\c6The least you can drop is \c3$50\c6.");
+
+		if(CityRPGData.getData(%client.bl_id).valueMoney < %amt)
+		{
+			messageClient(%client,'',"\c6You don't have that much money to drop!");
+			return;
+		}
+
+		%cash = new Item()
+		{
+			datablock = cashItem;
+			canPickup = false;
+			value = %amt;
+			dropper = %client;
+		};
+
+		%cash.setTransform(setWord(%client.player.getTransform(), 2, getWord(%client.player.getTransform(), 2) + 4));
+		%cash.setVelocity(VectorScale(%client.player.getEyeVector(), 10));
+		MissionCleanup.add(%cash);
+		%cash.setShapeName("$" @ %cash.value);
+		CityRPGData.getData(%client.bl_id).valueMoney = CityRPGData.getData(%client.bl_id).valueMoney - %amt;
+		%client.setInfo();
+
+		$City::Cache::DroppedCash[%client.bl_id]++;
+
+		messageClient(%client,'',"\c6You drop \c3$" @ %amt @ ".");
+		%client.cityLog("Drop '$" @ %amt @ "'");
 	}
 
 	function serverCmdstats(%client, %name)
@@ -749,9 +635,6 @@ package CityRPG_Commands
 			// Job
 			%string = %string @ "\n" @ "Job:" SPC %job.name;
 
-			// Wallet
-			%string = %string @ "\n" @ "Money in wallet:" SPC "\c3$" @ %data.valueMoney;
-
 			// Net worth
 			%string = %string @ "\n" @ "Net worth:" SPC "\c3$" @ (%data.valueMoney + %data.valueBank);
 
@@ -769,6 +652,10 @@ package CityRPG_Commands
 				%eduString = "Level " @ %level;
 			}
 			%string = %string @ "\n" @ "Education:" SPC "\c3" @ %eduString;
+			
+			// Lots visited
+			%lotsVisited = getWordCount(%data.valueLotsVisited);
+			%string = %string @ "\nLots visited: " @ (%data.valueLotsVisited == -1? 0 : %lotsVisited);
 
 
 			commandToClient(%client, 'MessageBoxOK', "Stats for " @ %target.name, %string);

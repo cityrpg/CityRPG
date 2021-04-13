@@ -6,7 +6,7 @@ $CityRPG::jobs::pay = 150;
 $CityRPG::jobs::tools = "";
 $CityRPG::jobs::datablock = Player9SlotPlayer;
 $CityRPG::jobs::education = 0;
-$CityRPG::jobs::hostonly = true;
+$CityRPG::jobs::adminonly = 1;
 
 $CityRPG::jobs::sellItems = true;
 $CityRPG::jobs::sellFood = true;

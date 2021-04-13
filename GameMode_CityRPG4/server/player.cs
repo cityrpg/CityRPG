@@ -40,7 +40,7 @@ function gameConnection::arrest(%client, %cop)
 	if(%client.getJobSO().law)
 	{
 		messageClient(%client, '', "\c6You have been demoted to" SPC City_DetectVowel(JobSO.job[1].name) SPC "\c3" @ JobSO.job[1].name SPC "\c6due to your jailing.");
-		%robSO.valueJobID = 1;
+		%robSO.valueJobID = $City::CivilianJobID;
 	}
 
 	if(%robSO.valueBounty > 0)
@@ -135,6 +135,9 @@ function gameConnection::setGameBottomPrint(%client)
 
 	%client.CityRPGPrint = %client.CityRPGPrint @ "   <bitmap:" @ $City::DataPath @ "ui/cash.png>\c6 Cash:" SPC %client.getCashString();
 
+	// TODO: Move wanted level to center print so this doesn't cut off the bottom HUD
+	//%client.CityRPGPrint = %client.CityRPGPrint @ "   <bitmap:" @ $City::DataPath @ "ui/hunger.png>\c6 Hunger: Well-fed";
+
 	// Placeholder
 	//%client.CityRPGPrint = %client.CityRPGPrint @ "<just:right>\c6Day";
 
@@ -156,48 +159,6 @@ function gameConnection::setGameBottomPrint(%client)
 			%client.CityRPGPrint = %client.CityRPGPrint @ "*";
 
 		%client.CityRPGPrint = %client.CityRPGPrint;
-	}
-
-	$City::Economics::replayCount = $City::Economics::replayCount + 1;
-	$City::Economics::randomUporDown = getRandom(1,5);
-	$City::Economics::positiveNegative = getRandom(1,2);
-
-	if($Pref::Server::City::Economics::Relay < 1)
-		$Pref::Server::City::Economics::Relay = ClientGroup.getCount();
-
-	if($City::Economics::replayCount > $Pref::Server::City::Economics::Relay)
-	{
-		if($City::Economics::Condition > $Pref::Server::City::Economics::Greatest)
-		{
-			$City::Economics::Condition = $City::Economics::Condition - $City::Economics::randomUporDown;
-			$City::Economics::replayCount = 0;
-		}
-		else if($City::Economics::Condition < $Pref::Server::City::Economics::Least)
-		{
-			$City::Economics::Condition = $City::Economics::Condition + $City::Economics::randomUporDown;
-			$City::Economics::replayCount = 0;
-		}
-		else if($City::Economics::positiveNegative == 1)
-		{
-			$City::Economics::Condition = $City::Economics::Condition + $City::Economics::randomUporDown;
-			$City::Economics::replayCount = 0;
-		}
-		else if($City::Economics::positiveNegative == 2)
-		{
-			$City::Economics::Condition = $City::Economics::Condition - $City::Economics::randomUporDown;
-			$City::Economics::replayCount = 0;
-		}
-	}
-
-	if($City::Economics::Condition > $Pref::Server::City::Economics::Cap)
-	{
-		$City::Economics::Condition = $Pref::Server::City::Economics::Cap;
-	}
-
-	if($City::Economics::Condition $= "")
-	{
-		error("ERROR: GameMode_CityRPG4 - Economics condition is blank! Resetting to 0.");
-		$City::Economics::Condition = 0;
 	}
 
 	commandToClient(%client, 'bottomPrint', %client.CityRPGPrint, 0, true);
@@ -278,6 +239,24 @@ function gameConnection::applyForcedBodyParts(%client)
 
 		%client.applyBodyParts();
 	}
+}
+
+function gameConnection::cityLotDisplay(%client, %lotBrick)
+{
+	%lotStr = "<just:right><font:palatino linotype:18>\c6" @ %lotBrick.getCityLotName();
+
+	%duration = 2;
+	if(%lotBrick.getCityLotOwnerID() == -1)
+	{
+		%lotStr = %lotStr @ "<br>\c2For sale!\c6 Type /lot for info";
+	}
+	else if(%lotBrick.getCityLotPreownedPrice() != -1)
+	{
+		%lotStr = %lotStr @ "<br>\c2For sale by owner!\c6 Type /lot for info";
+		%duration = 3;
+	}
+
+	%client.centerPrint(%lotStr, %duration);
 }
 
 // Get Functions
@@ -443,23 +422,11 @@ function gameConnection::sellClothes(%client, %sellerID, %brick, %item, %price)
 	}
 }
 
-// Output Events
-function gameConnection::MessageBoxOK(%client, %header, %text)
-{
-	commandToClient(%client, 'MessageBoxOK', %header, %text);
-}
-
 function player::giveDefaultEquipment(%this)
 {
 	if(!getWord(CityRPGData.getData(%this.client.bl_id).valueJailData, 1))
 	{
-		if(CityRPGData.getData(%this.client.bl_id).valueTools $= "")
-		{
-			%tools = ($Pref::Server::City::giveDefaultTools ? $Pref::Server::City::defaultTools @ " " : "") @ %this.client.getJobSO().tools;
-			CityRPGData.getData(%this.client.bl_id).valueTools = "";
-		}
-		else
-			%tools = CityRPGData.getData(%this.client.bl_id).valueTools;
+		%tools = ($Pref::Server::City::giveDefaultTools ? $Pref::Server::City::defaultTools @ " " : "") @ %this.client.getJobSO().tools;
 
 		for(%a = 0; %a < %this.getDatablock().maxTools; %a++)
 		{
@@ -493,26 +460,6 @@ function player::giveDefaultEquipment(%this)
 			messageClient(%this.client, 'MsgItemPickup', "", %a, nameToID(%tool));
 		}
 	}
-}
-
-
-function jobset(%client, %job, %name)
-{
-	CityRPGData.getData(%client.bl_id).valueJobID = %job;
-	serverCmdunUseTool(%client);
-	%client.player.giveDefaultEquipment();
-	%client.applyForcedBodyColors();
-	%client.applyForcedBodyParts();
-
-	%client.player.setDatablock(%client.getJobSO().db);
-
-	if(%job == $City::MayorJobID)
-	{
-		$City::Mayor::String = %client.name;
-		$City::Mayor::Enabled = 0;
-		serverCmdClearImpeach(%client);
-	}
-	%client.SetInfo();
 }
 
 function resetFree(%client)
@@ -573,4 +520,26 @@ function GameConnection::cityEnroll(%client)
 function GameConnection::getCityRecordClearCost(%client)
 {
 	return 250 * (CityRPGData.getData(%client.bl_id).valueEducation+1);
+}
+
+function GameConnection::isCityAdmin(%client)
+{
+	return CityRPGData.getData(%client.bl_id).valueJobID == $City::AdminJobID;
+}
+
+function CityMenu_Player(%client)
+{
+	%menu = "Player stats."
+		TAB "Close menu.";
+	
+	%functions = "CityMenu_Player_Stats"
+			 TAB "CityMenu_Close";
+	
+	%client.cityMenuOpen(%menu, %functions, %client, "\c3Actions menu closed.");
+}
+
+function CityMenu_Player_Stats(%client)
+{
+	serverCmdStats(%client);
+	%client.cityMenuClose();
 }

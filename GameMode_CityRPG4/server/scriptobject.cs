@@ -1,175 +1,18 @@
-/// ============================================================
-// JobsSO
-// ============================================================
-
-function JobSO::populateJobs(%so)
-{
-	for(%a = 1; isObject(%so.job[%a]); %a++)
-	{
-		%so.job[%a].delete();
-		%so.job[%a] = "";
-	}
-
-	%so.loadJobFiles();
-}
-
-function JobSO::loadJobFiles(%so)
-{
-	$City::DefaultJobs = 1;
-	$City::CivilianJobID = 1;
-	$City::AdminJobID = 13;
-
-	exec($City::ScriptPath @ "/jobTrees.cs");
-
-	// NOTE: Order is incredibly important. Jobs are referenced by ID, which is determined by order.
-	// Mixing up the order of these professions will cause save data to reference the wrong job.
-	%so.addJobFromFile("civilian");               // 1
-	%so.addJobFromFile("miner");                  // 2
-	%so.addJobFromFile("lumberjack");             // 3
-	%so.addJobFromFile("grocer");                 // 4
-	%so.addJobFromFile("armsdealer");             // 5
-	%so.addJobFromFile("shopowner");							// 6
-	%so.addJobFromFile("shopceo");           		  // 7
-	%so.addJobFromFile("bountyhunter");           // 8
-	%so.addJobFromFile("bountyhunterpro");        // 9
-	%so.addJobFromFile("policeasst");             // 10
-	%so.addJobFromFile("policeman");              // 11
-	%so.addJobFromFile("policechief");            // 12
-	%so.addJobFromFile("councilmember");          // 13
-	%so.addJobFromFile("mayor");		  						// 14
-}
-
-function JobSO::addJobFromFile(%so, %file)
-{
-	// First check for a path in the game-mode, then check for a direct path
-	%filePath = $City::ScriptPath @ "jobs/" @ %file @ ".cs";
-	if(!isFile(%filePath))
-	{
-		%filePath = %file;
-	}
-
-	// If there's still nothing, throw an error.
-	if(!isFile(%filePath))
-	{
-		error("JobSO::addJobFromFile - Unable to find the corresponding job file '" @ %file @ "'. This job will not load.");
-	}
-	else
-	{
-		%jobID = %so.getJobCount() + 1;
-		exec(%filePath);
-		%so.job[%jobID] = new scriptObject()
-		{
-			id		= %jobID;
-
-			name		= $CityRPG::jobs::name;
-			track		= $CityRPG::jobs::track;
-			title		= $CityRPG::jobs::title;
-
-
-			invest		= $CityRPG::jobs::initialInvestment;
-			pay		= $CityRPG::jobs::pay;
-			tools		= $CityRPG::jobs::tools;
-			education	= $CityRPG::jobs::education;
-			db		= $CityRPG::jobs::datablock;
-			hostonly	= $CityRPG::jobs::hostonly;
-			adminonly	= $CityRPG::jobs::adminonly;
-			usepolicecars	= $CityRPG::jobs::usepolicecars;
-			usecrimecars	= $CityRPG::jobs::usecrimecars;
-			useparacars		= $CityRPG::jobs::useparacars;
-			outfit		= $CityRPG::jobs::outfit;
-
-			sellItems	= $CityRPG::jobs::sellItems;
-			sellFood	= $CityRPG::jobs::sellFood;
-			sellItems 	= $CityRPG::jobs::sellItems; // Unused.
-			sellClothes 	= $CityRPG::jobs::sellClothes;
-
-			law		= $CityRPG::jobs::law;
-			canPardon	= $CityRPG::jobs::canPardon;
-
-			thief		= $CityRPG::jobs::thief;
-			hideJobName	= $CityRPG::jobs::hideJobName;
-
-			bountyOffer	= $CityRPG::jobs::offerer;
-			bountyClaim	= $CityRPG::jobs::claimer;
-
-			laborer		= $CityRPG::jobs::labor;
-
-			tmHexColor	= $CityRPG::jobs::tmHexColor;
-			helpline	= $CityRPG::jobs::helpline;
-			flavortext	= $CityRPG::jobs::flavortext;
-		};
-
-		%track = $CityRPG::jobs::track;
-
-		if(%track $= "")
-		{
-			%track = "Miscellaneous";
-			%so.job[%jobID].track = Miscellaneous;
-		}
-
-		// Default to a neutral grey if there is no color
-		if($City::JobTrackColor[%track] $= "")
-		{
-			$City::JobTrackColor[%track] = "505050";
-		}
-
-
-		// Job track registration for menus
-		// "Invisible" jobs such as admin and mayor are not included
-		if(!$CityRPG::jobs::adminonly)
-		{
-			// Initialize if needed
-			$City::Jobs[%track] = $City::Jobs[%track]!$=""?($City::Jobs[%track] TAB %jobID):%jobID;
-
-			if(!$City::JobTrackExists[%track])
-			{
-				// Record the job track to a list so that we can loop through it later.
-				$City::JobTracks = $City::JobTracks!$=""?($City::JobTracks TAB %track):%track;
-
-				$City::JobTrackExists[%track] = true;
-			}
-		}
-
-		if(!isObject("CityRPGJob" @ %jobID @ "SpawnBrickData"))
-		{
-			datablock fxDtsBrickData(CityRPGSpawnBrickData : brickSpawnPointData)
-			{
-				category = "CityRPG";
-				subCategory = "Spawns";
-
-				uiName = %so.job[%jobID].name SPC "Spawn";
-
-				specialBrickType = "";
-
-				CityRPGBrickType = $CityBrick_Spawn;
-				CityRPGBrickAdmin = true;
-
-				spawnData = "jobSpawn" SPC %jobID;
-			};
-
-			CityRPGSpawnBrickData.setName("CityRPGJob" @ %jobID @ "SpawnBrickData");
-		}
-
-		deleteVariables("$CityRPG::jobs::*");
-	}
-}
-
-function JobSO::getJobCount(%so)
-{
-	for(%a = 0; isObject(%so.job[%a + 1]); %a++) { }
-	return %a;
-}
-
 // ============================================================
 // CitySO
 // ============================================================
 function CitySO::loadData(%so)
 {
+	// As an additional caution, use discoverFile.
+	// This covers cases such as the admin deleting the file after the game starts.
+	discoverFile($City::SavePath @ "City.cs");
+
 	if(isFile($City::SavePath @ "City.cs"))
 	{
 		exec($City::SavePath @ "City.cs");
 		%so.minerals		= $CityRPG::temp::citydata::datumminerals;
 		%so.lumber			= $CityRPG::temp::citydata::datumlumber;
+		%so.lotListings	= $CityRPG::temp::citydata::lotListings;
 		%so.economy			= $Economics::Condition;
 
 		%so.version			= $CityRPG::temp::citydata::version;
@@ -179,6 +22,7 @@ function CitySO::loadData(%so)
 		%so.version = $City::Version;
 		%so.value["minerals"] = 0;
 		%so.value["lumber"] = 0;
+		%so.value["lotListings"] = "";
 		%so.value["economy"] = 0;
 	}
 }
@@ -190,6 +34,7 @@ function CitySO::saveData(%so)
 
 	$CityRPG::temp::citydata::datum["minerals"]		= %so.minerals;
 	$CityRPG::temp::citydata::datum["lumber"]		= %so.lumber;
+	$CityRPG::temp::citydata::lotListings = %so.lotListings;
 	export("$CityRPG::temp::citydata::*", $City::SavePath @ "City.cs");
 }
 

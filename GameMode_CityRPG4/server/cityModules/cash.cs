@@ -24,6 +24,8 @@ package CityRPG_Cash
 					value = %cashval;
 				};
 
+				%cash.setShapeName("Drop $" @ %cash.value @ " from death");
+
 				%cash.setTransform(setWord(%client.player.getTransform(), 2, getWord(%client.player.getTransform(), 2) + 2));
 				%cash.setVelocity(VectorScale(%client.player.getEyeVector(), 10));
 
@@ -51,7 +53,14 @@ package CityRPG_Cash
 				if(isObject(%col))
 				{
 					if(%obj.client.minigame)
+					{
 						%col.minigame = %obj.client.minigame;
+					}
+
+					if(isObject(%col.dropper))
+					{
+						$City::Cache::DroppedCash[%col.dropper.bl_id]--;
+					}
 
 					CityRPGData.getData(%obj.client.bl_id).valueMoney += %col.value;
 					messageClient(%obj.client, '', "\c6You have picked up \c3$" @ %col.value SPC "\c6off the ground.");

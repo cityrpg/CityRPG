@@ -22,7 +22,6 @@ datablock fxDTSBrickData(CityRPGJobBrickData : brick2x4FData)
 // ============================================================
 function CityMenu_Jobs(%client, %brick)
 {
-	%client.cityMenuClose(1);
 	%client.cityMenuMessage("\c3" @ $Pref::Server::City::name @ " Employment Office");
 	%client.cityMenuMessage("\c6Your current job is\c3" SPC %client.getJobSO().name @ "\c6 with an income of \c3$" @ %client.getJobSO().pay @ "\c6.");
 
@@ -32,7 +31,7 @@ function CityMenu_Jobs(%client, %brick)
 	%functions = 	"CityMenu_Jobs_List"
 						TAB "CityMenu_Jobs_ApplyPrompt";
 
-	%client.cityMenuOpen(%menu, %functions, %brick, "\c6Thanks, come again.");
+	%client.cityMenuOpen(%menu, %functions, %brick, "\c6Thanks, come again.", 0, 1);
 }
 
 function CityMenu_Jobs_ApplyPrompt(%client, %brick)
@@ -48,8 +47,6 @@ function CityMenu_Jobs_ApplyInput(%client, %input)
 
 function CityMenu_Jobs_List(%client, %input, %brick)
 {
-	%client.cityMenuClose(1);
-
 	%client.cityMenuMessage("\c3Select a job track to view.");
 
 	%menu = getField($City::JobTracks, 0);

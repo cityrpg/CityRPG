@@ -16,8 +16,7 @@ $City::ScriptPath = "Add-Ons/GameMode_CityRPG4/server/";
 $City::DataPath = "Add-Ons/GameMode_CityRPG4/data/";
 $City::SavePath = "config/server/CityRPG4_A2/";
 
-$City::Version = "0.2.0";
-$City::VersionTitle = "Alpha 2";
+$City::Version = "0.3.0";
 $City::isGitBuild = !isFile("Add-Ons/GameMode_CityRPG4/README.md");
 
 $City::VersionWarning = "!!!!! WARNING: You are using save data from a different version of CityRPG. You are likely to encounter compatibility issues. To fix this, move or delete the save file located in your Blockland folder:" SPC $City::SavePath;
@@ -41,6 +40,7 @@ if(%error == $Error::AddOn_NotFound)
    error("ERROR: GameMode_CityRPG4 - required add-on Weapon_Rocket_Launcher not found");
    return;
 }
+
 // Weapon_Sword
 %error = ForceRequiredAddOn("Weapon_Sword");
 if(%error == $Error::AddOn_NotFound)
@@ -124,10 +124,24 @@ if($GameModeArg $= "Add-Ons/GameMode_CityRPG4/gamemode.txt")
   {
     exec("Add-Ons/Event_Bot_Relay/server.cs");
   }
+
+  // Weapon_Shotgun (Optional)
+  if(isFile("Add-Ons/Weapon_Shotgun/server.cs"))
+  {
+    exec("Add-Ons/Weapon_Shotgun/server.cs");
+  }
+
+  // Weapon_Sniper_Rifle (Optional)
+  if(isFile("Add-Ons/Weapon_Sniper_Rifle/server.cs"))
+  {
+    exec("Add-Ons/Weapon_Sniper_Rifle/server.cs");
+  }
+
 }
 else
 {
   // Optionals that only need to load in a Custom configuration for compatibility
+  // These are only loaded if they are enabled.
 
   // Brick_Checkpoint (Optional)
   // If enabled, we would like checkpoints to execute first.
@@ -155,10 +169,20 @@ else
       unregisterOutputEvent("fxDTSBrick","doPlayerTeleport");
       registerOutputEvent("fxDTSBrick","doPlayerTeleport","string 200 90\tlist Relative 0 North 1 East 2 South 3 West 4\tbool",1);
     }
+    // See package.cs for the function arg fix
+  }
+
+  if($AddOn__Event_Zones)
+  {
+    %error = ForceRequiredAddOn("Event_Zones");
+
+    if(%error == $Error::None)
+    {
+      unregisterOutputEvent("fxDTSBrick","setZone");
+      unregisterOutputEvent("fxDTSBrick","setZoneVelocityMod");
+    }
   }
 }
-
-
 
 // ============================================================
 // File Execution
@@ -170,6 +194,7 @@ exec($City::ScriptPath @ "bricks.cs");
 exec($City::ScriptPath @ "events.cs");
 exec($City::ScriptPath @ "scriptobject.cs");
 exec($City::ScriptPath @ "init.cs");
+exec($City::ScriptPath @ "jobs.cs");
 exec($City::ScriptPath @ "core.cs");
 exec($City::ScriptPath @ "player.cs");
 exec($City::ScriptPath @ "commands.cs");
@@ -191,9 +216,9 @@ exec($City::ScriptPath @ "items/weapons/limitedbaton.cs");
 
 // Modules
 exec($City::ScriptPath @ "cityModules/lotRegistry.cs");
+exec($City::ScriptPath @ "cityModules/lotRegistryMenu.cs");
 exec($City::ScriptPath @ "cityModules/cash.cs");
 exec($City::ScriptPath @ "cityModules/voteImpeach.cs");
-exec($City::ScriptPath @ "cityModules/rep.cs");
 //exec($City::ScriptPath @ "cityModules/trade.cs");
 exec($City::ScriptPath @ "cityModules/mayor.cs");
 exec($City::ScriptPath @ "cityModules/security.cs");
@@ -207,6 +232,7 @@ exec($City::ScriptPath @ "cityModules/laborMining.cs");
 exec($City::ScriptPath @ "support/spacecasts.cs");
 exec($City::ScriptPath @ "support/extraResources.cs");
 exec($City::ScriptPath @ "support/formatNumber.cs");
+exec($City::ScriptPath @ "support/saver.cs");
 
 // Global saving
 exec($City::ScriptPath @ "globalSaving/mayorSaving.cs");
@@ -215,6 +241,7 @@ exec($City::ScriptPath @ "globalSaving/mayorSaving.cs");
 // Restricted Events
 // ============================================================
 // Remove events that can be abused
+// Non-default event restrictions are defined above in optional add-on loading.
 echo("*** De-registering events for CityRPG... ***");
 unRegisterOutputEvent("fxDTSBrick", "RadiusImpulse");
 unRegisterOutputEvent("fxDTSBrick", "SetItem");
@@ -237,6 +264,15 @@ unRegisterOutputEvent("Player", "SetVelocity");
 unRegisterOutputEvent("Player", "SpawnExplosion");
 unRegisterOutputEvent("Player", "SpawnProjectile");
 
+unRegisterOutputEvent("Bot", "AddHealth");
+unRegisterOutputEvent("Bot", "BurnPlayer");
+unRegisterOutputEvent("Bot", "ChangeDatablock");
+unRegisterOutputEvent("Bot", "ClearBurn");
+unRegisterOutputEvent("Bot", "ClearTools");
+unRegisterOutputEvent("Bot", "SetHealth");
+unRegisterOutputEvent("Bot", "SpawnExplosion");
+unRegisterOutputEvent("Bot", "SpawnProjectile");
+
 unRegisterOutputEvent("GameConnection", "ChatMessage");
 unRegisterOutputEvent("GameConnection", "IncScore");
 
@@ -253,6 +289,7 @@ addExtraResource($City::DataPath @ "ui/cash.png");
 addExtraResource($City::DataPath @ "ui/health.png");
 addExtraResource($City::DataPath @ "ui/location.png");
 addExtraResource($City::DataPath @ "ui/time.png");
+addExtraResource($City::DataPath @ "ui/hunger.png");
 
 // Support_CityRPG_Plus (Optional)
 // This needs to load *after* CityRPG for it to be compatible.
