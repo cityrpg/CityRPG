@@ -71,33 +71,39 @@ function serverCmdvoteElection(%client, %arg2)
 {
 	%client.cityLog("/voteElection");
 
-	if(isObject(%arg1 = findClientByName(%arg2)))
+	if(!isObject(%arg1 = findClientByName(%arg2)))
 	{
-		if(%arg1 $= "") //if not blank
-		{
-			messageClient(%client, '', "Please try putting in a user's name.");
-		} else {
-			if($City::Mayor::Voting == 1 && $Pref::Server::City::Mayor::Active == 0) //if election
-			{
-				if(CityRPGData.getData(%client.bl_id).valueElectionID != $City::Mayor::Mayor::ElectionID) //if hasn't voted
-				{
-					if(CityMayor_getCandidatesTF(%arg1.name))
-					{
-						messageClient(%client, '', "\c6You have voted for\c3" SPC %arg1.name @ "\c6.");
-						CityRPGData.getData(%client.bl_id).valueElectionID = $City::Mayor::Mayor::ElectionID;
-						%voteIncrease = getMayor($City::Mayor::Mayor::ElectionID, %arg1.name) + 1;
-						inputMayor($City::Mayor::Mayor::ElectionID, %arg1.name, %voteIncrease);
-					} else {
-						messageClient(%client, '', "This player isn't a candidate.");
-					}
-				} else {
-					messageClient(%client, '', "You've already voted!");
-				}
-			} else {
-				messageClient(%client, '', "There isn't an election.");
-			}
-		}
+		return;
 	}
+
+	if(%arg1 $= "") // Blank input
+	{
+		messageClient(%client, '', "Please try putting in a user's name.");
+		return;
+	}
+
+	if($City::Mayor::Voting == 0 || $Pref::Server::City::Mayor::Active == 1) // No election active
+	{
+		messageClient(%client, '', "There isn't an election.");
+		return;
+	}
+
+	if(CityRPGData.getData(%client.bl_id).valueElectionID == $City::Mayor::Mayor::ElectionID) //if hasn't voted
+	{
+		messageClient(%client, '', "You've already voted!");
+		return;
+	}
+
+	if(!CityMayor_getCandidatesTF(%arg1.name))
+	{
+		messageClient(%client, '', "This player isn't a candidate.");
+		return;
+	}
+	
+	messageClient(%client, '', "\c6You have voted for\c3" SPC %arg1.name @ "\c6.");
+	CityRPGData.getData(%client.bl_id).valueElectionID = $City::Mayor::Mayor::ElectionID;
+	%voteIncrease = getMayor($City::Mayor::Mayor::ElectionID, %arg1.name) + 1;
+	inputMayor($City::Mayor::Mayor::ElectionID, %arg1.name, %voteIncrease);
 }
 
 //register
