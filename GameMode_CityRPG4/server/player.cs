@@ -323,6 +323,22 @@ function gameConnection::ifWanted(%client)
 		return false;
 }
 
+function gameConnection::doReincarnate(%client)
+{
+	CityRPGData.removeData(%client.bl_id);
+	CityRPGData.addData(%client.bl_id);
+	CityRPGData.getData(%client.bl_id).valueReincarnated = 1;
+	CityRPGData.getData(%client.bl_id).valueEducation = $City::EducationReincarnateLevel;
+
+	if(isObject(%client.player))
+	{
+		%client.spawnPlayer();
+	}
+
+	messageAllExcept(%client, '', '\c3%1\c6 has been reincarnated!', %client.name);
+	messageClient(%client, '', "\c6You have been reincarnated.");
+}
+
 // Sell Functions
 
 // Client.sellFood(sellerID, servingID, foodName, price, profit)

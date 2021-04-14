@@ -531,18 +531,7 @@ package CityRPG_Commands
 		{
 			if((CityRPGData.getData(%client.bl_id).valueMoney + CityRPGData.getData(%client.bl_id).valueBank) >= 100000)
 			{
-				CityRPGData.removeData(%client.bl_id);
-				CityRPGData.addData(%client.bl_id);
-				CityRPGData.getData(%client.bl_id).valueReincarnated = 1;
-				CityRPGData.getData(%client.bl_id).valueEducation = $City::EducationReincarnateLevel;
-
-				if(isObject(%client.player))
-				{
-					%client.spawnPlayer();
-				}
-
-				messageAllExcept(%client, '', '\c3%1\c6 has been reincarnated!', %client.name);
-				messageClient(%client, '', "\c6You have been reincarnated.");
+				%client.doReincarnate();
 			}
 		}
 		else
