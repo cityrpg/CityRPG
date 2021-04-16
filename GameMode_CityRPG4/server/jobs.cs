@@ -19,7 +19,7 @@ function JobSO::loadJobFiles(%so)
 	$City::CivilianJobID = "StarterCivilian";
 	$City::AdminJobID = "Admin";
 
-	exec($City::ScriptPath @ "/jobTrees.cs");
+	exec($City::ScriptPath @ "jobTrees.cs");
 
 	%so.createJob("StarterCivilian");
 	%so.createJob("LaborMiner");
