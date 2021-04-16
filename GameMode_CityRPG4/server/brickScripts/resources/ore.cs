@@ -20,29 +20,32 @@ datablock fxDTSBrickData(CityRPGOreData)
 // ============================================================
 function fxDTSBrick::adjustColorOnOreContent(%this, %case)
 {
-	if(isObject(%this))
+	if(!isObject(%this))
 	{
-		if(%this.getDatablock().uiName $= "Ore" || %this.getDatablock().uiName $= "Small Ore")
-		{
-			if(%case == 0)
-			{
-				%this.schedule(getRandom(45000, 90000), "adjustColorOnOreContent", 1);
-				%this.color = getClosestPaintColor("0 0 0 1");
-				%this.setColor(%this.color);
-			}
+		return;
+	}
 
-			if(%case == 1)
-			{
-				%seed = getRandom(1, getRandom(1, ResourceSO.mineralCount));
-				echo(%seed);
-				%this.id = ResourceSO.mineral[%seed].id;
-				%this.name = ResourceSO.mineral[%seed].name;
-				%this.totalHits = ResourceSO.mineral[%seed].totalHits;
-				%this.BPH = ResourceSO.mineral[%seed].BPH;
-				%this.color = getClosestPaintColor(ResourceSO.mineral[%seed].color);
-				%this.setColor(%this.color);
-			}
-		}
+	if(%this.getDatablock().uiName !$= "Ore" && %this.getDatablock().uiName !$= "Small Ore")
+	{
+		return;
+	}	
+
+	if(%case == 0)
+	{
+		%this.schedule(getRandom(45000, 90000), "adjustColorOnOreContent", 1);
+		%this.color = getClosestPaintColor("0 0 0 1");
+		%this.setColor(%this.color);
+	}
+	else if(%case == 1)
+	{
+		%seed = getRandom(1, getRandom(1, ResourceSO.mineralCount));
+		echo(%seed);
+		%this.id = ResourceSO.mineral[%seed].id;
+		%this.name = ResourceSO.mineral[%seed].name;
+		%this.totalHits = ResourceSO.mineral[%seed].totalHits;
+		%this.BPH = ResourceSO.mineral[%seed].BPH;
+		%this.color = getClosestPaintColor(ResourceSO.mineral[%seed].color);
+		%this.setColor(%this.color);
 	}
 }
 
@@ -58,8 +61,7 @@ function fxDTSBrick::onMine(%this, %client)
 		messageClient(%client, '', "\c6Mined \c3" @ %this.name @ "\c6.");
 		return;
 	}
-
-	if(%this.totalHits > 0)
+	else if(%this.totalHits > 0)
 	{
 		%this.totalHits--;
 
@@ -77,7 +79,6 @@ function fxDTSBrick::onMine(%this, %client)
 			CityRPGData.getData(%client.bl_id).valueMoney += %value;
 		}
 	}
-
-	if(%this.totalHits == 0)
+	else if(%this.totalHits == 0)
 		%client.centerPrint("<just:left>" @ $CityRPG::MainFont @ "\c6Resource empty", 3);
 }
