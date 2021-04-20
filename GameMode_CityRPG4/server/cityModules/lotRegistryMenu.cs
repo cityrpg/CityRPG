@@ -47,6 +47,12 @@ function CityMenu_Lot(%client, %input)
 		%brick = %client.CityRPGLotBrick;
 	}
 
+	if(!isObject(%brick))
+	{
+		error("Lot Menu - Attempting to access nonexistent lot '" @ %brick @ "'!");
+		return;
+	}
+
 	// ## Initial display ## //
 	%price = %brick.dataBlock.initialPrice;
 
