@@ -598,10 +598,10 @@ function GameConnection::isCityAdmin(%client)
 
 function CityMenu_Player(%client)
 {
+	%client.cityMenuMessage("\c3Actions Menu");
 	%menu = "Player stats.";
 	%functions = "CityMenu_Player_Stats";
 
-	echo(City.get(%client.bl_id, "jobID") SPC $City::MayorJobID);
 	if(City.get(%client.bl_id, "jobID") $= $City::MayorJobID)
 	{
 		%menu = %menu TAB "Mayor actions.";

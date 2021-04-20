@@ -194,6 +194,8 @@ exec($City::ScriptPath @ "core.cs");
 exec($City::ScriptPath @ "player.cs");
 exec($City::ScriptPath @ "commands.cs");
 exec($City::ScriptPath @ "admin.cs");
+
+// Core packages (Order-dependent)
 exec($City::ScriptPath @ "package.cs");
 exec($City::ScriptPath @ "overrides.cs");
 
