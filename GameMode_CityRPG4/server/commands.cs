@@ -397,7 +397,7 @@ package CityRPG_Commands
 		if(!isObject(%client.player))
 			return;
 
-		if(!%client.getJobSO().canPardon || !%client.isCityAdmin())
+		if(!%client.getJobSO().canPardon && !%client.isCityAdmin())
 		{
 			messageClient(%client, '', "\c6You can't pardon people.");
 			return;
@@ -422,21 +422,62 @@ package CityRPG_Commands
 			return;
 		}
 
-		%cost = $Pref::Server::City::demerits::pardonCost * getWord(CityRPGData.getData(%target.bl_id).valueJailData, 1);
-		if(CityRPGData.getData(%client.bl_id).valueMoney < %cost && !%client.isAdmin)
-		{
-			messageClient(%client, '', "\c6You need at least \c3$" @ %cost SPC "\c6to pardon someone.");
-			return;
-		}
-
-		if(%client.BL_ID != getNumKeyID() && %target == %client)
+		if(!%client.isCityAdmin() && %target == %client)
 		{
 			messageClient(%client, '', "\c6The extent of your legal corruption only goes so far. You cannot pardon yourself.");
 			return;
 		}
 
-		CityRPGData.getData(%client.bl_id).valueMoney -= (%client.isAdmin ? 0 : %cost);
-		CityRPGData.getData(%target.bl_id).valueJailData = getWord(CityRPGData.getData(%target.bl_id).valueJailData, 0) SPC 0;
+		%client.pardonTarget = %target;
+		%jailTime = getWord(City.get(%target.bl_id, "jailData"), 1);
+
+		%client.cityLog("Pardon prompt for " @ %target.bl_id);
+
+		if(%client.isCityAdmin() && %target != %client)
+		{
+			%client.cityMenuMessage("\c6You are about to pardon \c3" @ %target.name @ "\c6 from their \c3" @ %jailTime @ "\c6 remaining days in prison using your magic admin powers.");
+			%client.cityMenuMessage("\c6Type \c31\c6 in chat to confirm, or \c32\c6 to cancel.");
+		}
+		else if(%client.isCityAdmin())
+		{
+			%client.cityMenuMessage("\c6You are about to pardon yourself using your magic admin powers.");
+			%client.cityMenuMessage("\c6Type \c31\c6 in chat to confirm, or \c32\c6 to cancel.");
+		}
+		else
+		{
+			%client.cityMenuMessage("\c6You are about to pardon \c3" @ %target.name @ "\c6 from their \c3" @ %jailTime @ "\c6 remaining days in prison.");
+			%client.cityMenuMessage("\c6Proceeding will negatively impact the economy by up to \c0" @ %jailTime * $Pref::Server::City::demerits::pardonCostMultiplier @ "%\c6. Type \c31\c6 in chat to confirm, or \c32\c6 to cancel.");
+		}
+
+		%functions = "CityMenu_Pardon";
+		%client.cityMenuOpen("", %functions, %client, "Pardon cancelled.", 0, 1);
+	}
+
+	function CityMenu_Pardon(%client, %input)
+	{
+		if(%input !$= "1")
+		{
+			%client.cityMenuClose();
+			return;
+		}
+
+		%client.cityMenuClose(1);
+
+		// Security check
+		if(!%client.getJobSO().canPardon && !%client.isCityAdmin())
+		{
+			messageClient(%client, '', "You are no-longer able to pardon people.");
+			return;
+		}
+
+		// Extract the cost
+		if(!%client.isCityAdmin())
+		{
+			%jailTime = getWord(City.get(%target.bl_id, "jailData"), 1);
+			$City::Economics::Condition -= %jailTime * $Pref::Server::City::demerits::pardonCostMultiplier;
+		}
+
+		%target = %client.pardonTarget;
 
 		if(%target != %client)
 		{
@@ -447,6 +488,8 @@ package CityRPG_Commands
 		{
 			messageClient(%client, '', "\c6You have pardoned yourself.");
 		}
+
+		City.set(%target.bl_id, "jailData", getWord(City.get(%target.bl_id, "jailData"), 0) SPC 0);
 
 		%target.buyResources();
 		%target.spawnPlayer();
