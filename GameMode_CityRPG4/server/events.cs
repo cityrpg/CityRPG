@@ -106,7 +106,7 @@ function fxDTSBrick::doJobTest(%brick, %job, %job2, %convicts, %client)
 
 	if(!%job && !%job2 && (%convicts ? (!%convictStatus ? true : false) : true))
 		%brick.onJobTestPass(%client);
-	else if((CityRPGData.getData(%client.bl_id).valueJobID == %job || CityRPGData.getData(%client.bl_id).valueJobID == %job2) && (%convicts ? (!%convictStatus ? true : false) : true))
+	else if((CityRPGData.getData(%client.bl_id).valueJobID $= %job || CityRPGData.getData(%client.bl_id).valueJobID $= %job2) && (%convicts ? (!%convictStatus ? true : false) : true))
 		%brick.onJobTestPass(%client);
 	else
 		%brick.onJobTestFail(%client);

@@ -153,7 +153,7 @@ package CityRPG_MainPackage
 			{
 				%ownerBG = getBrickGroupFromObject(%brick);
 
-				if(CityRPGData.getData(%client.bl_id).valueJobID == $City::AdminJobID)
+				if(CityRPGData.getData(%client.bl_id).valueJobID $= $City::AdminJobID)
 					parent::setItem(%brick, %datablock, %client);
 			}
 			else
@@ -281,7 +281,7 @@ package CityRPG_MainPackage
 			messageClient(%client, '', "<bitmap:" @ $City::DataPath @ "ui/time.png>\c6 Welcome back! Today is " @ CalendarSO.getDateStr());
 		}
 
-		if(%data.valueJobID == $City::AdminJobID)
+		if(%data.valueJobID $= $City::AdminJobID)
 		{
 			// Admin mode is enabled -- reiterate the parameters.
 			messageClient(%client, '', "\c6You are currently in \c4Admin Mode\c6.");
