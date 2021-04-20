@@ -114,13 +114,22 @@ function CityRPGHostClient::onBottomPrint(%this, %message)
 
 function City::get(%this, %profileID, %key)
 {
-	talk("Returning " @ %profileID SPC %key SPC CityRPGData.getData(%profileID).value[%key]);
 	return CityRPGData.getData(%profileID).value[%key];
 }
 
 function City::set(%this, %profileID, %key, %value)
 {
 	CityRPGData.getData(%profileID).value[%key] = %value;
+}
+
+function City::add(%this, %profileID, %key, %value)
+{
+	CityRPGData.getData(%profileID).value[%key] = CityRPGData.getData(%profileID).value[%key] + %value;
+}
+
+function City::subtract(%this, %profileID, %key, %value)
+{
+	CityRPGData.getData(%profileID).value[%key] = CityRPGData.getData(%profileID).value[%key] - %value;
 }
 
 // City_Init_Minigame()
