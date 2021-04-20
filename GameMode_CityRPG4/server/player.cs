@@ -598,13 +598,20 @@ function GameConnection::isCityAdmin(%client)
 
 function CityMenu_Player(%client)
 {
-	%menu = "Player stats."
-		TAB "Close menu.";
+	%menu = "Player stats.";
+	%functions = "CityMenu_Player_Stats";
+
+	echo(City.get(%client.bl_id, "jobID") SPC $City::MayorJobID);
+	if(City.get(%client.bl_id, "jobID") $= $City::MayorJobID)
+	{
+		%menu = %menu TAB "Mayor actions.";
+		%functions = %functions TAB "CityMenu_Mayor";
+	}
+
+	%menu = %menu TAB "Close menu.";
+	%functions = %functions TAB "CityMenu_Close";
 	
-	%functions = "CityMenu_Player_Stats"
-			 TAB "CityMenu_Close";
-	
-	%client.cityMenuOpen(%menu, %functions, %client, "\c3Actions menu closed.");
+	%client.cityMenuOpen(%menu, %functions, %client, "\c3Actions menu closed.", 0, 1);
 }
 
 function CityMenu_Player_Stats(%client)
