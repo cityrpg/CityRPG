@@ -26,7 +26,6 @@ function serverCmdAdminMode(%client)
   %jobRevert = City.get(%client.bl_id, "jobRevert");
   %jobID = City.get(%client.bl_id, "jobId");
 
-  talk(%jobID);
   if(%jobID $= $City::AdminJobID)
   {
     %client.setCityJob(%jobRevert !$= 0 ? %jobRevert : $City::CivilianJobID, 1);
