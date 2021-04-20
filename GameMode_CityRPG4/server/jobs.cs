@@ -316,7 +316,7 @@ function GameConnection::setCityJob(%client, %jobID, %force, %silent)
 	%client.applyForcedBodyParts();
 	%client.player.setDatablock(%jobObject.db);
 
-	if(%job == $City::MayorJobID)
+	if(%job $= $City::MayorJobID)
 	{
 		$City::Mayor::String = %client.name;
 		$City::Mayor::Enabled = 0;
