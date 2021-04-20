@@ -23,7 +23,7 @@ $CityRPG::jobs::claimer = false;
 
 $CityRPG::jobs::labor = false;
 
-$CityRPG::jobs::helpline = "\c6Arms dealers are licensed to open stores and sell weapons.";
+$CityRPG::jobs::helpline = "\c6Arms dealers are licensed to open stores and sell weapons and items only.";
 $CityRPG::jobs::flavortext = "Stay safe, stay second amendment.";
 
 $CityRPG::jobs::outfit = "none none none none blackShirt blackShirt skin blackPants blackShoes smileyPirate3 Alyx";
