@@ -50,16 +50,19 @@ package CityRPG_MainPackage
 				return;
 			}
 		}
-		else if(!%client.cityMenuOpen)
+		else if(!%client.ndModeIndex)
 		{
-			// No temp brick, activate player menu.
-			CityMenu_Player(%client);
-			return;
-		}
-		else if(%client.cityMenuID == %client)
-		{
-			%client.cityMenuClose();
-			return;
+			if(%client.cityMenuID == %client)
+			{
+				%client.cityMenuClose();
+				return;
+			}
+			else
+			{
+				// No temp brick or other action, activate player menu.
+				CityMenu_Player(%client);
+				return;
+			}
 		}
 
 		parent::servercmdPlantBrick(%client);
