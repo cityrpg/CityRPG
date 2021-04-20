@@ -397,7 +397,7 @@ package CityRPG_Commands
 		if(!isObject(%client.player))
 			return;
 
-		if(!%client.getJobSO().canPardon && !%client.isSuperAdmin)
+		if(!%client.getJobSO().canPardon || !%client.isCityAdmin())
 		{
 			messageClient(%client, '', "\c6You can't pardon people.");
 			return;
