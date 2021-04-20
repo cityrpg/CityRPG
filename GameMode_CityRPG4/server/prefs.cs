@@ -109,7 +109,7 @@ $City::EducationCap																	= 6;
 $City::EducationReincarnateLevel										= 8;
 
 // Mayor
-$City::MayorJobID																		= 14;
+$City::MayorJobID																		= "GovMayor";
 
 // ATM Hacking
 $Pref::Server::City::hack::education 								= 3;
