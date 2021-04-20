@@ -49,6 +49,7 @@ function City_Init()
 		CityRPGData.addValue("Rep", "0");
 		CityRPGData.addValue("ElectionID", "0");
 		CityRPGData.addValue("lotsVisited", "-1");
+		CityRPGData.addValue("spawnPoint", "");
 		
 		if(CityRPGData.loadedSaveFile)
 		{
