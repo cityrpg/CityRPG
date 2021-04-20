@@ -599,6 +599,12 @@ package CityRPG_Commands
 
 		%amt = mFloor(%amt);
 
+		if(%amt <= 0)
+		{
+			messageClient(%client,'',"\c6You must enter a valid amount of money to drop.");
+			return;
+		}
+
 		if($City::Cache::DroppedCash[%client.bl_id] > 30)
 		{
 			messageClient(%client,'',"\c6You're dropping too much cash! Wait a while, or pick up some of your dropped cash before dropping more.");
