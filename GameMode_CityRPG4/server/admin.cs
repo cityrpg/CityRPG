@@ -113,56 +113,58 @@ function serverCmddMoney(%client, %money, %name)
 {
   %client.cityLog("/dMoney" SPC %money SPC %name);
 
-  if(%client.isAdmin)
+  if(!%client.isAdmin)
   {
-    if(%money $= "All")
-      %money = CityRPGData.getData(%client.bl_id).valueMoney;
+    messageClient(%client, '', "\c6You must be admin to use the this command.");
+    return;
+  }
 
-    %money = mFloor(%money);
+  if(%money $= "All")
+    %money = CityRPGData.getData(%client.bl_id).valueMoney;
 
-    if(%money > 0)
+  %money = mFloor(%money);
+
+  if(%money <= 0)
+  {
+     messageClient(%client, '', "\c6You must enter a valid amount of money to grant.");
+     return;
+  }
+
+  if(%name !$= "")
+  {
+    if(isObject(%target = findClientByName(%name)))
     {
-      if(%name !$= "")
+      if(%target != %client)
       {
-        if(isObject(%target = findClientByName(%name)))
-        {
-          if(%target != %client)
-          {
-            messageClient(%client, '', "\c6You deducted \c3$" @ %money SPC "\c6from \c3" @ %target.name @ "\c6.");
-            CityRPGData.getData(%target.bl_id).valueMoney -= %money;
-            %target.SetInfo();
-            return;
-          }
-          else
-          {
-            CityRPGData.getData(%client.bl_id).valueMoney -= %money;
-            messageClient(%client, '', "\c6You deducted yourself \c3$" @ %money @ "\c6. Left:" SPC CityRPGData.getData(%target.bl_id).valueMoney);
-            %client.SetInfo();
-            return;
-          }
-        }
-        else
-          messageClient(%client, "\c6The name you entered could not be matched up to a person.");
-      }
-      else if(isObject(%client.player))
-      {
-        %target = containerRayCast(%client.player.getEyePoint(), vectorAdd(vectorScale(vectorNormalize(%client.player.getEyeVector()), 5), %client.player.getEyePoint()), $typeMasks::playerObjectType).client;
-
-        if(isObject(%target))
-        {
-          CityRPGData.getData(%target.bl_id).valueMoney -= %money;
-          messageClient(%client, '', "\c6You deducted yourself \c3$" @ %money @ "\c6. Left:" SPC CityRPGData.getData(%target.bl_id).valueMoney);
-          %target.SetInfo();
-        }
+        messageClient(%client, '', "\c6You deducted \c3$" @ %money SPC "\c6from \c3" @ %target.name @ "\c6.");
+        CityRPGData.getData(%target.bl_id).valueMoney -= %money;
+        %target.SetInfo();
+        return;
       }
       else
-        messageClient(%client, '', "\c6Spawn first before you use this command or enter a valid player's name.");
+      {
+        CityRPGData.getData(%client.bl_id).valueMoney -= %money;
+        messageClient(%client, '', "\c6You deducted yourself \c3$" @ %money @ "\c6. Left:" SPC CityRPGData.getData(%target.bl_id).valueMoney);
+        %client.SetInfo();
+        return;
+      }
     }
     else
-      messageClient(%client, '', "\c6You must enter a valid amount of money to grant.");
+      messageClient(%client, "\c6The name you entered could not be matched up to a person.");
+  }
+  else if(isObject(%client.player))
+  {
+    %target = containerRayCast(%client.player.getEyePoint(), vectorAdd(vectorScale(vectorNormalize(%client.player.getEyeVector()), 5), %client.player.getEyePoint()), $typeMasks::playerObjectType).client;
+
+    if(isObject(%target))
+    {
+      CityRPGData.getData(%target.bl_id).valueMoney -= %money;
+      messageClient(%client, '', "\c6You deducted yourself \c3$" @ %money @ "\c6. Left:" SPC CityRPGData.getData(%target.bl_id).valueMoney);
+      %target.SetInfo();
+    }
   }
   else
-    messageClient(%client, '', "\c6You must be admin to use the this command.");
+    messageClient(%client, '', "\c6Spawn first before you use this command or enter a valid player's name.");
 }
 
 function serverCmdClearMoney(%client)
