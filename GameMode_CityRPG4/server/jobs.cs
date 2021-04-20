@@ -320,7 +320,6 @@ function GameConnection::setCityJob(%client, %jobID, %force, %silent)
 	{
 		$City::Mayor::String = %client.name;
 		$City::Mayor::Enabled = 0;
-		serverCmdClearImpeach(%client);
 	}
 	%client.SetInfo();
 
