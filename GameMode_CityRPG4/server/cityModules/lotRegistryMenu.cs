@@ -167,7 +167,7 @@ function CityMenu_LotPurchasePrompt(%client)
 		%client.cityMenuMessage("\c6Type \c31\c6 to confirm, or leave the lot to cancel.");
 
 		%client.cityMenuFunction = CityLots_PurchaseLot;
-		%client.cityMenuID = %lot;
+		%client.cityMenuID = %lotBrick;
 	}
 	else
 	{
@@ -176,7 +176,7 @@ function CityMenu_LotPurchasePrompt(%client)
 	}
 }
 
-function CityLots_PurchaseLot(%client, %input, %lot)
+function CityLots_PurchaseLot(%client, %input, %lotBrick)
 {
 	if(%lotBrick $= "")
 	{
@@ -356,7 +356,7 @@ function CityMenu_Lot_PurchasePreownedPrompt(%client)
 		%client.cityMenuMessage("\c6Type \c31\c6 to confirm, or leave the lot to cancel.");
 
 		%client.cityMenuFunction = CityMenu_Lot_PurchasePreowned;
-		%client.cityMenuID = %lot;
+		%client.cityMenuID = %lotBrick;
 
 		// Lock in the purchase details -- this is necessary in case they change mid-purchase
 		%client.cityLotPurchasePrice = %lotBrick.getCityLotPreownedPrice();
@@ -369,7 +369,7 @@ function CityMenu_Lot_PurchasePreownedPrompt(%client)
 	}
 }
 
-function CityMenu_Lot_PurchasePreowned(%client, %input, %lot)
+function CityMenu_Lot_PurchasePreowned(%client, %input, %lotBrick)
 {
 	if(%lotBrick $= "")
 	{
