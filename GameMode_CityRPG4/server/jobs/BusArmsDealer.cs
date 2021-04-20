@@ -5,6 +5,7 @@ $CityRPG::jobs::pay = 30;
 $CityRPG::jobs::tools = "";
 $CityRPG::jobs::datablock = Player9SlotPlayer;
 $CityRPG::jobs::education = 2;
+$CityRPG::jobs::promotions = "BusOwner";
 
 $CityRPG::jobs::sellItems = true;
 $CityRPG::jobs::sellFood = false;

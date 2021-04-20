@@ -69,7 +69,7 @@ function JobSO::createJob(%so, %file)
 		name			= $CityRPG::jobs::name;
 		track			= $CityRPG::jobs::track;
 		title			= $CityRPG::jobs::title;
-
+		promotions		= $CityRPG::jobs::promotions;
 
 		invest			= $CityRPG::jobs::initialInvestment;
 		pay				= $CityRPG::jobs::pay;

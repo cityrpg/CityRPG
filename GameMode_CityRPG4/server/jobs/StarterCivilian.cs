@@ -5,6 +5,7 @@ $CityRPG::jobs::pay = 25;
 $CityRPG::jobs::tools = "";
 $CityRPG::jobs::datablock = Player9SlotPlayer;
 $CityRPG::jobs::education = 0;
+$CityRPG::jobs::promotions = "LaborMiner	LaborLumberjack";
 
 $CityRPG::jobs::sellItems = false;
 $CityRPG::jobs::sellFood = false;
