@@ -2,6 +2,15 @@
 // Initializes the game-mode.
 function City_Init()
 {
+	if(!isObject(City))
+	{
+		// New object reference
+		new scriptObject(City)
+		{
+
+		};
+	}
+
 	if(!isObject(JobSO))
 	{
 		new scriptObject(JobSO) { };
@@ -10,6 +19,7 @@ function City_Init()
 
 	if(!isObject(CityRPGData))
 	{
+		// Deprecated object reference
 		new scriptObject(CityRPGData)
 		{
 			class = Sassy;
@@ -100,6 +110,17 @@ function City_Init()
 function CityRPGHostClient::onBottomPrint(%this, %message)
 {
 	return;
+}
+
+function City::get(%this, %profileID, %key)
+{
+	talk("Returning " @ %profileID SPC %key SPC CityRPGData.getData(%profileID).value[%key]);
+	return CityRPGData.getData(%profileID).value[%key];
+}
+
+function City::set(%this, %profileID, %key, %value)
+{
+	CityRPGData.getData(%profileID).value[%key] = %value;
 }
 
 // City_Init_Minigame()

@@ -23,16 +23,18 @@ function serverCmdAdminMode(%client)
 {
   %client.cityMenuClose();
 
-  %data = CityRPGData.getData(%client.bl_id);
+  %jobRevert = City.get(%client.bl_id, "jobRevert");
+  %jobID = City.get(%client.bl_id, "jobId");
 
-  if(%data.valueJobID $= $City::AdminJobID)
+  talk(%jobID);
+  if(%jobID $= $City::AdminJobID)
   {
-    %client.setCityJob(%data.valueJobRevert !$= 0 ? %data.valueJobRevert : $City::CivilianJobID, 1);
+    %client.setCityJob(%jobRevert !$= 0 ? %jobRevert : $City::CivilianJobID, 1);
     messageClient(%client, '', "\c6Admin mode has been disabled.");
   }
   else
   {
-    %data.valueJobRevert = %data.valueJobID;
+    City.set(%client.bl_id, "jobRevert", %jobID);
     %client.setCityJob($City::AdminJobID, 1, 1);
 
     messageClient(%client, '', "\c6You are now in \c4Admin Mode\c6. Time for crime!");
