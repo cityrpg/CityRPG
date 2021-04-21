@@ -303,7 +303,7 @@ function GameConnection::setCityJob(%client, %jobID, %force, %silent)
 
 		CityRPGData.getData(%client.bl_id).valueMoney -= %jobObject.invest;
 	}
-	else
+	else if(%jobObject.id !$= $City::CivilianJobID)
 	{
 		// Operations for forced job changes only.
 		messageClient(%client, '', "\c6Your job has changed to" SPC City_DetectVowel(%jobObject.name) SPC %jobObject.name @ "\c6.");

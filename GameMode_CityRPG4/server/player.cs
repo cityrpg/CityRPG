@@ -540,6 +540,8 @@ function resetFree(%client)
 
 	CityRPGData.getData(%client.bl_id).valueBank = $City::StartingCash;
 
+	%client.setCityJob($City::CivilianJobID, 1, 1);
+
 	if(isObject(%client.player))
 	{
 		%client.spawnPlayer();
