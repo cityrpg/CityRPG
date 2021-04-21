@@ -56,9 +56,9 @@ function CityMenu_Lot(%client, %input)
 		%lotBrick = %client.CityRPGLotBrick;
 	}
 
-	if(!isObject(%lotBrick))
+	if(!isObject(%lotBrick) || %lotBrick.getDataBlock().CityRPGBrickType != $CityBrick_Lot)
 	{
-		error("Lot Menu - Attempting to access nonexistent lot '" @ %lotBrick @ "'!");
+		error("Lot Menu - Attempting to access invalid lot '" @ %lotBrick @ "'! Something is seriously wrong.");
 		return;
 	}
 
