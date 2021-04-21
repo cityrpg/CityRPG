@@ -353,7 +353,8 @@ function fxDTSBrick::cityBrickInit(%brick)
 			if(%brick.getDatablock().getID() == brickVehicleSpawnData.getID() && !%client.isCityAdmin())
 			{
 				commandToClient(%client, 'centerPrint', "\c6You have paid \c3$" @ mFloor($CityRPG::prices::vehicleSpawn) @ "\c6 to plant this vehicle spawn.", 3);
-				CityRPGData.getData(%client.bl_id).valueMoney -= mFloor($CityRPG::prices::vehicleSpawn);
+
+				City.subtract(%client,bl_id, "money", mFloor($CityRPG::prices::vehicleSpawn));
 				%client.setInfo();
 			}
 	}
@@ -466,7 +467,7 @@ function fxDTSBrick::cityBrickCheck(%brick)
 		return 0;
 	}
 
-	if(CityRPGData.getData(%client.bl_id).valueMoney < mFloor(%brick.getDatablock().initialPrice))
+	if(City.get(%client.bl_id, "money") < mFloor(%brick.getDatablock().initialPrice))
 	{
 		commandToClient(%client, 'centerPrint', "\c6You need at least \c3$" @ mFloor(%brick.getDatablock().initialPrice) SPC "\c6in order to plant this brick!", 3);
 		return 0;
@@ -478,7 +479,7 @@ function fxDTSBrick::cityBrickCheck(%brick)
 		return 0;
 	}
 
-	if(%lotTrigger && %brickData.getID() == brickVehicleSpawnData.getID() && CityRPGData.getData(%client.bl_id).valueMoney < mFloor($CityRPG::prices::vehicleSpawn))
+	if(%lotTrigger && %brickData.getID() == brickVehicleSpawnData.getID() && City.get(%client.bl_id, "money") < mFloor($CityRPG::prices::vehicleSpawn))
 	{
 		commandToClient(%client, 'centerPrint', "\c6You need at least \c3$" @ mFloor($CityRPG::prices::vehicleSpawn) SPC "\c6in order to plant this vehicle spawn!", 3);
 		return 0;
@@ -542,7 +543,7 @@ function CityRPGLotTriggerData::onEnterTrigger(%this, %trigger, %obj)
 	%trigger.parent.lotOccupants = %trigger.parent.lotOccupants $= "" ? %client TAB "" : %trigger.parent.lotOccupants @ %client TAB "";
 
 	// Lot visit tracking
-	%lotsVisited = CityRPGData.getData(%client.bl_id).valueLotsVisited;
+	%lotsVisited = City.get(%client.bl_id, "lotsVisited");
 	%visited = 0;
 
 	if(%visited !$= "")
@@ -569,12 +570,12 @@ function CityRPGLotTriggerData::onEnterTrigger(%this, %trigger, %obj)
 		// Initialize if blank
 		if(%lotsVisited == -1)
 		{
-			CityRPGData.getData(%client.bl_id).valueLotsVisited = %lotID;
+			City.set(%client.bl_id, "lotsVisited", %lotID);
 		}
 		else
 		{
 			// Push to the beginning, listing the lots in reverse order of when first visited.
-			CityRPGData.getData(%client.bl_id).valueLotsVisited = %lotID SPC %lotsVisited;
+			City.set(%client.bl_id, "lotsVisited", %lotID SPC %lotsVisited);
 		}
 	}
 }
