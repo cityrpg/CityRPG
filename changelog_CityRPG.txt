@@ -1,3 +1,6 @@
+<version:0.2.1>
+	Fixed an exploit where players could "buy" the real estate brick as a lot, granting them ownership of the bricks connected to it.
+</version>
 <version:0.2.0>
 	<b>Job Trees, Radio, & Real Estate Improvements</b>
 	<b>Real Estate</b>
