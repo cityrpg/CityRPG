@@ -110,6 +110,7 @@ function GameConnection::cityMenuClose(%client, %silent)
 		%client.cityMenuID = "";
 		%client.cityMenuExitMsg = "";
 		%client.cityMenuAutoClose = "";
+		%client.cityMenuBack = "";
 	}
 }
 
