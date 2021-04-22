@@ -55,9 +55,9 @@ function CityMenu_BankWithdraw(%client, %input)
 		return;
 	}
 
-	if(CityRPGData.getData(%client.bl_id).valueBank - mFloor(%input) < 0)
+	if(City.get(%client.bl_id, "bank") - mFloor(%input) < 0)
 	{
-		if(CityRPGData.getData(%client.bl_id).valueBank < 1)
+		if(City.get(%client.bl_id, "bank") < 1)
 		{
 			%client.cityMenuMessage("\c6You don't have that much money in the bank to withdraw.");
 
@@ -66,7 +66,7 @@ function CityMenu_BankWithdraw(%client, %input)
 			return;
 		}
 
-		%input = CityRPGData.getData(%client.bl_id).valueBank;
+		%input = City.get(%client.bl_id, "bank");
 	}
 
 	%client.cityLog("Bank withdraw $" @ mFloor(%input));
@@ -74,8 +74,8 @@ function CityMenu_BankWithdraw(%client, %input)
 
 	%client.cityMenuClose();
 
-	CityRPGData.getData(%client.bl_id).valueBank -= mFloor(%input);
-	CityRPGData.getData(%client.bl_id).valueMoney += mFloor(%input);
+	City.subtract(%client.bl_id, "bank", mFloor(%input));
+	City.add(%client.bl_id, "money", mFloor(%input));
 
 	%client.SetInfo();
 
@@ -99,9 +99,9 @@ function CityMenu_BankDeposit(%client, %input)
 		return;
 	}
 
-	if(CityRPGData.getData(%client.bl_id).valueMoney - mFloor(%input) < 0)
+	if(City.get(%client.bl_id, "money") - mFloor(%input) < 0)
 	{
-		if(CityRPGData.getData(%client.bl_id).valueMoney < 1)
+		if(City.get(%client.bl_id, "money") < 1)
 		{
 			%client.cityMenuMessage("\c6You don't have that much money to deposit.");
 
@@ -110,15 +110,15 @@ function CityMenu_BankDeposit(%client, %input)
 			return;
 		}
 
-		%input = CityRPGData.getData(%client.bl_id).valueMoney;
+		%input = City.get(%client.bl_id, "money");
 	}
 
 	%client.cityLog("Bank deposit $" @ mFloor(%input));
 
 	%client.cityMenuMessage("\c6You have deposited \c3$" @ mFloor(%input) @ "\c6!");
 
-	CityRPGData.getData(%client.bl_id).valueBank += mFloor(%input);
-	CityRPGData.getData(%client.bl_id).valueMoney -= mFloor(%input);
+	City.add(%client.bl_id, "bank", mFloor(%input));
+	City.subtract(%client.bl_id, "money", mFloor(%input));
 
 	%client.cityMenuClose();
 	%client.SetInfo();
@@ -128,7 +128,7 @@ function CityMenu_BankDeposit(%client, %input)
 function CityMenu_BankDepositAll(%client)
 {
 	%client.cityLog("Bank deposit all");
-	CityMenu_BankDeposit(%client, CityRPGData.getData(%client.bl_id).valueMoney);
+	CityMenu_BankDeposit(%client, City.get(%client.bl_id, "money"));
 }
 
 // Donate to the economy.
@@ -158,7 +158,7 @@ function CityRPGBankBrickData::parseData(%this, %brick, %client, %triggerStatus,
 			return;
 		}
 
-		%client.cityMenuMessage("\c6Welcome to the " @ $Pref::Server::City::name @ " Bank. Your account balance is \c3$" @ CityRPGData.getData(%client.bl_id).valueBank @ "\c6. Current economy value: \c3" @ %econColor @ $City::Economics::Condition @ "\c6%");
+		%client.cityMenuMessage("\c6Welcome to the " @ $Pref::Server::City::name @ " Bank. Your account balance is \c3$" @ City.get(%client.bl_id, "bank") @ "\c6. Current economy value: \c3" @ %econColor @ $City::Economics::Condition @ "\c6%");
 
 		CityMenu_Bank(%client, %brick);
 	}
