@@ -22,7 +22,7 @@ datablock fxDTSBrickData(CityRPGEducationBrickData : brick2x4FData)
 // ============================================================
 function CityMenu_Education(%client, %brick)
 {
-	%level = CityRPGData.getData(%client.bl_id).valueEducation;
+	%level = City.get(%client.bl_id, "education");
 	if($CityRPG::EducationStr[%level] !$= "")
 	{
 		%string = $CityRPG::EducationStr[%level];
@@ -34,8 +34,8 @@ function CityMenu_Education(%client, %brick)
 
 	%client.cityMenuMessage("\c6Welcome to the " @ $Pref::Server::City::name @ " College of Education. You currently hold a \c3" @ %string @ "\c6.");
 
-	if(CityRPGData.getData(%client.bl_id).valueStudent > 0) {
-		%client.cityMenuMessage("\c6You are currently enrolled. Your education will be complete in \c3" @ CityRPGData.getData(%client.bl_id).valueStudent @ "\c6 days.");
+	if(City.get(%client.bl_id, "student") > 0) {
+		%client.cityMenuMessage("\c6You are currently enrolled. Your education will be complete in \c3" @ City.get(%client.bl_id, "student") @ "\c6 days.");
 	}
 	else if(%level == $City::EducationCap) {
 		%client.cityMenuMessage("\c6Sorry, the department of education is unable to advance you any further.");
