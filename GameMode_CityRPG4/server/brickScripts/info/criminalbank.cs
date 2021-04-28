@@ -23,7 +23,7 @@ function CityRPGCriminalBankBrickData::parseData(%this, %brick, %client, %trigge
 {
 	if(%triggerStatus == true && !%client.cityMenuOpen)
 	{
-		%client.cityMenuMessage("\c6Welcome to the " @ $Pref::Server::City::name @ " Underground Bank. Your account balance is \c3$" @ CityRPGData.getData(%client.bl_id).valueBank @ "\c6. Current economy value: \c3" @ %econColor @ $City::Economics::Condition @ "\c6%");
+		%client.cityMenuMessage("\c6Welcome to the " @ $Pref::Server::City::name @ " Underground Bank. Your account balance is \c3$" @ City.get(%client.bl_id, "bank") @ "\c6. Current economy value: \c3" @ %econColor @ $City::Economics::Condition @ "\c6%");
 
 		CityMenu_Bank(%client, %brick);
 	}
