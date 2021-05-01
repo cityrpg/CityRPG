@@ -40,7 +40,8 @@ function fxDTSBrick::onChop(%this, %client)
 	}
 	else
 	{
-		CityRPGData.getData(%client.bl_id).valueResources = (getWord(CityRPGData.getData(%client.bl_id).valueResources, 0) + (%this.BPH * ResourceSO.tree[%this.id].totalHits)) SPC getWord(CityRPGData.getData(%client.bl_id).valueResources, 1) SPC getWord(CityRPGData.getData(%client.bl_id).valueResources, 2);
+		%resources = City.get(%client.bl_id, "resources");
+		City.set(%client.bl_id, "resources", (getWord(%resources, 0) + (%this.BPH * ResourceSO.tree[%this.id].totalHits)) SPC getWord(%resources, 1) SPC getWord(%resources, 2));
 		commandToClient(%client, 'centerPrint' , "\c6Lumber obtained, however you killed the tree in the process.", 3);
 		%this.fakeKillBrick(getRandom(-10, 10) SPC getRandom(-10, 10) SPC getRandom(0, 10), getRandom(45, 90));
 		%seed = getRandom(1, ResourceSO.treeCount);
