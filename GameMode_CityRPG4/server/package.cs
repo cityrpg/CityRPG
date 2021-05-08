@@ -50,7 +50,13 @@ package CityRPG_MainPackage
 				return;
 			}
 		}
-		else if(!%client.ndModeIndex)
+
+		parent::servercmdPlantBrick(%client);
+	}
+
+	function serverCmdCancelBrick(%client)
+	{
+		if(!isObject(%client.player.tempBrick) && !%client.ndModeIndex)
 		{
 			if(%client.cityMenuID == %client)
 			{
@@ -64,8 +70,8 @@ package CityRPG_MainPackage
 				return;
 			}
 		}
-
-		parent::servercmdPlantBrick(%client);
+		
+		parent::servercmdCancelBrick(%client);
 	}
 
 	// New Duplicator compatibility
