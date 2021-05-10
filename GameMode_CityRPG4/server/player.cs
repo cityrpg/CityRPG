@@ -1,5 +1,18 @@
 $City::StartingCash = 250;
 
+// Spawn preference list
+$City::SpawnPreferences = "Personal Spawn";
+$City::SpawnPreferenceIDs = "Personal";
+
+if($City::CheckpointIsActive)
+{
+	$City::SpawnPreferences = $City::SpawnPreferences TAB "Checkpoint";
+	$City::SpawnPreferenceIDs = $City::SpawnPreferenceIDs TAB "Checkpoint";
+}
+
+$City::SpawnPreferences = $City::SpawnPreferences TAB "Job Spawn";
+$City::SpawnPreferenceIDs = $City::SpawnPreferenceIDs TAB "Job";
+
 function gameConnection::arrest(%client, %cop)
 {
 	%client.cityLog("Arrested by '" @ %cop.bl_id @ "'");
@@ -601,8 +614,8 @@ function GameConnection::isCityAdmin(%client)
 function CityMenu_Player(%client)
 {
 	%client.cityMenuMessage("\c3Actions Menu");
-	%menu = "Player stats.";
-	%functions = "CityMenu_Player_Stats";
+	%menu = "Player stats." TAB "Preferred spawn point.";
+	%functions = "CityMenu_Player_Stats" TAB "CityMenu_Player_SetSpawn";
 
 	if(City.get(%client.bl_id, "jobID") $= $City::MayorJobID)
 	{
@@ -620,4 +633,30 @@ function CityMenu_Player_Stats(%client)
 {
 	serverCmdStats(%client);
 	%client.cityMenuClose();
+}
+
+function CityMenu_Player_SetSpawn(%client)
+{
+	%menu = $City::SpawnPreferences;
+	%function = "CityMenu_Player_SetSpawnConfirm";
+
+	%client.cityMenuOpen(%menu, %function, %client, "\c3Actions menu closed.", 0, 1);
+}
+
+function CityMenu_Player_SetSpawnConfirm(%client, %input)
+{
+	%inputNum = atof(%input);
+	%selection = getField($City::SpawnPreferences, %inputNum-1);
+	%selectionID = getField($City::SpawnPreferenceIDs, %inputNum-1);
+
+	if(%inputNum == 0 || %selection $= "")
+	{
+		%client.cityMenuMessage("\c6Invalid selection. Please try again.");
+	}
+	else
+	{
+		%client.cityMenuMessage("\c6Spawn preference set to \c3" @ %selection @ "\c6.");
+		City.set(%client.bl_id, "spawnPoint", selectionID);
+		%client.cityLog("Set spawn to " @ selectionID);
+	}
 }
