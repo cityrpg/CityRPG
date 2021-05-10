@@ -143,9 +143,10 @@ else
   if($AddOn__Brick_Checkpoint)
   {
     %error = ForceRequiredAddOn("Brick_Checkpoint");
-
+    
     if(%error == $Error::None)
     {
+      $City::CheckpointIsActive = 1;
       deactivatepackage(CheckpointPackage);
       // We don't want the checkpoint package loading.
       // The necessary functions will be rewritten later to fix spawn compatibility.
