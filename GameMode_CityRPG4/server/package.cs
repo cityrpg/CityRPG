@@ -350,8 +350,7 @@ package CityRPG_MainPackage
 		%client.joinTimeMin = getRealTime()/60000;
 		%client.cityLog("Joined game");
 
-		// multi-client check
-		// This takes effect and v20 and servers with the multi-client check disabled.
+		// This takes effect in v20 and servers with the multi-client check disabled.
 		for(%a = 0; %a < ClientGroup.getCount(); %a++)
 		{
 			%subClient = ClientGroup.getObject(%a);
