@@ -47,13 +47,13 @@ function CityMenu_Lot(%client, %input)
 	else
 	{
 		// No input, we're running via /lot.
-		if(%client.CityRPGLotBrick $= "")
+		if(%client.CityLotBrick $= "")
 		{
 			%client.cityMenuMessage("\c6You are currently not on a lot.");
 			return;
 		}
 
-		%lotBrick = %client.CityRPGLotBrick;
+		%lotBrick = %client.CityLotBrick;
 	}
 
 	if(!isObject(%lotBrick) || %lotBrick.getDataBlock().CityRPGBrickType != $CityBrick_Lot)

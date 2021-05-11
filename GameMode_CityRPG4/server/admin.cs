@@ -13,7 +13,7 @@ function CityMenu_Admin(%client)
 	%menu = "Toggle admin mode" TAB "Close menu.";
 	%functions = "serverCmdAdminMode" TAB "CityMenu_Close";
 
-	%client.cityMenuOpen(%menu, %functions, %client.CityRPGLotBrick);
+	%client.cityMenuOpen(%menu, %functions, %client.CityLotBrick);
 }
 
 // ============================================================

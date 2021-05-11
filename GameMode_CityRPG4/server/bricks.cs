@@ -535,7 +535,7 @@ function CityRPGLotTriggerData::onEnterTrigger(%this, %trigger, %obj)
 	%trigger.parent.onLotEntered(%obj);
 
 	%client.CityRPGTrigger = %trigger;
-	%client.CityRPGLotBrick = %trigger.parent;
+	%client.CityLotBrick = %trigger.parent;
 
 	%client.cityLotDisplay(%trigger.parent);
 
@@ -595,14 +595,14 @@ function CityRPGLotTriggerData::onLeaveTrigger(%this, %trigger, %obj)
 	%client.cityMenuClose();
 	%trigger.parent.onLotLeft(%obj);
 
-	if(%trigger.parent!=%client.CityRPGLotBrick)
+	if(%trigger.parent!=%client.CityLotBrick)
 		return;
 
 	// Realtime tracking of lot occupants - Remove from the index.
 	%trigger.parent.lotOccupants = strreplace(%trigger.parent.lotOccupants, %client TAB "", "");
 
 	%client.CityRPGTrigger = "";
-	%client.CityRPGLotBrick = "";
+	%client.CityLotBrick = "";
 
 	//%client.SetInfo();
 }
