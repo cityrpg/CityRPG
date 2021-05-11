@@ -154,10 +154,6 @@ function gameConnection::setGameBottomPrint(%client)
 	// Placeholder
 	//%client.CityRPGPrint = %client.CityRPGPrint @ "<just:right>\c6Day";
 
-	// Lot Info
-	//if(isObject(%client.CityRPGLotBrick))
-	//	%client.CityRPGPrint = %client.CityRPGPrint SPC " <bitmap:Add-Ons/GameMode_CityRPG4/data/ui/location.png> \c6" @ %client.CityRPGLotBrick.getGroup().name @ "'s Lot";
-
 	//IMPORTANT: Wanted level must be last because it shows up on a new line
 	if(CityRPGData.getData(%client.bl_id).valueDemerits >= $Pref::Server::City::demerits::wantedLevel)
 	{
