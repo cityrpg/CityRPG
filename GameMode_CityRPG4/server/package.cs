@@ -511,6 +511,16 @@ package CityRPG_MainPackage
 		parent::bottomPrint(%this, %text, %time, %showBar);
 	}
 
+	// Overwrite the chatMessage event.
+	// We want lot owners to be able to send messages, but we don't want any trickery. (i.e. fake paycheck notices)
+	// To solve this, each chat message will specify the lot that it comes from.
+	function GameConnection::ChatMessage(%client, %message)
+	{
+		// Event brick used -> Lot trigger -> Lot brick -> Lot name
+		%lotName = %client.lastEventObject.getCityLotTrigger().parent.getCityLotName();
+		messageClient(%client, '', addTaggedString("\c3" @ %lotName @ "\c6 says: \c0" @ %message), %client.getPlayerName(), %client.score);
+	}
+
 	function bottomPrint(%client, %message, %time, %lines)
 	{
 		if(%client.getID() == CityRPGHostClient.getID())

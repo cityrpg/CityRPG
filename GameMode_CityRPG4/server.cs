@@ -33,8 +33,6 @@ if(%error == $Error::AddOn_NotFound)
   return;
 }
 
-
-
 // Weapon_Rocket_Launcher
 %error = ForceRequiredAddOn("Weapon_Rocket_Launcher");
 if(%error == $Error::AddOn_NotFound)
@@ -43,12 +41,19 @@ if(%error == $Error::AddOn_NotFound)
    return;
 }
 
-
 // Weapon_Sword
 %error = ForceRequiredAddOn("Weapon_Sword");
 if(%error == $Error::AddOn_NotFound)
 {
   error("ERROR: GameMode_CityRPG4 - required add-on Weapon_Sword not found");
+  return;
+}
+
+// Support_EventUtils
+%error = ForceRequiredAddOn("Support_EventUtils");
+if(%error == $Error::AddOn_NotFound)
+{
+  error("ERROR: GameMode_CityRPG4 - required add-on Support_EventUtils not found");
   return;
 }
 
@@ -264,7 +269,6 @@ unRegisterOutputEvent("Bot", "SetHealth");
 unRegisterOutputEvent("Bot", "SpawnExplosion");
 unRegisterOutputEvent("Bot", "SpawnProjectile");
 
-unRegisterOutputEvent("GameConnection", "ChatMessage");
 unRegisterOutputEvent("GameConnection", "IncScore");
 
 unRegisterOutputEvent("MiniGame", "BottomPrintAll");
