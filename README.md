@@ -62,23 +62,24 @@ https://github.com/cityrpg/CityRPG-4-Alpha/tree/0.2.0
 
 ## Client/GameConnection
 
-### GameConnection::cityMenuOpen(names, functions, exitMsg, autoClose)
+### GameConnection::cityMenuOpen(names, functions, exitMsg, autoClose, canOverride)
 Displays a generic menu, currently using a chat-based approach. Returns true if the menu opens successfully. No eval or script object handling is necessary.
 
 While this currently resembles the mechanics of classic CityRPG menus (chat-based, type a number), the method of displaying menus is subject to change. For best results, make sure to check client.cityMenuOpen before attempting. Take note of the default 8-line chat limit.
 
 **Args:**
-- exitMsg: The message to display when the menu closes
-- menu: A set of fields containing names for each menu item.
-- functions: The function that will be called corresponding with each name option. The following are passed to this function, in order: %client (Client object), %input (User input that triggered this menu option), %id (The active ID for the current menu).
-- menuID: A unique identifier for the menu, for reference elsewhere. Generally set to the brick that triggered it.
-- autoClose: (Bool) If set to 'true', the menu will close as soon as the function executes.
+- exitMsg (str): The message to display when the menu closes
+- menu (str, fields): A set of fields containing names for each menu item.
+- functions (str, fields): The function that will be called corresponding with each name option. The following are passed to this function, in order: %client (Client object), %input (User input that triggered this menu option), %id (The active ID for the current menu).
+- menuID (str): A unique identifier for the menu, for reference elsewhere. Generally set to the ID of the brick that triggered it.
+- autoClose (Bool): If set to 'true', the menu will close as soon as the function executes.
+- canOverride (Bool): If set to 'true', the menu will close automatically if another menu is opened. If false, other menus will be blocked from opening.
 
 **Example:**
 ```
 %menu = "Option 1" TAB "Option 2";
 %functions = "announce" TAB "talk";
-findClientByName(Blockhead).cityMenuOpen(%menu, %functions, "", "", true);
+findClientByName(Blockhead).cityMenuOpen(%menu, %functions, "", "", true, false);
 ```
 
 Result:

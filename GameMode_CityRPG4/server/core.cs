@@ -2,7 +2,7 @@
 // General Game Functions
 // ============================================================
 
-// Client.cityMenuOpen(names, functions, exitMsg, autoClose)
+// Client.cityMenuOpen(names, functions, exitMsg, autoClose, canOverride)
 // Modular function hook for displaying menus in-game.
 // Currently utilizes chat just like classic CityRPG, however this is subject to change.
 function GameConnection::cityMenuOpen(%client, %menu, %functions, %menuID, %exitMsg, %autoClose, %canOverride)
