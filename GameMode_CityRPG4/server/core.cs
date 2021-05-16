@@ -170,7 +170,7 @@ function City_AddDemerits(%blid, %demerits)
 	%currentDemerits = CityRPGData.getData(%blid).valueDemerits;
 	%maxStars = City_GetMaxStars();
 
-	CityRPGData.getData(%blid).valueDemerits += %demerits;
+	City.add(%blid, "demerits", %demerits);
 
 	if(CityRPGData.getData(%blid).valueDemerits >= $Pref::Server::City::demerits::demoteLevel && JobSO.job[CityRPGData.getData(%blid).valueJobID].law == true)
 	{

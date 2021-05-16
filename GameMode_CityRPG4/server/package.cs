@@ -472,7 +472,7 @@ package CityRPG_MainPackage
 
 				%killer.cityLog("Claim bounty on " @ %client.bl_id @ " for $" @ CityRPGData.getData(%client.bl_id).valueBounty);
 				messageClient(%killer, '', "\c6Hit was completed successfully. The money has been wired to your bank account.");
-				CityRPGData.getData(%killer.bl_id).valueBank += CityRPGData.getData(%client.bl_id).valueBounty;
+				City.add(%killer.bl_id, "bank", CityRPGData.getData(%client.bl_id).valueBounty);
 				City.set(%client.bl_id, "bounty", 0);
 			}
 			else if(City_illegalAttackTest(%killer, %client))
@@ -636,7 +636,7 @@ package CityRPG_MainPackage
 	{
 		if(!%col.isPlanted())
 		{
-			CityRPGData.getData(%client.bl_id).valueMoney += %arg1;
+			City.add(%client.bl_id, "money", %arg1);
 			messageClient(%client, '', "Your money has been returned to you because you were unable to plant the brick!");
 		}
 	}

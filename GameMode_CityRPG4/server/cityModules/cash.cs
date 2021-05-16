@@ -62,7 +62,7 @@ package CityRPG_Cash
 						$City::Cache::DroppedCash[%col.dropper.bl_id]--;
 					}
 
-					CityRPGData.getData(%obj.client.bl_id).valueMoney += %col.value;
+					City.add(%obj.client.bl_id, "money", %col.value);
 					messageClient(%obj.client, '', "\c6You have picked up \c3$" @ %col.value SPC "\c6off the ground.");
 
 					%obj.client.cityLog("Pick up $" @ %col.value);

@@ -96,13 +96,13 @@ function gameConnection::buyResources(%client)
 		{
 			%client.cityLog("Resource sell for " @ %payout);
 
-			CityRPGData.getData(%client.bl_id).valueMoney += %payout;
+			City.add(%client.bl_id, "money", %payout);
 			messageClient(%client, '', "\c6The state has bought all of your resources for \c3$" @ %payout @ "\c6.");
 		}
 		else
 		{
 			%client.cityLog("Resource sell (jail) for " @ %payout);
-			CityRPGData.getData(%client.bl_id).valueBank += %payout;
+			City.add(%client.bl_id, "bank", %payout);
 			messageClient(%client, '', '\c6The state has set aside \c3$%1\c6 for when you get out of Prison.', %payout);
 		}
 
@@ -380,7 +380,7 @@ function gameConnection::sellFood(%client, %sellerID, %servingID, %foodName, %pr
 				}
 
 				messageClient(%client, '', '\c6You %1 %2 \c3%3\c6 serving of \c3%4\c6.', %eatName, City_DetectVowel(%portionName), %portionName, %foodName);
-				CityRPGData.getData(%client.bl_id).valueHunger += %servingID;
+				City.add(%client.bl_id, "hunger", %servingID);
 
 				%client.player.setHealth(%client.player.getdataBlock().maxDamage);
 
@@ -390,7 +390,7 @@ function gameConnection::sellFood(%client, %sellerID, %servingID, %foodName, %pr
 				}
 
 				CityRPGData.getData(%client.bl_id).valueMoney -= %price;
-				CityRPGData.getData(%sellerID).valueBank += %profit;
+				City.add(%sellerID, "bank", %profit);
 
 				if(%profit)
 				{
@@ -443,7 +443,7 @@ function gameConnection::sellItem(%client, %sellerID, %itemID, %price, %profit)
 				%client.cityLog("Evnt buy item " @ %itemID @ " for " @ %price @ " from " @ %sellerID);
 
 				CityRPGData.getData(%client.bl_id).valueMoney -= %price;
-				CityRPGData.getData(%sellerID).valueBank += %profit;
+				City.add(%sellerID, "bank", %profit);
 				CitySO.minerals -= $CityRPG::prices::weapon::mineral[%itemID];
 
 				%client.player.tool[%freeSpot] = $CityRPG::prices::weapon::name[%itemID].getID();
@@ -479,7 +479,7 @@ function gameConnection::sellClothes(%client, %sellerID, %brick, %item, %price)
 			messageClient(%client, '', "\c6Enjoy the new look!");
 			%client.cityLog("Evnt buy clothing " @ %item @ " for " @ %price @ " from " @ %sellerID);
 			CityRPGData.getData(%client.bl_id).valueMoney -= %price;
-			CityRPGData.getData(%sellerID).valueBank += %price;
+			City.add(%sellerID, "bank", %price);
 			ClothesSO.giveItem(%client, %item);
 
 			if(%price)

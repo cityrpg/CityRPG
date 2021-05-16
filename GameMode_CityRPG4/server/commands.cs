@@ -109,7 +109,7 @@ package CityRPG_Commands
 							%client.cityLog("Evnt buy service for " @ %client.player.serviceFee @ " from " @ %sellerID);
 							CityRPGData.getData(%client.bl_id).valueMoney -= %client.player.serviceFee;
 
-							CityRPGData.getData(%client.player.serviceOrigin.getGroup().bl_id).valueBank += %client.player.serviceFee;
+							City.add(%client.player.serviceOrigin.getGroup().bl_id, "bank", %client.player.serviceFee);
 
 							messageClient(%client, '', "\c6You have accepted the service fee of \c3$" @ %client.player.serviceFee @ "\c6!");
 							%client.setInfo();
@@ -311,7 +311,7 @@ package CityRPG_Commands
 		messageClient(%target, '', "\c3" @ %client.name SPC "\c6has given you \c3$" @ %money @ "\c6.");
 
 		CityRPGData.getData(%client.bl_id).valueMoney -= %money;
-		CityRPGData.getData(%target.bl_id).valueMoney += %money;
+		City.add(%target.bl_id, "money", %money);
 
 		%client.SetInfo();
 		%target.SetInfo();
