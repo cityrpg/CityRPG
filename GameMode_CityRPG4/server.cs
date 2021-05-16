@@ -201,6 +201,9 @@ exec($City::ScriptPath @ "player.cs");
 exec($City::ScriptPath @ "commands.cs");
 exec($City::ScriptPath @ "admin.cs");
 
+// Modules to preload
+exec($City::ScriptPath @ "support/Support_CenterprintMenuSystem.cs");
+
 // Core packages (Order-dependent)
 exec($City::ScriptPath @ "package.cs");
 exec($City::ScriptPath @ "overrides.cs");
@@ -228,7 +231,6 @@ exec($City::ScriptPath @ "cityModules/security.cs");
 exec($City::ScriptPath @ "support/spacecasts.cs");
 exec($City::ScriptPath @ "support/extraResources.cs");
 exec($City::ScriptPath @ "support/formatNumber.cs");
-exec($City::ScriptPath @ "support/Support_CenterprintMenuSystem.cs");
 exec($City::ScriptPath @ "support/saver.cs");
 
 // Global saving
