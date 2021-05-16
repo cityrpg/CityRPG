@@ -65,8 +65,13 @@ package CityRPG_MainPackage
 			}
 			else
 			{
-				// No temp brick or other action, activate player menu.
-				CityMenu_Player(%client);
+				if(!%client.cityMenuOpen)
+				{
+					// No temp brick, menu open (regardless of override-able), or other action, activate player menu.
+					CityMenu_Player(%client);
+				}
+
+				// Still break to override other "Cancel brick" operations
 				return;
 			}
 		}

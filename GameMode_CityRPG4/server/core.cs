@@ -12,6 +12,12 @@ function GameConnection::cityMenuOpen(%client, %menu, %functions, %menuID, %exit
 		return;
 	}
 
+	// Blank if -1
+	if(%exitMsg == -1)
+	{
+		%exitMsg = "";
+	}
+
 	if(getFieldCount(%menu) != 0)
 	{
 		%menuObj = new ScriptObject()

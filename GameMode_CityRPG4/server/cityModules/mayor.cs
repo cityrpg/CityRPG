@@ -263,8 +263,6 @@ function CityMayor_getWinner()
 // Menu stuff
 function CityMenu_Mayor(%client)
 {
-	%client.cityMenuMessage("\c3Mayor Actions");
-
 	%menu = "Issue a pardon."
 			TAB "Clear a record."
 			TAB "Go back.";
@@ -273,7 +271,7 @@ function CityMenu_Mayor(%client)
 			 TAB "CityMenu_Mayor_ErasePrompt"
 			 TAB "CityMenu_Player";
 
-	%client.cityMenuOpen(%menu, %functions, %client, "\c3Mayor actions menu closed.", 0, 1);
+	%client.cityMenuOpen(%menu, %functions, %client, "\c3Mayor actions menu closed.", 0, 1, "Mayor Actions");
 }
 
 function CityMenu_Mayor_PardonPrompt(%client)

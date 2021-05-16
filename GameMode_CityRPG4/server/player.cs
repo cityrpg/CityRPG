@@ -615,7 +615,6 @@ function CityMenu_Player(%client)
 		%functions = "CityMenu_Player_ManageLot";
 	}
 
-	%client.cityMenuMessage("\c3Actions Menu");
 	%menu = %menu TAB "Preferred spawn point." TAB "Player stats.";
 	%functions = %functions TAB "CityMenu_Player_SetSpawn" TAB "CityMenu_Player_Stats";
 
@@ -632,7 +631,7 @@ function CityMenu_Player(%client)
 	%menu = %menu TAB "Close menu.";
 	%functions = %functions TAB "CityMenu_Close";
 	
-	%client.cityMenuOpen(%menu, %functions, %client, "\c3Actions menu closed.", 0, 1);
+	%client.cityMenuOpen(%menu, %functions, %client, -1, 0, 1, "Actions Menu");
 }
 
 function CityMenu_Player_Stats(%client)
@@ -652,7 +651,7 @@ function CityMenu_Player_SetSpawn(%client)
 	%menu = $City::SpawnPreferences;
 	%function = "CityMenu_Player_SetSpawnConfirm";
 
-	%client.cityMenuOpen(%menu, %function, %client, "\c3Actions menu closed.", 0, 1);
+	%client.cityMenuOpen(%menu, %function, %client, -1, 0, 1);
 }
 
 function CityMenu_Player_SetSpawnConfirm(%client, %input)
