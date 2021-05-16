@@ -631,7 +631,7 @@ function CityMenu_Player(%client)
 	%menu = %menu TAB "Close menu.";
 	%functions = %functions TAB "CityMenu_Close";
 	
-	%client.cityMenuOpen(%menu, %functions, %client, -1, 0, 1, "Actions Menu");
+	%client.cityMenuOpen(%menu, %functions, %client.getID(), -1, 0, 1, "Actions Menu");
 }
 
 function CityMenu_Player_Stats(%client)
