@@ -610,8 +610,8 @@ function GameConnection::isCityAdmin(%client)
 function CityMenu_Player(%client)
 {
 	%client.cityMenuMessage("\c3Actions Menu");
-	%menu = "Player stats." TAB "Preferred spawn point.";
-	%functions = "CityMenu_Player_Stats" TAB "CityMenu_Player_SetSpawn";
+	%menu =  "Preferred spawn point." TAB "Player stats.";
+	%functions = "CityMenu_Player_SetSpawn" TAB "CityMenu_Player_Stats";
 
 	if(City.get(%client.bl_id, "jobID") $= $City::MayorJobID)
 	{
