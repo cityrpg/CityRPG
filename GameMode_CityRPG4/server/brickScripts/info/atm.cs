@@ -21,6 +21,7 @@ datablock fxDTSBrickData(CityRPGATMBrickData : brick2x4FData)
 // ============================================================
 function CityMenu_ATM(%client, %brick)
 {
+	%client.cityMenuMessage("\c3ATM");
 	%client.cityMenuMessage("\c6You have \c3$" @ City.get(%client.bl_id, "bank") SPC "\c6in your account.");
 
 	%client.cityLog("Enter ATM");
