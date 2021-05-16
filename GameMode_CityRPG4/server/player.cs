@@ -635,16 +635,16 @@ function CityMenu_Player(%client)
 	%client.cityMenuOpen(%menu, %functions, %client, "\c3Actions menu closed.", 0, 1);
 }
 
-function CityMenu_Player_ManageLot(%client)
-{
-	%client.cityMenuClose(1);
-	serverCmdLot(%client);
-}
-
 function CityMenu_Player_Stats(%client)
 {
 	serverCmdStats(%client);
 	%client.cityMenuClose();
+}
+
+function CityMenu_Player_ManageLot(%client)
+{
+	%client.cityMenuClose(1);
+	serverCmdLot(%client);
 }
 
 function CityMenu_Player_SetSpawn(%client)
