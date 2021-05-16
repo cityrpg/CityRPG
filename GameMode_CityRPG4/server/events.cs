@@ -102,11 +102,11 @@ function fxDTSBrick::onMenuInput(%brick, %client)
 // Output Events
 function fxDTSBrick::doJobTest(%brick, %job, %job2, %convicts, %client)
 {
-	%convictStatus = getWord(CityRPGData.getData(%client.bl_id).valueJailData, 1);
+	%convictStatus = getWord(City.get(%client.bl_id, "jaildata"), 1);
 
 	if(!%job && !%job2 && (%convicts ? (!%convictStatus ? true : false) : true))
 		%brick.onJobTestPass(%client);
-	else if((CityRPGData.getData(%client.bl_id).valueJobID $= %job || CityRPGData.getData(%client.bl_id).valueJobID $= %job2) && (%convicts ? (!%convictStatus ? true : false) : true))
+	else if((City.get(%client.bl_id).valueJobID $= %job || CityRPGData.getData(%client.bl_id, "jobid") $= %job2) && (%convicts ? (!%convictStatus ? true : false) : true))
 		%brick.onJobTestPass(%client);
 	else
 		%brick.onJobTestFail(%client);

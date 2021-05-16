@@ -6,11 +6,11 @@ package CityRPG_Cash
 	// Drop Money
 	function gameConnection::onDeath(%client, %killerPlayer, %killer, %damageType, %unknownA)
 	{
-		if(!getWord(CityRPGData.getData(%client.bl_id).valueJailData, 1) && CityRPGData.getData(%client.bl_id).valueMoney && !%client.moneyOnSuicide)
+		if(!getWord(City.get(%client.bl_id).valueJailData, 1) && CityRPGData.getData(%client.bl_id, "money") && !%client.moneyOnSuicide)
 		{
 			if($Pref::Server::City::misc::cashdrop == 1)
 			{
-				%cashval = mFloor(CityRPGData.getData(%client.bl_id).valueMoney);
+				%cashval = mFloor(City.get(%client.bl_id, "money"));
 				%cashcheck = 0;
 				if(%cashval > 1000)
 				{
@@ -32,7 +32,7 @@ package CityRPG_Cash
 				MissionCleanup.add(%cash);
 				%cash.setShapeName("$" @ %cash.value);
 				if(%cashcheck == 1)
-					City.set(%client.bl_id, "money", CityRPGData.getData(%client.bl_id).valueMoney - 1000);
+					City.set(%client.bl_id, "money", City.get(%client.bl_id, "money") - 1000);
 				else
 					City.set(%client.bl_id, "money", 0);
 

@@ -167,12 +167,12 @@ function CityMenu_Placeholder(%client)
 function City_AddDemerits(%blid, %demerits)
 {
 	%demerits = mFloor(%demerits);
-	%currentDemerits = CityRPGData.getData(%blid).valueDemerits;
+	%currentDemerits = City.get(%blid, "demerits");
 	%maxStars = City_GetMaxStars();
 
 	City.add(%blid, "demerits", %demerits);
 
-	if(CityRPGData.getData(%blid).valueDemerits >= $Pref::Server::City::demerits::demoteLevel && JobSO.job[CityRPGData.getData(%blid).valueJobID].law == true)
+	if(City.get(%blid).valueDemerits >= $Pref::Server::City::demerits::demoteLevel && JobSO.job[CityRPGData.getData(%blid, "jobid")].law == true)
 	{
 		City.set(%blid, "jobid", $City::CivilianJobID);
 		City.set(%blid, "jaildata", 1 SPC 0);
@@ -295,7 +295,7 @@ function City_illegalAttackTest(%atkr, %vctm)
 	{
 		if(%atkr != %vctm)
 		{
-			if(CityRPGData.getData(%vctm.bl_id).valueBounty && %atkr.getJobSO().bountyClaim)
+			if(City.get(%vctm.bl_id, "bounty") && %atkr.getJobSO().bountyClaim)
 				return false;
 			else if(!%vctm.getWantedLevel())
 				return true;
@@ -516,7 +516,7 @@ function City_TickLoop(%loop)
 		{
 			if(%client.getSalary() > 0)
 			{
-				if(CityRPGData.getData(%client.bl_id).valueJobID $= $City::MayorJobID)
+				if(City.get(%client.bl_id, "jobid") $= $City::MayorJobID)
 				{
 					if(%client.bl_id !$= $City::Mayor::ID)
 					{
@@ -562,7 +562,7 @@ function City_TickLoop(%loop)
 			}
 		}
 
-		City.set(%client.bl_id, "money", mFloor(CityRPGData.getData(%client.bl_id).valueMoney));
+		City.set(%client.bl_id, "money", mFloor(City.get(%client.bl_id, "money")));
 		City.set(%client.bl_id, "name", %client.name);
 
 		if(isObject(%client.player))
@@ -585,7 +585,7 @@ function City_TickLoop(%loop)
 
 			if(isObject(%client))
 			{
-				if(!getWord(CityRPGData.getData(CityRPGData.data[%loop].ID).valueJailData, 1))
+				if(!getWord(City.get(CityRPGData.data[%loop].ID, "jaildata"), 1))
 				{
 					%client.cityLog("Tick jail ended");
 					messageClient(%client, '', "\c6 - You got out of prison.");
@@ -677,7 +677,7 @@ function messageCityRadio(%jobTrack, %msgType, %msgString)
 		if(%client.isCityAdmin() || // Admin job always sees radio..
 		($Pref::Server::City::AdminsAlwaysMonitorChat && %client.isAdmin) || // Or if the pref is enabled, allow admin to snoop...
 		(%client.getJobSO().track $= %jobTrack && // Otherwise, check for a matching job track...
-		!getWord(CityRPGData.getData(%client.bl_id).valueJailData, 1))) // And exclude convicts from seeing messages in their track.
+		!getWord(City.get(%client.bl_id, "jaildata"), 1))) // And exclude convicts from seeing messages in their track.
 		{
 			messageClient(%client, '', "\c3[<color:" @ $City::JobTrackColor[%jobTrack] @ ">" @ %jobTrack @ " Radio\c3]" SPC %msgString);
 		}

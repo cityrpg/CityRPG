@@ -164,7 +164,7 @@ package CityRPG_MainPackage
 			{
 				%ownerBG = getBrickGroupFromObject(%brick);
 
-				if(CityRPGData.getData(%client.bl_id).valueJobID $= $City::AdminJobID)
+				if(City.get(%client.bl_id, "jobid") $= $City::AdminJobID)
 					parent::setItem(%brick, %datablock, %client);
 			}
 			else
@@ -303,16 +303,16 @@ package CityRPG_MainPackage
 			// "Brief" the player about their status in the game.
 			messageClient(%client, '', "\c6 - Your current job is\c3" SPC %client.getJobSO().name @ "\c6 with an income of \c3$" @ %client.getJobSO().pay @ "\c6.");
 
-			if(CityRPGData.getData(%client.bl_id).valueStudent > 0)
+			if(City.get(%client.bl_id, "student") > 0)
 			{
-				messageClient(%client, '', "\c6 - You will complete your education in \c3" @ CityRPGData.getData(%client.bl_id).valueStudent @ "\c6 days.");
+				messageClient(%client, '', "\c6 - You will complete your education in \c3" @ City.get(%client.bl_id, "student") @ "\c6 days.");
 			}
 
 			messageClient(%client, '', "\c6 - City mayor: \c3" @ $City::Mayor::String);
 			%client.doCityHungerStatus();
 
 			// Note: Not implemented yet.
-			%earnings = CityRPGData.getData(%client.bl_id).valueShopEarnings;
+			%earnings = City.get(%client.bl_id, "shopearnings");
 			if(%earnings > 0)
 			{
 				messageClient(%client, '', "\c6 - You earned \c3$" @ %earnings @ "\c6 in sales while you were out.");
@@ -330,8 +330,8 @@ package CityRPG_MainPackage
 			%warn = 1;
 		}
 
-		%client.cityLog("Left game ~" @ %time @ " min" @ %suffix @ " | dems: " @ CityRPGData.getData(%client.bl_id).valueDemerits, 0, %warn);
-		if($missionRunning && isObject(%client.player) && !getWord(CityRPGData.getData(%client.bl_id).valueJailData, 1))
+		%client.cityLog("Left game ~" @ %time @ " min" @ %suffix @ " | dems: " @ City.get(%client.bl_id, "demerits"), 0, %warn);
+		if($missionRunning && isObject(%client.player) && !getWord(City.get(%client.bl_id, "jaildata"), 1))
 		{
 			for(%a = 0; %a < %client.player.getDatablock().maxTools; %a++)
 			{
@@ -376,7 +376,7 @@ package CityRPG_MainPackage
 			%client.schedule(1, messageCityLagNotice);
 		}
 
-		if(CityRPGData.getData(%client.bl_id).valueJobID $= "")
+		if(City.get(%client.bl_id, "jobid") $= "")
 		{
 			schedule(1, 0, messageClient, %client, '', "\c2Type \c6/help starters\c2 to learn more about how to get started in CityRPG.");
 		}
@@ -415,7 +415,7 @@ package CityRPG_MainPackage
 		%client.player.setDatablock(%client.getJobSO().db);
 		%client.player.giveDefaultEquipment();
 
-		if(CityRPGData.getData(%client.bl_id).valueHunger < 3) {
+		if(City.get(%client.bl_id, "hunger") < 3) {
 			// Set a 'damage override' so we can package Player::emote and hide the pain better than Harold.
 			%client.player.cityDamageOverride = 1;
 			%client.player.setHealth(%client.player.dataBlock.maxDamage*0.80);
@@ -451,7 +451,7 @@ package CityRPG_MainPackage
 
 	function gameConnection::onDeath(%client, %killerPlayer, %killer, %damageType, %unknownA)
 	{
-		if(!getWord(CityRPGData.getData(%client.bl_id).valueJailData, 1))
+		if(!getWord(City.get(%client.bl_id, "jaildata"), 1))
 		{
 			if(%client.player.currTool)
 				serverCmddropTool(%client, %client.player.currTool);
@@ -462,7 +462,7 @@ package CityRPG_MainPackage
 
 		if(isObject(%killer) && %killer != %client)
 		{
-			if(CityRPGData.getData(%client.bl_id).valueBounty > 0)
+			if(City.get(%client.bl_id, "bounty") > 0)
 			{
 				if(!%killer.getJobSO().bountyClaim)
 				{
@@ -470,9 +470,9 @@ package CityRPG_MainPackage
 					City_AddDemerits(%killer.bl_id, $CityRPG::demerits::bountyClaiming);
 				}
 
-				%killer.cityLog("Claim bounty on " @ %client.bl_id @ " for $" @ CityRPGData.getData(%client.bl_id).valueBounty);
+				%killer.cityLog("Claim bounty on " @ %client.bl_id @ " for $" @ City.get(%client.bl_id, "bounty"));
 				messageClient(%killer, '', "\c6Hit was completed successfully. The money has been wired to your bank account.");
-				City.add(%killer.bl_id, "bank", CityRPGData.getData(%client.bl_id).valueBounty);
+				City.add(%killer.bl_id, "bank", City.get(%client.bl_id, "bounty"));
 				City.set(%client.bl_id, "bounty", 0);
 			}
 			else if(City_illegalAttackTest(%killer, %client))
@@ -498,11 +498,11 @@ package CityRPG_MainPackage
 	function gameConnection::setScore(%client, %score)
 	{
 		if($Score::Type $= "Money")
-			%score = CityRPGData.getData(%client.bl_id).valueMoney + CityRPGData.getData(%client.bl_id).valueBank;
+			%score = City.get(%client.bl_id).valueMoney + CityRPGData.getData(%client.bl_id, "bank");
 		else if($Score::Type $= "Edu")
-			%score = CityRPGData.getData(%client.bl_id).valueEducation;
+			%score = City.get(%client.bl_id, "education");
 		else
-			%score = CityRPGData.getData(%client.bl_id).valueMoney + CityRPGData.getData(%client.bl_id).valueBank;
+			%score = City.get(%client.bl_id).valueMoney + CityRPGData.getData(%client.bl_id, "bank");
 		parent::setScore(%client, %score);
 	}
 
@@ -543,7 +543,7 @@ package CityRPG_MainPackage
 	// ============================================================
 	function player::mountImage(%this, %datablock, %slot)
 	{
-		if(!getWord(CityRPGData.getData(%this.client.bl_id).valueJailData, 1) || $CityRPG::demerits::jail::image[%datablock.getName()])
+		if(!getWord(City.get(%this.client.bl_id, "jaildata"), 1) || $CityRPG::demerits::jail::image[%datablock.getName()])
 			parent::mountImage(%this, %datablock, %slot);
 		else
 			%this.playthread(2, root);
@@ -601,7 +601,7 @@ package CityRPG_MainPackage
 		{
 			if(%client.getWantedLevel())
 				%color = "1 0 0 1";
-			else if(CityRPGData.getData(%client.bl_id).valueReincarnated)
+			else if(City.get(%client.bl_id, "reincarnated"))
 				%color = "1 1 0 1";
 		}
 
@@ -723,7 +723,7 @@ package CityRPG_MainPackage
 
 		if(%hitObj.getClassName() $= "fxDTSBrick" && %hitObj.getDataBlock().CityRPGBrickType == $CityBrick_Lot)
 		{
-			if(CityRPGData.getData(%player.client.bl_id).valueJobID $= $City::AdminJobID)
+			if(City.get(%player.client.bl_id, "jobid") $= $City::AdminJobID)
 				$CityLotKillOverride = 1;
 			else
 			{
@@ -761,7 +761,7 @@ package CityRPG_MainPackage
 
 	function MinigameSO::pickSpawnPoint(%mini, %client)
 	{
-		if(getWord(CityRPGData.getData(%client.bl_id).valueJailData, 1) > 0 && City_FindSpawn("jailSpawn"))
+		if(getWord(City.get(%client.bl_id, "jaildata"), 1) > 0 && City_FindSpawn("jailSpawn"))
 			%spawn = City_FindSpawn("jailSpawn");
 		else
 		{
@@ -773,8 +773,8 @@ package CityRPG_MainPackage
 					%spawn = City_FindSpawn("personalSpawn", %client.bl_id);
 				else
 				{
-					if(City_FindSpawn("jobSpawn", CityRPGData.getData(%client.bl_id).valueJobID) && CityRPGData.getData(%client.bl_id).valueJobID !$= $City::CivilianJobID)
-						%spawn = City_FindSpawn("jobSpawn", CityRPGData.getData(%client.bl_id).valueJobID);
+					if(City_FindSpawn("jobSpawn", City.get(%client.bl_id).valueJobID) && CityRPGData.getData(%client.bl_id, "jobid") !$= $City::CivilianJobID)
+						%spawn = City_FindSpawn("jobSpawn", City.get(%client.bl_id, "jobid"));
 					else
 						%spawn = City_FindSpawn("jobSpawn", $City::CivilianJobID);
 				}
@@ -924,7 +924,7 @@ package CityRPG_MainPackage
 			%client.CityRPGTrigger.parent.getDatablock().parseData(%client.CityRPGTrigger.parent, %client, "", %text);
 			return;
 		}
-		else if(getWord(CityRPGData.getData(%client.bl_id).valueJailData, 1) > 0)
+		else if(getWord(City.get(%client.bl_id, "jaildata"), 1) > 0)
 		{
 			serverCmdteamMessageSent(%client, %text);
 			return;
@@ -939,12 +939,12 @@ package CityRPG_MainPackage
 
 		if(%text !$= "" && %text !$= " ")
 		{
-			if(getWord(CityRPGData.getData(%client.bl_id).valueJailData, 1))
+			if(getWord(City.get(%client.bl_id, "jaildata"), 1))
 			{
 				for(%i = 0; %i < ClientGroup.getCount();%i++)
 				{
 					%subClient = ClientGroup.getObject(%i);
-					if(getWord(CityRPGData.getData(%subClient.bl_id).valueJailData, 1))
+					if(getWord(City.get(%subClient.bl_id, "jaildata"), 1))
 					{
 						messageClient(%subClient, '', "\c3[<color:777777>Inmate\c3]" SPC %client.name @ "<color:777777>:" SPC %text);
 					}
@@ -976,7 +976,7 @@ package CityRPG_MainPackage
 
 	function serverCmddropTool(%client, %toolID)
 	{
-		if(getWord(CityRPGData.getData(%client.bl_id).valueJailData, 1) > 0)
+		if(getWord(City.get(%client.bl_id, "jaildata"), 1) > 0)
 			messageClient(%client, '', "\c6You can't drop tools while in jail.");
 		else
 			parent::serverCmddropTool(%client, %toolID);
@@ -984,7 +984,7 @@ package CityRPG_MainPackage
 
 	function serverCmdsuicide(%client)
 	{
-		if(getWord(CityRPGData.getData(%client.bl_id).valueJailData, 1) > 0)
+		if(getWord(City.get(%client.bl_id, "jaildata"), 1) > 0)
 			commandToClient(%client, '', "\c6You cannot suicide while in jail.", 3);
 		else if(%client.getWantedLevel())
 		{
@@ -1011,8 +1011,8 @@ package CityRPG_MainPackage
 		}
 		else
 		{
-			%client.moneyOnSuicide = CityRPGData.getData(%client.bl_id).valueMoney;
-			%client.lumberOnSuicide = CityRPGData.getData(%client.bl_id).valueResources;
+			%client.moneyOnSuicide = City.get(%client.bl_id, "money");
+			%client.lumberOnSuicide = City.get(%client.bl_id, "resources");
 			parent::serverCmdsuicide(%client);
 		}
 	}

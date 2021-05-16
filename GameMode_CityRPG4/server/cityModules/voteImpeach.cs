@@ -8,13 +8,13 @@ function CityMayor_VoteImpeach(%client)
 	else {
 		if(!CityMayor_getDataimpeachersDatabase(%client.BL_ID))
 		{
-			if(CityRPGData.getData(%client.bl_id).valueMoney < $Pref::Server::City::Mayor::ImpeachCost)
+			if(City.get(%client.bl_id, "money") < $Pref::Server::City::Mayor::ImpeachCost)
 			{
 				messageClient(%client,'',"You don't have the required money to remove the Mayor!");
 				return;
 			}
 
-			City.set(%client.bl_id, "money", CityRPGData.getData(%client.bl_id).valueMoney - $Pref::Server::City::Mayor::ImpeachCost);
+			City.set(%client.bl_id, "money", City.get(%client.bl_id, "money") - $Pref::Server::City::Mayor::ImpeachCost);
 			$City::Mayor::Impeach++;
 			messageAll('', %client.name SPC "\c6has voted to remove the Mayor from office.");
 			messageAll('',"\c6Current vote count:\c0" SPC $City::Mayor::Impeach @ "\c6. Needed:\c0" SPC $City::Mayor::ImpeachRequirement);
