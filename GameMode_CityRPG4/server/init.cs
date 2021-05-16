@@ -133,6 +133,11 @@ function City::subtract(%this, %profileID, %key, %value)
 	CityRPGData.getData(%profileID).value[%key] = CityRPGData.getData(%profileID).value[%key] - %value;
 }
 
+function City::keyExists(%this, %profileID)
+{
+	return CityRPGData.getData(%profileID) != 0;
+}
+
 // City_Init_Minigame()
 // Creates the minigame for the game-mode.
 function City_Init_Minigame()
