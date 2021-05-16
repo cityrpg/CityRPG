@@ -367,6 +367,9 @@ package CityRPG_Commands
 
 	function CityMenu_Reset_Confirm(%client)
 	{
+
+		%client.cityMenuClose(1);
+		
 		%client.cityLog("***Account reset***");
 		messageClient(%client, '', "\c6Your account has been reset.");
 		messageAll('',"\c3"@ %client.name @" \c6has reset their account.");
