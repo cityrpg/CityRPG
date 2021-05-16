@@ -464,15 +464,17 @@ function CityMenu_LotAdmin(%client)
 	{
 		%client.cityMenuMessage("\c6Lot is owned by the city.");
 	}
-
+	
 	%menu = "Force rename."
 			TAB "Transfer lot to the city."
 			TAB "Transfer lot to a player."
+			TAB "Wrench lot."
 			TAB "Go back.";
 
 	%functions =	"CityMenu_LotAdmin_SetNamePrompt"
 						TAB "CityMenu_LotAdmin_TransferCity"
 						TAB "CityMenu_LotAdmin_TransferPlayerPrompt"
+						TAB "CityMenu_LotWrench"
 						TAB "CityMenu_Lot";
 
 	%client.cityMenuOpen(%menu, %functions, %lotBrick, "\c3Lot menu closed.", 0, 1);
