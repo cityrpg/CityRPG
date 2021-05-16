@@ -367,7 +367,6 @@ package CityRPG_Commands
 
 	function CityMenu_Reset_Confirm(%client)
 	{
-
 		%client.cityMenuClose(1);
 		
 		%client.cityLog("***Account reset***");
@@ -376,7 +375,8 @@ package CityRPG_Commands
 		CityRPGData.removeData(%client.bl_id);
 		CityRPGData.addData(%client.bl_id);
 
-		CityRPGData.getData(%client.bl_id).valueBank = 100;
+		City.set(%client.bl_id, "bank", 100);
+		%client.setCityJob($City::CivilianJobID, 1);
 
 		if(isObject(%client.player))
 		{
