@@ -102,25 +102,10 @@ function CityMenu_Lot(%client, %input)
 	// ## Options for lot owners ## //
 	if(%lotBrick.getCityLotOwnerID() == %client.bl_id)
 	{
-		%menu = %menu
-				TAB "Rename lot."
-				TAB "Wrench lot.";
-
-		%functions = %functions
-				TAB "CityMenu_LotSetNamePrompt"
-				TAB "CityMenu_LotWrench";
-
-		if(%lotBrick.getCityLotPreownedPrice() == -1)
-		{
-			%menu = %menu TAB "List this lot for sale.";
-			%functions = %functions TAB "CityMenu_Lot_ListForSalePrompt";
-		}
-		else
-		{
-			%menu = %menu TAB "Take this lot off sale.";
-			%functions = %functions TAB "CityMenu_Lot_RemoveFromSale";
-		}
+		%menu = %menu TAB "Lot management.";
+		%functions = %functions TAB "CityMenu_LotOwnerManagement";
 	}
+
 	// ## Options for non-owners only ## //
 	else if(%lotBrick.getCityLotPreownedPrice() != -1)
 	{
@@ -148,7 +133,7 @@ function CityMenu_Lot(%client, %input)
 	}
 
 	// Use the lot brick as the menu ID
-	%client.cityMenuOpen(%menu, %functions, %lotBrick, "\c3Lot management menu closed.", 0, 1);
+	%client.cityMenuOpen(%menu, %functions, %lotBrick, "\c3Lot menu closed.", 0, 1);
 }
 
 // ## Functions for all lots ## //
@@ -221,6 +206,36 @@ function CityLots_PurchaseLot(%client, %input, %lotBrick)
 		// Open the menu for the new lot
 		CityMenu_Lot(%client);
 	}
+}
+
+function CityMenu_LotOwnerManagement(%client)
+{
+	%lotBrick = %client.cityMenuID;
+	%client.cityMenuClose(true);
+	%ownerID = %lotBrick.getCityLotOwnerID();
+	%client.cityMenuBack = %lotBrick;
+
+	%menu = "Rename lot."
+			TAB "Wrench lot.";
+
+	%functions = "CityMenu_LotSetNamePrompt"
+			 TAB "CityMenu_LotWrench";
+
+	if(%lotBrick.getCityLotPreownedPrice() == -1)
+	{
+		%menu = %menu TAB "List this lot for sale.";
+		%functions = %functions TAB "CityMenu_Lot_ListForSalePrompt";
+	}
+	else
+	{
+		%menu = %menu TAB "Take this lot off sale.";
+		%functions = %functions TAB "CityMenu_Lot_RemoveFromSale";
+	}
+
+	%menu = %menu TAB "Go back.";
+	%functions = %functions TAB "CityMenu_Lot";
+
+	%client.cityMenuOpen(%menu, %functions, %lotBrick, "\c3Lot menu closed.", 0, 1);
 }
 
 // ## Functions for lot owners ## //
