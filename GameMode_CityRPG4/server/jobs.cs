@@ -301,7 +301,7 @@ function GameConnection::setCityJob(%client, %jobID, %force, %silent)
 			}
 		}
 
-		CityRPGData.getData(%client.bl_id).valueMoney -= %jobObject.invest;
+		City.subtract(%client.bl_id, "money", %jobObject.invest);
 	}
 	else if(%jobObject.id !$= $City::CivilianJobID)
 	{

@@ -389,7 +389,7 @@ function gameConnection::sellFood(%client, %sellerID, %servingID, %foodName, %pr
 					City.set(%client.bl_id, "hunger", 10);
 				}
 
-				CityRPGData.getData(%client.bl_id).valueMoney -= %price;
+				City.subtract(%client.bl_id, "money", %price);
 				City.add(%sellerID, "bank", %profit);
 
 				if(%profit)
@@ -442,7 +442,7 @@ function gameConnection::sellItem(%client, %sellerID, %itemID, %price, %profit)
 			{
 				%client.cityLog("Evnt buy item " @ %itemID @ " for " @ %price @ " from " @ %sellerID);
 
-				CityRPGData.getData(%client.bl_id).valueMoney -= %price;
+				City.subtract(%client.bl_id, "money", %price);
 				City.add(%sellerID, "bank", %profit);
 				CitySO.minerals -= $CityRPG::prices::weapon::mineral[%itemID];
 
@@ -478,7 +478,7 @@ function gameConnection::sellClothes(%client, %sellerID, %brick, %item, %price)
 		{
 			messageClient(%client, '', "\c6Enjoy the new look!");
 			%client.cityLog("Evnt buy clothing " @ %item @ " for " @ %price @ " from " @ %sellerID);
-			CityRPGData.getData(%client.bl_id).valueMoney -= %price;
+			City.subtract(%client.bl_id, "money", %price);
 			City.add(%sellerID, "bank", %price);
 			ClothesSO.giveItem(%client, %item);
 
@@ -583,7 +583,7 @@ function GameConnection::cityEnroll(%client)
 			// Number of days to complete
 			City.set(%client.bl_id, "student", %valueStudent);
 			// Cost
-			CityRPGData.getData(%client.bl_id).valueMoney -= %price;
+			City.subtract(%client.bl_id, "money", %price);
 
 			messageClient(%client, '', "\c6You are now enrolled. You will complete your education in \c3" @ %valueStudent @ "\c6 days.");
 			%client.setInfo();

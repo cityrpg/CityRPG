@@ -110,7 +110,7 @@ function serverCmdRegisterCandidates(%client)
 	{
 		CityMayor_inputCandidates(%client.name, %client.bl_id);
 		messageClient(%client, '', "\c6Congratulations, you are now a candidate for the election.");
-		CityRPGData.getData(%client.bl_id).valueMoney -= $Pref::Server::City::Mayor::Cost;
+		City.subtract(%client.bl_id, "money", $Pref::Server::City::Mayor::Cost);
 		%client.setInfo();
 	} else {
 		messageClient(%client, '', "\c6You don't have $" @ $Pref::Server::City::Mayor::Cost @ "!");

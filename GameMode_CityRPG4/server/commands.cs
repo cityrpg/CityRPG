@@ -107,7 +107,7 @@ package CityRPG_Commands
 					{
 						case "service":
 							%client.cityLog("Evnt buy service for " @ %client.player.serviceFee @ " from " @ %sellerID);
-							CityRPGData.getData(%client.bl_id).valueMoney -= %client.player.serviceFee;
+							City.subtract(%client.bl_id, "money", %client.player.serviceFee);
 
 							City.add(%client.player.serviceOrigin.getGroup().bl_id, "bank", %client.player.serviceFee);
 
@@ -214,7 +214,7 @@ package CityRPG_Commands
 		}
 
 		%amoutPer = %arg1 * 0.15;
-		CityRPGData.getData(%client.bl_id).valueMoney -= %arg1;
+		City.subtract(%client.bl_id, "money", %arg1);
 		messageClient(%client, '', "\c6You've donated \c3$" @ %arg1 SPC "\c6to the economy! (" @ %amoutPer @ "%)");
 		messageAll('',"\c3" @ %client.name SPC "\c6has donated \c3$" @ %arg1 SPC "\c6to the economy! (" @ %amoutPer @ "%)");
 		$City::Economics::Condition = $City::Economics::Condition + %amoutPer;
@@ -256,7 +256,7 @@ package CityRPG_Commands
 		messageClient(%client, '', "\c6You have erased your criminal record.");
 		%client.spawnPlayer();
 		%client.setInfo();
-		CityRPGData.getData(%client.bl_id).valueMoney -= %cost;
+		City.subtract(%client.bl_id, "money", %cost);
 	}
 
 	function serverCmdgiveMoney(%client, %money, %name)
@@ -310,7 +310,7 @@ package CityRPG_Commands
 		messageClient(%client, '', "\c6You give \c3$" @ %money SPC "\c6to \c3" @ %target.name @ "\c6.");
 		messageClient(%target, '', "\c3" @ %client.name SPC "\c6has given you \c3$" @ %money @ "\c6.");
 
-		CityRPGData.getData(%client.bl_id).valueMoney -= %money;
+		City.subtract(%client.bl_id, "money", %money);
 		City.add(%target.bl_id, "money", %money);
 
 		%client.SetInfo();
@@ -547,7 +547,7 @@ package CityRPG_Commands
 			messageClient(%target, '', "\c3It seems your criminal record has simply vanished...");
 
 			if(!%client.BL_ID == getNumKeyID())
-				CityRPGData.getData(%client.bl_id).valueMoney -= %cost;
+				City.subtract(%client.bl_id, "money", %cost);
 		}
 		else
 			messageClient(%client, '', "\c6You have erased your criminal record.");
