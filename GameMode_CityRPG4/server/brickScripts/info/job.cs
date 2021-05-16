@@ -47,8 +47,6 @@ function CityMenu_Jobs_ApplyInput(%client, %input)
 
 function CityMenu_Jobs_List(%client, %input, %brick)
 {
-	%client.cityMenuMessage("\c3Select a job track to view.");
-
 	%menu = getField($City::JobTracks, 0);
 	%functions = "CityMenu_Jobs_ViewTrack";
 
@@ -63,7 +61,7 @@ function CityMenu_Jobs_List(%client, %input, %brick)
 	  messageClient(%client, '', "\c3This server is running a customized job tree.");
 	}
 
-	%client.cityMenuOpen(%menu, %functions, %brick, "\c6Thanks, come again.");
+	%client.cityMenuOpen(%menu, %functions, %brick, "\c6Thanks, come again.", 0, 0, "Select a job track to view.");
 }
 
 function CityMenu_Jobs_ViewTrack(%client, %input, %brick)
