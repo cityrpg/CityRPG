@@ -20,7 +20,7 @@ package Witness
 	{
 		if(%atkr != %vctm)
 		{
-			if(CityRPGData.getData(%vctm.bl_id).valueBounty && %atkr.getJobSO().bountyClaim)
+			if(City.get(%vctm.bl_id, "bounty") && %atkr.getJobSO().bountyClaim)
 				return false;
 			else if(!%vctm.getWantedLevel())
 				{

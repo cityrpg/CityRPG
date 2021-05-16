@@ -83,7 +83,7 @@ function serverCmdvoteElection(%client, %arg2)
 		return;
 	}
 
-	if(CityRPGData.getData(%client.bl_id).valueElectionID == $City::Mayor::Mayor::ElectionID) // Already voted
+	if(City.get(%client.bl_id, "electionid") == $City::Mayor::Mayor::ElectionID) // Already voted
 	{
 		messageClient(%client, '', "You've already voted!");
 		return;
@@ -96,7 +96,7 @@ function serverCmdvoteElection(%client, %arg2)
 	}
 	
 	messageClient(%client, '', "\c6You have voted for\c3" SPC %arg1.name @ "\c6.");
-	CityRPGData.getData(%client.bl_id).valueElectionID = $City::Mayor::Mayor::ElectionID;
+	City.set(%client.bl_id, "electionid", $City::Mayor::Mayor::ElectionID);
 	%voteIncrease = getMayor($City::Mayor::Mayor::ElectionID, %arg1.name) + 1;
 	inputMayor($City::Mayor::Mayor::ElectionID, %arg1.name, %voteIncrease);
 }
@@ -106,11 +106,11 @@ function serverCmdRegisterCandidates(%client)
 {
 	%client.cityLog("/registerCandidates");
 
-	if(CityRPGData.getData(%client.bl_id).valueMoney >= $Pref::Server::City::Mayor::Cost)
+	if(City.get(%client.bl_id, "money") >= $Pref::Server::City::Mayor::Cost)
 	{
 		CityMayor_inputCandidates(%client.name, %client.bl_id);
 		messageClient(%client, '', "\c6Congratulations, you are now a candidate for the election.");
-		CityRPGData.getData(%client.bl_id).valueMoney -= $Pref::Server::City::Mayor::Cost;
+		City.subtract(%client.bl_id, "money", $Pref::Server::City::Mayor::Cost);
 		%client.setInfo();
 	} else {
 		messageClient(%client, '', "\c6You don't have $" @ $Pref::Server::City::Mayor::Cost @ "!");
