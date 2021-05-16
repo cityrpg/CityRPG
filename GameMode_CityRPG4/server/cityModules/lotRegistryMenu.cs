@@ -72,10 +72,7 @@ function CityMenu_Lot(%client, %input)
 		%lotBrick.initNewCityLot();
 	}
 
-	if(!%notitle)
-	{
-		%client.cityMenuMessage("\c3" @ %lotBrick.getCityLotName() @ "\c6 - " @ %lotBrick.getDataBlock().uiName);
-	}
+	%title = "\c3" @ %lotBrick.getCityLotName() @ "\c6 - " @ %lotBrick.getDataBlock().uiName;
 
 	if(%lotBrick.getCityLotPreownedPrice() != -1)
 	{
@@ -133,7 +130,7 @@ function CityMenu_Lot(%client, %input)
 	}
 
 	// Use the lot brick as the menu ID
-	%client.cityMenuOpen(%menu, %functions, %lotBrick, "\c3Lot menu closed.", 0, 1);
+	%client.cityMenuOpen(%menu, %functions, %lotBrick, "\c3Lot menu closed.", 0, 1, %title);
 }
 
 // ## Functions for all lots ## //
