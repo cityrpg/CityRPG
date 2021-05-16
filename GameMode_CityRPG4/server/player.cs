@@ -609,9 +609,19 @@ function GameConnection::isCityAdmin(%client)
 
 function CityMenu_Player(%client)
 {
+	if(%client.cityLotBrick !$= "")
+	{
+		%menu = "Lot menu.";
+		%functions = "CityMenu_Player_ManageLot";
+	}
+
 	%client.cityMenuMessage("\c3Actions Menu");
-	%menu =  "Preferred spawn point." TAB "Player stats.";
-	%functions = "CityMenu_Player_SetSpawn" TAB "CityMenu_Player_Stats";
+	%menu = %menu TAB "Preferred spawn point." TAB "Player stats.";
+	%functions = %functions TAB "CityMenu_Player_SetSpawn" TAB "CityMenu_Player_Stats";
+
+	// Trim extra tabs, if any.
+	%menu = ltrim(%menu);
+	%functions = ltrim(%functions);
 
 	if(City.get(%client.bl_id, "jobID") $= $City::MayorJobID)
 	{
@@ -629,6 +639,12 @@ function CityMenu_Player_Stats(%client)
 {
 	serverCmdStats(%client);
 	%client.cityMenuClose();
+}
+
+function CityMenu_Player_ManageLot(%client)
+{
+	%client.cityMenuClose(1);
+	serverCmdLot(%client);
 }
 
 function CityMenu_Player_SetSpawn(%client)
