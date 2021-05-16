@@ -21,7 +21,7 @@ datablock fxDTSBrickData(CityRPGATMBrickData : brick2x4FData)
 // ============================================================
 function CityMenu_ATM(%client, %brick)
 {
-	%client.cityMenuMessage("\c6You have \c3$" @ CityRPGData.getData(%client.bl_id).valueBank SPC "\c6in your account.");
+	%client.cityMenuMessage("\c6You have \c3$" @ City.get(%client.bl_id, "bank") SPC "\c6in your account.");
 
 	%client.cityLog("Enter ATM");
 
@@ -29,7 +29,7 @@ function CityMenu_ATM(%client, %brick)
 	// We can call directly on the same prompt that the bank uses.
 	%functions = "CityMenu_BankWithdrawPrompt";
 
-	%client.cityMenuOpen(%menu, %functions, %brick, "\c6Thanks, come again.", 0, "\c3ATM");
+	%client.cityMenuOpen(%menu, %functions, %brick, "\c6Thanks, come again.", 0, 0, "\c3ATM");
 }
 
 // ============================================================
@@ -39,7 +39,7 @@ function CityRPGATMBrickData::parseData(%this, %brick, %client, %triggerStatus, 
 {
 	if(%triggerStatus == true && !%client.cityMenuOpen)
 	{
-		%client.cityMenuMessage("\c6Welcome to the " @ $Pref::Server::City::name @ " Bank. Your account balance is \c3$" @ CityRPGData.getData(%client.bl_id).valueBank @ "\c6. Current economy value: \c3" @ %econColor @ $City::Economics::Condition @ "\c6%");
+		%client.cityMenuMessage("\c6Welcome to the " @ $Pref::Server::City::name @ " Bank. Your account balance is \c3$" @ City.get(%client.bl_id, "bank") @ "\c6. Current economy value: \c3" @ %econColor @ $City::Economics::Condition @ "\c6%");
 
 		CityMenu_ATM(%client, %brick);
 	}

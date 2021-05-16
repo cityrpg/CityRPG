@@ -2,12 +2,12 @@
 // General Game Functions
 // ============================================================
 
-// Client.cityMenuOpen(names, functions, exitMsg, autoClose)
+// Client.cityMenuOpen(names, functions, exitMsg, autoClose, canOverride)
 // Modular function hook for displaying menus in-game.
 // Currently utilizes chat just like classic CityRPG, however this is subject to change.
-function GameConnection::cityMenuOpen(%client, %menu, %functions, %menuID, %exitMsg, %autoClose, %title)
+function GameConnection::cityMenuOpen(%client, %menu, %functions, %menuID, %exitMsg, %autoClose, %canOverride, %title)
 {
-	if(%client.cityMenuOpen)
+	if(%client.cityMenuOpen && !%client.cityMenuCanOverride)
 	{
 		return;
 	}
@@ -54,6 +54,7 @@ function GameConnection::cityMenuOpen(%client, %menu, %functions, %menuID, %exit
 	%client.cityMenuAutoClose = %autoClose;
 	%client.cityMenuID = %menuID;
 	%client.cityMenuExitMsg = %exitMsg;
+	%client.cityMenuCanOverride = %canOverride;
 
 	// Event
 	if(isObject(%menuID) && %menuID.getClassName() $= "fxDTSBrick")
@@ -131,6 +132,7 @@ function GameConnection::cityMenuClose(%client, %silent)
 		%client.cityMenuID = "";
 		%client.cityMenuExitMsg = "";
 		%client.cityMenuAutoClose = "";
+		%client.cityMenuBack = "";
 	}
 }
 
@@ -166,7 +168,7 @@ function City_AddDemerits(%blid, %demerits)
 
 	if(CityRPGData.getData(%blid).valueDemerits >= $Pref::Server::City::demerits::demoteLevel && JobSO.job[CityRPGData.getData(%blid).valueJobID].law == true)
 	{
-		CityRPGData.getData(%blid).valueJobID = 1;
+		CityRPGData.getData(%blid).valueJobID = $City::CivilianJobID;
 		CityRPGData.getData(%blid).valueJailData = 1 SPC 0;
 
 		%client = findClientByBL_ID(%blid);
@@ -218,7 +220,7 @@ function City_DetectVowel(%word)
 function City_FindSpawn(%search, %id)
 {
 	%search = strlwr(%search);
-	%fullSearch = %search @ (%id ? " " @ %id : "");
+	%fullSearch = %search @ (%id !$= "" ? " " @ %id : "");
 
 	for(%a = 0; %a < getWordCount($CityRPG::temp::spawnPoints); %a++)
 	{
@@ -301,33 +303,20 @@ function City_Tick_Econ()
 {
 	$City::Economics::replayCount = $City::Economics::replayCount + 1;
 	$City::Economics::randomUporDown = getRandom(1,5);
-	$City::Economics::positiveNegative = getRandom(1,2);
 
 	if($Pref::Server::City::Economics::Relay < 1)
 		$Pref::Server::City::Economics::Relay = ClientGroup.getCount();
 
 	if($City::Economics::replayCount > $Pref::Server::City::Economics::Relay)
-	{
-		if($City::Economics::Condition > $Pref::Server::City::Economics::Greatest)
+	{	
+		%addition = $City::Economics::randomUporDown;
+		if(getRandom(0,1))
 		{
-			$City::Economics::Condition = $City::Economics::Condition - $City::Economics::randomUporDown;
-			$City::Economics::replayCount = 0;
+			%addition = -%addition;
 		}
-		else if($City::Economics::Condition < $Pref::Server::City::Economics::Least)
-		{
-			$City::Economics::Condition = $City::Economics::Condition + $City::Economics::randomUporDown;
-			$City::Economics::replayCount = 0;
-		}
-		else if($City::Economics::positiveNegative == 1)
-		{
-			$City::Economics::Condition = $City::Economics::Condition + $City::Economics::randomUporDown;
-			$City::Economics::replayCount = 0;
-		}
-		else if($City::Economics::positiveNegative == 2)
-		{
-			$City::Economics::Condition = $City::Economics::Condition - $City::Economics::randomUporDown;
-			$City::Economics::replayCount = 0;
-		}
+
+		$City::Economics::Condition = $City::Economics::Condition + %addition;
+		$City::Economics::replayCount = 0;
 	}
 
 	if($City::Economics::Condition > $Pref::Server::City::Economics::Cap)
@@ -521,11 +510,11 @@ function City_TickLoop(%loop)
 		{
 			if(%client.getSalary() > 0)
 			{
-				if(CityRPGData.getData(%client.bl_id).valueJobID == $City::MayorJobID)
+				if(CityRPGData.getData(%client.bl_id).valueJobID $= $City::MayorJobID)
 				{
 					if(%client.bl_id !$= $City::Mayor::ID)
 					{
-						jobset(%client, $City::CivilianJobID);
+						%client.setCityJob($City::CivilianJobID, 1);
 						%client.colorName = "";
 						// return;
 					}
@@ -654,11 +643,11 @@ function City_ResetAllJobs(%client)
 
 		if(%targetClient != 0)
 		{
-			jobset(%targetClient, $City::CivilianJobID);
+			%targetClient.setCityJob($City::CivilianJobID, 1);
 		}
 		else
 		{
-			CityRPGData.data[%i].valueJobID = 1;
+			CityRPGData.data[%i].valueJobID = $City::CivilianJobID;
 		}
 	}
 

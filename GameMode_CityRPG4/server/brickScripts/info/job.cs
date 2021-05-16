@@ -31,7 +31,7 @@ function CityMenu_Jobs(%client, %brick)
 	%functions = 	"CityMenu_Jobs_List"
 						TAB "CityMenu_Jobs_ApplyPrompt";
 
-	%client.cityMenuOpen(%menu, %functions, %brick, "\c6Thanks, come again.", 0, "\c3" @ $Pref::Server::City::name @ " Employment Office");
+	%client.cityMenuOpen(%menu, %functions, %brick, "\c6Thanks, come again.", 0, 1, $Pref::Server::City::name @ " Employment Office");
 }
 
 function CityMenu_Jobs_ApplyPrompt(%client, %brick)
@@ -47,8 +47,6 @@ function CityMenu_Jobs_ApplyInput(%client, %input)
 
 function CityMenu_Jobs_List(%client, %input, %brick)
 {
-	%client.cityMenuClose(1);
-
 	%client.cityMenuMessage("\c3Select a job track to view.");
 
 	%menu = getField($City::JobTracks, 0);

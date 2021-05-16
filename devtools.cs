@@ -10,6 +10,7 @@ $DevTools::File[%i++] = "add-ons/gamemode_cityrpg4/server/commands.cs";
 $DevTools::File[%i++] = "add-ons/gamemode_cityrpg4/server/core.cs";
 $DevTools::File[%i++] = "add-ons/gamemode_cityrpg4/server/events.cs";
 $DevTools::File[%i++] = "add-ons/gamemode_cityrpg4/server/init.cs";
+$DevTools::File[%i++] = "add-ons/gamemode_cityrpg4/server/jobs.cs";
 $DevTools::File[%i++] = "add-ons/gamemode_cityrpg4/server/jobTrees.cs";
 $DevTools::File[%i++] = "add-ons/gamemode_cityrpg4/server/overrides.cs";
 $DevTools::File[%i++] = "add-ons/gamemode_cityrpg4/server/package.cs";

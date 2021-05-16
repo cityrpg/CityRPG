@@ -1,5 +1,18 @@
 $City::StartingCash = 250;
 
+// Spawn preference list
+$City::SpawnPreferences = "Personal Spawn";
+$City::SpawnPreferenceIDs = "Personal";
+
+if($City::CheckpointIsActive)
+{
+	$City::SpawnPreferences = $City::SpawnPreferences TAB "Checkpoint";
+	$City::SpawnPreferenceIDs = $City::SpawnPreferenceIDs TAB "Checkpoint";
+}
+
+$City::SpawnPreferences = $City::SpawnPreferences TAB "Job Spawn";
+$City::SpawnPreferenceIDs = $City::SpawnPreferenceIDs TAB "Job";
+
 function gameConnection::arrest(%client, %cop)
 {
 	%client.cityLog("Arrested by '" @ %cop.bl_id @ "'");
@@ -40,7 +53,7 @@ function gameConnection::arrest(%client, %cop)
 	if(%client.getJobSO().law)
 	{
 		messageClient(%client, '', "\c6You have been demoted to" SPC City_DetectVowel(JobSO.job[1].name) SPC "\c3" @ JobSO.job[1].name SPC "\c6due to your jailing.");
-		%robSO.valueJobID = 1;
+		%robSO.valueJobID = $City::CivilianJobID;
 	}
 
 	if(%robSO.valueBounty > 0)
@@ -135,12 +148,11 @@ function gameConnection::setGameBottomPrint(%client)
 
 	%client.CityRPGPrint = %client.CityRPGPrint @ "   <bitmap:" @ $City::DataPath @ "ui/cash.png>\c6 Cash:" SPC %client.getCashString();
 
+	// TODO: Move wanted level to center print so this doesn't cut off the bottom HUD
+	//%client.CityRPGPrint = %client.CityRPGPrint @ "   <bitmap:" @ $City::DataPath @ "ui/hunger.png>\c6 Hunger: Well-fed";
+
 	// Placeholder
 	//%client.CityRPGPrint = %client.CityRPGPrint @ "<just:right>\c6Day";
-
-	// Lot Info
-	//if(isObject(%client.CityRPGLotBrick))
-	//	%client.CityRPGPrint = %client.CityRPGPrint SPC " <bitmap:Add-Ons/GameMode_CityRPG4/data/ui/location.png> \c6" @ %client.CityRPGLotBrick.getGroup().name @ "'s Lot";
 
 	//IMPORTANT: Wanted level must be last because it shows up on a new line
 	if(CityRPGData.getData(%client.bl_id).valueDemerits >= $Pref::Server::City::demerits::wantedLevel)
@@ -238,6 +250,24 @@ function gameConnection::applyForcedBodyParts(%client)
 	}
 }
 
+function gameConnection::cityLotDisplay(%client, %lotBrick)
+{
+	%lotStr = "<just:right><font:palatino linotype:18>\c6" @ %lotBrick.getCityLotName();
+
+	%duration = 2;
+	if(%lotBrick.getCityLotOwnerID() == -1)
+	{
+		%lotStr = %lotStr @ "<br>\c2For sale!\c6 Type /lot for info";
+	}
+	else if(%lotBrick.getCityLotPreownedPrice() != -1)
+	{
+		%lotStr = %lotStr @ "<br>\c2For sale by owner!\c6 Type /lot for info";
+		%duration = 3;
+	}
+
+	%client.centerPrint(%lotStr, %duration);
+}
+
 // Get Functions
 function gameConnection::getCashString(%client)
 {
@@ -300,6 +330,22 @@ function gameConnection::ifWanted(%client)
 		return true;
 	else
 		return false;
+}
+
+function gameConnection::doReincarnate(%client)
+{
+	CityRPGData.removeData(%client.bl_id);
+	CityRPGData.addData(%client.bl_id);
+	CityRPGData.getData(%client.bl_id).valueReincarnated = 1;
+	CityRPGData.getData(%client.bl_id).valueEducation = $City::EducationReincarnateLevel;
+
+	if(isObject(%client.player))
+	{
+		%client.spawnPlayer();
+	}
+
+	messageAllExcept(%client, '', '\c3%1\c6 has been reincarnated!', %client.name);
+	messageClient(%client, '', "\c6You have been reincarnated.");
 }
 
 // Sell Functions
@@ -454,23 +500,11 @@ function gameConnection::sellClothes(%client, %sellerID, %brick, %item, %price)
 	}
 }
 
-// Output Events
-function gameConnection::MessageBoxOK(%client, %header, %text)
-{
-	commandToClient(%client, 'MessageBoxOK', %header, %text);
-}
-
 function player::giveDefaultEquipment(%this)
 {
 	if(!getWord(CityRPGData.getData(%this.client.bl_id).valueJailData, 1))
 	{
-		if(CityRPGData.getData(%this.client.bl_id).valueTools $= "")
-		{
-			%tools = ($Pref::Server::City::giveDefaultTools ? $Pref::Server::City::defaultTools @ " " : "") @ %this.client.getJobSO().tools;
-			CityRPGData.getData(%this.client.bl_id).valueTools = "";
-		}
-		else
-			%tools = CityRPGData.getData(%this.client.bl_id).valueTools;
+		%tools = ($Pref::Server::City::giveDefaultTools ? $Pref::Server::City::defaultTools @ " " : "") @ %this.client.getJobSO().tools;
 
 		for(%a = 0; %a < %this.getDatablock().maxTools; %a++)
 		{
@@ -506,25 +540,6 @@ function player::giveDefaultEquipment(%this)
 	}
 }
 
-
-function jobset(%client, %job, %name)
-{
-	CityRPGData.getData(%client.bl_id).valueJobID = %job;
-	serverCmdunUseTool(%client);
-	%client.player.giveDefaultEquipment();
-	%client.applyForcedBodyColors();
-	%client.applyForcedBodyParts();
-	%client.player.setDatablock(%client.getJobSO().db);
-
-	if(%job == $City::MayorJobID)
-	{
-		$City::Mayor::String = %client.name;
-		$City::Mayor::Enabled = 0;
-		serverCmdClearImpeach(%client);
-	}
-	%client.SetInfo();
-}
-
 function resetFree(%client)
 {
 	%client.cityLog("***Account auto-reset***");
@@ -533,6 +548,8 @@ function resetFree(%client)
 	CityRPGData.addData(%client.bl_id);
 
 	CityRPGData.getData(%client.bl_id).valueBank = $City::StartingCash;
+
+	%client.setCityJob($City::CivilianJobID, 1, 1);
 
 	if(isObject(%client.player))
 	{
@@ -587,5 +604,55 @@ function GameConnection::getCityRecordClearCost(%client)
 
 function GameConnection::isCityAdmin(%client)
 {
-	return CityRPGData.getData(%client.bl_id).valueJobID == $City::AdminJobID;
+	return CityRPGData.getData(%client.bl_id).valueJobID $= $City::AdminJobID;
+}
+
+function CityMenu_Player(%client)
+{
+	%client.cityMenuMessage("\c3Actions Menu");
+	%menu = "Player stats." TAB "Preferred spawn point.";
+	%functions = "CityMenu_Player_Stats" TAB "CityMenu_Player_SetSpawn";
+
+	if(City.get(%client.bl_id, "jobID") $= $City::MayorJobID)
+	{
+		%menu = %menu TAB "Mayor actions.";
+		%functions = %functions TAB "CityMenu_Mayor";
+	}
+
+	%menu = %menu TAB "Close menu.";
+	%functions = %functions TAB "CityMenu_Close";
+	
+	%client.cityMenuOpen(%menu, %functions, %client, "\c3Actions menu closed.", 0, 1);
+}
+
+function CityMenu_Player_Stats(%client)
+{
+	serverCmdStats(%client);
+	%client.cityMenuClose();
+}
+
+function CityMenu_Player_SetSpawn(%client)
+{
+	%menu = $City::SpawnPreferences;
+	%function = "CityMenu_Player_SetSpawnConfirm";
+
+	%client.cityMenuOpen(%menu, %function, %client, "\c3Actions menu closed.", 0, 1);
+}
+
+function CityMenu_Player_SetSpawnConfirm(%client, %input)
+{
+	%inputNum = atof(%input);
+	%selection = getField($City::SpawnPreferences, %inputNum-1);
+	%selectionID = getField($City::SpawnPreferenceIDs, %inputNum-1);
+
+	if(%inputNum == 0 || %selection $= "")
+	{
+		%client.cityMenuMessage("\c6Invalid selection. Please try again.");
+	}
+	else
+	{
+		%client.cityMenuMessage("\c6Spawn preference set to \c3" @ %selection @ "\c6.");
+		City.set(%client.bl_id, "spawnPoint", selectionID);
+		%client.cityLog("Set spawn to " @ selectionID);
+	}
 }

@@ -99,7 +99,7 @@ $Pref::Server::City::giveDefaultTools								= true;
 
 $Pref::Server::City::moneyDieTime										= 9999999999;
 
-$Pref::Server::City::demerits::pardonCost						= 1000;
+$Pref::Server::City::demerits::pardonCostMultiplier				= 5;
 $Pref::Server::City::demerits::reducePerTick				= 25;
 
 $Pref::Server::City::defaultTools										= "hammerItem wrenchItem printGun";
@@ -109,7 +109,7 @@ $City::EducationCap																	= 6;
 $City::EducationReincarnateLevel										= 8;
 
 // Mayor
-$City::MayorJobID																		= 14;
+$City::MayorJobID																		= "GovMayor";
 
 // ATM Hacking
 $Pref::Server::City::hack::education 								= 3;

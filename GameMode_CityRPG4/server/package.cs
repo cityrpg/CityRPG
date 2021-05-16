@@ -54,6 +54,26 @@ package CityRPG_MainPackage
 		parent::servercmdPlantBrick(%client);
 	}
 
+	function serverCmdCancelBrick(%client)
+	{
+		if(!isObject(%client.player.tempBrick) && !%client.ndModeIndex)
+		{
+			if(%client.cityMenuID == %client)
+			{
+				%client.cityMenuClose();
+				return;
+			}
+			else
+			{
+				// No temp brick or other action, activate player menu.
+				CityMenu_Player(%client);
+				return;
+			}
+		}
+		
+		parent::servercmdCancelBrick(%client);
+	}
+
 	// New Duplicator compatibility
 	function ND_Selection::plantBrick(%this, %i, %position, %angleID, %brickGroup, %client, %bl_id)
 	{
@@ -139,7 +159,7 @@ package CityRPG_MainPackage
 			{
 				%ownerBG = getBrickGroupFromObject(%brick);
 
-				if(CityRPGData.getData(%client.bl_id).valueJobID == $City::AdminJobID)
+				if(CityRPGData.getData(%client.bl_id).valueJobID $= $City::AdminJobID)
 					parent::setItem(%brick, %datablock, %client);
 			}
 			else
@@ -267,7 +287,7 @@ package CityRPG_MainPackage
 			messageClient(%client, '', "<bitmap:" @ $City::DataPath @ "ui/time.png>\c6 Welcome back! Today is " @ CalendarSO.getDateStr());
 		}
 
-		if(%data.valueJobID == $City::AdminJobID)
+		if(%data.valueJobID $= $City::AdminJobID)
 		{
 			// Admin mode is enabled -- reiterate the parameters.
 			messageClient(%client, '', "\c6You are currently in \c4Admin Mode\c6.");
@@ -318,11 +338,6 @@ package CityRPG_MainPackage
 					%tools = (%tools !$= "" ? %tools SPC %tool : %tool);
 				}
 			}
-
-			if(%tools !$= "")
-				CityRPGData.getData(%client.bl_id).valueTools = %tools;
-			else
-				error("No Tool String!");
 		}
 
 		parent::onClientLeaveGame(%client);
@@ -335,8 +350,7 @@ package CityRPG_MainPackage
 		%client.joinTimeMin = getRealTime()/60000;
 		%client.cityLog("Joined game");
 
-		// multi-client check
-		// This takes effect and v20 and servers with the multi-client check disabled.
+		// This takes effect in v20 and servers with the multi-client check disabled.
 		for(%a = 0; %a < ClientGroup.getCount(); %a++)
 		{
 			%subClient = ClientGroup.getObject(%a);
@@ -472,7 +486,6 @@ package CityRPG_MainPackage
 			}
 		}
 
-		CityRPGData.getData(%client.bl_id).valueTools = "";
 		CityRPGData.getData(%client.bl_id).valueResources = "0 0";
 		parent::onDeath(%client, %player, %killer, %damageType, %unknownA);
 	}
@@ -496,6 +509,18 @@ package CityRPG_MainPackage
 		}
 
 		parent::bottomPrint(%this, %text, %time, %showBar);
+	}
+
+	// Overwrite the chatMessage event.
+	// We want lot owners to be able to send messages, but we don't want any trickery. (i.e. fake paycheck notices)
+	// To solve this, each chat message will specify the lot that it comes from.
+	function GameConnection::ChatMessage(%client, %message)
+	{
+		%brick = %client.lastEventObject;	
+
+		// Event brick used -> Lot trigger -> Lot brick -> Lot name
+		%lotName = %brick.getCityLotTrigger().parent.getCityLotName();
+		messageClient(%client, '', addTaggedString("\c3" @ %lotName @ "\c6 says: \c0" @ %message), %client.getPlayerName(), %client.score);
 	}
 
 	function bottomPrint(%client, %message, %time, %lines)
@@ -693,7 +718,7 @@ package CityRPG_MainPackage
 
 		if(%hitObj.getClassName() $= "fxDTSBrick" && %hitObj.getDataBlock().CityRPGBrickType == $CityBrick_Lot)
 		{
-			if(CityRPGData.getData(%player.client.bl_id).valueJobID == $City::AdminJobID)
+			if(CityRPGData.getData(%player.client.bl_id).valueJobID $= $City::AdminJobID)
 				$CityLotKillOverride = 1;
 			else
 			{
@@ -743,10 +768,10 @@ package CityRPG_MainPackage
 					%spawn = City_FindSpawn("personalSpawn", %client.bl_id);
 				else
 				{
-					if(City_FindSpawn("jobSpawn", CityRPGData.getData(%client.bl_id).valueJobID) && CityRPGData.getData(%client.bl_id).valueJobID != 1)
+					if(City_FindSpawn("jobSpawn", CityRPGData.getData(%client.bl_id).valueJobID) && CityRPGData.getData(%client.bl_id).valueJobID !$= $City::CivilianJobID)
 						%spawn = City_FindSpawn("jobSpawn", CityRPGData.getData(%client.bl_id).valueJobID);
 					else
-						%spawn = City_FindSpawn("jobSpawn", 1);
+						%spawn = City_FindSpawn("jobSpawn", $City::CivilianJobID);
 				}
 			}
 		}
@@ -772,7 +797,14 @@ package CityRPG_MainPackage
 
 		// Prevents ticks from running post-mission end.
 		if(!$Server::Dedicated && CityRPGData.scheduleTick)
+		{
 			cancel(CityRPGData.scheduleTick);
+		}
+
+		if(isEventPending($City::Mayor::Schedule))
+		{
+			cancel($City::Mayor::Schedule);
+		}
 
 		if(CityRPGData.datacount > 0)
 		{

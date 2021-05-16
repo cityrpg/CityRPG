@@ -29,6 +29,7 @@ ADDON Projectile_Radio_Wave
 ADDON Sound_Synth4
 ADDON Sound_Beeps
 ADDON Sound_Phone
+ADDON Support_EventUtils
 ADDON Vehicle_Horse
 ADDON Vehicle_Jeep
 

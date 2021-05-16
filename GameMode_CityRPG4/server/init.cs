@@ -2,6 +2,15 @@
 // Initializes the game-mode.
 function City_Init()
 {
+	if(!isObject(City))
+	{
+		// New object reference
+		new scriptObject(City)
+		{
+
+		};
+	}
+
 	if(!isObject(JobSO))
 	{
 		new scriptObject(JobSO) { };
@@ -10,6 +19,7 @@ function City_Init()
 
 	if(!isObject(CityRPGData))
 	{
+		// Deprecated object reference
 		new scriptObject(CityRPGData)
 		{
 			class = Sassy;
@@ -28,7 +38,7 @@ function City_Init()
 		CityRPGData.addValue("hunger", "7");
 		CityRPGData.addValue("jailData", "0 0");
 		CityRPGData.addValue("jobID", "1");
-		CityRPGData.addValue("jobRevert", "1");
+		CityRPGData.addValue("jobRevert", "0");
 		CityRPGData.addValue("lotData", "0");
 		CityRPGData.addValue("money", "0");
 		CityRPGData.addValue("name", "noName");
@@ -36,24 +46,18 @@ function City_Init()
 		CityRPGData.addValue("reincarnated", "0");
 		CityRPGData.addValue("resources", "0 0");
 		CityRPGData.addValue("student", "0");
-		CityRPGData.addValue("tools", "");
-		CityRPGData.addValue("Relationship", "None");
-		CityRPGData.addValue("Tickets", "0");
 		CityRPGData.addValue("Rep", "0");
-		CityRPGData.addValue("BusPosition", "0");
-		CityRPGData.addValue("BusStocks", "0");
-		CityRPGData.addValue("BusID", "0");
 		CityRPGData.addValue("ElectionID", "0");
-		CityRPGData.addValue("BoughtLumber", "0");
-		CityRPGData.addValue("Layout", "<color:3C9EFF>");
+		CityRPGData.addValue("lotsVisited", "-1");
+		CityRPGData.addValue("spawnPoint", "");
 		
 		if(CityRPGData.loadedSaveFile)
 		{
 			for(%a = 1; %a <= CityRPGData.dataCount; %a++)
 			{
-				if(CityRPGData.data[%a].valueJobID > JobSO.getJobCount() || CityRPGData.data[%a].valueJobID < 0)
+				if(JobSO.job[CityRPGData.data[%a].valueJobID] $= "")
 				{
-					CityRPGData.data[%a].valueJobID = 1;
+					CityRPGData.data[%a].valueJobID = $City::CivilianJobID;
 				}
 			}
 		}
@@ -70,7 +74,7 @@ function City_Init()
 		{
 			if(CityRPGData.data[%a].valueJobID > JobSO.getJobCount() || CityRPGData.data[%a].valueJobID < 0)
 			{
-				CityRPGData.data[%a].valueJobID = 1;
+				CityRPGData.data[%a].valueJobID = $City::CivilianJobID;
 			}
 		}
 	}
@@ -107,6 +111,26 @@ function City_Init()
 function CityRPGHostClient::onBottomPrint(%this, %message)
 {
 	return;
+}
+
+function City::get(%this, %profileID, %key)
+{
+	return CityRPGData.getData(%profileID).value[%key];
+}
+
+function City::set(%this, %profileID, %key, %value)
+{
+	CityRPGData.getData(%profileID).value[%key] = %value;
+}
+
+function City::add(%this, %profileID, %key, %value)
+{
+	CityRPGData.getData(%profileID).value[%key] = CityRPGData.getData(%profileID).value[%key] + %value;
+}
+
+function City::subtract(%this, %profileID, %key, %value)
+{
+	CityRPGData.getData(%profileID).value[%key] = CityRPGData.getData(%profileID).value[%key] - %value;
 }
 
 // City_Init_Minigame()
@@ -227,8 +251,9 @@ function City_Init_Spawns_Tick(%bgi, %bi)
 function City_Init_AssembleEvents()
 {
 	// Basic Input
-	registerInputEvent("fxDTSBrick", "onEnterLot", "Self fxDTSBrick" TAB "Player player" TAB "Client gameConnection");
-	registerInputEvent("fxDTSBrick", "onLeaveLot", "Self fxDTSBrick" TAB "Player player" TAB "Client gameConnection");
+	registerInputEvent("fxDTSBrick", "onLotEntered", "Self fxDTSBrick" TAB "Player player" TAB "Client gameConnection");
+	registerInputEvent("fxDTSBrick", "onLotLeft", "Self fxDTSBrick" TAB "Player player" TAB "Client gameConnection");
+	registerInputEvent("fxDTSBrick", "onLotFirstEntered", "Self fxDTSBrick" TAB "Player player" TAB "Client gameConnection");
 	registerInputEvent("fxDTSBrick", "onTransferSuccess", "Self fxDTSBrick" TAB "Player Player" TAB "Client GameConnection");
 	registerInputEvent("fxDTSBrick", "onTransferDecline", "Self fxDTSBrick" TAB "Client GameConnection");
 	registerInputEvent("fxDTSBrick", "onJobTestPass", "Self fxDTSBrick" TAB "Player Player" TAB "Client GameConnection");
@@ -238,7 +263,6 @@ function City_Init_AssembleEvents()
 
 	// Basic Output
 	registerOutputEvent("fxDTSBrick", "requestFunds", "string 80 200" TAB "int 1 9000 1");
-	registerOutputEvent("GameConnection", "MessageBoxOK", "string 30 50" TAB "string 80 500");
 
 	for(%a = 1; $CityRPG::portion[%a] !$= ""; %a++)
 	{
