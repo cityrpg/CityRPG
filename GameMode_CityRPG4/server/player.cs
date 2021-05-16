@@ -109,7 +109,7 @@ function gameConnection::buyResources(%client)
 		CitySO.lumber += getWord(CityRPGData.getData(%client.bl_id).valueResources, 0);
 		CitySO.minerals += getWord(CityRPGData.getData(%client.bl_id).valueResources, 1);
 
-		CityRPGData.getData(%client.bl_id).valueResources = "0 0";
+		City.set(%client.bl_id, "resources", "0 0");
 
 		%client.SetInfo();
 	}
@@ -117,8 +117,8 @@ function gameConnection::buyResources(%client)
 
 function gameConnection::setInfo(%client)
 {
-	CityRPGData.getData(%client.bl_id).valueMoney = mFloor(CityRPGData.getData(%client.bl_id).valueMoney);
-	CityRPGData.getData(%client.bl_id).valueName = %client.name;
+	City.set(%client.bl_id, "money", mFloor(CityRPGData.getData(%client.bl_id).valueMoney));
+	City.set(%client.bl_id, "name", %client.name);
 
 	if(isObject(%client.player))
 	{
@@ -336,8 +336,8 @@ function gameConnection::doReincarnate(%client)
 {
 	CityRPGData.removeData(%client.bl_id);
 	CityRPGData.addData(%client.bl_id);
-	CityRPGData.getData(%client.bl_id).valueReincarnated = 1;
-	CityRPGData.getData(%client.bl_id).valueEducation = $City::EducationReincarnateLevel;
+	City.set(%client.bl_id, "reincarnated", 1);
+	City.set(%client.bl_id, "education", $City::EducationReincarnateLevel);
 
 	if(isObject(%client.player))
 	{
@@ -386,7 +386,7 @@ function gameConnection::sellFood(%client, %sellerID, %servingID, %foodName, %pr
 
 				if(CityRPGData.getData(%client.bl_id).valueHunger > 10)
 				{
-					CityRPGData.getData(%client.bl_id).valueHunger = 10;
+					City.set(%client.bl_id, "hunger", 10);
 				}
 
 				CityRPGData.getData(%client.bl_id).valueMoney -= %price;
@@ -547,7 +547,7 @@ function resetFree(%client)
 		CityRPGData.removeData(%client.bl_id);
 	CityRPGData.addData(%client.bl_id);
 
-	CityRPGData.getData(%client.bl_id).valueBank = $City::StartingCash;
+	City.set(%client.bl_id, "bank", $City::StartingCash);
 
 	%client.setCityJob($City::CivilianJobID, 1, 1);
 
@@ -581,7 +581,7 @@ function GameConnection::cityEnroll(%client)
 		{
 			%valueStudent = CityRPGData.getData(%client.bl_id).valueEducation + 1;
 			// Number of days to complete
-			CityRPGData.getData(%client.bl_id).valueStudent = %valueStudent;
+			City.set(%client.bl_id, "student", %valueStudent);
 			// Cost
 			CityRPGData.getData(%client.bl_id).valueMoney -= %price;
 

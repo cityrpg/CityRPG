@@ -430,7 +430,7 @@ function ClothesSO::giveItem(%so, %client, %item)
 				%newOutfit = (%newOutfit $= "" ? getWord(%so.str[%item], %a) : %newOutfit SPC getWord(%so.str[%item], %a));
 		}
 
-		CityRPGData.getData(%client.bl_id).valueOutfit = %newOutfit;
+		City.set(%client.bl_id, "outfit", %newOutfit);
 		%client.applyBodyParts();
 		%client.applyBodyColors();
 	}

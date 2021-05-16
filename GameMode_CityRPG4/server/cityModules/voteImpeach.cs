@@ -14,7 +14,7 @@ function CityMayor_VoteImpeach(%client)
 				return;
 			}
 
-			CityRPGData.getData(%client.bl_id).valueMoney = CityRPGData.getData(%client.bl_id).valueMoney - $Pref::Server::City::Mayor::ImpeachCost;
+			City.set(%client.bl_id, "money", CityRPGData.getData(%client.bl_id).valueMoney - $Pref::Server::City::Mayor::ImpeachCost);
 			$City::Mayor::Impeach++;
 			messageAll('', %client.name SPC "\c6has voted to remove the Mayor from office.");
 			messageAll('',"\c6Current vote count:\c0" SPC $City::Mayor::Impeach @ "\c6. Needed:\c0" SPC $City::Mayor::ImpeachRequirement);

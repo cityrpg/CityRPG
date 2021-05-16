@@ -252,7 +252,7 @@ package CityRPG_Commands
 			return;
 		}
 
-		CityRPGData.getData(%client.bl_id).valueJailData = "0" SPC getWord(CityRPGData.getData(%client.bl_id).valueJailData, 1);
+		City.set(%client.bl_id, "jaildata", "0" SPC getWord(CityRPGData.getData(%client.bl_id).valueJailData, 1));
 		messageClient(%client, '', "\c6You have erased your criminal record.");
 		%client.spawnPlayer();
 		%client.setInfo();
@@ -540,7 +540,7 @@ package CityRPG_Commands
 			return;
 		}
 
-		CityRPGData.getData(%target.bl_id).valueJailData = "0" SPC getWord(CityRPGData.getData(%target.bl_id).valueJailData, 1);
+		City.set(%target.bl_id, "jaildata", "0" SPC getWord(CityRPGData.getData(%target.bl_id).valueJailData, 1));
 		if(%target != %client)
 		{
 			messageClient(%client, '', "\c6You have ran\c3" SPC %target.name @ "\c6's criminal record through a paper shredder.");
@@ -632,7 +632,7 @@ package CityRPG_Commands
 		%cash.setVelocity(VectorScale(%client.player.getEyeVector(), 10));
 		MissionCleanup.add(%cash);
 		%cash.setShapeName("$" @ %cash.value);
-		CityRPGData.getData(%client.bl_id).valueMoney = CityRPGData.getData(%client.bl_id).valueMoney - %amt;
+		City.set(%client.bl_id, "money", CityRPGData.getData(%client.bl_id).valueMoney - %amt);
 		%client.setInfo();
 
 		$City::Cache::DroppedCash[%client.bl_id]++;

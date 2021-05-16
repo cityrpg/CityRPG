@@ -174,8 +174,8 @@ function City_AddDemerits(%blid, %demerits)
 
 	if(CityRPGData.getData(%blid).valueDemerits >= $Pref::Server::City::demerits::demoteLevel && JobSO.job[CityRPGData.getData(%blid).valueJobID].law == true)
 	{
-		CityRPGData.getData(%blid).valueJobID = $City::CivilianJobID;
-		CityRPGData.getData(%blid).valueJailData = 1 SPC 0;
+		City.set(%blid, "jobid", $City::CivilianJobID);
+		City.set(%blid, "jaildata", 1 SPC 0);
 
 		%client = findClientByBL_ID(%blid);
 
@@ -562,8 +562,8 @@ function City_TickLoop(%loop)
 			}
 		}
 
-		CityRPGData.getData(%client.bl_id).valueMoney = mFloor(CityRPGData.getData(%client.bl_id).valueMoney);
-		CityRPGData.getData(%client.bl_id).valueName = %client.name;
+		City.set(%client.bl_id, "money", mFloor(CityRPGData.getData(%client.bl_id).valueMoney));
+		City.set(%client.bl_id, "name", %client.name);
 
 		if(isObject(%client.player))
 		{

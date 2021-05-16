@@ -96,7 +96,7 @@ function serverCmdvoteElection(%client, %arg2)
 	}
 	
 	messageClient(%client, '', "\c6You have voted for\c3" SPC %arg1.name @ "\c6.");
-	CityRPGData.getData(%client.bl_id).valueElectionID = $City::Mayor::Mayor::ElectionID;
+	City.set(%client.bl_id, "electionid", $City::Mayor::Mayor::ElectionID);
 	%voteIncrease = getMayor($City::Mayor::Mayor::ElectionID, %arg1.name) + 1;
 	inputMayor($City::Mayor::Mayor::ElectionID, %arg1.name, %voteIncrease);
 }

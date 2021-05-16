@@ -32,9 +32,9 @@ package CityRPG_Cash
 				MissionCleanup.add(%cash);
 				%cash.setShapeName("$" @ %cash.value);
 				if(%cashcheck == 1)
-					CityRPGData.getData(%client.bl_id).valueMoney = CityRPGData.getData(%client.bl_id).valueMoney - 1000;
+					City.set(%client.bl_id, "money", CityRPGData.getData(%client.bl_id).valueMoney - 1000);
 				else
-					CityRPGData.getData(%client.bl_id).valueMoney = 0;
+					City.set(%client.bl_id, "money", 0);
 
 				%client.SetInfo();
 			}

@@ -316,7 +316,7 @@ package CityRPG_MainPackage
 			if(%earnings > 0)
 			{
 				messageClient(%client, '', "\c6 - You earned \c3$" @ %earnings @ "\c6 in sales while you were out.");
-				CityRPGData.getData(%client.bl_id).valueShopEarnings = 0;
+				City.set(%client.bl_id, "shopearnings", 0);
 			}
 		}
 	}
@@ -400,11 +400,11 @@ package CityRPG_MainPackage
 
 		if(%client.moneyOnSuicide > 0)
 		{
-			CityRPGData.getData(%client.bl_id).valueMoney = %client.moneyOnSuicide;
+			City.set(%client.bl_id, "money", %client.moneyOnSuicide);
 		}
 		if(%client.lumberOnSuicide > 0)
 		{
-			CityRPGData.getData(%client.bl_id).valueResources = %client.lumberOnSuicide;
+			City.set(%client.bl_id, "resources", %client.lumberOnSuicide);
 		}
 
 		%client.hasBeenDead = 0;
@@ -473,7 +473,7 @@ package CityRPG_MainPackage
 				%killer.cityLog("Claim bounty on " @ %client.bl_id @ " for $" @ CityRPGData.getData(%client.bl_id).valueBounty);
 				messageClient(%killer, '', "\c6Hit was completed successfully. The money has been wired to your bank account.");
 				CityRPGData.getData(%killer.bl_id).valueBank += CityRPGData.getData(%client.bl_id).valueBounty;
-				CityRPGData.getData(%client.bl_id).valueBounty = 0;
+				City.set(%client.bl_id, "bounty", 0);
 			}
 			else if(City_illegalAttackTest(%killer, %client))
 			{
@@ -491,7 +491,7 @@ package CityRPG_MainPackage
 			}
 		}
 
-		CityRPGData.getData(%client.bl_id).valueResources = "0 0";
+		City.set(%client.bl_id, "resources", "0 0");
 		parent::onDeath(%client, %player, %killer, %damageType, %unknownA);
 	}
 
