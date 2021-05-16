@@ -241,20 +241,19 @@ function buildLicenseStr(%words, %conjunctionStr)
 function GameConnection::setCityJob(%client, %jobID, %force, %silent)
 {
 	%jobObject = JobSO.job[%jobID];
-	%data = CityRPGData.getData(%client.bl_id);
-	%oldJob = %data.valueJobID;
+	%oldJob = City.get(%client.bl_id, "jobid");
 
 	if(!%force)
 	{
 		%jobEligible = 1;
 
-		if(%jobID $= %data.valueJobID)
+		if(%jobID $= City.get(%client.bl_id, "jobid"))
 		{
 			messageClient(%client, '', "\c6- You are already" SPC City_DetectVowel(%jobObject.name) SPC "\c3" @ %jobObject.name @ "\c6!");
 			%jobEligible = 0;
 		}
 
-		if(%jobObject.law && getWord(%data.valueJailData, 0) == 1)
+		if(%jobObject.law && getWord(City.get(%client.bl_id, "jaildata"), 0) == 1)
 		{
 			messageClient(%client, '', "\c6- You do not have a clean criminal record to become" SPC City_DetectVowel(%jobObject.name) SPC "\c3" @ %jobObject.name @ "\c6.");
 			%jobEligible = 0;
@@ -266,13 +265,13 @@ function GameConnection::setCityJob(%client, %jobID, %force, %silent)
 			%jobEligible = 0;
 		}
 
-		if(%data.valueMoney < %jobObject.invest)
+		if(City.get(%client.bl_id, "money") < %jobObject.invest)
 		{
 			messageClient(%client, '', "\c6- It costs \c3$" @ %jobObject.invest SPC "\c6to become" SPC City_DetectVowel(%jobObject.name) SPC %jobObject.name @ "\c6.");
 			%jobEligible = 0;
 		}
 
-		if(%data.valueEducation < %jobObject.education)
+		if(City.get(%client.bl_id, "education") < %jobObject.education)
 		{
 			messageClient(%client, '', "\c6- You need to reach an education level of \c3" @ %jobObject.education @ "\c6 to become" SPC City_DetectVowel(%jobObject.name) SPC %jobObject.name @ "\c6.");
 			%jobEligible = 0;
@@ -309,7 +308,7 @@ function GameConnection::setCityJob(%client, %jobID, %force, %silent)
 		messageClient(%client, '', "\c6Your job has changed to" SPC City_DetectVowel(%jobObject.name) SPC %jobObject.name @ "\c6.");
 	}
 
-	%data.valueJobID = %jobObject.id;
+	City.set(%client.bl_id, "jobid", %jobObject.id);
 	serverCmdunUseTool(%client);
 	%client.player.giveDefaultEquipment();
 	%client.applyForcedBodyColors();

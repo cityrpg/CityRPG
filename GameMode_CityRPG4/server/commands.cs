@@ -575,7 +575,7 @@ package CityRPG_Commands
 
 		if(%do $= "accept")
 		{
-			if((City.get(%client.bl_id).valueMoney + CityRPGData.getData(%client.bl_id, "bank")) >= 100000)
+			if((City.get(%client.bl_id).valueMoney + City.get(%client.bl_id, "bank")) >= 100000)
 			{
 				%client.doReincarnate();
 			}
@@ -658,8 +658,6 @@ package CityRPG_Commands
 		else
 			%target = %client;
 
-		%data = CityRPGData.getData(%target.bl_id);
-
 		if(isObject(%target))
 		{
 			%job = %target.getJobSo();
@@ -677,13 +675,13 @@ package CityRPG_Commands
 			%string = %string @ "\n" @ "Job:" SPC %job.name;
 
 			// Net worth
-			%string = %string @ "\n" @ "Net worth:" SPC "\c3$" @ (%data.valueMoney + %data.valueBank);
+			%string = %string @ "\n" @ "Net worth:" SPC "\c3$" @ (City.get(%target.bl_id, "money") + City.get(%target.bl_id, "bank"));
 
 			// Crim record
-			%string = %string @ "\n" @ "Criminal record:" SPC "\c3" @ (getWord(%data.valueJailData, 0) ? "Yes" : "No");
+			%string = %string @ "\n" @ "Criminal record:" SPC "\c3" @ (getWord(City.get(%target.bl_id, "jaildata"), 0) ? "Yes" : "No");
 
 			// Education
-			%level = %data.valueEducation;
+			%level = City.get(%target.bl_id, "education");
 			if($CityRPG::EducationStr[%level] !$= "")
 			{
 				%eduString = $CityRPG::EducationStr[%level];
@@ -695,8 +693,8 @@ package CityRPG_Commands
 			%string = %string @ "\n" @ "Education:" SPC "\c3" @ %eduString;
 			
 			// Lots visited
-			%lotsVisited = getWordCount(%data.valueLotsVisited);
-			%string = %string @ "\nLots visited: " @ (%data.valueLotsVisited == -1? 0 : %lotsVisited);
+			%lotsVisited = getWordCount(City.get(%target.bl_id, "lotsvisited"));
+			%string = %string @ "\nLots visited: " @ (City.get(%target.bl_id, "lotsvisited") == -1? 0 : %lotsVisited);
 
 
 			commandToClient(%client, 'MessageBoxOK', "Stats for " @ %target.name, %string);

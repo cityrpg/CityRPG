@@ -172,7 +172,7 @@ function City_AddDemerits(%blid, %demerits)
 
 	City.add(%blid, "demerits", %demerits);
 
-	if(City.get(%blid).valueDemerits >= $Pref::Server::City::demerits::demoteLevel && JobSO.job[CityRPGData.getData(%blid, "jobid")].law == true)
+	if(City.get(%blid).valueDemerits >= $Pref::Server::City::demerits::demoteLevel && JobSO.job[City.get(%blid, "jobid")].law == true)
 	{
 		City.set(%blid, "jobid", $City::CivilianJobID);
 		City.set(%blid, "jaildata", 1 SPC 0);
@@ -392,9 +392,7 @@ function City_Tick(%brick)
 // Hunger string
 function GameConnection::doCityHungerStatus(%client)
 {
-	%data = CityRPGData.getData(%client.bl_id);
-
-	switch(%data.valueHunger) {
+	switch(City.get(%client.bl_id, "hunger")) {
 		case 1: %msg = "\c0You're extremely malnourished! You need to eat something immediately.";
 		case 2: %msg = "\c0You're starving!";
 		case 3: %msg = "You could really use something to eat.";
@@ -409,12 +407,12 @@ function GameConnection::doCityHungerStatus(%client)
 
 	messageClient(%client, '', "\c6 - " @ %msg);
 
-	if(%data.valueHunger < 5)
+	if(City.get(%client.bl_id, "hunger") < 5)
 	{
 		%client.centerPrint("\c6" @ %msg, 3);
 	}
 
-	if(%data.valueHunger == 3 || %data.valueHunger == 2)
+	if(City.get(%client.bl_id, "hunger") == 3 || City.get(%client.bl_id, "hunger") == 2)
 	{
 		messageClient(%client, '', "\c6 - \c0You will not be able to collect your paycheck if you are starving.");
 	}
@@ -428,9 +426,8 @@ function GameConnection::doCityHungerEffects(%client)
 	}
 
 	%rand = getRandom(1,6);
-	%data = CityRPGData.getData(%client.bl_id);
 
-	if(isObject(%client.player) && %rand != 1 && %data.valueHunger < 3) {
+	if(isObject(%client.player) && %rand != 1 && City.get(%client.bl_id, "hunger") < 3) {
 		messageClient(%client, '', "\c6 - Hunger cramps seize hold of your body...");
 		%player = %client.player;
 
@@ -454,22 +451,20 @@ function City_TickLoop(%loop)
 
 	if(isObject(%client))
 	{
-		%so = CityRPGData.getData(%client.bl_id);
-
-		if(getWord(%so.valueJailData, 1))
+		if(getWord(City.get(%client.bl_id, "jaildata"), 1))
 		{
-			if(%ticks = getWord(%so.valueJailData, 1) > 1)
+			if(%ticks = getWord(City.get(%client.bl_id, "jaildata"), 1) > 1)
 			{
-				%daysLeft = (getWord(%so.valueJailData, 1) - 1);
+				%daysLeft = (getWord(City.get(%client.bl_id, "jaildata"), 1) - 1);
 					if(%daysLeft > 1)
 					%daySuffix = "s";
 
 				messageClient(%client, '', '\c6 - You have \c3%1\c6 day%2 left in Prison.', %daysLeft, %daySuffix);
 			}
-		if(%so.valueHunger > 3)
-			%so.valueHunger--;
-		else
-			%so.valueHunger = 3;
+			if(City.get(%client.bl_id, "hunger") > 3)
+				City.subtract(%client.bl_id, "hunger", 1);
+			else
+				City.set(%client.bl_id, "hunger", 3);
 		}
 		else
 		{
@@ -480,10 +475,10 @@ function City_TickLoop(%loop)
 					// No hunger effects for admin jobs
 					if(!%client.isCityAdmin())
 					{
-						%so.valueHunger--;
+						City.subtract(%client.bl_id, "hunger", 1);
 
-						if(%so.valueHunger == 0)
-							%so.valueHunger = 1;
+						if(City.get(%client.bl_id, "hunger") == 0)
+							City.set(%client.bl_id, "hunger", 3);
 					}
 
 					if(isObject(%client.player))
@@ -492,27 +487,27 @@ function City_TickLoop(%loop)
 
 				%client.doCityHungerStatus();
 
-				if(%so.valueHunger < 3) {
+				if(City.get(%client.bl_id, "hunger") < 3) {
 					%client.schedule(getRandom(15000,120000), doCityHungerEffects);
 				}
 			}
 
-		if(%so.valueDemerits > 0 && isObject(%client.player))
+		if(City.get(%client.bl_id, "demerits") > 0 && isObject(%client.player))
 		{
-			if(%so.valueDemerits >= $Pref::Server::City::demerits::reducePerTick)
-				 %so.valueDemerits -= $Pref::Server::City::demerits::reducePerTick;
+			if(City.get(%client.bl_id, "demerits") >= $Pref::Server::City::demerits::reducePerTick)
+				City.subtract(%client.bl_id, "demerits", $Pref::Server::City::demerits::reducePerTick);
 			else
-				%so.valueDemerits = 0;
+				City.set(%client.bl_id, "demerits", 3);
 
 			if(calendarSO.getCurrentDay() == 187)
-				messageClient(%client, '', '\c6 - You have had your demerits reduced to \c3%1\c6 due to <a:https://www.youtube.com/watch?v=iq8gfaFqFpI>Statue of Limitations</a>\c6.', %so.valueDemerits);
+				messageClient(%client, '', '\c6 - You have had your demerits reduced to \c3%1\c6 due to <a:https://www.youtube.com/watch?v=iq8gfaFqFpI>Statue of Limitations</a>\c6.', City.get(%client.bl_id, "demerits"));
 			else
-				messageClient(%client, '', '\c6 - You have had your demerits reduced to \c3%1\c6 due to <a:en.wikipedia.org/wiki/Statute_of_limitations>Statute of Limitations</a>\c6.', %so.valueDemerits);
+				messageClient(%client, '', '\c6 - You have had your demerits reduced to \c3%1\c6 due to <a:en.wikipedia.org/wiki/Statute_of_limitations>Statute of Limitations</a>\c6.', City.get(%client.bl_id, "demerits"));
 
 			%client.setInfo();
 		}
 
-		if(!%so.valueStudent)
+		if(!City.get(%client.bl_id, "student"))
 		{
 			if(%client.getSalary() > 0)
 			{
@@ -543,22 +538,22 @@ function City_TickLoop(%loop)
 				else if(%sum > 0)
 				{
 					%client.cityLog("Tick pay: " @ %sum);
-					%so.valueBank += %sum;
+					City.add(%client.bl_id, "bank", %sum);
 					messageClient(%client, '', "\c6 - Your paycheck of \c3$" @ %sum @ "\c6 has been deposited into your bank account.");
 				}
 			}
 		}
 		else
 		{
-			%so.valueStudent--;
-			if(!%so.valueStudent)
+			City.subtract(%client.bl_id, "student", 1);
+			if(!City.get(%client.bl_id, "student"))
 			{
-				%so.valueEducation++;
-				messageClient(%client, '', "\c6 - \c2You graduated\c6, receiving a level \c3" @ %so.valueEducation @ "\c6 education!");
+				City.add(%client.bl_id, "education", 1);
+				messageClient(%client, '', "\c6 - \c2You graduated\c6, receiving a level \c3" @ City.get(%client.bl_id, "education") @ "\c6 education!");
 				%client.cityLog("Tick edu +1");
 			}
 			else
-				messageClient(%client, '', "\c6 - You will complete your education in \c3" @ %so.valueStudent @ "\c6 days.");
+				messageClient(%client, '', "\c6 - You will complete your education in \c3" @ City.get(%client.bl_id, "student") @ "\c6 days.");
 			}
 		}
 

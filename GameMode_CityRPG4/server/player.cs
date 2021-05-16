@@ -20,24 +20,21 @@ function gameConnection::arrest(%client, %cop)
 
 	%ticks = mCeil(%client.getWantedLevel()/2);
 
-	%copSO = CityRPGData.getData(%cop.bl_id);
-	%robSO = CityRPGData.getData(%client.bl_id);
-
-	if(!getWord(%robSO.valueJailData, 1))
+	if(!getWord(City.get(%client.bl_id, "jaildata"), 1))
 	{
 		if(%client.player.currTool)
 			serverCmddropTool(%client, %client.player.currTool);
 	}
 
-	%ticks += getWord(%robSO.valueJailData, 1);
+	%ticks += getWord(City.get(%client.bl_id, "jaildata"), 1);
 	%reward = mFloor($CityRPG::prices::jailingBonus * %client.getWantedLevel());
 
 	if(%reward > 600)
 		%reward = 600;
 
-	%copSO.valueMoney += %reward;
+	City.add(%cop.bl_id, "money", %reward);
 
-	if(%robSO.valuetotalhunger < 0)
+	if(City.get(%client.bl_id, "totalhunger") < 0)
 	{
 		commandToClient(%client, 'messageBoxOK', "You've been Jailed by" SPC %cop.name @ "!", 'You have been jailed for %1 tick%2.\n\nYou may either wait out your jail time in game and possibly earn money by laboring, or you may leave the server and return when your time is up.\nThe choice is yours.', %ticks, %ticks == 1 ? "" : "s");
 		commandToClient(%cop, 'centerPrint', "\c6You have jailed \c3" @ %client.name SPC "\c6for \c3" @ %ticks SPC"\c6tick" @ ((%ticks == 1) ? "" : "s") @ ". You were rewarded \c3$" @ %reward @ "\c6.", 5);
@@ -46,26 +43,27 @@ function gameConnection::arrest(%client, %cop)
 		commandToClient(%client, 'messageBoxOK', "Jailed by" SPC %cop.name @ "!", 'You have been jailed for %1 tick%2.\nYou may either wait out your jail time in game and possibly earn money by laboring, or you may leave the server and return when your time is up.\nThe choice is yours.', %ticks, %ticks == 1 ? "" : "s");
 
 	commandToClient(%cop, 'centerPrint', "\c6You have jailed \c3" @ %client.name SPC "\c6for \c3" @ %ticks SPC"\c6tick" @ ((%ticks == 1) ? "" : "s") @ ". You were rewarded \c3$" @ %reward @ "\c6.", 5);
-	%robSO.valueJailData = 1 SPC %ticks;
-	%robSO.valueDemerits = 0;
+	City.set(%client.bl_id, "jaildata", 1 SPC %ticks);
+	City.set(%client.bl_id, "demerits", 0);
+
 	%client.SetInfo();
 	%cop.SetInfo();
 	if(%client.getJobSO().law)
 	{
 		messageClient(%client, '', "\c6You have been demoted to" SPC City_DetectVowel(JobSO.job[1].name) SPC "\c3" @ JobSO.job[1].name SPC "\c6due to your jailing.");
-		%robSO.valueJobID = $City::CivilianJobID;
+		City.set(%client.bl_id, "jobid", $City::CivilianJobID);
 	}
 
-	if(%robSO.valueBounty > 0)
+	if(City.get(%client.bl_id, "bounty") > 0)
 	{
-		%cop.cityLog("Arrest player " @ %client.bl_id @ " with bounty: " @ %robSO.valueBounty);
+		%cop.cityLog("Arrest player " @ %client.bl_id @ " with bounty: " @ City.get(%client.bl_id, "bounty"));
 		messageClient(%cop, '', "\c6Wanted man was apprehended successfully. His bounty money has been wired to your bank account.");
-		%copSO.valueBank += %robSO.valueBounty;
-		%robSO.valueBounty = 0;
+		City.add(%cop.bl_id, "bank", City.get(%client.bl_id, "bounty"));
+		City.set(%client.bl_id, "bounty", 0);
 	}
 
-	if(%robSO.valueHunger < 3)
-		%robSO.valueHunger = 3;
+	if(City.get(%client.bl_id, "hunger") < 3)
+		City.set(%client.bl_id, "hunger", 3);
 
 	if(isObject(%client.player.tempBrick))
 		%client.player.tempBrick.delete();
@@ -87,7 +85,7 @@ function gameConnection::arrest(%client, %cop)
 
 function gameConnection::buyResources(%client)
 {
-	%totalResources = getWord(City.get(%client.bl_id).valueResources, 0) + getWord(CityRPGData.getData(%client.bl_id, "resources"), 1);
+	%totalResources = getWord(City.get(%client.bl_id).valueResources, 0) + getWord(City.get(%client.bl_id, "resources"), 1);
 	if(mFloor(%totalResources * $CityRPG::prices::resourcePrice) > 0)
 	{
 		%payout = mFloor(%totalResources * $CityRPG::prices::resourcePrice);
@@ -177,7 +175,7 @@ function gameConnection::setGameBottomPrint(%client)
 
 function gameConnection::applyForcedBodyColors(%client)
 {
-	if(isObject(CityRPGData.getData(%client.bl_id)))
+	if(City.keyExists(%client.bl_id))
 	{
 		if(getWord(City.get(%client.bl_id, "jaildata"), 1) > 0)
 			%outfit = "none none none none jumpsuit jumpsuit skin jumpsuit jumpsuit";
@@ -213,7 +211,7 @@ function gameConnection::applyForcedBodyColors(%client)
 
 function gameConnection::applyForcedBodyParts(%client)
 {
-	if(isObject(CityRPGData.getData(%client.bl_id)))
+	if(City.keyExists(%client.bl_id))
 	{
 		if(getWord(City.get(%client.bl_id, "jaildata"), 1) > 0)
 			%outfit = "none none none none jumpsuit jumpsuit skin jumpsuit jumpsuit";
@@ -301,11 +299,9 @@ function gameConnection::getSalary(%client)
 
 function gameConnection::getWantedLevel(%client)
 {
-	%data = CityRPGData.getData(%client.bl_id);
-
-	if(%data.valueDemerits >= $Pref::Server::City::demerits::wantedLevel)
+	if(City.get(%client.bl_id, "demerits") >= $Pref::Server::City::demerits::wantedLevel)
 	{
-		%div = %data.valueDemerits / $Pref::Server::City::demerits::wantedLevel;
+		%div = City.get(%client.bl_id, "demerits") / $Pref::Server::City::demerits::wantedLevel;
 
 	if(%div <= 3)
 		return 1;
@@ -543,7 +539,7 @@ function player::giveDefaultEquipment(%this)
 function resetFree(%client)
 {
 	%client.cityLog("***Account auto-reset***");
-	if(CityRPGData.getData(%client.bl_id))
+	if(City.keyExists(%client.bl_id))
 		CityRPGData.removeData(%client.bl_id);
 	CityRPGData.addData(%client.bl_id);
 

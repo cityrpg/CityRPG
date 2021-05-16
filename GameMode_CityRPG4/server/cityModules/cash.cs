@@ -6,7 +6,7 @@ package CityRPG_Cash
 	// Drop Money
 	function gameConnection::onDeath(%client, %killerPlayer, %killer, %damageType, %unknownA)
 	{
-		if(!getWord(City.get(%client.bl_id).valueJailData, 1) && CityRPGData.getData(%client.bl_id, "money") && !%client.moneyOnSuicide)
+		if(!getWord(City.get(%client.bl_id).valueJailData, 1) && City.get(%client.bl_id, "money") && !%client.moneyOnSuicide)
 		{
 			if($Pref::Server::City::misc::cashdrop == 1)
 			{

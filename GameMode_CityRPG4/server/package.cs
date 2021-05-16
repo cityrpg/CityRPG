@@ -268,9 +268,7 @@ package CityRPG_MainPackage
 
 		//applyForcedBodyParts();
 
-		%data = CityRPGData.getData(%client.bl_id);
-
-		if(%data.valueJobID $= "")
+		if(City.get(%client.bl_id, "jobid") $= "")
 		{
 			// Reset if there is no job data.
 			resetFree(%client);
@@ -292,7 +290,7 @@ package CityRPG_MainPackage
 			messageClient(%client, '', "<bitmap:" @ $City::DataPath @ "ui/time.png>\c6 Welcome back! Today is " @ CalendarSO.getDateStr());
 		}
 
-		if(%data.valueJobID $= $City::AdminJobID)
+		if(City.get(%client.bl_id, "jobid") $= $City::AdminJobID)
 		{
 			// Admin mode is enabled -- reiterate the parameters.
 			messageClient(%client, '', "\c6You are currently in \c4Admin Mode\c6.");
@@ -395,7 +393,7 @@ package CityRPG_MainPackage
 
 		parent::spawnPlayer(%client);
 
-		if(!CityRPGData.getData(%client.bl_id))
+		if(!City.keyExists(%client.bl_id))
 			return;
 
 		if(%client.moneyOnSuicide > 0)
@@ -498,11 +496,11 @@ package CityRPG_MainPackage
 	function gameConnection::setScore(%client, %score)
 	{
 		if($Score::Type $= "Money")
-			%score = City.get(%client.bl_id).valueMoney + CityRPGData.getData(%client.bl_id, "bank");
+			%score = City.get(%client.bl_id).valueMoney + City.get(%client.bl_id, "bank");
 		else if($Score::Type $= "Edu")
 			%score = City.get(%client.bl_id, "education");
 		else
-			%score = City.get(%client.bl_id).valueMoney + CityRPGData.getData(%client.bl_id, "bank");
+			%score = City.get(%client.bl_id).valueMoney + City.get(%client.bl_id, "bank");
 		parent::setScore(%client, %score);
 	}
 
@@ -565,8 +563,6 @@ package CityRPG_MainPackage
 			{
 				%atkr = %obj.client;
 				%vctm = %this.client;
-				%atkrSO = CityRPGData.getData(%atkr.bl_id);
-				%vctmSO = CityRPGData.getData(%vctm.bl_id);
 
 				if(!getWord(%atkr.valueJailData, 1))
 				{
@@ -773,7 +769,7 @@ package CityRPG_MainPackage
 					%spawn = City_FindSpawn("personalSpawn", %client.bl_id);
 				else
 				{
-					if(City_FindSpawn("jobSpawn", City.get(%client.bl_id).valueJobID) && CityRPGData.getData(%client.bl_id, "jobid") !$= $City::CivilianJobID)
+					if(City_FindSpawn("jobSpawn", City.get(%client.bl_id).valueJobID) && City.get(%client.bl_id, "jobid") !$= $City::CivilianJobID)
 						%spawn = City_FindSpawn("jobSpawn", City.get(%client.bl_id, "jobid"));
 					else
 						%spawn = City_FindSpawn("jobSpawn", $City::CivilianJobID);
