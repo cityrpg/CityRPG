@@ -376,7 +376,7 @@ package CityRPG_Commands
 		CityRPGData.addData(%client.bl_id);
 
 		City.set(%client.bl_id, "bank", 100);
-		%client.setCityJob($City::CivilianJobID, 1);
+		%client.setCityJob($City::CivilianJobID, 1, 1);
 
 		if(isObject(%client.player))
 		{
