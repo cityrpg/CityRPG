@@ -4,7 +4,7 @@
 
 // Client.cityMenuOpen(names, functions, exitMsg, autoClose, canOverride)
 // Modular function hook for displaying menus in-game.
-// Currently utilizes chat just like classic CityRPG, however this is subject to change.
+// Utilizes a combination of Conan's center-print menus for selections, and chat inputs for text.
 function GameConnection::cityMenuOpen(%client, %menu, %functions, %menuID, %exitMsg, %autoClose, %canOverride, %title)
 {
 	if(%client.cityMenuOpen && !%client.cityMenuCanOverride)
