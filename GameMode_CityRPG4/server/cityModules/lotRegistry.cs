@@ -265,6 +265,37 @@ function fxDTSBrick::getCityLotID(%brick)
 	return %lotID;
 }
 
+function fxDTSBrick::destroyCityLot(%brick)
+{
+	%lotID = %brick.getCityLotID();
+
+	%ownerID = %brick.getCityLotOwnerID();
+
+	// Always override on remove
+	%brick.cityLotOverride = 1;
+	$City::RealEstate::TotalLots--;
+
+	if(%ownerID != -1)
+	{
+		// Now, we have to remove this lot from the owner's cache of owned lots.
+		%brick.cityLotCacheRemove();
+	}
+	else
+	{
+		$City::RealEstate::UnclaimedLots--;
+	}
+
+	if(%brick.getCityLotPreownedPrice() != -1)
+	{
+		$City::RealEstate::LotCountSale--;
+	}
+
+	// This lot will exist in the memory, but it will no-longer have a brick associated with it.
+	// Therefore, we need to remove the brick from the cache.
+	// If the lot is re-loaded later, it will "log in" on init.
+	CityLotRegistry.makeOffline(%lotID);
+}
+
 // findLotBrickByID(Lot ID)
 // Returns 0 if the brick does not exist.
 function findLotBrickByID(%value)
@@ -515,38 +546,12 @@ package CityRPG_LotRegistry
 
 	function fxDTSBrick::onRemove(%brick, %client)
 	{
-		%lotID = %brick.getCityLotID();
-
 		// Check that the brick actually exists, is planted, etc.
 		// Also verify that is has a lot ID. If it doesn't, the brick likely never fully initialized.
 		// This can happen in certain edge cases, such as while loading bricks that already exist (onRemove is called on the brick after it fails to plant)
-		if(%brick.isPlanted && %brick.getDataBlock().CityRPGBrickType == $CityBrick_Lot && %lotID != -1)
+		if(%brick.isPlanted && %brick.getDataBlock().CityRPGBrickType == $CityBrick_Lot && %brick.getCityLotID() != -1)
 		{
-			%ownerID = %brick.getCityLotOwnerID();
-
-			// Always override on remove
-			%brick.cityLotOverride = 1;
-			$City::RealEstate::TotalLots--;
-
-			if(%ownerID != -1)
-			{
-				// Now, we have to remove this lot from the owner's cache of owned lots.
-				%brick.cityLotCacheRemove();
-			}
-			else
-			{
-				$City::RealEstate::UnclaimedLots--;
-			}
-
-			if(%brick.getCityLotPreownedPrice() != -1)
-			{
-				$City::RealEstate::LotCountSale--;
-			}
-
-			// This lot will exist in the memory, but it will no-longer have a brick associated with it.
-			// Therefore, we need to remove the brick from the cache.
-			// If the lot is re-loaded later, it will "log in" on init.
-			CityLotRegistry.makeOffline(%lotID);
+			%brick.destroyCityLot();
 		}
 
 		Parent::onRemove(%brick);
