@@ -36,19 +36,19 @@ function GameConnection::cityMenuOpen(%client, %menu, %functions, %menuID, %exit
 		};
 		MissionCleanup.add(%menuObj);
 
-	if(%menuID $= "")
-	{
-		error("CityRPG 4 - Attempting to open a menu with no ID. Aborting.");
-		echo("Menu data: " @ %menu);
+		if(%menuID $= "")
+		{
+			error("CityRPG 4 - Attempting to open a menu with no ID. Aborting.");
+			echo("Menu data: " @ %menu);
 
-		return;
-	}
+			return;
+		}
 
-	for(%i = 0; %i < getFieldCount(%menu); %i++)
-	{
-		%menuObj.menuOption[%i] = getField(%menu, %i);
-		%menuObj.menuFunction[%i] = getField(%functions, %i);
-	}
+		for(%i = 0; %i < getFieldCount(%menu); %i++)
+		{
+			%menuObj.menuOption[%i] = getField(%menu, %i);
+			%menuObj.menuFunction[%i] = getField(%functions, %i);
+		}
 
 		%client.startCenterprintMenu(%menuObj);
 	}
