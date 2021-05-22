@@ -197,16 +197,12 @@ function City_AddDemerits(%blid, %demerits)
 	if(%client = findClientByBL_ID(%blid))
 	{
 		%client.setInfo();
+		%ticks = %client.getWantedLevel()
 
-		if(%client.getWantedLevel())
+		if(%ticks && %ticks > %maxStars)
 		{
-			%ticks = %client.getWantedLevel();
-
-			if(%ticks > %maxStars)
-			{
-				if(%maxStars == 3 || %maxStars == 6)
-					messageAll('', '\c6Criminal \c3%1\c6 has obtained a level \c3%2\c6 wanted level. Police vehicles have upgraded.', %client.name, %ticks);
-			}
+			if(%maxStars == 3 || %maxStars == 6)
+				messageAll('', '\c6Criminal \c3%1\c6 has obtained a level \c3%2\c6 wanted level. Police vehicles have upgraded.', %client.name, %ticks);
 		}
 	}
 }
