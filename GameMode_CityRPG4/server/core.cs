@@ -197,7 +197,7 @@ function City_AddDemerits(%blid, %demerits)
 	if(%client = findClientByBL_ID(%blid))
 	{
 		%client.setInfo();
-		%ticks = %client.getWantedLevel()
+		%ticks = %client.getWantedLevel();
 
 		if(%ticks && %ticks > %maxStars)
 		{
