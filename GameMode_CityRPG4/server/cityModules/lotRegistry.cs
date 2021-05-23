@@ -294,6 +294,8 @@ function fxDTSBrick::destroyCityLot(%brick)
 	// Therefore, we need to remove the brick from the cache.
 	// If the lot is re-loaded later, it will "log in" on init.
 	CityLotRegistry.makeOffline(%lotID);
+
+	%brick.lotInitialized = 0;
 }
 
 // findLotBrickByID(Lot ID)
