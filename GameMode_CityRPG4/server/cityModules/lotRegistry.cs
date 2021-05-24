@@ -80,6 +80,37 @@ function fxDTSBrick::getCityLotSaveName(%brick)
 	return %nameRaw;
 }
 
+// Brick::setCityLotSaveName()
+// Converts a set of parameters to the lot's name.
+// hostID: The BLID of the server host.
+// ownerID: The BLID of the lot's owner. "-1" or "none" both indicate a lot owned by the city.
+// lotID: The lot's unique ID number.
+// isLinked (bool): Whether the lot is a child of another lot.
+function fxDTSBrick::setCityLotSaveName(%brick, %hostID, %ownerID, %lotID, %isLinked)
+{
+	if(%hostID $= "")
+	{
+		%hostID = getNumKeyID();
+	}
+
+	if(%lotOwnerID $= "" || %lotOwnerID == -1)
+	{
+		%lotOwnerID = "none";
+	}
+
+	if(%lotID $= "")
+	{
+		return -1;
+	}
+
+	if(%isLinked $= "")
+	{
+		%isLinked = 0;
+	}
+
+	%brick.SetNTObjectNameOverride(%hostID @ "_" @ %ownerID @ "_" @ %lotID @ "_" @ %isLinked);
+}
+
 // Determines the state of the lot and directs the corresponding init process.
 function fxDTSBrick::initCityLot(%brick)
 {
@@ -162,8 +193,8 @@ function fxDTSBrick::initExistingCityLot(%brick)
 
 	%brick.cityLotOverride = 1;
 	// Note that for an existing lot, the owner ID is always derived from the lot registry, NOT the brick's saved name.
-	// This rules out any potential error in the brick's saved name.
-	%brick.SetNTObjectNameOverride(getNumKeyID() @ "_" @ %ownerID @ "_" @ %lotID);
+	// This rules out any potential error in the brick's saved name, i.e. outdated save.
+	%brick.setCityLotSaveName(getNumKeyID(), %ownerID, %lotID, %isLinked);
 
 	if(%ownerID != -1)
 	{
@@ -202,7 +233,7 @@ function fxDTSBrick::initNewCityLot(%brick)
 	}
 
 	%brick.cityLotOverride = 1;
-	%brick.SetNTObjectNameOverride(%publicID @ "_" @ "none" @ "_" @ %newID);
+	%brick.setCityLotSaveName(%publicID, -1, %newID, 0);
 
 	echo("City: Registered new lot, #" @ %newID);
 
@@ -388,7 +419,7 @@ function fxDTSBrick::setCityLotOwnerID(%brick, %value)
 	%lotID = getWord(%nameRaw, 2);
 
 	%brick.cityLotOverride = 1;
-	%brick.SetNTObjectNameOverride(%lotHost @ "_" @ (%value == -1?"none":%value) @ "_" @ %lotID);
+	%brick.setCityLotSaveName(%lotHost, -1, %lotID, %isLinked);
 
 	return %value;
 }
