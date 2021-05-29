@@ -419,7 +419,7 @@ function fxDTSBrick::setCityLotOwnerID(%brick, %value)
 	%lotID = getWord(%nameRaw, 2);
 
 	%brick.cityLotOverride = 1;
-	%brick.setCityLotSaveName(%lotHost, -1, %lotID, %isLinked);
+	%brick.setCityLotSaveName(%lotHost, %value, %lotID, %isLinked);
 
 	return %value;
 }
