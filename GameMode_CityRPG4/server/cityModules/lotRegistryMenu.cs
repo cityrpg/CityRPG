@@ -205,6 +205,7 @@ function CityLots_PurchaseLot(%client, %input, %lotBrick)
 	}
 }
 
+// ## Functions for lot owners ## //
 function CityMenu_LotOwnerManagement(%client)
 {
 	%lotBrick = %client.cityMenuID;
@@ -235,7 +236,6 @@ function CityMenu_LotOwnerManagement(%client)
 	%client.cityMenuOpen(%menu, %functions, %lotBrick, "\c3Lot menu closed.", 0, 1);
 }
 
-// ## Functions for lot owners ## //
 function CityMenu_LotSetNamePrompt(%client)
 {
 	%client.cityLog("Lot " @ %client.cityMenuID.getCityLotID() @ " rename prompt");
@@ -465,12 +465,14 @@ function CityMenu_LotAdmin(%client)
 	%menu = "Force rename."
 			TAB "Transfer lot to the city."
 			TAB "Transfer lot to a player."
+			TAB "Link lot."
 			TAB "Wrench lot."
 			TAB "Go back.";
 
 	%functions =	"CityMenu_LotAdmin_SetNamePrompt"
 						TAB "CityMenu_LotAdmin_TransferCity"
 						TAB "CityMenu_LotAdmin_TransferPlayerPrompt"
+						TAB "CityMenu_LotAdmin_LinkPrompt"
 						TAB "CityMenu_LotWrench"
 						TAB "CityMenu_Lot";
 
@@ -548,4 +550,94 @@ function CityMenu_LotAdmin_TransferPlayer(%client, %input)
 	%lotBrick.cityLotDisplayRefresh();
 
 	%client.cityMenuClose();
+}
+
+function CityMenu_LotAdmin_LinkPrompt(%client)
+{
+	%lotBrick =  %client.cityMenuID;
+	%client.cityLog("Lot MOD " @ %lotBrick.getCityLotID() @ " link prompt");
+
+	%client.cityMenuMessage("\c6This lot \c3" @ %lotBrick.getCityLotID() @ "\c6 will become the base lot.");
+	%client.cityMenuMessage("\c6Enter the lot ID you would like to link. This number can be found in the admin menu of the target lot, under \"Lot ID\".");
+	%client.cityMenuFunction = CityMenu_LotAdmin_LinkPromptConfirm;
+}
+
+function CityMenu_LotAdmin_LinkPromptConfirm(%client, %input)
+{
+	%brickLinkA = %client.cityMenuID;
+	%brickLinkB = findLotBrickByID(atof(%input));
+
+	if(%brickLinkB == 0)
+	{
+		%client.cityMenuMessage("\c0Unable to find the target specified.");
+		%client.cityMenuClose();
+		return;
+	}
+
+	if(%brickLinkA == %brickLinkB)
+	{
+		%client.cityMenuMessage("\c0You attempt to link a lot to itself, creating a singularity that vaporizes the entire city. Nice one.");
+		%client.cityMenuClose();
+		return;
+	}
+
+	if(%brickLinkA.getCityLotIsBase() && %brickLinkB.getCityLotIsBase())
+	{
+		%client.cityMenuMessage("\c0You attempt to link a base lot to another base lot, creating a singularity that vaporizes the entire city. Hail Lord Singuloth.");
+		%client.cityMenuClose();
+		return;
+	}
+
+	// Base-> Temp
+	// Temp -> Base
+	// TODO: Temp -> Temp? (Should funnel to base)
+	if(%brickLinkB.getCityLotIsBase())
+	{
+		// If the target is a base, reverse the order.
+		%brickLinkBase = %brickLinkB;
+		%brickLinkTarget = %brickLinkA;
+		%client.cityMenuMessage("\c6The lot you inputted is already a base brick. The lot you are currently on will become linked to this existing base.");
+	}
+	else
+	{
+		%brickLinkBase = %brickLinkA;
+		%brickLinkTarget = %brickLinkB;
+		%client.cityMenuMessage("\c6The lot you are currently on will become the \c3base brick\c6.");
+	}
+
+	if(%brickLinkBase.getCityLotOwnerID() != %brickLinkTarget.getCityLotOwnerID())
+	{
+		%client.cityMenuMessage("\c6These two lots have different owners. The target lot will be transferred to the owner of the base lot.");
+	}
+
+	%client.brickLinkBase = %brickLinkBase;
+	%client.brickLinkTarget = %brickLinkTarget;
+
+	// We will need to record the lot owners for additional validation.
+	%client.brickLinkBaseOwner = %brickLinkBase.getCityLotOwnerID();
+	%client.brickLinkTargetOwner = %brickLinkTarget.getCityLotOwnerID();
+
+	%client.cityMenuMessage("\c6You are \c0permanently linking\c6 the base lot \c3" @ %brickLinkBase.getCityLotID() @ "\c6 to the target lot \c3" @ %brickLinkTarget.getCityLotID() @ "\c6.");
+	%client.cityMenuMessage("\c6Any data on the target lot will be destroyed. The only way to undo this will be to destroy the base and linked bricks and start over.");
+
+	%client.cityMenuMessage("\c6Type \c31\c6 to confirm, or leave the lot to cancel.");
+	%client.cityMenuFunction = CityMenu_LotAdmin_Link;
+}
+
+function CityMenu_LotAdmin_Link(%client)
+{
+	%brickLinkBase = %client.brickLinkBase;
+	%brickLinkTarget = %client.brickLinkTarget;
+
+	// Ensure that ownership has not changed in between prompts to avoid really bad things.
+	if(%client.brickLinkBaseOwner != %brickLinkBase.getCityLotOwnerID() || %client.brickLinkTargetOwner != %brickLinkTarget.getCityLotOwnerID())
+	{
+		%client.cityLog("Lot link " @ %brickLinkBase.getCityLotID() SPC %brickLinkTarget.getCityLotID() @ " fell through", 0, 1);
+		%client.cityMenuMessage("\c0Link aborted due to lot ownership change. You may try linking the lots again.");
+		%client.cityMenuClose();
+		return;
+	}
+
+	%client.cityLog("Lot MOD link " @ %brickLinkBase.getCityLotID() @ " to " @ %brickLinkTarget.getCityLotID());
+	%brickLinkBase.linkCityLot(%brickLinkTarget);
 }
