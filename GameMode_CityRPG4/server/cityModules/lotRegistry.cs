@@ -93,9 +93,9 @@ function fxDTSBrick::setCityLotSaveName(%brick, %hostID, %ownerID, %lotID, %isLi
 		%hostID = getNumKeyID();
 	}
 
-	if(%lotOwnerID $= "" || %lotOwnerID == -1)
+	if(%ownerID $= "" || %ownerID == -1)
 	{
-		%lotOwnerID = "none";
+		%ownerID = "none";
 	}
 
 	if(%lotID $= "")
