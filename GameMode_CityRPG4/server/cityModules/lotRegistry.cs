@@ -96,7 +96,7 @@ function fxDTSBrick::getCityLotSaveName(%brick)
 }
 
 // Brick::setCityLotSaveName()
-// Converts a set of parameters to the lot's name.
+// Converts a set of parameters to the lot's name and calls setNTObjectName with the result.
 // hostID: The BLID of the server host.
 // ownerID: The BLID of the lot's owner. "-1" or "none" both indicate a lot owned by the city.
 // lotID: The lot's unique ID number.
@@ -236,6 +236,7 @@ function fxDTSBrick::initExistingCityLot(%brick)
 	%brick.cityLotOverride = 1;
 	// Note that for an existing lot, the owner ID is always derived from the lot registry, NOT the brick's saved name.
 	// This rules out any potential error in the brick's saved name, i.e. outdated save.
+	// The only notable exception to this is if we're loading a save from another server.
 	%brick.setCityLotSaveName(getNumKeyID(), %ownerID, %lotID, %isLinked);
 	%brickOwnerID = getBrickGroupFromObject(%brick).bl_id;
 	// Lot owner must correlate to brick owner OR unclaimed lot must correlate to host ID
