@@ -215,14 +215,17 @@ function buildLicenseStr(%words, %conjunctionStr)
 	{
 		if(%i == %wordCount)
 		{
+			// Last word
 			%licenseStr = %licenseStr @ getWord(%words, %i) @ "";
 		}
 		else if(%i == %wordCount-1)
 		{
-			%licenseStr = %licenseStr @ getWord(%words, %i) @ ", " @ %conjunctionStr @ " ";
+			// Second last word
+			%licenseStr = %licenseStr @ getWord(%words, %i) @ " " @ %conjunctionStr @ " ";
 		}
 		else
 		{
+			// All others
 			%licenseStr = %licenseStr @ getWord(%words, %i) @ ", ";
 		}
 	}
