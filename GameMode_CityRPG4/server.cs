@@ -264,6 +264,7 @@ unRegisterOutputEvent("Bot", "SetHealth");
 unRegisterOutputEvent("Bot", "SpawnExplosion");
 unRegisterOutputEvent("Bot", "SpawnProjectile");
 
+unRegisterOutputEvent("GameConnection", "ChatMessage");
 unRegisterOutputEvent("GameConnection", "IncScore");
 
 unRegisterOutputEvent("MiniGame", "BottomPrintAll");
