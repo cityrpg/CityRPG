@@ -49,14 +49,6 @@ if(%error == $Error::AddOn_NotFound)
   return;
 }
 
-// Support_EventUtils
-%error = ForceRequiredAddOn("Support_EventUtils");
-if(%error == $Error::AddOn_NotFound)
-{
-  error("ERROR: GameMode_CityRPG4 - required add-on Support_EventUtils not found");
-  return;
-}
-
 // Projectile_Radio_Wave
 %error = ForceRequiredAddOn("Projectile_Radio_Wave");
 if(%error == $Error::AddOn_NotFound)
