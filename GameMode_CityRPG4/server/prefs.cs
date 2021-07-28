@@ -38,7 +38,7 @@ function City_RegisterPref(%category, %name, %variable, %type, %params, %default
 
 		// If the value does not exist, automatically set it to its default value.
 		if(%varRef $= "")
-			eval("$" @ %variable @ " = " @ %defaultValue @ ";");
+			eval(%variable @ " = \"" @ %defaultValue @ "\";");
 	}
 
 
@@ -46,7 +46,10 @@ function City_RegisterPref(%category, %name, %variable, %type, %params, %default
 
 function City_InitPrefs()
 {
-	registerPreferenceAddon("GameMode_CityRPG4", "CityRPG 4", "building");
+	if($City::UsePrefObjects)
+	{
+		registerPreferenceAddon("GameMode_CityRPG4", "CityRPG 4", "building");
+	}
 
 	// City Prefs
 	City_RegisterPref("Game", "City name", "$Pref::Server::City::name", "string", "64", "Blocko Town");
@@ -80,6 +83,8 @@ City_InitPrefs();
 
 $City::CommandRateLimitMS = 128;
 
+$Pref::Server::City::DisableIntroMessage = true;
+
 $ATM::Min = 25;
 $ATM::Max = 300;
 $ATM::Demerits = 500;
@@ -94,7 +99,7 @@ $Pref::Server::City::giveDefaultTools								= true;
 
 $Pref::Server::City::moneyDieTime										= 9999999999;
 
-$Pref::Server::City::demerits::pardonCost						= 1000;
+$Pref::Server::City::demerits::pardonCostMultiplier				= 5;
 $Pref::Server::City::demerits::reducePerTick				= 25;
 
 $Pref::Server::City::defaultTools										= "hammerItem wrenchItem printGun";
@@ -104,7 +109,7 @@ $City::EducationCap																	= 6;
 $City::EducationReincarnateLevel										= 8;
 
 // Mayor
-$City::MayorJobID																		= 14;
+$City::MayorJobID																		= "GovMayor";
 
 // ATM Hacking
 $Pref::Server::City::hack::education 								= 3;
@@ -134,15 +139,21 @@ $CityRPG::prices::weapon::name[$CityRPG::guns] = "akimboGunItem";
 $CityRPG::prices::weapon::price[$CityRPG::guns] = 150;
 $CityRPG::prices::weapon::mineral[$CityRPG::guns++] = 1;
 
-$CityRPG::prices::weapon::name[$CityRPG::guns] = "shotgunItem";
-$CityRPG::prices::weapon::price[$CityRPG::guns] = 260;
-$CityRPG::prices::weapon::mineral[$CityRPG::guns++] = 1;
+if(isObject(shotgunItem))
+{
+	$CityRPG::prices::weapon::name[$CityRPG::guns] = "shotgunItem";
+	$CityRPG::prices::weapon::price[$CityRPG::guns] = 260;
+	$CityRPG::prices::weapon::mineral[$CityRPG::guns++] = 1;
+}
 
-$CityRPG::prices::weapon::name[$CityRPG::guns] = "sniperRifleItem";
-$CityRPG::prices::weapon::price[$CityRPG::guns] = 450;
-$CityRPG::prices::weapon::mineral[$CityRPG::guns++] = 1;
+if(isObject(sniperRifleItem))
+{
+	$CityRPG::prices::weapon::name[$CityRPG::guns] = "sniperRifleItem";
+	$CityRPG::prices::weapon::price[$CityRPG::guns] = 450;
+	$CityRPG::prices::weapon::mineral[$CityRPG::guns++] = 1;
+}
 
-//$CityRPG::prices::weapon::name[$CityRPG::guns] = "PillItem";
+
 //$CityRPG::prices::weapon::price[$CityRPG::guns] = 30;
 //$CityRPG::prices::weapon::mineral[$CityRPG::guns++] = 1;
 

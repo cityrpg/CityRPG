@@ -250,7 +250,7 @@ function CityRPGLBImage::onHitObject(%this, %obj, %slot, %col, %pos, %normal)
 			{
 				// Generic baton event for external add-ons. If this returns true, further checks will not occur.
 			}
-			else if(CityRPGData.getData(%col.client.bl_id).valueBounty > 0)
+			else if(City.get(%col.client.bl_id, "bounty") > 0)
 				commandToClient(%client, 'CenterPrint', "\c3" @ %col.client.name SPC "\c6is not wanted alive.", 3);
 			else
 				%doNoEvil = true;

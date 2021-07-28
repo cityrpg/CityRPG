@@ -16,8 +16,7 @@ $City::ScriptPath = "Add-Ons/GameMode_CityRPG4/server/";
 $City::DataPath = "Add-Ons/GameMode_CityRPG4/data/";
 $City::SavePath = "config/server/CityRPG4_A2/";
 
-$City::Version = "0.1.1";
-$City::VersionTitle = "Alpha 1.1";
+$City::Version = "0.3.0";
 $City::isGitBuild = !isFile("Add-Ons/GameMode_CityRPG4/README.md");
 
 $City::VersionWarning = "!!!!! WARNING: You are using save data from a different version of CityRPG. You are likely to encounter compatibility issues. To fix this, move or delete the save file located in your Blockland folder:" SPC $City::SavePath;
@@ -34,28 +33,12 @@ if(%error == $Error::AddOn_NotFound)
   return;
 }
 
-// Weapon_Shotgun
-%error = ForceRequiredAddOn("Weapon_Shotgun");
-if(%error == $Error::AddOn_NotFound)
-{
-  error("ERROR: GameMode_CityRPG4 - required add-on Weapon_Shotgun not found");
-  return;
-}
-
 // Weapon_Rocket_Launcher
 %error = ForceRequiredAddOn("Weapon_Rocket_Launcher");
 if(%error == $Error::AddOn_NotFound)
 {
    error("ERROR: GameMode_CityRPG4 - required add-on Weapon_Rocket_Launcher not found");
    return;
-}
-
-// Weapon_Sniper_Rifle
-%error = ForceRequiredAddOn("Weapon_Sniper_Rifle");
-if(%error == $Error::AddOn_NotFound)
-{
-  error("ERROR: GameMode_CityRPG4 - required add-on Weapon_Sniper_Rifle not found");
-  return;
 }
 
 // Weapon_Sword
@@ -136,6 +119,19 @@ if($GameModeArg $= "Add-Ons/GameMode_CityRPG4/gamemode.txt")
   {
     exec("Add-Ons/Event_Bot_Relay/server.cs");
   }
+
+  // Weapon_Shotgun (Optional)
+  if(isFile("Add-Ons/Weapon_Shotgun/server.cs"))
+  {
+    exec("Add-Ons/Weapon_Shotgun/server.cs");
+  }
+
+  // Weapon_Sniper_Rifle (Optional)
+  if(isFile("Add-Ons/Weapon_Sniper_Rifle/server.cs"))
+  {
+    exec("Add-Ons/Weapon_Sniper_Rifle/server.cs");
+  }
+
 }
 else
 {
@@ -147,9 +143,10 @@ else
   if($AddOn__Brick_Checkpoint)
   {
     %error = ForceRequiredAddOn("Brick_Checkpoint");
-
+    
     if(%error == $Error::None)
     {
+      $City::CheckpointIsActive = 1;
       deactivatepackage(CheckpointPackage);
       // We don't want the checkpoint package loading.
       // The necessary functions will be rewritten later to fix spawn compatibility.
@@ -193,10 +190,16 @@ exec($City::ScriptPath @ "bricks.cs");
 exec($City::ScriptPath @ "events.cs");
 exec($City::ScriptPath @ "scriptobject.cs");
 exec($City::ScriptPath @ "init.cs");
+exec($City::ScriptPath @ "jobs.cs");
 exec($City::ScriptPath @ "core.cs");
 exec($City::ScriptPath @ "player.cs");
 exec($City::ScriptPath @ "commands.cs");
 exec($City::ScriptPath @ "admin.cs");
+
+// Modules to preload
+exec($City::ScriptPath @ "support/Support_CenterprintMenuSystem.cs");
+
+// Core packages (Order-dependent)
 exec($City::ScriptPath @ "package.cs");
 exec($City::ScriptPath @ "overrides.cs");
 
@@ -217,8 +220,6 @@ exec($City::ScriptPath @ "cityModules/lotRegistry.cs");
 exec($City::ScriptPath @ "cityModules/lotRegistryMenu.cs");
 exec($City::ScriptPath @ "cityModules/cash.cs");
 exec($City::ScriptPath @ "cityModules/voteImpeach.cs");
-exec($City::ScriptPath @ "cityModules/rep.cs");
-//exec($City::ScriptPath @ "cityModules/trade.cs");
 exec($City::ScriptPath @ "cityModules/mayor.cs");
 exec($City::ScriptPath @ "cityModules/security.cs");
 
@@ -288,6 +289,7 @@ else
   addExtraResource($City::DataPath @ "ui/health.png");
   addExtraResource($City::DataPath @ "ui/location.png");
   addExtraResource($City::DataPath @ "ui/time.png");
+  addExtraResource($City::DataPath @ "ui/hunger.png");
 }
 
 // Support_CityRPG_Plus (Optional)

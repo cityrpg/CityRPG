@@ -22,7 +22,6 @@ datablock fxDTSBrickData(CityRPGBountyBrickData : brick2x4FData)
 // ============================================================
 function CityMenu_Bounty(%client, %brick)
 {
-	%client.cityMenuMessage("\c3Hit Office");
 	%client.cityMenuMessage("\c0Note:\c6 Placing a bounty (as a non-official) is criminal activity.");
 
 	%menu =	"View bounties."
@@ -31,7 +30,7 @@ function CityMenu_Bounty(%client, %brick)
 	%functions = 	"CityMenu_Bounty_List"
 						TAB "CityMenu_Bounty_PlacePromptA";
 
-	%client.cityMenuOpen(%menu, %functions, %brick, "\c6Thanks, come again.");
+	%client.cityMenuOpen(%menu, %functions, %brick, "\c6Thanks, come again.", 0, 0, "\c3Hit Office");
 }
 
 function CityMenu_Bounty_List(%client, %brick)
@@ -42,9 +41,9 @@ function CityMenu_Bounty_List(%client, %brick)
 	{
 		%criminal = clientGroup.getObject(%a);
 
-		if(CityRPGData.getData(%criminal.bl_id).valueBounty > 0)
+		if(City.get(%criminal.bl_id, "bounty") > 0)
 		{
-			messageClient(%client, '', "\c3" @ %criminal.name SPC "\c6- \c3$" @ CityRPGData.getData(%criminal.bl_id).valueBounty);
+			messageClient(%client, '', "\c3" @ %criminal.name SPC "\c6- \c3$" @ City.get(%criminal.bl_id, "bounty"));
 
 			%noCriminals = false;
 		}
@@ -104,9 +103,9 @@ function CityMenu_Bounty_PlacePromptC(%client, %input)
 		return;
 	}
 
-	if(CityRPGData.getData(%client.bl_id).valueMoney - mFloor(%input) < 0)
+	if(City.get(%client.bl_id, "money") - mFloor(%input) < 0)
 	{
-		if(CityRPGData.getData(%client.bl_id).valueMoney < 1)
+		if(City.get(%client.bl_id, "money") < 1)
 		{
 			%client.cityMenuMessage("\c6You don't have that much money to place.");
 
@@ -115,7 +114,7 @@ function CityMenu_Bounty_PlacePromptC(%client, %input)
 			return;
 		}
 
-		%input = CityRPGData.getData(%client.bl_id).valueMoney;
+		%input = City.get(%client.bl_id, "money");
 	}
 
 	if(mFloor(%input) >= $Pref::Server::City::demerits::minBounty)
@@ -135,8 +134,8 @@ function CityMenu_Bounty_PlacePromptC(%client, %input)
 
 			%client.cityMenuClose();
 
-			CityRPGData.getData(%client.stage["hunted"].bl_id).valueBounty += %bounty;
-			CityRPGData.getData(%client.bl_id).valueMoney -= mFloor(%input);
+			City.add(%client.stage["hunted"].bl_id, "bounty", %bounty);
+			City.subtract(%client.bl_id, "money", mFloor(%input));
 
 			%client.SetInfo();
 		}

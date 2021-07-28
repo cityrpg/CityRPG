@@ -37,8 +37,6 @@ ADDON Weapon_Gun
 ADDON Weapon_Guns_Akimbo
 ADDON Weapon_Push_Broom
 ADDON Weapon_Rocket_Launcher
-ADDON Weapon_Shotgun
-ADDON Weapon_Sniper_Rifle
 ADDON Weapon_Spear
 ADDON Weapon_Sword
 

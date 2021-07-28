@@ -5,6 +5,7 @@ $CityRPG::jobs::pay = 30;
 $CityRPG::jobs::tools = "CityRPGBatonItem taserItem DoughnutItem";
 $CityRPG::jobs::datablock = Player9SlotPlayer;
 $CityRPG::jobs::education = 1;
+$CityRPG::jobs::promotions = "PdOfficer";
 
 $CityRPG::jobs::sellItems = false;
 $CityRPG::jobs::sellFood = false;
