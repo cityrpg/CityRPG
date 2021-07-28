@@ -121,7 +121,7 @@ Called when `client` is arrested by `cop`.
 
 Called when players are attacked, determines if an attack is to incur demerits as an assault. Returns `false `
 
-## Jobs and JobSO
+## JobSO and Custom Jobs
 
 ### JobSO::loadJobFiles(so)
 This is the function that populates the job list with jobs. If desired, this function can be packaged and/or overridden to update the game-mode's job list. Jobs can be executed by running `JobSO.createJob`
