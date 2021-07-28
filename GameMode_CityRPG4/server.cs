@@ -224,7 +224,6 @@ exec($City::ScriptPath @ "cityModules/mayor.cs");
 exec($City::ScriptPath @ "cityModules/security.cs");
 
 exec($City::ScriptPath @ "support/spacecasts.cs");
-exec($City::ScriptPath @ "support/extraResources.cs");
 exec($City::ScriptPath @ "support/formatNumber.cs");
 exec($City::ScriptPath @ "support/saver.cs");
 
@@ -277,20 +276,12 @@ unRegisterOutputEvent("MiniGame", "Reset");
 unRegisterOutputEvent("MiniGame", "RespawnAll");
 
 // ============================================================
-// Additional Requirements
+// UI Files
 // ============================================================
-if(getBuildNumber() <= 1511)
+datablock staticShapeData(SSNULLImageLoaderData)
 {
-  exec($City::ScriptPath @ "v20compatibility.cs");
-}
-else
-{
-  addExtraResource($City::DataPath @ "ui/cash.png");
-  addExtraResource($City::DataPath @ "ui/health.png");
-  addExtraResource($City::DataPath @ "ui/location.png");
-  addExtraResource($City::DataPath @ "ui/time.png");
-  addExtraResource($City::DataPath @ "ui/hunger.png");
-}
+  shapefile = $City::DataPath @ "ui/addToFileManifest.dts";
+};
 
 // Support_CityRPG_Plus (Optional)
 // This needs to load *after* CityRPG for it to be compatible.
