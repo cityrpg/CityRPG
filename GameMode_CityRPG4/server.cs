@@ -57,6 +57,18 @@ if(%error == $Error::AddOn_NotFound)
   return;
 }
 
+%error = ForceRequiredAddOn("Player_No_Jet");
+if(%error == $Error::AddOn_NotFound)
+{
+  error("ERROR: GameMode_CityRPG4 - required add-on Player_No_Jet not found");
+  return;
+}
+
+if(%error == $Error::AddOn_Disabled)
+{
+  playerNoJet.uiName = "";
+}
+
 // Player_DifferentSlotPlayers
 %error = ForceRequiredAddOn("Player_DifferentSlotPlayers");
 if(%error == $Error::AddOn_NotFound)

@@ -10,24 +10,6 @@ $CityBrick_ResourceOre = 5;
 // ============================================================
 // Handling Script Start
 // ============================================================
-$CityRPG::temp::brickError = forceRequiredAddOn("player_no_jet");
-
-if($CityRPG::temp::brickError)
-{
-	if($CityRPG::temp::brickError == $error::addOn_disabled)
-		playerNoJet.uiName = "";
-
-	if($CityRPG::temp::brickError == $error::addOn_notFound)
-		return;
-}
-
-$CityRPG::loadedDatablocks = true;
-
-if(!$CityRPG::loadedDatablocks)
-{
-	return;
-}
-
 datablock triggerData(CityRPGLotTriggerData)
 {
 	tickPeriodMS = 500;
