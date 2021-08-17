@@ -25,9 +25,16 @@ function fxDTSBrick::cityLotDisplayRefresh(%lotBrick)
 
 function CityMenu_Lot(%client, %input)
 {
-	if(%client.cityMenuBack !$= "")
+	if(%client.cityMenuBack $= %client.getID())
 	{
-		// "Go back" support for sub-menus
+		// If the back menu is the client, we're running via the player menu.
+		%isSubMenu = 1;
+		%backMenu = "CityMenu_Player";
+		%lotBrick = %client.CityLotBrick;
+	}
+	else if(%client.cityMenuBack !$= "")
+	{
+		// "Go back" support for sub-menus. Any other input here is a lot brick.
 		%lotBrick = %client.cityMenuBack;
 		%client.cityMenuBack = "";
 	}
@@ -40,8 +47,9 @@ function CityMenu_Lot(%client, %input)
 		// Indicate that we're a sub-menu so we can display "Back" instead of "Close" later.
 		// cityMenuBack identifies the real estate office by its brick.
 		%isSubMenu = 1;
-		%client.cityMenuBack = %client.cityMenuID;
+		%backMenu = "CityMenu_RealEstate";
 
+		%client.cityMenuBack = %client.cityMenuID;
 		%client.cityLotIndexClear();
 	}
 	else
@@ -121,7 +129,7 @@ function CityMenu_Lot(%client, %input)
 	if(%isSubMenu)
 	{
 		%menu = %menu TAB "Go back.";
-		%functions = %functions TAB "CityMenu_RealEstate";
+		%functions = %functions TAB %backMenu;
 	}
 	else
 	{
