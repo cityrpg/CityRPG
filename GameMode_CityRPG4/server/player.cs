@@ -665,5 +665,6 @@ function CityMenu_Player_SetSpawnConfirm(%client, %input)
 		%client.cityMenuMessage("\c6Spawn preference set to \c3" @ %selection @ "\c6.");
 		City.set(%client.bl_id, "spawnPoint", selectionID);
 		%client.cityLog("Set spawn to " @ selectionID);
+		%client.cityMenuClose(1);
 	}
 }
