@@ -611,8 +611,8 @@ function CityMenu_Player(%client)
 		%functions = "CityMenu_Player_ManageLot";
 	}
 
-	%menu = %menu TAB "Preferred spawn point." TAB "Player stats.";
-	%functions = %functions TAB "CityMenu_Player_SetSpawn" TAB "CityMenu_Player_Stats";
+	%menu = %menu TAB "Player stats.";
+	%functions = %functions TAB "CityMenu_Player_Stats";
 
 	// Trim extra tabs, if any.
 	%menu = ltrim(%menu);
