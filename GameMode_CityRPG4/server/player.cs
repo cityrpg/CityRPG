@@ -639,6 +639,7 @@ function CityMenu_Player_Stats(%client)
 function CityMenu_Player_ManageLot(%client)
 {
 	%client.cityMenuClose(1);
+	%client.cityMenuBack = %client;
 	serverCmdLot(%client);
 }
 
