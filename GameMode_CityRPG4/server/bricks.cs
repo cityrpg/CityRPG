@@ -351,7 +351,7 @@ function fxDTSBrick::cityBrickInit(%brick)
 // Brick::getCityLotTrigger(this/brick)
 // Returns the lot trigger containing the brick. Caches the value on %brick.cityLotTrigger.
 // If the brick overlaps in multiple lots, the first trigger found is returned.
-function fxDTSBrick::getCityLotTrigger(%brick)
+function fxDTSBrick::cityLotTriggerCheck(%brick)
 {
 	if(%brick.isPlanted && %brick.cityLotTrigger !$= "")
 	{
@@ -447,7 +447,7 @@ function fxDTSBrick::cityBrickCheck(%brick)
 	}
 
 	// Lot zone check
-	%lotTrigger = %brick.getCityLotTrigger();
+	%lotTrigger = %brick.cityLotTriggerCheck();
 
 	if(!%lotTrigger && %brickData.CityRPGBrickType != $CityBrick_Lot)
 	{

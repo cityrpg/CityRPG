@@ -519,10 +519,10 @@ package CityRPG_MainPackage
 	// To solve this, each chat message will specify the lot that it comes from.
 	function GameConnection::ChatMessage(%client, %message)
 	{
-		%brick = %client.lastEventObject;	
+		%brick = %client.lastEventObject;
 
 		// Event brick used -> Lot trigger -> Lot brick -> Lot name
-		%lotName = %brick.getCityLotTrigger().parent.getCityLotName();
+		%lotName = %brick.cityLotTriggerCheck().parent.getCityLotName();
 		messageClient(%client, '', addTaggedString("\c3" @ %lotName @ "\c6 says: \c0" @ %message), %client.getPlayerName(), %client.score);
 	}
 
