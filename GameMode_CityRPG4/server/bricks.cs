@@ -8,6 +8,12 @@ $CityBrick_ResourceLumber = 4;
 $CityBrick_ResourceOre = 5;
 
 // ============================================================
+// Error Types
+// ============================================================
+$Error::Lot::OutOfBounds = -1;
+$Error::Lot::Overlap = -2;
+
+// ============================================================
 // Handling Script Start
 // ============================================================
 datablock triggerData(CityRPGLotTriggerData)
