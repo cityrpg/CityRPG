@@ -473,14 +473,14 @@ function CityMenu_LotAdmin(%client)
 	%menu = "Force rename."
 			TAB "Transfer lot to the city."
 			TAB "Transfer lot to a player."
-			TAB "Link lot."
+			//TAB "Link lot."
 			TAB "Wrench lot."
 			TAB "Go back.";
 
 	%functions =	"CityMenu_LotAdmin_SetNamePrompt"
 						TAB "CityMenu_LotAdmin_TransferCity"
 						TAB "CityMenu_LotAdmin_TransferPlayerPrompt"
-						TAB "CityMenu_LotAdmin_LinkPrompt"
+						//TAB "CityMenu_LotAdmin_LinkPrompt"
 						TAB "CityMenu_LotWrench"
 						TAB "CityMenu_Lot";
 
