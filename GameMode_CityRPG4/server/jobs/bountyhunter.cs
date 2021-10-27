@@ -5,6 +5,7 @@ $CityRPG::jobs::pay = 25;
 $CityRPG::jobs::tools = "CityRPGLBItem";
 $CityRPG::jobs::datablock = Player9SlotPlayer;
 $CityRPG::jobs::education = 1;
+$CityRPG::jobs::promotions = "BountyVigilante";
 
 $CityRPG::jobs::sellItems = false;
 $CityRPG::jobs::sellFood = false;

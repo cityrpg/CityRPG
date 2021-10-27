@@ -66,7 +66,7 @@ function CityMenu_RealEstate(%client, %input, %brick)
 	}
 
 	%client.cityMenuMessage(%message);
-	%client.cityMenuOpen(%menu, %functions, %brick, "\c6Thanks, come again.", 0, 1);
+	%client.cityMenuOpen(%menu, %functions, %brick, "\c6Thanks, come again.", 0, 1, "\c3" @ $Pref::Server::City::name @ "\c3 Real Estate Office");
 }
 
 // List for sale
@@ -131,7 +131,7 @@ function CityMenu_RealEstate_ViewLotListings(%client, %input, %brick)
 		%client.cityLotIndexCount++;
 		%client.cityLotIndex[%client.cityLotIndexCount] = %lotID;
 
-		%lotStr = %lotBrick.getCityLotName() @ " - Cost: \c2$" @ %lotBrick.getCityLotPreownedPrice() @ "\c6 - Owner: \c3" @ %lotBrick.getGroup().name @ "\c6";
+		%lotStr = %lotBrick.getCityLotName() @ " - \c2$" @ %lotBrick.getCityLotPreownedPrice() @ "\c6 - Owner: \c3" @ %lotBrick.getGroup().name @ "\c6";
 
 		if(%client.cityLotIndexCount == 1)
 		{

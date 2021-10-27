@@ -45,7 +45,7 @@ function CityMayor_stopElection()
 		messageAll('', "\c3" @ $City::Mayor::String SPC "\c6has won the election!");
 
 		%client = findClientByBL_ID($City::Mayor::ID);
-		messageClient(%client, '', "\c6Congratulations, you are now the" SPC JobSO.job[$City::MayorJobID].name @ "\c6! Your new salary is \c3$" @ JobSO.job[$City::MayorJobID].pay @ "\c6 per day.");
+		messageClient(%client, '', "\c6Congratulations, you are now the" SPC JobSO.job[$City::MayorJobID].name @ "\c6!");
 		%client.setCityJob($City::MayorJobID, 1);
 
 	}
@@ -71,33 +71,34 @@ function serverCmdvoteElection(%client, %arg2)
 {
 	%client.cityLog("/voteElection");
 
-	if(isObject(%arg1 = findClientByName(%arg2)))
+	if(!isObject(%arg1 = findClientByName(%arg2)))
 	{
-		if(%arg1 $= "") //if not blank
-		{
-			messageClient(%client, '', "Please try putting in a user's name.");
-		} else {
-			if($City::Mayor::Voting == 1 && $Pref::Server::City::Mayor::Active == 0) //if election
-			{
-				if(CityRPGData.getData(%client.bl_id).valueElectionID != $City::Mayor::Mayor::ElectionID) //if hasn't voted
-				{
-					if(CityMayor_getCandidatesTF(%arg1.name))
-					{
-						messageClient(%client, '', "\c6You have voted for\c3" SPC %arg1.name @ "\c6.");
-						CityRPGData.getData(%client.bl_id).valueElectionID = $City::Mayor::Mayor::ElectionID;
-						%voteIncrease = getMayor($City::Mayor::Mayor::ElectionID, %arg1.name) + 1;
-						inputMayor($City::Mayor::Mayor::ElectionID, %arg1.name, %voteIncrease);
-					} else {
-						messageClient(%client, '', "This player isn't a candidate.");
-					}
-				} else {
-					messageClient(%client, '', "You've already voted!");
-				}
-			} else {
-				messageClient(%client, '', "There isn't an election.");
-			}
-		}
+		messageClient(%client, '', "Unable to find that person. Please try again.");
+		return;
 	}
+
+	if($City::Mayor::Voting == 0 || $Pref::Server::City::Mayor::Active == 1) // No election active
+	{
+		messageClient(%client, '', "There isn't an election. Check back later.");
+		return;
+	}
+
+	if(City.get(%client.bl_id, "electionid") == $City::Mayor::Mayor::ElectionID) // Already voted
+	{
+		messageClient(%client, '', "You've already voted!");
+		return;
+	}
+
+	if(!CityMayor_getCandidatesTF(%arg1.name))
+	{
+		messageClient(%client, '', %arg1.name @ " is not a candidate in this election.");
+		return;
+	}
+	
+	messageClient(%client, '', "\c6You have voted for\c3" SPC %arg1.name @ "\c6.");
+	City.set(%client.bl_id, "electionid", $City::Mayor::Mayor::ElectionID);
+	%voteIncrease = getMayor($City::Mayor::Mayor::ElectionID, %arg1.name) + 1;
+	inputMayor($City::Mayor::Mayor::ElectionID, %arg1.name, %voteIncrease);
 }
 
 //register
@@ -105,11 +106,11 @@ function serverCmdRegisterCandidates(%client)
 {
 	%client.cityLog("/registerCandidates");
 
-	if(CityRPGData.getData(%client.bl_id).valueMoney >= $Pref::Server::City::Mayor::Cost)
+	if(City.get(%client.bl_id, "money") >= $Pref::Server::City::Mayor::Cost)
 	{
 		CityMayor_inputCandidates(%client.name, %client.bl_id);
 		messageClient(%client, '', "\c6Congratulations, you are now a candidate for the election.");
-		CityRPGData.getData(%client.bl_id).valueMoney -= $Pref::Server::City::Mayor::Cost;
+		City.subtract(%client.bl_id, "money", $Pref::Server::City::Mayor::Cost);
 		%client.setInfo();
 	} else {
 		messageClient(%client, '', "\c6You don't have $" @ $Pref::Server::City::Mayor::Cost @ "!");
@@ -262,8 +263,6 @@ function CityMayor_getWinner()
 // Menu stuff
 function CityMenu_Mayor(%client)
 {
-	%client.cityMenuMessage("\c3Mayor Actions");
-
 	%menu = "Issue a pardon."
 			TAB "Clear a record."
 			TAB "Go back.";
@@ -272,7 +271,7 @@ function CityMenu_Mayor(%client)
 			 TAB "CityMenu_Mayor_ErasePrompt"
 			 TAB "CityMenu_Player";
 
-	%client.cityMenuOpen(%menu, %functions, %client, "\c3Mayor actions menu closed.", 0, 1);
+	%client.cityMenuOpen(%menu, %functions, %client, "\c3Mayor actions menu closed.", 0, 1, "Mayor Actions");
 }
 
 function CityMenu_Mayor_PardonPrompt(%client)

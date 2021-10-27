@@ -19,7 +19,7 @@ function JobSO::loadJobFiles(%so)
 	$City::CivilianJobID = "StarterCivilian";
 	$City::AdminJobID = "Admin";
 
-	exec($City::ScriptPath @ "/jobTrees.cs");
+	exec($City::ScriptPath @ "jobTrees.cs");
 
 	%so.createJob("StarterCivilian");
 	%so.createJob("LaborMiner");
@@ -69,7 +69,7 @@ function JobSO::createJob(%so, %file)
 		name			= $CityRPG::jobs::name;
 		track			= $CityRPG::jobs::track;
 		title			= $CityRPG::jobs::title;
-
+		promotions		= $CityRPG::jobs::promotions;
 
 		invest			= $CityRPG::jobs::initialInvestment;
 		pay				= $CityRPG::jobs::pay;
@@ -215,14 +215,17 @@ function buildLicenseStr(%words, %conjunctionStr)
 	{
 		if(%i == %wordCount)
 		{
+			// Last word
 			%licenseStr = %licenseStr @ getWord(%words, %i) @ "";
 		}
 		else if(%i == %wordCount-1)
 		{
-			%licenseStr = %licenseStr @ getWord(%words, %i) @ ", " @ %conjunctionStr @ " ";
+			// Second last word
+			%licenseStr = %licenseStr @ getWord(%words, %i) @ " " @ %conjunctionStr @ " ";
 		}
 		else
 		{
+			// All others
 			%licenseStr = %licenseStr @ getWord(%words, %i) @ ", ";
 		}
 	}
@@ -241,20 +244,19 @@ function buildLicenseStr(%words, %conjunctionStr)
 function GameConnection::setCityJob(%client, %jobID, %force, %silent)
 {
 	%jobObject = JobSO.job[%jobID];
-	%data = CityRPGData.getData(%client.bl_id);
-	%oldJob = %data.valueJobID;
+	%oldJob = City.get(%client.bl_id, "jobid");
 
 	if(!%force)
 	{
 		%jobEligible = 1;
 
-		if(%jobID $= %data.valueJobID)
+		if(%jobID $= City.get(%client.bl_id, "jobid"))
 		{
 			messageClient(%client, '', "\c6- You are already" SPC City_DetectVowel(%jobObject.name) SPC "\c3" @ %jobObject.name @ "\c6!");
 			%jobEligible = 0;
 		}
 
-		if(%jobObject.law && getWord(%data.valueJailData, 0) == 1)
+		if(%jobObject.law && getWord(City.get(%client.bl_id, "jaildata"), 0) == 1)
 		{
 			messageClient(%client, '', "\c6- You do not have a clean criminal record to become" SPC City_DetectVowel(%jobObject.name) SPC "\c3" @ %jobObject.name @ "\c6.");
 			%jobEligible = 0;
@@ -266,13 +268,13 @@ function GameConnection::setCityJob(%client, %jobID, %force, %silent)
 			%jobEligible = 0;
 		}
 
-		if(%data.valueMoney < %jobObject.invest)
+		if(City.get(%client.bl_id, "money") < %jobObject.invest)
 		{
 			messageClient(%client, '', "\c6- It costs \c3$" @ %jobObject.invest SPC "\c6to become" SPC City_DetectVowel(%jobObject.name) SPC %jobObject.name @ "\c6.");
 			%jobEligible = 0;
 		}
 
-		if(%data.valueEducation < %jobObject.education)
+		if(City.get(%client.bl_id, "education") < %jobObject.education)
 		{
 			messageClient(%client, '', "\c6- You need to reach an education level of \c3" @ %jobObject.education @ "\c6 to become" SPC City_DetectVowel(%jobObject.name) SPC %jobObject.name @ "\c6.");
 			%jobEligible = 0;
@@ -301,26 +303,25 @@ function GameConnection::setCityJob(%client, %jobID, %force, %silent)
 			}
 		}
 
-		CityRPGData.getData(%client.bl_id).valueMoney -= %jobObject.invest;
+		City.subtract(%client.bl_id, "money", %jobObject.invest);
 	}
-	else
+	else if(%jobObject.id !$= $City::CivilianJobID)
 	{
 		// Operations for forced job changes only.
 		messageClient(%client, '', "\c6Your job has changed to" SPC City_DetectVowel(%jobObject.name) SPC %jobObject.name @ "\c6.");
 	}
 
-	%data.valueJobID = %jobObject.id;
+	City.set(%client.bl_id, "jobid", %jobObject.id);
 	serverCmdunUseTool(%client);
 	%client.player.giveDefaultEquipment();
 	%client.applyForcedBodyColors();
 	%client.applyForcedBodyParts();
 	%client.player.setDatablock(%jobObject.db);
 
-	if(%job == $City::MayorJobID)
+	if(%jobObject.id $= $City::MayorJobID)
 	{
 		$City::Mayor::String = %client.name;
 		$City::Mayor::Enabled = 0;
-		serverCmdClearImpeach(%client);
 	}
 	%client.SetInfo();
 

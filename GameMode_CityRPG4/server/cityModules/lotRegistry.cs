@@ -12,22 +12,37 @@
 // ============================================================
 function CityLots_TransferLot(%brick, %targetBL_ID)
 {
-	// Create Chown
-	// We're using the CityRPGHostClient to bypass the trust check used by Chown.
-	if(!isObject(CityRPGHostClient.chown))
+	%lotBricks = findLotBricksLinkedByID(%brick.getCityLotID());
+
+	if(%lotBricks == 0)
 	{
-		%chown = Chown(CityRPGHostClient);
-	}
-	else
-	{
-		%chown = CityRPGHostClient.chown;
+		error("CityRPG Lot Registry - Failed to obtain the lot brick '" @ %brick @ "'. Aborting transfer.");
+		return;
 	}
 
-	%chown.isCityTransfer = 1;
+	// Some lots are "linked" meaning they will have multiple corresponding bricks.
+	// Loop through all and start a transfer for each.
+	// In most cases, we only need to do this once, for a singular lot.
+	for(%i = 0; %i <= getFieldCount(%lotBricks)-1; %i++)
+	{
+		// Create Chown
+		// We're using the CityRPGHostClient to bypass the trust check used by Chown.
+		if(!isObject(CityRPGHostClient.chown))
+		{
+			%chown = Chown(CityRPGHostClient);
+		}
+		else
+		{
+			%chown = CityRPGHostClient.chown;
+		}
 
-	%chown.bl_id = %targetBL_ID;
-	%chown.target_group = "BrickGroup_" @ %targetBL_ID;
-	%chown.setStartBrick(%brick);
+		%chown.isCityTransfer = 1;
+		%chown.bl_id = %targetBL_ID;
+		%chown.target_group = "BrickGroup_" @ %targetBL_ID;
+
+		%targetBrick = getField(%lotBricks, %i);
+		%chown.setStartBrick(%targetBrick);
+	}
 
 	%brick.setCityLotOwnerID(%targetBL_ID);
 	%brick.setCityLotPreownedPrice(-1); // Take the lot off sale if it was listed.
@@ -80,8 +95,51 @@ function fxDTSBrick::getCityLotSaveName(%brick)
 	return %nameRaw;
 }
 
+// Brick::setCityLotSaveName()
+// Converts a set of parameters to the lot's name and calls setNTObjectName with the result.
+// hostID: The BLID of the server host.
+// ownerID: The BLID of the lot's owner. "-1" or "none" both indicate a lot owned by the city.
+// lotID: The lot's unique ID number.
+// isLinked (bool): Whether the lot is a child of another lot.
+function fxDTSBrick::setCityLotSaveName(%brick, %hostID, %ownerID, %lotID, %isLinked)
+{
+	if(%hostID $= "")
+	{
+		%hostID = getNumKeyID();
+	}
+
+	if(%ownerID $= "" || %ownerID == -1)
+	{
+		%ownerID = "none";
+	}
+
+	if(%lotID $= "")
+	{
+		return -1;
+	}
+
+	if(%isLinked $= "")
+	{
+		%isLinked = 0;
+	}
+
+	%brick.SetNTObjectNameOverride(%hostID @ "_" @ %ownerID @ "_" @ %lotID @ "_" @ %isLinked);
+}
+
+// Brick::setCityLotSaveNameWhole()
+// Sets a save name derived from a raw string obtained using getCityLotSaveName
+function fxDTSBrick::setCityLotSaveNameWhole(%brick, %str)
+{
+	if(atof(getWord(%str, 1)) == -1)
+	{
+		%str = setWord(%str, 1, "none");
+	}
+
+	%brick.SetNTObjectNameOverride(%str);
+}
+
 // Determines the state of the lot and directs the corresponding init process.
-function fxDTSBrick::initCityLot(%brick)
+function fxDTSBrick::initCityLot(%brick, %forceExisting)
 {
 	if(%brick.lotInitialized)
 	{
@@ -90,7 +148,7 @@ function fxDTSBrick::initCityLot(%brick)
 	}
 
 	%brick.lotInitialized = 1;
-	if(%brick.getCityLotID() == -1)
+	if(%brick.getCityLotID() == -1 && !%forceExisting)
 	{
 		%brick.initNewCityLot();
 	}
@@ -103,7 +161,15 @@ function fxDTSBrick::initCityLot(%brick)
 
 	// Cache and identify the brick.
 	%obj = CityLotRegistry.makeOnline(%brick.getCityLotID());
-	%obj.brick = %brick;
+	if(%brick.getCityLotIsLinked())
+	{
+		// %obj.linkedBrickCount & %obj.brickLinked[i] for linked lots
+		%obj.brickLinked[%obj.linkedBrickCount++] = %brick;
+	}
+	else
+	{
+		%obj.brick = %brick;
+	}
 }
 
 function fxDTSBrick::initExistingCityLot(%brick)
@@ -125,6 +191,13 @@ function fxDTSBrick::initExistingCityLot(%brick)
 	%lotHost = getWord(%nameRaw, 0);
 	//%lotSavedOwner = getWord(%nameRaw, 1);
 	%lotID = getWord(%nameRaw, 2);
+	%isLinked = getWord(%nameRaw, 3);
+
+	// Legacy support for pre-0.3.0 lots
+	if(%isLinked $= "")
+	{
+		%isLinked = 0;
+	}
 
 	// If there is a mismatch, or the lot appears to be a legacy lot.
 	if(%lotHost != getNumKeyID() || getWordCount(%nameRaw) < 3)
@@ -162,8 +235,17 @@ function fxDTSBrick::initExistingCityLot(%brick)
 
 	%brick.cityLotOverride = 1;
 	// Note that for an existing lot, the owner ID is always derived from the lot registry, NOT the brick's saved name.
-	// This rules out any potential error in the brick's saved name.
-	%brick.SetNTObjectNameOverride(getNumKeyID() @ "_" @ %ownerID @ "_" @ %lotID);
+	// This rules out any potential error in the brick's saved name, i.e. outdated save.
+	// The only notable exception to this is if we're loading a save from another server.
+	%brick.setCityLotSaveName(getNumKeyID(), %ownerID, %lotID, %isLinked);
+	%brickOwnerID = getBrickGroupFromObject(%brick).bl_id;
+	// Lot owner must correlate to brick owner OR unclaimed lot must correlate to host ID
+	if((%ownerID != -1 && %brickOwnerID != %ownerID) || (%ownerID == -1 && %brickOwnerID != getNumKeyID()))
+	{
+		// Ownership mismatches are normal and can happen under a number of circumstances, including loading an old save or linking lots.
+		// Transfer for the owner ID as named in the registry
+		CityLots_TransferLot(%brick, %ownerID);
+	}
 
 	if(%ownerID != -1)
 	{
@@ -202,7 +284,7 @@ function fxDTSBrick::initNewCityLot(%brick)
 	}
 
 	%brick.cityLotOverride = 1;
-	%brick.SetNTObjectNameOverride(%publicID @ "_" @ "none" @ "_" @ %newID);
+	%brick.setCityLotSaveName(%publicID, -1, %newID, 0);
 
 	echo("City: Registered new lot, #" @ %newID);
 
@@ -265,6 +347,39 @@ function fxDTSBrick::getCityLotID(%brick)
 	return %lotID;
 }
 
+function fxDTSBrick::destroyCityLot(%brick)
+{
+	%lotID = %brick.getCityLotID();
+
+	%ownerID = %brick.getCityLotOwnerID();
+
+	// Always override on remove
+	%brick.cityLotOverride = 1;
+	$City::RealEstate::TotalLots--;
+
+	if(%ownerID != -1)
+	{
+		// Now, we have to remove this lot from the owner's cache of owned lots.
+		%brick.cityLotCacheRemove();
+	}
+	else
+	{
+		$City::RealEstate::UnclaimedLots--;
+	}
+
+	if(%brick.getCityLotPreownedPrice() != -1)
+	{
+		$City::RealEstate::LotCountSale--;
+	}
+
+	// This lot will exist in the memory, but it will no-longer have a brick associated with it.
+	// Therefore, we need to remove the brick from the cache.
+	// If the lot is re-loaded later, it will "log in" on init.
+	CityLotRegistry.makeOffline(%lotID);
+
+	%brick.lotInitialized = 0;
+}
+
 // findLotBrickByID(Lot ID)
 // Returns 0 if the brick does not exist.
 function findLotBrickByID(%value)
@@ -275,6 +390,27 @@ function findLotBrickByID(%value)
 	}
 
 	return CityLotRegistry.data[%value].brick;
+}
+
+// findLotLinkedBricksByID(Lot ID)
+// Returns a set of fields containing the lot's base brick, and all linked lots, if any
+// Returns 0 if the brick does not exist.
+function findLotBricksLinkedByID(%value)
+{
+	if(CityLotRegistry.data[%value] $= "")
+	{
+		return 0;
+	}
+
+	// Init with the base brick.
+	%fields = CityLotRegistry.data[%value].brick;
+
+	for(%i = 1; %i <= CityLotRegistry.data[%value].linkedBrickCount; %i++)
+	{
+		%fields = %fields TAB CityLotRegistry.data[%value].brickLinked[%i];
+	}
+
+	return %fields;
 }
 
 // ## Getters
@@ -302,6 +438,16 @@ function fxDTSBrick::getCityLotTransferDate(%brick)
 function fxDTSBrick::getCityLotPreownedPrice(%brick)
 {
 	return CityLotRegistry.get(%brick.getCityLotID(), "preownedSalePrice");
+}
+
+function fxDTSBrick::getCityLotIsLinked(%brick)
+{
+	return %brick.isLinkedLot;
+}
+
+function fxDTSBrick::getCityLotIsBase(%brick)
+{
+	return %brick.isLinkBase;
 }
 
 // ## Setters
@@ -349,13 +495,21 @@ function fxDTSBrick::setCityLotOwnerID(%brick, %value)
 	CityLotRegistry.set(%lotID, "ownerID", %value);
 
 	// ## Brick name handling
-	// The brick's name needs to match the new owner ID, so we need to update it.
-	%nameRaw = %brick.getCityLotSaveName();
-	%lotHost = getWord(%nameRaw, 0);
-	%lotID = getWord(%nameRaw, 2);
+	// The brick name(s) need to match the new owner ID, so we need to update it.
+	%lotBricks = findLotBricksLinkedByID(%brick.getCityLotID());
 
-	%brick.cityLotOverride = 1;
-	%brick.SetNTObjectNameOverride(%lotHost @ "_" @ (%value == -1?"none":%value) @ "_" @ %lotID);
+	for(%i = 0; %i <= getFieldCount(%lotBricks)-1; %i++)
+	{
+		%targetBrick = getField(%lotBricks, %i);
+
+		%nameRaw = %targetBrick.getCityLotSaveName();
+		%lotHost = getWord(%nameRaw, 0);
+		%lotID = getWord(%nameRaw, 2);
+		%isLinked = getWord(%nameRaw, 3);
+
+		%targetBrick.cityLotOverride = 1;
+		%targetBrick.setCityLotSaveName(%lotHost, %value, %lotID, %isLinked);
+	}
 
 	return %value;
 }
@@ -385,6 +539,30 @@ function fxDTSBrick::setCityLotPreownedPrice(%brick, %value)
 	}
 
 	CityLotRegistry.set(%brick.getCityLotID(), "preownedSalePrice", %value);
+}
+
+// ============================================================
+// Linking
+// ============================================================
+
+function fxDTSBrick::linkCityLot(%brickLinkBase, %brickLinkTarget)
+{	
+	// Initialize the lots as linked
+	// For future proofing, these are called upon using the functions getCityLotIsLinked & getCityLotIsBase
+	%brickLinkBase.isLinkBase = true;
+	%brickLinkBase.isLinkedLot = true;
+
+	%brickLinkTarget.isLinkedLot = true;
+
+	%name = %brickLinkBase.getCityLotSaveName();
+
+	// Now the fun part. Destroy the link target, and re-initialize it as a clone of the base lot.
+	// Linked lot names are tagged as such with the value set from "0" to "1"
+	%brickLinkTarget.destroyCityLot();
+	%brickLinkTarget.setCityLotSaveNameWhole(setWord(%name, 3, 1));
+
+	// Init the new linked lot as if it is being loaded from a save.
+	%brickLinkTarget.initCityLot(true);
 }
 
 // ============================================================
@@ -515,38 +693,12 @@ package CityRPG_LotRegistry
 
 	function fxDTSBrick::onRemove(%brick, %client)
 	{
-		%lotID = %brick.getCityLotID();
-
 		// Check that the brick actually exists, is planted, etc.
 		// Also verify that is has a lot ID. If it doesn't, the brick likely never fully initialized.
 		// This can happen in certain edge cases, such as while loading bricks that already exist (onRemove is called on the brick after it fails to plant)
-		if(%brick.isPlanted && %brick.getDataBlock().CityRPGBrickType == $CityBrick_Lot && %lotID != -1)
+		if(%brick.isPlanted && %brick.getDataBlock().CityRPGBrickType == $CityBrick_Lot && %brick.getCityLotID() != -1)
 		{
-			%ownerID = %brick.getCityLotOwnerID();
-
-			// Always override on remove
-			%brick.cityLotOverride = 1;
-			$City::RealEstate::TotalLots--;
-
-			if(%ownerID != -1)
-			{
-				// Now, we have to remove this lot from the owner's cache of owned lots.
-				%brick.cityLotCacheRemove();
-			}
-			else
-			{
-				$City::RealEstate::UnclaimedLots--;
-			}
-
-			if(%brick.getCityLotPreownedPrice() != -1)
-			{
-				$City::RealEstate::LotCountSale--;
-			}
-
-			// This lot will exist in the memory, but it will no-longer have a brick associated with it.
-			// Therefore, we need to remove the brick from the cache.
-			// If the lot is re-loaded later, it will "log in" on init.
-			CityLotRegistry.makeOffline(%lotID);
+			%brick.destroyCityLot();
 		}
 
 		Parent::onRemove(%brick);

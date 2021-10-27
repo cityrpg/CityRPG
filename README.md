@@ -5,7 +5,7 @@ CityRPG is a mod for the game Blockland that simulates the life of a blocky city
 
 In CityRPG 4, you can explore a range of jobs and opportunities as you work your way to the top! You can join the fun on an existing server, or create your own server with any theme, rules, and style that you like
 
-[Download CityRPG 4](https://github.com/cityrpg/CityRPG-4-Alpha/releases) | [Join us on Discord](https://discord.gg/dHcnHb3) | [View update progress on Trello](https://lakeys.net/cityrpg/roadmap/)
+[Download CityRPG 4](https://github.com/cityrpg/CityRPG-4/releases) | [Join us on Discord](https://discord.gg/dHcnHb3) | [View update progress on Trello](https://lakeys.net/cityrpg/roadmap/)
 ------------ | ------------- | ------------- |
 
 ![Banner](https://lakeys.net/cityrpg/media/banner.png)
@@ -58,27 +58,28 @@ CityRPG 4 is being built fully open source, and we encourage you to fork the rep
 Below is an incomplete documentation of key functions in CityRPG 4.
 
 Note that this documentation is applicable to the unstable version, **0.3.0**. For the latest release docs, see here:
-https://github.com/cityrpg/CityRPG-4-Alpha/tree/0.2.0
+https://github.com/cityrpg/CityRPG-4/tree/0.2.0
 
 ## Client/GameConnection
 
-### GameConnection::cityMenuOpen(names, functions, exitMsg, autoClose)
+### GameConnection::cityMenuOpen(names, functions, exitMsg, autoClose, canOverride)
 Displays a generic menu, currently using a chat-based approach. Returns true if the menu opens successfully. No eval or script object handling is necessary.
 
 While this currently resembles the mechanics of classic CityRPG menus (chat-based, type a number), the method of displaying menus is subject to change. For best results, make sure to check client.cityMenuOpen before attempting. Take note of the default 8-line chat limit.
 
 **Args:**
-- exitMsg: The message to display when the menu closes
-- menu: A set of fields containing names for each menu item.
-- functions: The function that will be called corresponding with each name option. The following are passed to this function, in order: %client (Client object), %input (User input that triggered this menu option), %id (The active ID for the current menu).
-- menuID: A unique identifier for the menu, for reference elsewhere. Generally set to the brick that triggered it.
-- autoClose: (Bool) If set to 'true', the menu will close as soon as the function executes.
+- exitMsg (str): The message to display when the menu closes
+- menu (str, fields): A set of fields containing names for each menu item.
+- functions (str, fields): The function that will be called corresponding with each name option. The following are passed to this function, in order: %client (Client object), %input (User input that triggered this menu option), %id (The active ID for the current menu).
+- menuID (str): A unique identifier for the menu, for reference elsewhere. Generally set to the ID of the brick that triggered it.
+- autoClose (Bool): If set to 'true', the menu will close as soon as the function executes.
+- canOverride (Bool): If set to 'true', the menu will close automatically if another menu is opened. If false, other menus will be blocked from opening.
 
 **Example:**
 ```
 %menu = "Option 1" TAB "Option 2";
 %functions = "announce" TAB "talk";
-findClientByName(Blockhead).cityMenuOpen(%menu, %functions, "", "", true);
+findClientByName(Blockhead).cityMenuOpen(%menu, %functions, "", "", true, false);
 ```
 
 Result:
@@ -120,12 +121,12 @@ Called when `client` is arrested by `cop`.
 
 Called when players are attacked, determines if an attack is to incur demerits as an assault. Returns `false `
 
-## JobSO
+## JobSO and Custom Jobs
 
-### JobSO::loadJobFiles(%so)
-This is the function that populates the job list with jobs. If desired, this function can be packaged and/or overridden to update the game-mode's job list. Jobs can be executed by running `%so.addJobFromFile`
+### JobSO::loadJobFiles(so)
+This is the function that populates the job list with jobs. If desired, this function can be packaged and/or overridden to update the game-mode's job list. Jobs can be executed by running `JobSO.createJob`
 
-### JobSO::addJobFromFile
+### JobSO::createJob(so, file)
 Adds a job from a script file. For a reference of what a job script file looks like, refer to the files contained within `GameMode_CityRPG4/server/jobs`.
 
 The path will check for a script filename first in `GameMode_CityRPG4/jobs`, and if none is found there, it will check for a direct path.
@@ -133,6 +134,6 @@ The path will check for a script filename first in `GameMode_CityRPG4/jobs`, and
 This can be used to create custom jobs without directly editing the game-mode files.
 
 #### Examples:
-`JobSO.addJobFromFile("civilian");` - Adds the job found in `GameMode_CityRPG4/jobs/civilian.cs`
+`JobSO.createJob("PdOfficer");` - Adds the job found in `GameMode_CityRPG4/jobs/PdOfficer.cs`
 
-`JobSO.addJobFromFile("Add-Ons/Suport_CityRPG_MyCustomJobs/civilian.cs");` - Adds the job found in `Add-Ons/Suport_CityRPG_MyCustomJobs/civilian.cs`
+`JobSO.addJobFromFile("Add-Ons/Suport_CityRPG_MyCustomJobs/PdOfficer.cs");` - Adds the job found in `Add-Ons/Suport_CityRPG_MyCustomJobs/PdOfficer.cs`

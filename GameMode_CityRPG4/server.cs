@@ -57,6 +57,18 @@ if(%error == $Error::AddOn_NotFound)
   return;
 }
 
+%error = ForceRequiredAddOn("Player_No_Jet");
+if(%error == $Error::AddOn_NotFound)
+{
+  error("ERROR: GameMode_CityRPG4 - required add-on Player_No_Jet not found");
+  return;
+}
+
+if(%error == $Error::AddOn_Disabled)
+{
+  playerNoJet.uiName = "";
+}
+
 // Player_DifferentSlotPlayers
 %error = ForceRequiredAddOn("Player_DifferentSlotPlayers");
 if(%error == $Error::AddOn_NotFound)
@@ -148,9 +160,10 @@ else
   if($AddOn__Brick_Checkpoint)
   {
     %error = ForceRequiredAddOn("Brick_Checkpoint");
-
+    
     if(%error == $Error::None)
     {
+      $City::CheckpointIsActive = 1;
       deactivatepackage(CheckpointPackage);
       // We don't want the checkpoint package loading.
       // The necessary functions will be rewritten later to fix spawn compatibility.
@@ -199,6 +212,11 @@ exec($City::ScriptPath @ "core.cs");
 exec($City::ScriptPath @ "player.cs");
 exec($City::ScriptPath @ "commands.cs");
 exec($City::ScriptPath @ "admin.cs");
+
+// Modules to preload
+exec($City::ScriptPath @ "support/Support_CenterprintMenuSystem.cs");
+
+// Core packages (Order-dependent)
 exec($City::ScriptPath @ "package.cs");
 exec($City::ScriptPath @ "overrides.cs");
 
@@ -219,7 +237,6 @@ exec($City::ScriptPath @ "cityModules/lotRegistry.cs");
 exec($City::ScriptPath @ "cityModules/lotRegistryMenu.cs");
 exec($City::ScriptPath @ "cityModules/cash.cs");
 exec($City::ScriptPath @ "cityModules/voteImpeach.cs");
-//exec($City::ScriptPath @ "cityModules/trade.cs");
 exec($City::ScriptPath @ "cityModules/mayor.cs");
 exec($City::ScriptPath @ "cityModules/security.cs");
 exec($City::ScriptPath @ "cityModules/shops.cs");

@@ -418,7 +418,7 @@ function ClothesSO::giveItem(%so, %client, %item)
 {
 	if(strLen(%so.str[%item]) && isObject(%client))
 	{
-		%outfit = CityRPGData.getData(%client.bl_id).valueOutfit;
+		%outfit = City.get(%client.bl_id, "outfit");
 
 		for(%a = 0; %a < getWordCount(%outfit); %a++)
 		{
@@ -430,7 +430,7 @@ function ClothesSO::giveItem(%so, %client, %item)
 				%newOutfit = (%newOutfit $= "" ? getWord(%so.str[%item], %a) : %newOutfit SPC getWord(%so.str[%item], %a));
 		}
 
-		CityRPGData.getData(%client.bl_id).valueOutfit = %newOutfit;
+		City.set(%client.bl_id, "outfit", %newOutfit);
 		%client.applyBodyParts();
 		%client.applyBodyColors();
 	}

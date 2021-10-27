@@ -2,6 +2,15 @@
 // Initializes the game-mode.
 function City_Init()
 {
+	if(!isObject(City))
+	{
+		// New object reference
+		new scriptObject(City)
+		{
+
+		};
+	}
+
 	if(!isObject(JobSO))
 	{
 		new scriptObject(JobSO) { };
@@ -10,6 +19,7 @@ function City_Init()
 
 	if(!isObject(CityRPGData))
 	{
+		// Deprecated object reference
 		new scriptObject(CityRPGData)
 		{
 			class = Sassy;
@@ -27,7 +37,7 @@ function City_Init()
 		CityRPGData.addValue("gender", "Male");
 		CityRPGData.addValue("hunger", "7");
 		CityRPGData.addValue("jailData", "0 0");
-		CityRPGData.addValue("jobID", "1");
+		CityRPGData.addValue("jobID", "StarterCivilian");
 		CityRPGData.addValue("jobRevert", "0");
 		CityRPGData.addValue("lotData", "0");
 		CityRPGData.addValue("money", "0");
@@ -39,6 +49,7 @@ function City_Init()
 		CityRPGData.addValue("Rep", "0");
 		CityRPGData.addValue("ElectionID", "0");
 		CityRPGData.addValue("lotsVisited", "-1");
+		CityRPGData.addValue("spawnPoint", "");
 		
 		if(CityRPGData.loadedSaveFile)
 		{
@@ -100,6 +111,31 @@ function City_Init()
 function CityRPGHostClient::onBottomPrint(%this, %message)
 {
 	return;
+}
+
+function City::get(%this, %profileID, %key)
+{
+	return CityRPGData.getData(%profileID).value[%key];
+}
+
+function City::set(%this, %profileID, %key, %value)
+{
+	CityRPGData.getData(%profileID).value[%key] = %value;
+}
+
+function City::add(%this, %profileID, %key, %value)
+{
+	CityRPGData.getData(%profileID).value[%key] = CityRPGData.getData(%profileID).value[%key] + %value;
+}
+
+function City::subtract(%this, %profileID, %key, %value)
+{
+	CityRPGData.getData(%profileID).value[%key] = CityRPGData.getData(%profileID).value[%key] - %value;
+}
+
+function City::keyExists(%this, %profileID)
+{
+	return CityRPGData.getData(%profileID) != 0;
 }
 
 // City_Init_Minigame()
