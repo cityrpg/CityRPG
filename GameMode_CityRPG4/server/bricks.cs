@@ -8,26 +8,14 @@ $CityBrick_ResourceLumber = 4;
 $CityBrick_ResourceOre = 5;
 
 // ============================================================
+// Error Types
+// ============================================================
+$Error::Lot::OutOfBounds = -1;
+$Error::Lot::Overlap = -2;
+
+// ============================================================
 // Handling Script Start
 // ============================================================
-$CityRPG::temp::brickError = forceRequiredAddOn("player_no_jet");
-
-if($CityRPG::temp::brickError)
-{
-	if($CityRPG::temp::brickError == $error::addOn_disabled)
-		playerNoJet.uiName = "";
-
-	if($CityRPG::temp::brickError == $error::addOn_notFound)
-		return;
-}
-
-$CityRPG::loadedDatablocks = true;
-
-if(!$CityRPG::loadedDatablocks)
-{
-	return;
-}
-
 datablock triggerData(CityRPGLotTriggerData)
 {
 	tickPeriodMS = 500;
@@ -281,38 +269,40 @@ datablock fxDTSBrickData(CityRPGCrimeVehicleData : brickVehicleSpawnData)
 // ============================================================
 function fxDTSBrick::createCityTrigger(%brick, %data)
 {
-	if(!isObject(%brick.trigger))
+	if(isObject(%brick.trigger))
 	{
-		%datablock = %brick.getDatablock();
+		return;
+	}
+	
+	%datablock = %brick.getDatablock();
 
-		%trigX = getWord(%datablock.triggerSize, 0);
-		%trigY = getWord(%datablock.triggerSize, 1);
-		%trigZ = getWord(%datablock.triggerSize, 2);
+	%trigX = getWord(%datablock.triggerSize, 0);
+	%trigY = getWord(%datablock.triggerSize, 1);
+	%trigZ = getWord(%datablock.triggerSize, 2);
 
-		if(mFloor(getWord(%brick.rotation, 3)) == 90)
-			%scale = (%trigY / 2) SPC (%trigX / 2) SPC (%trigZ / 2);
-		else
-			%scale = (%trigX / 2) SPC (%trigY / 2) SPC (%trigZ / 2);
+	if(mFloor(getWord(%brick.rotation, 3)) == 90)
+		%scale = (%trigY / 2) SPC (%trigX / 2) SPC (%trigZ / 2);
+	else
+		%scale = (%trigX / 2) SPC (%trigY / 2) SPC (%trigZ / 2);
 
-		%brick.trigger = new trigger()
-		{
-			datablock = %datablock.triggerDatablock;
-			position = getWords(%brick.getWorldBoxCenter(), 0, 1) SPC getWord(%brick.getWorldBox(), 2) + ((getWord(%datablock.triggerSize, 2) / 4));
-			rotation = "1 0 0 0";
-			scale = %scale;
-			polyhedron = "-0.5 -0.5 -0.5 1 0 0 0 1 0 0 0 1";
-			parent = %brick;
-		};
+	%brick.trigger = new trigger()
+	{
+		datablock = %datablock.triggerDatablock;
+		position = getWords(%brick.getWorldBoxCenter(), 0, 1) SPC getWord(%brick.getWorldBox(), 2) + ((getWord(%datablock.triggerSize, 2) / 4));
+		rotation = "1 0 0 0";
+		scale = %scale;
+		polyhedron = "-0.5 -0.5 -0.5 1 0 0 0 1 0 0 0 1";
+		parent = %brick;
+	};
 
-		%boxSize = getWord(%scale, 0) / 2.5 SPC getWord(%scale, 1) / 2.5 SPC getWord(%scale, 2) / 2.5;
+	%boxSize = getWord(%scale, 0) / 2.5 SPC getWord(%scale, 1) / 2.5 SPC getWord(%scale, 2) / 2.5;
 
-		if(%brick.getDatablock().CityRPGBrickType == $CityBrick_Lot)
-		{
-			getBrickGroupFromObject(%brick).lotsOwned++;
+	if(%brick.getDatablock().CityRPGBrickType == $CityBrick_Lot)
+	{
+		getBrickGroupFromObject(%brick).lotsOwned++;
 
-			if(isObject(getBrickGroupFromObject(%brick).client))
-				getBrickGroupFromObject(%brick).client.SetInfo();
-		}
+		if(isObject(getBrickGroupFromObject(%brick).client))
+			getBrickGroupFromObject(%brick).client.SetInfo();
 	}
 }
 
@@ -351,7 +341,8 @@ function fxDTSBrick::cityBrickInit(%brick)
 			if(%brick.getDatablock().getID() == brickVehicleSpawnData.getID() && !%client.isCityAdmin())
 			{
 				commandToClient(%client, 'centerPrint', "\c6You have paid \c3$" @ mFloor($CityRPG::prices::vehicleSpawn) @ "\c6 to plant this vehicle spawn.", 3);
-				CityRPGData.getData(%client.bl_id).valueMoney -= mFloor($CityRPG::prices::vehicleSpawn);
+
+				City.subtract(%client,bl_id, "money", mFloor($CityRPG::prices::vehicleSpawn));
 				%client.setInfo();
 			}
 	}
@@ -360,7 +351,7 @@ function fxDTSBrick::cityBrickInit(%brick)
 // Brick::getCityLotTrigger(this/brick)
 // Returns the lot trigger containing the brick. Caches the value on %brick.cityLotTrigger.
 // If the brick overlaps in multiple lots, the first trigger found is returned.
-function fxDTSBrick::getCityLotTrigger(%brick)
+function fxDTSBrick::cityLotTriggerCheck(%brick)
 {
 	if(%brick.isPlanted && %brick.cityLotTrigger !$= "")
 	{
@@ -456,7 +447,7 @@ function fxDTSBrick::cityBrickCheck(%brick)
 	}
 
 	// Lot zone check
-	%lotTrigger = %brick.getCityLotTrigger();
+	%lotTrigger = %brick.cityLotTriggerCheck();
 
 	if(!%lotTrigger && %brickData.CityRPGBrickType != $CityBrick_Lot)
 	{
@@ -464,7 +455,7 @@ function fxDTSBrick::cityBrickCheck(%brick)
 		return 0;
 	}
 
-	if(CityRPGData.getData(%client.bl_id).valueMoney < mFloor(%brick.getDatablock().initialPrice))
+	if(City.get(%client.bl_id, "money") < mFloor(%brick.getDatablock().initialPrice))
 	{
 		commandToClient(%client, 'centerPrint', "\c6You need at least \c3$" @ mFloor(%brick.getDatablock().initialPrice) SPC "\c6in order to plant this brick!", 3);
 		return 0;
@@ -476,7 +467,7 @@ function fxDTSBrick::cityBrickCheck(%brick)
 		return 0;
 	}
 
-	if(%lotTrigger && %brickData.getID() == brickVehicleSpawnData.getID() && CityRPGData.getData(%client.bl_id).valueMoney < mFloor($CityRPG::prices::vehicleSpawn))
+	if(%lotTrigger && %brickData.getID() == brickVehicleSpawnData.getID() && City.get(%client.bl_id, "money") < mFloor($CityRPG::prices::vehicleSpawn))
 	{
 		commandToClient(%client, 'centerPrint', "\c6You need at least \c3$" @ mFloor($CityRPG::prices::vehicleSpawn) SPC "\c6in order to plant this vehicle spawn!", 3);
 		return 0;
@@ -490,22 +481,24 @@ function fxDTSBrick::cityBrickCheck(%brick)
 
 function fxDTSBrick::onCityBrickRemove(%brick, %data)
 {
-	if(isObject(%brick.trigger))
+	if(!isObject(%brick.trigger))
 	{
-		for(%a = 0; %a < clientGroup.getCount(); %a++)
-		{
-			%subClient = ClientGroup.getObject(%a);
-			if(isObject(%subClient.player) && %subClient.CityRPGTrigger == %brick.trigger)
-				%brick.trigger.getDatablock().onLeaveTrigger(%brick.trigger, clientGroup.getObject(%a).player, true);
-		}
-
-		%boxSize = getWord(%brick.trigger.scale, 0) / 2.5 SPC getWord(%brick.trigger.scale, 1) / 2.5 SPC getWord(%brick.trigger.scale, 2) / 2.5;
-
-		initContainerBoxSearch(%brick.trigger.getWorldBoxCenter(), %boxSize, $typeMasks::playerObjectType);
-		while(isObject(%player = containerSearchNext()))
-			%brick.trigger.getDatablock().onLeaveTrigger(%brick.trigger, %player);
-		%brick.trigger.delete();
+		return;
 	}
+	
+	for(%a = 0; %a < clientGroup.getCount(); %a++)
+	{
+		%subClient = ClientGroup.getObject(%a);
+		if(isObject(%subClient.player) && %subClient.CityRPGTrigger == %brick.trigger)
+			%brick.trigger.getDatablock().onLeaveTrigger(%brick.trigger, clientGroup.getObject(%a).player, true);
+	}
+
+	%boxSize = getWord(%brick.trigger.scale, 0) / 2.5 SPC getWord(%brick.trigger.scale, 1) / 2.5 SPC getWord(%brick.trigger.scale, 2) / 2.5;
+
+	initContainerBoxSearch(%brick.trigger.getWorldBoxCenter(), %boxSize, $typeMasks::playerObjectType);
+	while(isObject(%player = containerSearchNext()))
+		%brick.trigger.getDatablock().onLeaveTrigger(%brick.trigger, %player);
+	%brick.trigger.delete();
 }
 
 // ============================================================
@@ -515,37 +508,64 @@ function CityRPGLotTriggerData::onEnterTrigger(%this, %trigger, %obj)
 {
 	parent::onEnterTrigger(%this, %trigger, %obj);
 
+	%lotID = %trigger.parent.getCityLotID();
+
 	if(!isObject(%obj.client))
 	{
 		if(isObject(%obj.getControllingClient()))
-		%client = %obj.getControllingClient();
+			%client = %obj.getControllingClient();
 		else
 			return;
 	}
 	else
 		%client = %obj.client;
 
-	%trigger.parent.onEnterLot(%obj);
+	%trigger.parent.onLotEntered(%obj);
 
 	%client.CityRPGTrigger = %trigger;
-	%client.CityRPGLotBrick = %trigger.parent;
+	%client.CityLotBrick = %trigger.parent;
 
-	%lotStr = "<just:right><font:palatino linotype:18>\c6" @ %trigger.parent.getCityLotName();
+	%client.cityLotDisplay(%trigger.parent);
 
-	%duration = 2;
-	if(%trigger.parent.getCityLotOwnerID() == -1)
+	// Realtime tracking of lot occupants - Add to the index.
+	%trigger.parent.lotOccupants = %trigger.parent.lotOccupants $= "" ? %client TAB "" : %trigger.parent.lotOccupants @ %client TAB "";
+
+	// Lot visit tracking
+	%lotsVisited = City.get(%client.bl_id, "lotsVisited");
+	%visited = 0;
+
+	if(%visited !$= "")
 	{
-		%lotStr = %lotStr @ "<br>\c2For sale!\c6 Type /lot for info";
+		// Loop through the lots this player has visited.
+		for(%i = 0; %i <= getWordCount(%lotsVisited); %i++)
+		{
+			%visited = %lotID == getWord(%lotsVisited, %i);
+
+			if(%visited)
+			{
+				// We've found it -- search is done.
+				break;
+			}
+		}
 	}
-	else if(%trigger.parent.getCityLotPreownedPrice() != -1)
+
+	// This is the player's first visit. Record the visit to this lot
+	if(!%visited)
 	{
-		%lotStr = %lotStr @ "<br>\c2For sale by owner!\c6 Type /lot for info";
-		%duration = 3;
+		// Trigger the event
+		%trigger.parent.onLotFirstEntered(%obj);
+		
+		// Initialize if blank
+		if(%lotsVisited == -1)
+		{
+			City.set(%client.bl_id, "lotsVisited", %lotID);
+		}
+		else
+		{
+			// Push to the beginning, listing the lots in reverse order of when first visited.
+			City.set(%client.bl_id, "lotsVisited", %lotID SPC %lotsVisited);
+		}
 	}
-
-	%client.centerPrint(%lotStr, %duration);
-
-	//%client.SetInfo();
 }
 
 function CityRPGLotTriggerData::onLeaveTrigger(%this, %trigger, %obj)
@@ -561,13 +581,16 @@ function CityRPGLotTriggerData::onLeaveTrigger(%this, %trigger, %obj)
 		%client = %obj.client;
 
 	%client.cityMenuClose();
-	%trigger.parent.onLeaveLot(%obj);
+	%trigger.parent.onLotLeft(%obj);
 
-	if(%trigger.parent!=%client.CityRPGLotBrick)
+	if(%trigger.parent!=%client.CityLotBrick)
 		return;
 
+	// Realtime tracking of lot occupants - Remove from the index.
+	%trigger.parent.lotOccupants = strreplace(%trigger.parent.lotOccupants, %client TAB "", "");
+
 	%client.CityRPGTrigger = "";
-	%client.CityRPGLotBrick = "";
+	%client.CityLotBrick = "";
 
 	//%client.SetInfo();
 }

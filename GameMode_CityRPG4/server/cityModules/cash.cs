@@ -6,11 +6,11 @@ package CityRPG_Cash
 	// Drop Money
 	function gameConnection::onDeath(%client, %killerPlayer, %killer, %damageType, %unknownA)
 	{
-		if(!getWord(CityRPGData.getData(%client.bl_id).valueJailData, 1) && CityRPGData.getData(%client.bl_id).valueMoney && !%client.moneyOnSuicide)
+		if(!getWord(City.get(%client.bl_id).valueJailData, 1) && City.get(%client.bl_id, "money") && !%client.moneyOnSuicide)
 		{
 			if($Pref::Server::City::misc::cashdrop == 1)
 			{
-				%cashval = mFloor(CityRPGData.getData(%client.bl_id).valueMoney);
+				%cashval = mFloor(City.get(%client.bl_id, "money"));
 				%cashcheck = 0;
 				if(%cashval > 1000)
 				{
@@ -32,9 +32,9 @@ package CityRPG_Cash
 				MissionCleanup.add(%cash);
 				%cash.setShapeName("$" @ %cash.value);
 				if(%cashcheck == 1)
-					CityRPGData.getData(%client.bl_id).valueMoney = CityRPGData.getData(%client.bl_id).valueMoney - 1000;
+					City.set(%client.bl_id, "money", City.get(%client.bl_id, "money") - 1000);
 				else
-					CityRPGData.getData(%client.bl_id).valueMoney = 0;
+					City.set(%client.bl_id, "money", 0);
 
 				%client.SetInfo();
 			}
@@ -53,9 +53,16 @@ package CityRPG_Cash
 				if(isObject(%col))
 				{
 					if(%obj.client.minigame)
+					{
 						%col.minigame = %obj.client.minigame;
+					}
 
-					CityRPGData.getData(%obj.client.bl_id).valueMoney += %col.value;
+					if(isObject(%col.dropper))
+					{
+						$City::Cache::DroppedCash[%col.dropper.bl_id]--;
+					}
+
+					City.add(%obj.client.bl_id, "money", %col.value);
 					messageClient(%obj.client, '', "\c6You have picked up \c3$" @ %col.value SPC "\c6off the ground.");
 
 					%obj.client.cityLog("Pick up $" @ %col.value);

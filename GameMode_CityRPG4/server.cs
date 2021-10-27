@@ -33,8 +33,6 @@ if(%error == $Error::AddOn_NotFound)
   return;
 }
 
-
-
 // Weapon_Rocket_Launcher
 %error = ForceRequiredAddOn("Weapon_Rocket_Launcher");
 if(%error == $Error::AddOn_NotFound)
@@ -42,7 +40,6 @@ if(%error == $Error::AddOn_NotFound)
    error("ERROR: GameMode_CityRPG4 - required add-on Weapon_Rocket_Launcher not found");
    return;
 }
-
 
 // Weapon_Sword
 %error = ForceRequiredAddOn("Weapon_Sword");
@@ -58,6 +55,18 @@ if(%error == $Error::AddOn_NotFound)
 {
   error("ERROR: GameMode_CityRPG4 - required add-on Projectile_Radio_Wave not found");
   return;
+}
+
+%error = ForceRequiredAddOn("Player_No_Jet");
+if(%error == $Error::AddOn_NotFound)
+{
+  error("ERROR: GameMode_CityRPG4 - required add-on Player_No_Jet not found");
+  return;
+}
+
+if(%error == $Error::AddOn_Disabled)
+{
+  playerNoJet.uiName = "";
 }
 
 // Player_DifferentSlotPlayers
@@ -142,7 +151,7 @@ if($GameModeArg $= "Add-Ons/GameMode_CityRPG4/gamemode.txt")
     exec("Add-Ons/Weapon_Shotgun/server.cs");
   }
 
-  // Weapon_Sniper_Rifle
+  // Weapon_Sniper_Rifle (Optional)
   if(isFile("Add-Ons/Weapon_Sniper_Rifle/server.cs"))
   {
     exec("Add-Ons/Weapon_Sniper_Rifle/server.cs");
@@ -159,9 +168,10 @@ else
   if($AddOn__Brick_Checkpoint)
   {
     %error = ForceRequiredAddOn("Brick_Checkpoint");
-
+    
     if(%error == $Error::None)
     {
+      $City::CheckpointIsActive = 1;
       deactivatepackage(CheckpointPackage);
       // We don't want the checkpoint package loading.
       // The necessary functions will be rewritten later to fix spawn compatibility.
@@ -205,10 +215,16 @@ exec($City::ScriptPath @ "bricks.cs");
 exec($City::ScriptPath @ "events.cs");
 exec($City::ScriptPath @ "scriptobject.cs");
 exec($City::ScriptPath @ "init.cs");
+exec($City::ScriptPath @ "jobs.cs");
 exec($City::ScriptPath @ "core.cs");
 exec($City::ScriptPath @ "player.cs");
 exec($City::ScriptPath @ "commands.cs");
 exec($City::ScriptPath @ "admin.cs");
+
+// Modules to preload
+exec($City::ScriptPath @ "support/Support_CenterprintMenuSystem.cs");
+
+// Core packages (Order-dependent)
 exec($City::ScriptPath @ "package.cs");
 exec($City::ScriptPath @ "overrides.cs");
 
@@ -229,8 +245,6 @@ exec($City::ScriptPath @ "cityModules/lotRegistry.cs");
 exec($City::ScriptPath @ "cityModules/lotRegistryMenu.cs");
 exec($City::ScriptPath @ "cityModules/cash.cs");
 exec($City::ScriptPath @ "cityModules/voteImpeach.cs");
-exec($City::ScriptPath @ "cityModules/rep.cs");
-//exec($City::ScriptPath @ "cityModules/trade.cs");
 exec($City::ScriptPath @ "cityModules/mayor.cs");
 exec($City::ScriptPath @ "cityModules/security.cs");
 
@@ -294,6 +308,7 @@ addExtraResource($City::DataPath @ "ui/cash.png");
 addExtraResource($City::DataPath @ "ui/health.png");
 addExtraResource($City::DataPath @ "ui/location.png");
 addExtraResource($City::DataPath @ "ui/time.png");
+addExtraResource($City::DataPath @ "ui/hunger.png");
 
 // Support_CityRPG_Plus (Optional)
 // This needs to load *after* CityRPG for it to be compatible.
