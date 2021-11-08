@@ -177,6 +177,8 @@ else
     // See package.cs for the function arg fix
   }
 
+  // Event_Zones (Optional)
+  // If Event_Zones is enabled, disable events that may be abused.
   if($AddOn__Event_Zones)
   {
     %error = ForceRequiredAddOn("Event_Zones");
