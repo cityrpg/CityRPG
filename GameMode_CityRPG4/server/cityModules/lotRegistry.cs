@@ -4,8 +4,10 @@
 
 // There are two major components at play here: McTwist's Chown tool, and McTwist's saver (Thanks, McTwist)
 // Any functions that deal directly with the CityLotRegistry object are contained here.
-// TODO: Ability to convert lots that are saved from other servers.
+
+// TODO: Ability to convert lots that are saved from other servers. (See: convertCityLotOwnership)
 // TODO: Pref for servers that have the original save files and want to override conversion
+// In the future, we may employ our own version of Chown's transfer loop to correspond with lot zoning rather than brick stacks.
 
 // ============================================================
 // Base Function
@@ -193,7 +195,7 @@ function fxDTSBrick::initExistingCityLot(%brick)
 	%lotID = getWord(%nameRaw, 2);
 	%isLinked = getWord(%nameRaw, 3);
 
-	// Legacy support for pre-0.3.0 lots
+	// Legacy support for pre-1.0.0 lots
 	if(%isLinked $= "")
 	{
 		%isLinked = 0;
@@ -236,7 +238,7 @@ function fxDTSBrick::initExistingCityLot(%brick)
 	%brick.cityLotOverride = 1;
 	// Note that for an existing lot, the owner ID is always derived from the lot registry, NOT the brick's saved name.
 	// This rules out any potential error in the brick's saved name, i.e. outdated save.
-	// The only notable exception to this is if we're loading a save from another server.
+	// The only notable exception to this is if we're loading a save from another server. (WIP)
 	%brick.setCityLotSaveName(getNumKeyID(), %ownerID, %lotID, %isLinked);
 	%brickOwnerID = getBrickGroupFromObject(%brick).bl_id;
 	// Lot owner must correlate to brick owner OR unclaimed lot must correlate to host ID
