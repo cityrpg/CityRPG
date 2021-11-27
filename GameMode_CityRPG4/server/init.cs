@@ -5,10 +5,7 @@ function City_Init()
 	if(!isObject(City))
 	{
 		// New object reference
-		new scriptObject(City)
-		{
-
-		};
+		new scriptObject(City) {};
 	}
 
 	if(!isObject(JobSO))
