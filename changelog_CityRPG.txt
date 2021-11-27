@@ -1,3 +1,56 @@
+<version:0.3.0>
+	<b>Interactions Update</b>
+	<b>Job Improvements</b>
+	The jobs menu and commands have been improved. Job sign-ups now give you more details about the qualifications and perks, and you can now type partial names when signing up for a job.
+
+	<b>Event Changes</b>
+	<ul>
+		<li>New event: onLotFirstEntered</li>
+		<li>onEnterLot and onLeaveLot events renamed to onLotEntered and onLotLeft</li>
+	</ul>
+
+	<b>Center Print Menus (Experimental)</b>
+	The chat-based menus have migrated to a new experimental menu system. You can now navigate through menus using the build keys to move up and down and select an option. This applies to the bank, real estate, lot menus, and all other in-game menus. For things that require text input, you must still type in chat.
+
+	<b>Actions Menu</b>
+	There is a new, central menu that can be used to access various general functions for CityRPG. This menu allows you to view your stats and access the Mayor menu if you are the mayor. 
+
+	<b>Mayor Menu</b>
+	The mayor now has their own panel that they can access through the player menu. This gives the Mayor easier access to their special powers, pardons and record clearing.
+
+	<b>Full Changelog</b>
+	<ul>
+		<li>Added a "Wrench lot" option to the /lot menu for lot owners. This option pulls up the wrench menu so you can more easily access events for the lot.</li>
+		<li>Renamed the "onEnterLot" and "onLeaveLot" events to "onLotEntered" and "onLotLeft" for clarity.</li>
+		<li>Added the "onLotFirstEntered" input event. This event triggers when someone enters your lot for the first time.</li>
+		<li>The number of unique lots you visit is now tracked under /stats.</li>
+		<li>When you update a lot (i.e. name change, ownership change, list for sale), the new info is now displayed to yourself and anyone on the lot.</li>
+		<li>You can now type in a partial name when signing up for a job.</li>
+		<li>If you attempt to sign up for a job that you are not qualified for, you will now see all of the missing qualifications--rather than only the first one detected by the game.</li>
+		<li>When you change jobs, you will now see a series of messages detailing what changes with your new job.</li>
+		<li>/dropMoney no-longer limits you to a minimum of $50. Instead, there is now a limit to how many cash drops you can have in the world at once.</li>
+		<li>Updated the Arms Dealer job description for clarity.</li>
+		<li>Pardoning players as the Mayor no-longer costs money in the form of direct payment. Instead, there is a cost to the economy, relative to the prisoner's remaining sentence. A prompt is displayed to explain the cost before pardoning.</li>
+		<li>/pardon now requires admin mode to be activated if the player is not the Mayor.</li>
+		<li>Lot management settings (renaming, etc.) have moved to a separate "Lot management" option to reduce clutter.</li>
+	</ul>
+
+	<b>Bugfixes</b>
+	<ul>
+		<li>Fixed the mayor brick not responding if an unknown player name is entered.</li>
+		<li>Fixed the mayor election messages continuing after changing game-modes.</li>
+		<li>Fixed "Unable to find function serverCmdClearImpeach" console errors.</li>
+		<li>Fixed "Your account will not be reset" message after resetting account.</li>
+	</ul>
+
+	<b>Changes for Hosting</b>
+	<ul>
+		<li>The way jobs are set up has been reworked. Any custom jobs mods will need to be updated to use the new functions and standards for jobs in CityRPG 4. All jobs in existing saves will be reset, and players will need to re-sign up for their desired jobs.</li>
+		<li>Added a "Wrench lot" option to the lot admin menu. This is the same option available to lot owners under their management menu.</li>
+		<li>Fixed "Incorrect amount of arguments!" console error on startup.</li>
+		<li>The Sniper and Shotgun are now optional add-ons. They will remain in the Full package for now, however the Minimal package excludes them.</li>
+	</ul>
+</version>
 <version:0.2.1>
 	Fixed an exploit where players could "buy" the real estate brick as a lot, granting them ownership of the bricks connected to it.
 </version>
