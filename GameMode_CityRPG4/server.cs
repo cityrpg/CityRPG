@@ -232,7 +232,6 @@ exec($City::ScriptPath @ "cityModules/lotRegistryMenu.cs");
 exec($City::ScriptPath @ "cityModules/cash.cs");
 exec($City::ScriptPath @ "cityModules/voteImpeach.cs");
 exec($City::ScriptPath @ "cityModules/mayor.cs");
-exec($City::ScriptPath @ "cityModules/security.cs");
 
 exec($City::ScriptPath @ "support/spacecasts.cs");
 exec($City::ScriptPath @ "support/extraResources.cs");
