@@ -10,15 +10,6 @@ In CityRPG 4, you can explore a range of jobs and opportunities as you work your
 
 ![Banner](https://lakeys.net/cityrpg/media/banner.png)
 
-## Features in 0.2.0
-- The classic gameplay that has been shaped by thousands of players within the Blockland community
-- Overhauled real estate and better lot selling
-- Admin Mode for administrators to more easily moderate and build
-- Job tracks for each type of job: Labor, Business, Bounty Hunter, Police, and Government
-- Improved team chat for players to communicate within their job track
-- Plenty of bugfixes and feature improvements
-- [More on the way](https://trello.com/b/36wGp6ow/cityrpg-4-roadmap)
-
 ## Created by the CityRPG 4 Team
 Development: Lake
 
