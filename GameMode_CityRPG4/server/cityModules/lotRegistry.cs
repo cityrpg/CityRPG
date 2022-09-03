@@ -17,6 +17,7 @@ function CityLots_TransferLot(%brick, %targetBL_ID)
 	if(%lotBricks == 0)
 	{
 		error("CityRPG Lot Registry - Failed to obtain the lot brick '" @ %brick @ "'. Aborting transfer.");
+		echo("For the above error, lot ID:" %brick.getCityLotID(), "|", %lotBricks);
 		return;
 	}
 
