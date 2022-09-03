@@ -71,7 +71,7 @@ function CityMenu_Lot(%client, %input)
 	}
 
 	// ## Initial display ## //
-	%price = %lotBrick.dataBlock.initialPrice;
+	%price = $Pref::Server::City::lotCost[%lotBrick.dataBlock.getName()];
 
 	if(%lotBrick.getCityLotID() == -1)
 	{
@@ -158,9 +158,11 @@ function CityMenu_LotPurchasePrompt(%client)
 
 	%client.cityLog("Lot " @ %lotBrick.getCityLotID() @ " purchase prompt");
 
-	if(City.get(%client.bl_id, "money") < %lotBrick.dataBlock.initialPrice)
+	%price = $Pref::Server::City::lotCost[%lotBrick.dataBlock.getName()];
+
+	if(City.get(%client.bl_id, "money") < %price)
 	{
-		%client.cityMenuMessage("\c6You need " @ $c_p @ "$" @ %lotBrick.dataBlock.initialPrice @ "\c6 on hand to purchase this lot.");
+		%client.cityMenuMessage("\c6You need " @ $c_p @ "$" @ %price @ "\c6 on hand to purchase this lot.");
 		%client.cityMenuClose();
 	}
 	else if(%lotsOwned >= $Pref::Server::City::realestate::maxLots)
@@ -170,7 +172,7 @@ function CityMenu_LotPurchasePrompt(%client)
 	}
 	else
 	{
-		%client.cityMenuMessage("\c6You are purchasing this lot for " @ $c_p @ "$" @ %lotBrick.dataBlock.initialPrice @ "\c6. Make sure you have read the lot rules. Lot sales are final!");
+		%client.cityMenuMessage("\c6You are purchasing this lot for " @ $c_p @ "$" @ %price @ "\c6. Make sure you have read the lot rules. Lot sales are final!");
 		%client.cityMenuMessage("\c6Type " @ $c_p @ "1\c6 to confirm, or leave the lot to cancel.");
 
 		%client.cityMenuFunction = CityLots_PurchaseLot;
@@ -186,6 +188,7 @@ function CityLots_PurchaseLot(%client, %input, %lotBrick)
 	}
 
 	%buyerCash = City.get(%client.bl_id, "money");
+	%price = $Pref::Server::City::lotCost[%lotBrick.dataBlock.getName()];
 
 	if(%input !$= "1")
 	{
@@ -198,7 +201,7 @@ function CityLots_PurchaseLot(%client, %input, %lotBrick)
 		%client.cityMenuMessage("\c0This lot cannot be purchased due to an error. Please talk to an administrator for assistance.");
 		%client.cityMenuClose();
 	}
-	else if(%lotBrick.getCityLotOwnerID() != -1 || %buyerCash < %lotBrick.dataBlock.initialPrice)
+	else if(%lotBrick.getCityLotOwnerID() != -1 || %buyerCash < %price)
 	{
 		%client.cityLog("Lot " @ %lotBrick.getCityLotID() @ " purchase fell through", 0, 1);
 
@@ -206,12 +209,12 @@ function CityLots_PurchaseLot(%client, %input, %lotBrick)
 		%client.cityMenuMessage("\c0Sorry, you are no-longer able to purchase this lot at this time.");
 		%client.cityMenuClose();
 	}
-	else if(%buyerCash >= %lotBrick.dataBlock.initialPrice)
+	else if(%buyerCash >= $Pref::Server::City::lotCost[%lotBrick.dataBlock.getName()])
 	{
-		%client.cityLog("Lot " @ %lotBrick.getCityLotID() @ " purchase success for" @ %lotBrick.dataBlock.initialPrice);
+		%client.cityLog("Lot " @ %lotBrick.getCityLotID() @ " purchase success for" @ $Pref::Server::City::lotCost[%lotBrick.dataBlock.getName()]);
 
-		City.subtract(%client.bl_id, "money", %lotBrick.dataBlock.initialPrice);
-		%client.cityMenuMessage("\c6You have purchased this lot for " @ $c_p @ "$" @ %lotBrick.dataBlock.initialPrice @ "\c6!");
+		City.subtract(%client.bl_id, "money", %price);
+		%client.cityMenuMessage("\c6You have purchased this lot for " @ $c_p @ "$" @ %price @ "\c6!");
 
 		%client.setInfo();
 

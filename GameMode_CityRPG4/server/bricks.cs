@@ -84,8 +84,6 @@ datablock fxDTSBrickData(CityRPGSmallLotBrickData : brick16x16FData)
 	triggerDatablock = CityRPGLotTriggerData;
 	triggerSize = "16 16 4800";
 	trigger = 0;
-
-	initialPrice = 500;
 };
 
 datablock fxDTSBrickData(CityRPGHalfSmallLotBrickData : brick16x32FData)
@@ -103,8 +101,6 @@ datablock fxDTSBrickData(CityRPGHalfSmallLotBrickData : brick16x32FData)
 	triggerDatablock = CityRPGLotTriggerData;
 	triggerSize = "16 32 4800";
 	trigger = 0;
-
-	initialPrice = 750;
 };
 
 datablock fxDTSBrickData(CityRPGMediumLotBrickData : brick32x32FData)
@@ -122,8 +118,6 @@ datablock fxDTSBrickData(CityRPGMediumLotBrickData : brick32x32FData)
 	triggerDatablock = CityRPGLotTriggerData;
 	triggerSize = "32 32 6400";
 	trigger = 0;
-
-	initialPrice = 1500;
 };
 
 datablock fxDTSBrickData(CityRPGHalfLargeLotBrickData)
@@ -142,8 +136,6 @@ datablock fxDTSBrickData(CityRPGHalfLargeLotBrickData)
 	triggerDatablock = CityRPGLotTriggerData;
 	triggerSize = "32 64 6400";
 	trigger = 0;
-
-	initialPrice = 2000;
 };
 
 datablock fxDTSBrickData(CityRPGLargeLotBrickData : brick64x64FData)
@@ -161,8 +153,6 @@ datablock fxDTSBrickData(CityRPGLargeLotBrickData : brick64x64FData)
 	triggerDatablock = CityRPGLotTriggerData;
 	triggerSize = "64 64 12800";
 	trigger = 0;
-
-	initialPrice = 4500;
 };
 
 // Sale Lots
@@ -456,9 +446,11 @@ function fxDTSBrick::cityBrickCheck(%brick)
 		return 0;
 	}
 
-	if(City.get(%client.bl_id, "money") < mFloor(%brick.getDatablock().initialPrice))
+	%price = $Pref::Server::City::lotCost[%brick.getDatablock().getName()];
+
+	if(City.get(%client.bl_id, "money") < mFloor(price))
 	{
-		commandToClient(%client, 'centerPrint', "\c6You need at least " @ $c_p @ "$" @ mFloor(%brick.getDatablock().initialPrice) SPC "\c6in order to plant this brick!", 3);
+		commandToClient(%client, 'centerPrint', "\c6You need at least \c3$" @ %price SPC "\c6in order to plant this brick!", 3);
 		return 0;
 	}
 
