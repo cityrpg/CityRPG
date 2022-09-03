@@ -40,8 +40,6 @@ function City_RegisterPref(%category, %name, %variable, %type, %params, %default
 		if(%varRef $= "")
 			eval(%variable @ " = \"" @ %defaultValue @ "\";");
 	}
-
-
 }
 
 function City_InitPrefs()
@@ -68,6 +66,12 @@ function City_InitPrefs()
 	City_RegisterPref("Economy", "Economy Relay", "$Pref::Server::City::Economics::Relay", "int", "0 50", 2);
 	City_RegisterPref("Economy", "Max Economy Percentage", "$Pref::Server::City::Economics::Greatest", "int", "-500 500", 100);
 	City_RegisterPref("Economy", "Economy Cap", "$Pref::Server::City::Economics::Cap", "int", "-5000 5000", 150);
+
+	City_RegisterPref("Economy", "Lot Cost - 16x16", "$Pref::Server::City::lotCost" @ "CityRPGSmallLotBrickData", "int", "0 999999", 500);
+	City_RegisterPref("Economy", "Lot Cost - 16x32", "$Pref::Server::City::lotCost" @ "CityRPGHalfSmallLotBrickData", "int", "0 999999", 750);
+	City_RegisterPref("Economy", "Lot Cost - 32x32", "$Pref::Server::City::lotCost" @ "CityRPGMediumLotBrickData", "int", "0 999999", 1500);
+	City_RegisterPref("Economy", "Lot Cost - 32x64", "$Pref::Server::City::lotCost" @ "CityRPGHalfLargeLotBrickData", "int", "0 999999", 2000);
+	City_RegisterPref("Economy", "Lot Cost - 64x64", "$Pref::Server::City::lotCost" @ "CityRPGLargeLotBrickData", "int", "0 999999", 4500);
 
 	City_RegisterPref("Mayor", "Election Active", "$Pref::Server::City::Mayor::Active", "bool", "", true);
 	City_RegisterPref("Mayor", "Mayor Run Cost", "$Pref::Server::City::Mayor::Cost", "int", "0 50000", 500);

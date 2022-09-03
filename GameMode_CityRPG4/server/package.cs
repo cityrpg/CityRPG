@@ -12,7 +12,7 @@ package CityRPG_MainPackage
 			{
 				%client.player.serviceType = "zone";
 				%client.player.serviceOrigin = %brick;
-				%client.player.serviceFee = %brick.getDatablock().CityRPGMatchingLot.initialPrice;
+				%client.player.serviceFee = $Pref::Server::City::lotCost[%brick.getDatablock().CityRPGMatchingLot.getName()];
 				messageClient(%client, '', '\c6It costs \c3%1\c6 to build in this zone. Type \c3/yes\c6 to accept and \c3/no\c6 to decline', %client.player.serviceFee);
 			}
 			else if(isObject(%client.player.serviceOrigin) && %client.player.serviceOrigin != %brick)
