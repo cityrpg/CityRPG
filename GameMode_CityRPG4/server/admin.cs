@@ -6,14 +6,14 @@ function serverCmdAdmin(%client)
   CityMenu_Admin(%client);
 }
 
+$City::Menu::AdminBaseTxt = "Toggle admin mode" TAB "Close menu.";
+$City::Menu::AdminBaseFunc = "serverCmdAdminMode" TAB "CityMenu_Close";
+
 function CityMenu_Admin(%client)
 {
   %client.cityMenuMessage("\c3CityRPG Game Master");
 
-	%menu = "Toggle admin mode" TAB "Close menu.";
-	%functions = "serverCmdAdminMode" TAB "CityMenu_Close";
-
-	%client.cityMenuOpen(%menu, %functions, %client);
+	%client.cityMenuOpen($City::Menu::AdminBaseTxt, $City::Menu::AdminBaseFunc, %client);
 }
 
 // ============================================================
