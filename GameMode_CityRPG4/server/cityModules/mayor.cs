@@ -260,18 +260,18 @@ function CityMayor_getWinner()
 	return %toBeat TAB %toBeatID;
 }
 
+$City::Menu::MayorBaseTxt = "Issue a pardon."
+	TAB "Clear a record."
+	TAB "Go back.";
+
+$City::Menu::MayorBaseFunc = "CityMenu_Mayor_PardonPrompt"
+	TAB "CityMenu_Mayor_ErasePrompt"
+	TAB "CityMenu_Player";
+
 // Menu stuff
 function CityMenu_Mayor(%client)
 {
-	%menu = "Issue a pardon."
-			TAB "Clear a record."
-			TAB "Go back.";
-
-	%functions = "CityMenu_Mayor_PardonPrompt"
-			 TAB "CityMenu_Mayor_ErasePrompt"
-			 TAB "CityMenu_Player";
-
-	%client.cityMenuOpen(%menu, %functions, %client, "\c3Mayor actions menu closed.", 0, 1, "Mayor Actions");
+	%client.cityMenuOpen($City::Menu::MayorBaseTxt, $City::Menu::MayorBaseFunc, %client, "\c3Mayor actions menu closed.", 0, 1, "Mayor Actions");
 }
 
 function CityMenu_Mayor_PardonPrompt(%client)
