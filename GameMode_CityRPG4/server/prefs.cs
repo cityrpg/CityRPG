@@ -156,6 +156,15 @@ if(isObject(sniperRifleItem))
 
 // Weapon support: Weapon_Package_Tier1
 if(!$Pref::Server::TT::DisableTier1 && isObject(TTLittleRecoilExplosion) && isObject(SubmachineGunItem)) {
+	// We don't use ammo currently, so we need to handle that.
+	// Configure this if we don't have a server control mod
+	if(!$RTB::Hooks::ServerControl)
+	{
+		$Pref::Server::TT::Ammo = 2;
+	}
+	else
+		$City::MaybeDisplayTTAmmoWarning = 1; // Warn the host that things might be broken.
+
 	$CityRPG::prices::weapon::name[$CityRPG::guns] = "SubmachineGunItem";
 	$CityRPG::prices::weapon::price[$CityRPG::guns] = 150;
 	$CityRPG::prices::weapon::mineral[$CityRPG::guns++] = 1;

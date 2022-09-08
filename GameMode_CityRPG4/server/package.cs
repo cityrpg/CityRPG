@@ -379,10 +379,23 @@ package CityRPG_MainPackage
 			schedule(1, 0, messageClient, %client, '', "\c2Type \c6/help starters\c2 to learn more about how to get started in CityRPG.");
 		}
 
-		if($City::DisplayVersionWarning)
+		// Important warning messages for the host.
+		if(%client.bl_id == getNumKeyID())
 		{
-			messageClient(%client, '', $City::VersionWarning);
-			$City::DisplayVersionWarning = 0;
+			if($City::DisplayVersionWarning)
+			{
+				messageClient(%client, '', $City::VersionWarning);
+				$City::DisplayVersionWarning = 0;
+			}
+			
+			// T+T Ammo System Warning
+			// This pref is toggled on automatically if there is no prefs mod enabled. See: ./prefs.cs
+			if($City::MaybeDisplayTTAmmoWarning && $Pref::Server::TT::Ammo != 2)
+			{
+				messageClient(%client, '', "WARNING: You have Tier+Tactical ammo enabled, but CityRPG currently doesn't use this.");
+				messageClient(%client, '', "Unless you have set up custom handling for this, it is recommended that you change 'Ammo System' to 'Classic' in your server prefs.");
+				$City::MaybeDisplayTTAmmoWarning = 0;
+			}
 		}
 	}
 
