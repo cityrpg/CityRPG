@@ -54,6 +54,7 @@ function City_InitPrefs()
 	// City Prefs
 	City_RegisterPref("Game", "City name", "$Pref::Server::City::name", "string", "64", "Blocko Town");
 	City_RegisterPref("Game", "Drop Cash on Death", "$Pref::Server::City::misc::cashdrop", "bool", "", true);
+	City_RegisterPref("Game", "Disable Default Weapons", "$Pref::Server::City::disabledefaultweps", "bool", "", false, "", "", true);
 	City_RegisterPref("Game", "Max Lots", "$Pref::Server::City::realestate::maxLots", "int", "0 999", 5);
 	City_RegisterPref("Game", "Account Reset Cost (/reset)", "$Pref::Server::City::prices::reset", "int", "0 5000", 100);
 	City_RegisterPref("Game", "Tick Length (minutes)", "$Pref::Server::City::tick::speed", "int", "0 10", 5);
@@ -131,12 +132,12 @@ $CityRPG::prices::weapon::name[$CityRPG::guns] = "gunItem";
 $CityRPG::prices::weapon::price[$CityRPG::guns] = 80;
 $CityRPG::prices::weapon::mineral[$CityRPG::guns++] = 1;
 
-$CityRPG::prices::weapon::name[$CityRPG::guns] = "taserItem";
-$CityRPG::prices::weapon::price[$CityRPG::guns] = 40;
-$CityRPG::prices::weapon::mineral[$CityRPG::guns++] = 1;
-
 $CityRPG::prices::weapon::name[$CityRPG::guns] = "akimboGunItem";
 $CityRPG::prices::weapon::price[$CityRPG::guns] = 150;
+$CityRPG::prices::weapon::mineral[$CityRPG::guns++] = 1;
+
+$CityRPG::prices::weapon::name[$CityRPG::guns] = "taserItem";
+$CityRPG::prices::weapon::price[$CityRPG::guns] = 40;
 $CityRPG::prices::weapon::mineral[$CityRPG::guns++] = 1;
 
 if(isObject(shotgunItem))
@@ -153,6 +154,24 @@ if(isObject(sniperRifleItem))
 	$CityRPG::prices::weapon::mineral[$CityRPG::guns++] = 1;
 }
 
+// Weapon support: Weapon_Package_Tier1
+if(!$Pref::Server::TT::DisableTier1 && isObject(TTLittleRecoilExplosion) && isObject(SubmachineGunItem)) {
+	$CityRPG::prices::weapon::name[$CityRPG::guns] = "SubmachineGunItem";
+	$CityRPG::prices::weapon::price[$CityRPG::guns] = 150;
+	$CityRPG::prices::weapon::mineral[$CityRPG::guns++] = 1;
+
+	$CityRPG::prices::weapon::name[$CityRPG::guns] = "PumpShotgunItem";
+	$CityRPG::prices::weapon::price[$CityRPG::guns] = 200;
+	$CityRPG::prices::weapon::mineral[$CityRPG::guns++] = 1;
+
+	$CityRPG::prices::weapon::name[$CityRPG::guns] = "PistolItem";
+	$CityRPG::prices::weapon::price[$CityRPG::guns] = 80;
+	$CityRPG::prices::weapon::mineral[$CityRPG::guns++] = 1;
+
+	$CityRPG::prices::weapon::name[$CityRPG::guns] = "AkimboPistolItem";
+	$CityRPG::prices::weapon::price[$CityRPG::guns] = 160;
+	$CityRPG::prices::weapon::mineral[$CityRPG::guns++] = 1;
+}
 
 //$CityRPG::prices::weapon::price[$CityRPG::guns] = 30;
 //$CityRPG::prices::weapon::mineral[$CityRPG::guns++] = 1;
