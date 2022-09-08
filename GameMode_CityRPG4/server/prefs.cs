@@ -40,8 +40,6 @@ function City_RegisterPref(%category, %name, %variable, %type, %params, %default
 		if(%varRef $= "")
 			eval(%variable @ " = \"" @ %defaultValue @ "\";");
 	}
-
-
 }
 
 function City_InitPrefs()
@@ -128,31 +126,26 @@ $CityRPG::prices::resourcePrice = 1.5;
 // Weapon Prices
 $CityRPG::guns = 0;
 
-$CityRPG::prices::weapon::name[$CityRPG::guns] = "gunItem";
-$CityRPG::prices::weapon::price[$CityRPG::guns] = 80;
-$CityRPG::prices::weapon::mineral[$CityRPG::guns++] = 1;
+function City_RegisterItem(%datablock, %cost, %mineral) {
+	if(!isObject(%datablock)) {
+		warn("GameMode_CityRPG4 - Attempting to register nonexistent item '" @ %datablock @ "'. This might indicate one of your add-ons is a version not supported by CityRPG 4. This item will not be purchase-able.");
+		return;
+	}
 
-$CityRPG::prices::weapon::name[$CityRPG::guns] = "akimboGunItem";
-$CityRPG::prices::weapon::price[$CityRPG::guns] = 150;
-$CityRPG::prices::weapon::mineral[$CityRPG::guns++] = 1;
+	$CityRPG::prices::weapon::name[$CityRPG::guns] = %datablock;
+	$CityRPG::prices::weapon::price[$CityRPG::guns] = %cost;
+	$CityRPG::prices::weapon::mineral[$CityRPG::guns++] = %mineral;
+}
 
-$CityRPG::prices::weapon::name[$CityRPG::guns] = "taserItem";
-$CityRPG::prices::weapon::price[$CityRPG::guns] = 40;
-$CityRPG::prices::weapon::mineral[$CityRPG::guns++] = 1;
+City_RegisterItem(gunItem, 80, 1);
+City_RegisterItem(akimboGunItem, 150, 1);
+City_RegisterItem(taserItem, 40, 1);
 
 if(isObject(shotgunItem))
-{
-	$CityRPG::prices::weapon::name[$CityRPG::guns] = "shotgunItem";
-	$CityRPG::prices::weapon::price[$CityRPG::guns] = 260;
-	$CityRPG::prices::weapon::mineral[$CityRPG::guns++] = 1;
-}
+	City_RegisterItem(shotgunItem, 260, 1);
 
 if(isObject(sniperRifleItem))
-{
-	$CityRPG::prices::weapon::name[$CityRPG::guns] = "sniperRifleItem";
-	$CityRPG::prices::weapon::price[$CityRPG::guns] = 450;
-	$CityRPG::prices::weapon::mineral[$CityRPG::guns++] = 1;
-}
+	City_RegisterItem(sniperRifleItem, 450, 1);
 
 // Weapon support: Weapon_Package_Tier1
 if(!$Pref::Server::TT::DisableTier1 && isObject(TTLittleRecoilExplosion) && isObject(SubmachineGunItem)) {
@@ -165,37 +158,16 @@ if(!$Pref::Server::TT::DisableTier1 && isObject(TTLittleRecoilExplosion) && isOb
 	else
 		$City::MaybeDisplayTTAmmoWarning = 1; // Warn the host that things might be broken.
 
-	$CityRPG::prices::weapon::name[$CityRPG::guns] = "SubmachineGunItem";
-	$CityRPG::prices::weapon::price[$CityRPG::guns] = 150;
-	$CityRPG::prices::weapon::mineral[$CityRPG::guns++] = 1;
-
-	$CityRPG::prices::weapon::name[$CityRPG::guns] = "PumpShotgunItem";
-	$CityRPG::prices::weapon::price[$CityRPG::guns] = 200;
-	$CityRPG::prices::weapon::mineral[$CityRPG::guns++] = 1;
-
-	$CityRPG::prices::weapon::name[$CityRPG::guns] = "PistolItem";
-	$CityRPG::prices::weapon::price[$CityRPG::guns] = 80;
-	$CityRPG::prices::weapon::mineral[$CityRPG::guns++] = 1;
-
-	$CityRPG::prices::weapon::name[$CityRPG::guns] = "AkimboPistolItem";
-	$CityRPG::prices::weapon::price[$CityRPG::guns] = 160;
-	$CityRPG::prices::weapon::mineral[$CityRPG::guns++] = 1;
+	City_RegisterItem(SubmachineGunItem, 150, 1);
+	City_RegisterItem(PumpShotgunItem, 200, 1);
+	City_RegisterItem(PistolItem, 80, 1);
+	City_RegisterItem(AkimboPistolItem, 160, 1);
 }
 
-//$CityRPG::prices::weapon::price[$CityRPG::guns] = 30;
-//$CityRPG::prices::weapon::mineral[$CityRPG::guns++] = 1;
 
-$CityRPG::prices::weapon::name[$CityRPG::guns] = "CityRPGLBItem";
-$CityRPG::prices::weapon::price[$CityRPG::guns] = 100;
-$CityRPG::prices::weapon::mineral[$CityRPG::guns++] = 1;
-
-$CityRPG::prices::weapon::name[$CityRPG::guns] = "CityRPGPickaxeItem";
-$CityRPG::prices::weapon::price[$CityRPG::guns] = 25;
-$CityRPG::prices::weapon::mineral[$CityRPG::guns++] = 1;
-
-$CityRPG::prices::weapon::name[$CityRPG::guns] = "CityRPGLumberjackItem";
-$CityRPG::prices::weapon::price[$CityRPG::guns] = 25;
-$CityRPG::prices::weapon::mineral[$CityRPG::guns++] = 1;
+City_RegisterItem(CityRPGLBItem, 100, 1);
+City_RegisterItem(CityRPGPickaxeItem, 25, 1);
+City_RegisterItem(CityRPGLumberjackItem, 25, 1);
 
 //When adding to this index, be sure to add a forceRequiredAddon("Item_Here");
 //in server.cs, or else the item mod will be broken.
