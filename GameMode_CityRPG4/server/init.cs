@@ -285,19 +285,18 @@ function City_Init_Items()
 	if(isObject(sniperRifleItem))
 		City_RegisterItem(sniperRifleItem, 450, 1);
 
-		
-	// Weapon support: Weapon_Package_Tier1
-	if(!$Pref::Server::TT::DisableTier1 && isObject(TTLittleRecoilExplosion) && isObject(SubmachineGunItem))
+	// Weapon support: Any T+T ammo system weapons
+	if($Pref::Server::TT::Ammo != "")
 	{
 		// We don't use ammo currently, so we need to handle that.
 		// Configure this if we don't have a server control mod
 		if(!$RTB::Hooks::ServerControl)
-		{
-			$Pref::Server::TT::Ammo = 2;
-		}
-		else
-			$City::MaybeDisplayTTAmmoWarning = 1; // Warn the host that things might be broken.
+			$Pref::Server::TT::Ammo = 1;
+	}
 
+	// Weapon support: Weapon_Package_Tier1
+	if(!$Pref::Server::TT::DisableTier1 && isObject(TTLittleRecoilExplosion) && isObject(SubmachineGunItem))
+	{
 		City_RegisterItem(SubmachineGunItem, 150, 1);
 		City_RegisterItem(PumpShotgunItem, 200, 1);
 		City_RegisterItem(PistolItem, 80, 1);

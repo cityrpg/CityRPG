@@ -387,15 +387,6 @@ package CityRPG_MainPackage
 				messageClient(%client, '', $City::VersionWarning);
 				$City::DisplayVersionWarning = 0;
 			}
-			
-			// T+T Ammo System Warning
-			// This pref is toggled on automatically if there is no prefs mod enabled. See: ./prefs.cs
-			if($City::MaybeDisplayTTAmmoWarning && $Pref::Server::TT::Ammo != 2)
-			{
-				messageClient(%client, '', "WARNING: You have Tier+Tactical ammo enabled, but CityRPG currently doesn't use this.");
-				messageClient(%client, '', "Unless you have set up custom handling for this, it is recommended that you change 'Ammo System' to 'Classic' in your server prefs.");
-				$City::MaybeDisplayTTAmmoWarning = 0;
-			}
 		}
 	}
 
