@@ -189,6 +189,14 @@ else
       unregisterOutputEvent("fxDTSBrick","setZoneVelocityMod");
     }
   }
+
+  // Weapons packs
+  // Weapon registry in prefs.cs will handle the rest for these
+
+  if($AddOn__Weapon_Package_Tier1)
+  {
+    ForceRequiredAddOn("Weapon_Package_Tier1");
+  }
 }
 
 // ============================================================
