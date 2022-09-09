@@ -77,7 +77,7 @@ function CityMenu_Lot(%client, %input)
 	{
 		error("Attempting to access a blank lot on brick '" @ %lotBrick @ "'! Re-initializing it...");
 
-		%lotBrick.initNewCityLot();
+		%lotBrick.initCityLot();
 	}
 
 	%title = "\c3" @ %lotBrick.getCityLotName() @ "\c6 - " @ %lotBrick.getDataBlock().uiName;

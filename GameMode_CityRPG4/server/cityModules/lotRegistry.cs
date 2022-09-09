@@ -114,7 +114,7 @@ function fxDTSBrick::setCityLotSaveName(%brick, %hostID, %ownerID, %lotID, %isLi
 }
 
 // Determines the state of the lot and directs the corresponding init process.
-function fxDTSBrick::initCityLot(%brick)
+function fxDTSBrick::initCityLot(%brick, %forceNew)
 {
 	if(%brick.lotInitialized)
 	{
@@ -123,7 +123,7 @@ function fxDTSBrick::initCityLot(%brick)
 	}
 
 	%brick.lotInitialized = 1;
-	if(%brick.getCityLotID() == -1)
+	if(%brick.getCityLotID() == -1 || %forceNew)
 	{
 		%brick.initNewCityLot();
 	}
@@ -245,7 +245,7 @@ function fxDTSBrick::initNewCityLot(%brick)
 
 function fxDTSBrick::convertCityLotOwnership(%brick)
 {
-	%brick.initNewCityLot();
+	%brick.initCityLot(1);
 
 	// 1. Check the lot's brick name for the original owner. Assign.
 	// 2. Initialize the lot as a new lot to give it an ID on the current server, flushing out the old one.
@@ -563,7 +563,7 @@ package CityRPG_LotRegistry
 
 		if(%brick.dataBlock !$= "" && %brick.dataBlock.CityRPGBrickType == $CityBrick_Lot)
 		{
-			%brick.schedule(0,initNewCityLot);
+			%brick.schedule(0,initCityLot,1);
 		}
 	}
 
