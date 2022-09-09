@@ -263,6 +263,11 @@ function gameConnection::cityLotDisplay(%client, %lotBrick)
 		%duration = 3;
 	}
 
+	if(City.get(%client.bl_id, "jobid") $= $City::AdminJobID)
+	{
+		%lotStr = %lotStr @ "<br>\c4ID:" @ %lotBrick.getCityLotID();
+	}
+
 	%client.centerPrint(%lotStr, %duration);
 }
 
