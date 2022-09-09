@@ -1090,6 +1090,11 @@ package CityRPG_MainPackage
 		messageClient (%client, '', "Can\'t clear bricks in CityRPG. You must clear your lots manually.");
 		return;
 	}
+
+	function serverCmdMessageBoxNo(%client)
+	{
+		serverCmdNo(%client);
+	}
 };
 deactivatePackage(CityRPG_MainPackage);
 activatepackage(CityRPG_MainPackage);

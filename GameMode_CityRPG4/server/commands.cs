@@ -142,10 +142,6 @@ package CityRPG_Commands
 				messageClient(%client, '', "\c6You are too far away from the service to purchase it!");
 			}
 		}
-		else
-		{
-			messageClient(%client, '', "\c6You have no active tranfers that you may accept!");
-		}
 
 		%client.player.serviceType = "";
 		%client.player.serviceFee = "";
@@ -179,8 +175,6 @@ package CityRPG_Commands
 			%client.player.serviceSize = "";
 			%client.player.serviceOrigin = "";
 		}
-		else
-			messageClient(%client, '', "\c6You have no active tranfers that you may decline!");
 	}
 
 	function serverCmddonate(%client, %arg1)
