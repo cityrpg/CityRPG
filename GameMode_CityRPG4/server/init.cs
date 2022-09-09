@@ -302,6 +302,42 @@ function City_Init_Items()
 		City_RegisterItem(PistolItem, 80, 1);
 		City_RegisterItem(AkimboPistolItem, 160, 1);
 	}
+
+	// Weapon support: Weapon_Package_Tier1A
+	if(isObject(SingleShotgunItem))
+	{
+		City_RegisterItem(SingleShotgunItem, 80, 1);
+		City_RegisterItem(SnubnoseItem, 150, 1);
+		City_RegisterItem(PepperPistolItem, 80, 1);
+
+		if($Pref::Server::TT::EasterEgg)
+			City_RegisterItem(nailgunItem, 150, 1);
+	}
+
+	// Weapon support: Weapon_Package_Tier2
+	if(isObject(TAssaultRifleItem))
+	{
+		City_RegisterItem(TAssaultRifleItem, 200, 1);
+		City_RegisterItem(BattleRifleItem, 180, 1);
+		City_RegisterItem(MagnumItem, 150, 1);
+		City_RegisterItem(MilitarySniperItem, 200, 1);
+		City_RegisterItem(CombatShotgunItem, 300, 1);
+
+		if($Pref::Server::TT::EasterEgg)
+			City_RegisterItem(ScopedMagnumItem, 500, 1);
+	}
+
+	// Weapon support: Weapon_Package_Tier2A
+	if(isObject(BullpupItem))
+	{
+		City_RegisterItem(BullpupItem, 200, 1);
+		City_RegisterItem(TCrossbowItem, 100, 1);
+		City_RegisterItem(MachstilItem, 150, 1);
+		City_RegisterItem(DualSMGsItem, 300, 1);
+
+		if($Pref::Server::TT::EasterEgg)
+			City_RegisterItem(MatchPistolItem, 200, 1);
+	}
 }
 
 // City_Init_AssembleEvents()

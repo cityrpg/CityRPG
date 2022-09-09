@@ -197,6 +197,21 @@ else
   {
     ForceRequiredAddOn("Weapon_Package_Tier1");
   }
+
+  if($AddOn__Weapon_Package_Tier1A)
+  {
+    ForceRequiredAddOn("Weapon_Package_Tier1A");
+  }
+
+  if($AddOn__Weapon_Package_Tier1)
+  {
+    ForceRequiredAddOn("Weapon_Package_Tier1");
+  }
+
+  if($AddOn__Weapon_Package_Tier1)
+  {
+    ForceRequiredAddOn("Weapon_Package_Tier1");
+  }
 }
 
 // ============================================================
