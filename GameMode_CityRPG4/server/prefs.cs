@@ -123,52 +123,6 @@ $CityRPG::prices::jailingBonus = 100;
 
 $CityRPG::prices::resourcePrice = 1.5;
 
-// Weapon Prices
-$CityRPG::guns = 0;
-
-function City_RegisterItem(%datablock, %cost, %mineral) {
-	if(!isObject(%datablock)) {
-		warn("GameMode_CityRPG4 - Attempting to register nonexistent item '" @ %datablock @ "'. This might indicate one of your add-ons is a version not supported by CityRPG 4. This item will not be purchase-able.");
-		return;
-	}
-
-	$CityRPG::prices::weapon::name[$CityRPG::guns] = %datablock;
-	$CityRPG::prices::weapon::price[$CityRPG::guns] = %cost;
-	$CityRPG::prices::weapon::mineral[$CityRPG::guns++] = %mineral;
-}
-
-City_RegisterItem(gunItem, 80, 1);
-City_RegisterItem(akimboGunItem, 150, 1);
-City_RegisterItem(taserItem, 40, 1);
-
-if(isObject(shotgunItem))
-	City_RegisterItem(shotgunItem, 260, 1);
-
-if(isObject(sniperRifleItem))
-	City_RegisterItem(sniperRifleItem, 450, 1);
-
-// Weapon support: Weapon_Package_Tier1
-if(!$Pref::Server::TT::DisableTier1 && isObject(TTLittleRecoilExplosion) && isObject(SubmachineGunItem)) {
-	// We don't use ammo currently, so we need to handle that.
-	// Configure this if we don't have a server control mod
-	if(!$RTB::Hooks::ServerControl)
-	{
-		$Pref::Server::TT::Ammo = 2;
-	}
-	else
-		$City::MaybeDisplayTTAmmoWarning = 1; // Warn the host that things might be broken.
-
-	City_RegisterItem(SubmachineGunItem, 150, 1);
-	City_RegisterItem(PumpShotgunItem, 200, 1);
-	City_RegisterItem(PistolItem, 80, 1);
-	City_RegisterItem(AkimboPistolItem, 160, 1);
-}
-
-
-City_RegisterItem(CityRPGLBItem, 100, 1);
-City_RegisterItem(CityRPGPickaxeItem, 25, 1);
-City_RegisterItem(CityRPGLumberjackItem, 25, 1);
-
 //When adding to this index, be sure to add a forceRequiredAddon("Item_Here");
 //in server.cs, or else the item mod will be broken.
 
