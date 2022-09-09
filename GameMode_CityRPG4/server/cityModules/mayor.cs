@@ -46,6 +46,7 @@ function CityMayor_stopElection()
 
 		%client = findClientByBL_ID($City::Mayor::ID);
 		messageClient(%client, '', "\c6Congratulations, you are now the" SPC JobSO.job[$City::MayorJobID].name @ "\c6!");
+		messageClient(%client, '', "\c6You have a set of new powers you can use through the \c3Actions Menu\c6. You can access them with the [cancel brick] button.");
 		%client.setCityJob($City::MayorJobID, 1);
 
 	}
