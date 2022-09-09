@@ -629,6 +629,11 @@ function CityMenu_Player(%client)
 		%functions = %functions TAB "CityMenu_Mayor";
 	}
 
+	if(%client.isAdmin) {
+		%menu = %menu TAB "\c4CityRPG admin.";
+		%functions = %functions TAB "CityMenu_Admin";
+	}
+
 	%menu = %menu TAB "Close menu.";
 	%functions = %functions TAB "CityMenu_Close";
 	
