@@ -90,7 +90,7 @@ package CityRPG_MainPackage
 			{
 				cLotDebug("Call init on duplicated brick", %brick);
 				// Force init as a new lot
-				%brick.initCityLot(1);
+				%brick.initNewCityLot();
 			}
 
 			%check = %brick.cityBrickCheck();
