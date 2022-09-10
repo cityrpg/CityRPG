@@ -88,6 +88,7 @@ package CityRPG_MainPackage
 		{
 			if(%brick != -1 && %brick.getDataBlock().CityRPGBrickType == $CityBrick_Lot)
 			{
+				cLotDebug("Call init on duplicated brick", %brick);
 				// Force init as a new lot
 				%brick.initCityLot(1);
 			}

@@ -10,10 +10,33 @@
 // In the future, we may employ our own version of Chown's transfer loop to correspond with lot zoning rather than brick stacks.
 
 // ============================================================
+// Debugging
+// ============================================================
+function cLotDebug(%str, %brick)
+{
+	if($City::RealEstate::Debug)
+	{
+		if(%brick $= "")
+			echo("Lot Registry [Global]: " @ %str);
+		else
+		{
+			if(isObject(%brick))
+				%lotIDIfValid = %brick.getCityLotID();
+			else
+				%lotIDIfValid = -2;
+
+			echo("Lot Registry [" @ %brick @ ", " @ %lotIDIfValid @ "]: " @ %str);
+		}
+	}
+}
+
+// ============================================================
 // Base Function
 // ============================================================
 function CityLots_TransferLot(%brick, %targetBL_ID)
 {
+	cLotDebug("== Transfer " @ %brick @ " to BLID " @ %targetBL_ID @ " ==", %brick);
+
 	// Create Chown
 	// We're using the CityRPGHostClient to bypass the trust check used by Chown.
 	if(!isObject(CityRPGHostClient.chown))
@@ -40,6 +63,8 @@ function CityLots_TransferLot(%brick, %targetBL_ID)
 // ============================================================
 function CityLots_InitRegistry()
 {
+	cLotDebug("Initializing lot registry");
+
 	if(!isObject(CityLotRegistry))
 	{
 		%newRegistry = new scriptObject(CityLotRegistry)
@@ -141,6 +166,8 @@ function fxDTSBrick::initCityLot(%brick, %forceNew, %forceExisting)
 
 function fxDTSBrick::initExistingCityLot(%brick)
 {
+	cLotDebug("-- Init existing city lot", %brick);
+
 	$City::RealEstate::TotalLots++;
 
 	if(%brick.getCityLotPreownedPrice() != -1)
@@ -173,6 +200,7 @@ function fxDTSBrick::initExistingCityLot(%brick)
 				messageAll('', %warningMsg);
 			}
 
+			cLotDebug("Converting lot ownership", %brick);
 			%brick.convertCityLotOwnership();
 			return;
 		}
@@ -208,6 +236,8 @@ function fxDTSBrick::initExistingCityLot(%brick)
 
 function fxDTSBrick::initNewCityLot(%brick)
 {
+	cLotDebug("-- Init new city lot", %brick);
+
 	if(%brick.getDataBlock().CityRPGBrickType != $CityBrick_Lot)
 	{
 		error("Lot registry - Attempting to initialize non-lot brick '" @ %brick @ "' as a lot! Aborting init.");
@@ -256,6 +286,7 @@ function fxDTSBrick::convertCityLotOwnership(%brick)
 function fxDTSBrick::cityLotCacheRemove(%brick)
 {
 	%ownerID = %brick.getCityLotOwnerID();
+	cLotDebug("Remove from cache", %brick);
 
 	for(%i = 0; %i <= getWordCount($City::Cache::LotsOwnedBy[%ownerID]); %i++)
 	{
@@ -375,12 +406,15 @@ function fxDTSBrick::getCityLotPreownedPrice(%brick)
 
 function fxDTSBrick::setCityLotName(%brick, %value)
 {
+	cLotDebug("Set name to " @ %value, %brick);
+
 	%valueNew = CityLotRegistry.set(%brick.getCityLotID(), "name", getSubStr(%value, 0, 40));
 	return %valueNew;
 }
 
 function fxDTSBrick::setCityLotOwnerID(%brick, %value)
 {
+	cLotDebug("Set owner to " @ %value, %brick);
 	%lotID = %brick.getCityLotID();
 	%valueOld = CityLotRegistry.get(%lotID, "ownerID");
 
@@ -429,11 +463,13 @@ function fxDTSBrick::setCityLotOwnerID(%brick, %value)
 
 function fxDTSBrick::setCityLotTransferDate(%brick, %value)
 {
+	cLotDebug("Set transfer date to " @ %value, %brick);
 	CityLotRegistry.set(%brick.getCityLotID(), "transferDate", %value);
 }
 
 function fxDTSBrick::setCityLotPreownedPrice(%brick, %value)
 {
+	cLotDebug("Set preowned price to " @ %value, %brick);
 	%valueOld = CityLotRegistry.get(%brick.getCityLotID(), "preownedSalePrice");
 
 	if(%valueOld != -1 && %value == -1)
@@ -506,6 +542,8 @@ package CityRPG_LotRegistry
 		// We're packaging SetNTObjectName because this isn't called until after the loading tick.
 		if(%obj.cityLotInit && !%override)
 		{
+			cLotDebug("Initializing via setNTObjectName", %obj);
+
 			Parent::SetNTObjectName(%obj, %name, 1);
 
 			%obj.initCityLot();
@@ -525,6 +563,10 @@ package CityRPG_LotRegistry
 
 			return;
 		}
+		else if(%obj.dataBlock !$= "" && %obj.dataBlock.CityRPGBrickType == $CityBrick_Lot)
+		{
+			cLotDebug("Allowing ClearNTObjectName by override", %obj);
+		}
 
 		Parent::SetNTObjectName(%obj, %name);
 		%obj.cityLotOverrideReset = 0;
@@ -540,6 +582,10 @@ package CityRPG_LotRegistry
 			warn("CityRPG 4 - Attempt to call ClearNTObjectName on a lot brick!");
 			backtrace();
 			return;
+		}
+		else if(%obj.dataBlock !$= "" && %obj.dataBlock.CityRPGBrickType == $CityBrick_Lot)
+		{
+			cLotDebug("Allowing ClearNTObjectName by override", %obj);
 		}
 
 		Parent::ClearNTObjectName(%obj);
@@ -563,6 +609,7 @@ package CityRPG_LotRegistry
 
 		if(%brick.dataBlock !$= "" && %brick.dataBlock.CityRPGBrickType == $CityBrick_Lot)
 		{
+			cLotDebug("Scheduling init", %brick);
 			%brick.schedule(0,initCityLot,1);
 		}
 	}
@@ -574,6 +621,8 @@ package CityRPG_LotRegistry
 
 		if(%brick.dataBlock !$= "" && %brick.dataBlock.CityRPGBrickType == $CityBrick_Lot)
 		{
+			cLotDebug("Set init flag by load plant", %brick);
+
 			// In the loading tick, names are assigned after the brick is planted.
 			// We need to set a special override so the name isn't caught by setNTObjectName
 			%brick.cityLotInit = 1;
@@ -587,6 +636,7 @@ package CityRPG_LotRegistry
 		// This can happen in certain edge cases, such as while loading bricks that already exist (onRemove is called on the brick after it fails to plant)
 		if(%brick.isPlanted && %brick.getDataBlock().CityRPGBrickType == $CityBrick_Lot && %brick.getCityLotID() != -1)
 		{
+			cLotDebug("Destroying lot", %brick);
 			%brick.destroyCityLot();
 		}
 
@@ -595,6 +645,7 @@ package CityRPG_LotRegistry
 
 	function disconnect(%a)
 	{
+		cLotDebug("Goodbye.");
 		CityLotRegistry.delete();
 		return parent::disconnect(%a);
 	}
