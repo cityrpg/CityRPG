@@ -67,16 +67,6 @@ function City_Init()
 		CityRPGData.lastTickOn = $Sim::Time;
 		CityRPGData.scheduleTick = schedule($Pref::Server::City::tick::speed * 60000, false, "City_Tick");
 	}
-	else
-	{
-		for(%a = 1; %a <= CityRPGData.dataCount; %a++)
-		{
-			if(CityRPGData.data[%a].valueJobID > JobSO.getJobCount() || CityRPGData.data[%a].valueJobID < 0)
-			{
-				CityRPGData.data[%a].valueJobID = $City::CivilianJobID;
-			}
-		}
-	}
 
 	// Generic client to handle checks for external utilities as the host.
 	if(!isObject(CityRPGHostClient))
