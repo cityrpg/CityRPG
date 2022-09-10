@@ -7,8 +7,7 @@
 		<li>Tier+Tactical Tier 2A (Weapon_Package_Tier2A)</li>
 		<li>Replaced the /yes and /no prompts with actual yes/no dialog boxes</li>
 		<li>Fixed warning message meant for the host going to the first person that joins on a dedicated server </li>
-		<li>Fixed issues placing, purchasing and editing lots
-</li>
+		<li>Fixed issues placing, purchasing and editing lots</li>
 	</ul>
 	
 	<b>Changes for Hosting</b>
