@@ -118,7 +118,7 @@ $Pref::Server::City::hack::stealmax									= 1000;
 $Pref::Server::City::hack::revivetime								= 5; //minutes
 
 // Game Prices
-$CityRPG::prices::vehicleSpawn = 2500;
+$CityRPG::prices::vehicleSpawn = 1000;
 $CityRPG::prices::jailingBonus = 100;
 
 $CityRPG::prices::resourcePrice = 1.5;
