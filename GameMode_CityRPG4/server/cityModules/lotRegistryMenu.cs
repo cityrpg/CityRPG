@@ -121,7 +121,7 @@ function CityMenu_Lot(%client, %input)
 	// ## Options for admins ## //
 	if(%client.isAdmin)
 	{
-		%menu = %menu TAB "\c4Open admin menu.";
+		%menu = %menu TAB "\c4Lot admin.";
 		%functions = %functions TAB "CityMenu_LotAdmin";
 	}
 
