@@ -73,8 +73,8 @@ datablock fxDTSBrickData(CityRPGSmallLotBrickData : brick16x16FData)
 {
 	iconName = $City::DataPath @ "ui/BrickIcons/16x16LotIcon";
 
-	category = "CityRPG";
-	subCategory = "Lots";
+	category = "Baseplates";
+	subCategory = "CityRPG Lots";
 
 	uiName = "16x16 Lot";
 
@@ -92,8 +92,8 @@ datablock fxDTSBrickData(CityRPGHalfSmallLotBrickData : brick16x32FData)
 {
 	iconName = $City::DataPath @ "ui/BrickIcons/16x32LotIcon";
 
-	category = "CityRPG";
-	subCategory = "Lots";
+	category = "Baseplates";
+	subCategory = "CityRPG Lots";
 
 	uiName = "16x32 Lot";
 
@@ -111,8 +111,8 @@ datablock fxDTSBrickData(CityRPGMediumLotBrickData : brick32x32FData)
 {
 	iconName = $City::DataPath @ "ui/BrickIcons/32x32LotIcon";
 
-	category = "CityRPG";
-	subCategory = "Lots";
+	category = "Baseplates";
+	subCategory = "CityRPG Lots";
 
 	uiName = "32x32 Lot";
 
@@ -131,8 +131,8 @@ datablock fxDTSBrickData(CityRPGHalfLargeLotBrickData)
 	brickFile = $City::DataPath @ "bricks/32x64F.blb";
 	iconName = $City::DataPath @ "ui/BrickIcons/32x64LotIcon";
 
-	category = "CityRPG";
-	subCategory = "Lots";
+	category = "Baseplates";
+	subCategory = "CityRPG Lots";
 
 	uiName = "32x64 Lot";
 
@@ -150,8 +150,8 @@ datablock fxDTSBrickData(CityRPGLargeLotBrickData : brick64x64FData)
 {
 	iconName = $City::DataPath @ "ui/BrickIcons/64x64LotIcon";
 
-	category = "CityRPG";
-	subCategory = "Lots";
+	category = "Baseplates";
+	subCategory = "CityRPG Lots";
 
 	uiName = "64x64 Lot";
 
