@@ -172,7 +172,7 @@ function City_AddDemerits(%blid, %demerits)
 
 	City.add(%blid, "demerits", %demerits);
 
-	if(City.get(%blid).valueDemerits >= $Pref::Server::City::demerits::demoteLevel && JobSO.job[City.get(%blid, "jobid")].law == true)
+	if(City.get(%blid, "demerits") >= $Pref::Server::City::demerits::demoteLevel && JobSO.job[City.get(%blid, "jobid")].law == true)
 	{
 		City.set(%blid, "jobid", $City::CivilianJobID);
 		City.set(%blid, "jaildata", 1 SPC 0);
