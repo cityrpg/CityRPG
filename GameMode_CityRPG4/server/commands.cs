@@ -569,7 +569,7 @@ package CityRPG_Commands
 
 		if(%do $= "accept")
 		{
-			if((City.get(%client.bl_id).valueMoney + City.get(%client.bl_id, "bank")) >= 100000)
+			if((City.get(%client.bl_id, "money") + City.get(%client.bl_id, "bank")) >= 100000)
 			{
 				%client.doReincarnate();
 			}
