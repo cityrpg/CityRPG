@@ -501,11 +501,11 @@ package CityRPG_MainPackage
 	function gameConnection::setScore(%client, %score)
 	{
 		if($Score::Type $= "Money")
-			%score = City.get(%client.bl_id).valueMoney + City.get(%client.bl_id, "bank");
+			%score = City.get(%client.bl_id, "money") + City.get(%client.bl_id, "bank");
 		else if($Score::Type $= "Edu")
 			%score = City.get(%client.bl_id, "education");
 		else
-			%score = City.get(%client.bl_id).valueMoney + City.get(%client.bl_id, "bank");
+			%score = City.get(%client.bl_id, "money") + City.get(%client.bl_id, "bank");
 		parent::setScore(%client, %score);
 	}
 
