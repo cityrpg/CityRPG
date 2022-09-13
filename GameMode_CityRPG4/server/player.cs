@@ -85,7 +85,7 @@ function gameConnection::arrest(%client, %cop)
 
 function gameConnection::buyResources(%client)
 {
-	%totalResources = getWord(City.get(%client.bl_id).valueResources, 0) + getWord(City.get(%client.bl_id, "resources"), 1);
+	%totalResources = getWord(City.get(%client.bl_id, "resources"), 0) + getWord(City.get(%client.bl_id, "resources"), 1);
 	if(mFloor(%totalResources * $CityRPG::prices::resourcePrice) > 0)
 	{
 		%payout = mFloor(%totalResources * $CityRPG::prices::resourcePrice);
