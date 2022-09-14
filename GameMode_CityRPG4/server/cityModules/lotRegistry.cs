@@ -643,11 +643,11 @@ package CityRPG_LotRegistry
 		Parent::onRemove(%brick);
 	}
 
-	function disconnect(%a)
+	function onServerDestroyed()
 	{
 		cLotDebug("Goodbye.");
 		CityLotRegistry.delete();
-		return parent::disconnect(%a);
+		return parent::onServerDestroyed();
 	}
 
 	function City_Init()
