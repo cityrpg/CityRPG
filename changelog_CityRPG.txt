@@ -1,3 +1,23 @@
+<version:0.3.2>
+	<ul>
+		<li>Lowered the price of vehicle spawns from $2500 to $1000</li>
+		<li>Moved lots to the Baseplate tab of the bricks menu. This has some helpful side effects such as preventing accidentally supercutting lots</li>
+		<li>Fixed the following issues, which were caused by an internal rework of player data handling done in the Interactions Update (v0.3.0):</li>
+		<li>Fixed being unable to sell lumber</li>
+		<li>Fixed /reincarnate not being able to detect your money</li>
+		<li>Fixed scores in the player list showing the wrong amounts for net worth</li>
+		<li>Fixed not spawning at the correct spawn point for your job</li>
+		<li>Fixed dropping money if killed while in jail</li>
+		<li>Fixed not being demoted for doing crimes as an official (police officer, etc.)</li>
+		<li>Fixed the doJobTest event not matching jobs correctly</li>
+	</ul>
+	
+	<b>Changes for Hosting</b>
+	<ul>
+		<li>Changed the wording of "Open admin menu" to "Lot admin" to reduce confusion with the main admin menu</li>
+		<li>Fixed lots failing to save on server shutdown on a dedicated server</li>
+	</ul>
+</version>
 <version:0.3.1>
 	<ul>
 		<li>Added support for new weapon packs. If enabled, these items are sell-able in-game with the `sellItem` event.</li>
