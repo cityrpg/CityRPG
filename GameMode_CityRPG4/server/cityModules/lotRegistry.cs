@@ -323,6 +323,14 @@ function fxDTSBrick::getCityLotID(%brick)
 
 	if(CityLotRegistry.existKey[%lotID] == 0)
 	{
+		if(isFile(CityLotRegistry.folder @ %lotID))
+		{
+			error("!!!!!!!!!!!!Found a lot, " @ %lotID @ ", that was not loaded in the registry, but a file exists for it. Something has gone wrong--loading of this lot's data may be cancelled to prevent the overwriting of its save file.");
+
+			// Return a valid lot to abort any init, even though this lot is not valid.
+			// There will (probably) be consequences.
+			return %lotID;
+		}
 		// Doesn't exist in the registry
 		return -1;
 	}
