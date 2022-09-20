@@ -913,11 +913,11 @@ package CityRPG_MainPackage
 	// ============================================================
 	function serverCmdmessageSent(%client, %text)
 	{
-		// if(%client.cityMenuOpen)
-		// {
-		// 	%client.cityMenuInput(%text);
-		// 	return;
-		// }
+		if(%client.cityMenuOpen && getFieldCount(%client.cityMenuFunction) == 1)
+		{
+			%client.cityMenuInput(%text);
+			return;
+		}
 
 		if(isObject(%client.player) && isObject(%client.CityRPGTrigger) && isObject(%client.CityRPGTrigger.parent) && %client.CityRPGTrigger.parent.getDatablock().CityRPGBrickType == $CityBrick_Info)
 		{
