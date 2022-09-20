@@ -213,6 +213,7 @@ package CityRPG_MainPackage
 		%this.onCityLoadPlant(%this, %brick);
 	}
 
+	// spawnProjectile event handling - Unused since these events are now disabled anyway
 	function fxDTSBrick::spawnProjectile(%obj, %velocity, %projectileData, %variance, %scale, %client)
 	{
 		// Replace the source client with a generic one that always fails minigameCanDamage.
