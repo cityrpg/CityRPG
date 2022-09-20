@@ -132,7 +132,7 @@ function serverCmdMeMayor(%client)
 // Looper
 function CityMayor_refresh()
 {
-	$City::Mayor::Mayor::Requirement = 5;
+	$City::Mayor::Mayor::Requirement = 8;
 	if($Pref::Server::City::Mayor::Active == 0) //if active mayor
 	{
 		if((clientGroup.getCount() >= $City::Mayor::Mayor::Requirement) || ($City::Mayor::Force::Start == 1))
