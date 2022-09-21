@@ -196,7 +196,7 @@ function CityLots_PurchaseLot(%client, %input, %lotBrick)
 	}
 	else if(%buyerCash >= %lotBrick.dataBlock.initialPrice)
 	{
-		%client.cityLog("Lot " @ %lotBrick.getCityLotID() @ " purchase success");
+		%client.cityLog("Lot " @ %lotBrick.getCityLotID() @ " purchase success for" @ %lotBrick.dataBlock.initialPrice);
 
 		City.subtract(%client.bl_id, "money", %lotBrick.dataBlock.initialPrice);
 		%client.cityMenuMessage("\c6You have purchased this lot for \c2$" @ %lotBrick.dataBlock.initialPrice @ "\c6!");
@@ -424,7 +424,7 @@ function CityMenu_Lot_PurchasePreowned(%client, %input, %lotBrick)
 	}
 	else if(%buyerCash >= %lotPrice)
 	{
-		%client.cityLog("Lot " @ %lotBrick.getCityLotID() @ " pre-owned purchase success");
+		%client.cityLog("Lot " @ %lotBrick.getCityLotID() @ " pre-owned purchase success for" @ %lotPrice);
 
 		// Transfer the money between buyer and owner.
 		City.subtract(%client.bl_id, "money", %lotPrice);
