@@ -105,6 +105,17 @@ package CityRPG_MainPackage
 		return %brick;
 	}
 
+	function ndTrustCheckModify(%obj, %group2, %bl_id, %admin)
+	{
+		%isLot = %obj.getDataBlock().CityRPGBrickType == $CityBrick_Lot;
+		%isAdminMode = City.get(%bl_id, "jobid") $= $City::AdminJobID;
+
+		if(%isLot && !%isAdminMode)
+			return false;
+
+		Parent::ndTrustCheckModify(%obj, %group2, %bl_id, %admin);
+	}
+
 	function fxDTSBrick::onPlant(%brick)
 	{
 		Parent::onPlant(%brick);
