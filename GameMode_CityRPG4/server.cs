@@ -212,6 +212,12 @@ else
   {
     ForceRequiredAddOn("Weapon_Package_Tier1");
   }
+
+  // Mail mod
+  if($AddOn_System_Mail)
+  {
+    ForceRequiredAddOn("System_Mail");
+  }
 }
 
 // ============================================================
