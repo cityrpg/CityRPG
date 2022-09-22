@@ -276,7 +276,7 @@ function City_Init_Items()
 		City_RegisterItem(sniperRifleItem, 450, 1);
 
 	// Weapon support: Any T+T ammo system weapons
-	if($Pref::Server::TT::Ammo != "")
+	if($Pref::Server::TT::Ammo !$= "")
 	{
 		// We don't use ammo currently, so we need to handle that.
 		// Configure this if we don't have a server control mod
