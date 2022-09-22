@@ -43,6 +43,14 @@ Dglider for bugfixes and tips, Sentry for replacing missing assets.
 - **/edithunger** [level 1-10] - Changes hunger to a certain level.
 - **/resetAllJobs** - Resets the job for every profile on the server. Used for changing custom job configurations.
 
+# Optional Integrations
+CityRPG 4 has optional support for the following add-ons. In order to use them, enable both GameMode_CityRPG4 and the desired add-on under Custom in the game-modes menu.
+
+* [Mail System](https://blocklandglass.com/addons/addon.php?id=670) - Players can buy and sell notes, letters, and cards in stores. Selling these items does not require a licensed job like the Arms Dealer.
+* Tier+Tactical Weapons: [Tier 1](https://blocklandglass.com/addons/addon.php?id=1206), [Tier 1A](https://blocklandglass.com/addons/addon.php?id=1207), [Tier 2](https://blocklandglass.com/addons/addon.php?id=1209), [Tier 2A](https://blocklandglass.com/addons/addon.php?id=1210)  - Most items can be sold in stores as weapons, including some of the easter eggs if they are enabled.
+* [doPlayerTeleport Event](https://forum.blockland.us/index.php?topic=253312.0) - The "Relative" checkbox is disabled to prevent abuse (i.e. teleporting into unwanted areas of players' builds)
+* [Zone Events](https://blocklandglass.com/addons/rtb/view.php?id=119) - Events prone to abuse are disabled.
+
 # Developer Documentation
 CityRPG 4 is being built fully open source, and we encourage you to fork the repository and make your own changes. We would love to see your contributions!
 
