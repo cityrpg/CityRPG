@@ -406,7 +406,7 @@ function gameConnection::sellFood(%client, %sellerID, %servingID, %foodName, %pr
 				%client.player.serviceOrigin.onTransferSuccess(%client);
 			}
 			else
-				messageClient(%client, '', "\c6This vendor is not liscensed to sell food.");
+				messageClient(%client, '', "\c6This vendor is not licensed to sell food.");
 		}
 		else
 			messageClient(%client, '', "\c6You are too full to even think about buying any more food.");
@@ -464,7 +464,7 @@ function gameConnection::sellItem(%client, %sellerID, %itemID, %price, %profit)
 				messageClient(%client, '', "\c6You don't have enough space to carry this item!");
 		}
 		else
-			messageClient(%client, '', "\c6This vendor is not liscensed to sell items.");
+			messageClient(%client, '', "\c6This vendor is not licensed to sell items.");
 	}
 }
 
@@ -497,7 +497,7 @@ function gameConnection::sellClothes(%client, %sellerID, %brick, %item, %price)
 			%client.setInfo();
 		}
 		else
-			messageClient(%client, '', "\c6This vendor is not liscensed to sell clothes.");
+			messageClient(%client, '', "\c6This vendor is not licensed to sell clothes.");
 	}
 }
 
