@@ -342,7 +342,7 @@ function fxDTSBrick::cityBrickInit(%brick)
 			{
 				commandToClient(%client, 'centerPrint', "\c6You have paid \c3$" @ mFloor($CityRPG::prices::vehicleSpawn) @ "\c6 to plant this vehicle spawn.", 3);
 
-				City.subtract(%client,bl_id, "money", mFloor($CityRPG::prices::vehicleSpawn));
+				City.subtract(%client.bl_id, "money", mFloor($CityRPG::prices::vehicleSpawn));
 				%client.setInfo();
 			}
 	}
