@@ -459,7 +459,7 @@ function gameConnection::sellItem(%client, %sellerID, %itemID, %price, %profit)
 				%client.player.serviceOrigin.onTransferSuccess(%client);
 			}
 			else if(%alreadyOwns)
-				messageClient(%client, '', "\c6You don't need another\c3" SPC $CityRPG::prices::weapon::name[%itemID].uiName @ "\c6.");
+				messageClient(%client, '', "\c6You already have this item.");
 			else if(%freeSpot $= "")
 				messageClient(%client, '', "\c6You don't have enough space to carry this item!");
 		}
