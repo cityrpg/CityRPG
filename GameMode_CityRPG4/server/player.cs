@@ -422,11 +422,14 @@ function gameConnection::sellItem(%client, %sellerID, %itemID, %price, %profit)
 {
 	if(isObject(%client.player) && City.get(%client.bl_id, "money") >= %price)
 	{
-		if(JobSO.job[City.get(%client.player.serviceOrigin.getGroup().bl_id, "jobid")].sellItems)
+		%isLicensedArmsDealer = JobSO.job[City.get(%client.player.serviceOrigin.getGroup().bl_id, "jobid")].sellItems;
+		%isWeapon = $City::Item::isRestrictedItem[%itemID];
+		echo(%isLicensedArmsDealer SPC %isWeapon SPC %itemID);
+		if(!%isWeapon || %isLicensedArmsDealer)
 		{
 			for(%a = 0; %a < %client.player.getDatablock().maxTools; %a++)
 			{
-				if(!isObject(%obj.tool[%a]) || %obj.tool[%a].getName() !$= $CityRPG::prices::weapon::name[%itemID])
+				if(!isObject(%obj.tool[%a]) || %obj.tool[%a].getName() !$= $City::Item::name[%itemID])
 				{
 					if(%freeSpot $= "" && %client.player.tool[%a] $= "")
 					{
@@ -445,9 +448,9 @@ function gameConnection::sellItem(%client, %sellerID, %itemID, %price, %profit)
 
 				City.subtract(%client.bl_id, "money", %price);
 				City.add(%sellerID, "bank", %profit);
-				CitySO.minerals -= $CityRPG::prices::weapon::mineral[%itemID];
+				CitySO.minerals -= $City::Item::mineral[%itemID];
 
-				%client.player.tool[%freeSpot] = $CityRPG::prices::weapon::name[%itemID].getID();
+				%client.player.tool[%freeSpot] = $City::Item::name[%itemID].getID();
 				messageClient(%client, 'MsgItemPickup', "", %freeSpot, %client.player.tool[%freeSpot]);
 
 				messageClient(%client, '', "\c6You have accepted the item's fee of \c3$" @ %price @ "\c6!");
@@ -464,7 +467,7 @@ function gameConnection::sellItem(%client, %sellerID, %itemID, %price, %profit)
 				messageClient(%client, '', "\c6You don't have enough space to carry this item!");
 		}
 		else
-			messageClient(%client, '', "\c6This vendor is not licensed to sell items.");
+			messageClient(%client, '', "\c6This vendor is not licensed to sell this item.");
 	}
 }
 

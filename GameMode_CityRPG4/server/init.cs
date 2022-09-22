@@ -240,40 +240,42 @@ function City_Init_Spawns_Tick(%bgi, %bi)
 	$CityRPG::temp::spawnPoints = $CityRPG::temp::spawnPointsTemp;
 }
 
-function City_RegisterItem(%datablock, %cost, %mineral) {
+function City_RegisterItem(%datablock, %cost, %mineral, %isRestrictedItem) {
 	if(!isObject(%datablock)) {
 		warn("GameMode_CityRPG4 - Attempting to register nonexistent item '" @ %datablock @ "'. This might indicate one of your add-ons is a version not supported by CityRPG 4. This item will not be purchase-able.");
 		return;
 	}
 
-	$CityRPG::prices::weapon::name[$CityRPG::guns] = %datablock;
-	$CityRPG::prices::weapon::price[$CityRPG::guns] = %cost;
-	$CityRPG::prices::weapon::mineral[$CityRPG::guns++] = %mineral;
+	$City::Item::name[$City::ItemCount] = %datablock;
+	$City::Item::price[$City::ItemCount] = %cost;
+	$City::Item::mineral[$City::ItemCount] = %mineral;
+	$City::Item::isRestrictedItem[$City::ItemCount] = %isRestrictedItem;
+	$City::ItemCount++;
 }
 
 function City_Init_Items()
 {
 	// Weapon Prices
-	$CityRPG::guns = 0;
+	$City::ItemCount = 0;
 
 	// CityRPG Stuff
-	City_RegisterItem(CityRPGLBItem, 100, 1);
-	City_RegisterItem(CityRPGPickaxeItem, 25, 1);
-	City_RegisterItem(CityRPGLumberjackItem, 25, 1);
-	City_RegisterItem(taserItem, 40, 1);
+	City_RegisterItem(CityRPGLBItem, 100, 1, true);
+	City_RegisterItem(CityRPGPickaxeItem, 25, 1, true);
+	City_RegisterItem(CityRPGLumberjackItem, 25, 1, true);
+	City_RegisterItem(taserItem, 40, 1, true);
 
 	// Default weapons
 	if(!$Pref::Server::City::disabledefaultweps)
 	{
-		City_RegisterItem(gunItem, 80, 1);
-		City_RegisterItem(akimboGunItem, 150, 1);
+		City_RegisterItem(gunItem, 80, 1, true);
+		City_RegisterItem(akimboGunItem, 150, 1, true);
 	}
 
 	if(isObject(shotgunItem))
-		City_RegisterItem(shotgunItem, 260, 1);
+		City_RegisterItem(shotgunItem, 260, 1, true);
 
 	if(isObject(sniperRifleItem))
-		City_RegisterItem(sniperRifleItem, 450, 1);
+		City_RegisterItem(sniperRifleItem, 450, 1, true);
 
 	// Weapon support: Any T+T ammo system weapons
 	if($Pref::Server::TT::Ammo !$= "")
@@ -287,45 +289,46 @@ function City_Init_Items()
 	// Weapon support: Weapon_Package_Tier1
 	if(!$Pref::Server::TT::DisableTier1 && isObject(TTLittleRecoilExplosion) && isObject(SubmachineGunItem))
 	{
-		City_RegisterItem(SubmachineGunItem, 150, 1);
-		City_RegisterItem(PumpShotgunItem, 200, 1);
-		City_RegisterItem(PistolItem, 80, 1);
-		City_RegisterItem(AkimboPistolItem, 160, 1);
+		City_RegisterItem(SubmachineGunItem, 150, 1, true);
+		City_RegisterItem(PumpShotgunItem, 200, 1, true);
+		City_RegisterItem(PistolItem, 80, 1, true);
+		City_RegisterItem(AkimboPistolItem, 160, 1, true);
 	}
 
 	// Weapon support: Weapon_Package_Tier1A
 	if(isObject(SingleShotgunItem))
 	{
-		City_RegisterItem(SingleShotgunItem, 80, 1);
-		City_RegisterItem(SnubnoseItem, 150, 1);
-		City_RegisterItem(PepperPistolItem, 80, 1);
+		City_RegisterItem(SingleShotgunItem, 80, 1, true);
+		City_RegisterItem(SnubnoseItem, 150, 1, true);
+		City_RegisterItem(PepperPistolItem, 80, 1, true);
 
 		if($Pref::Server::TT::EasterEgg)
-			City_RegisterItem(nailgunItem, 150, 1);
+			City_RegisterItem(nailgunItem, 150, 1, true);
 	}
 
 	// Weapon support: Weapon_Package_Tier2
 	if(isObject(TAssaultRifleItem))
 	{
-		City_RegisterItem(TAssaultRifleItem, 200, 1);
-		City_RegisterItem(BattleRifleItem, 180, 1);
-		City_RegisterItem(MagnumItem, 150, 1);
-		City_RegisterItem(MilitarySniperItem, 200, 1);
-		City_RegisterItem(CombatShotgunItem, 300, 1);
+		City_RegisterItem(TAssaultRifleItem, 200, 1, true);
+		City_RegisterItem(BattleRifleItem, 180, 1, true);
+		City_RegisterItem(MagnumItem, 150, 1, true);
+		City_RegisterItem(MilitarySniperItem, 200, 1, true);
+		City_RegisterItem(CombatShotgunItem, 300, 1, true);
 
 		if($Pref::Server::TT::EasterEgg)
-			City_RegisterItem(ScopedMagnumItem, 500, 1);
+			City_RegisterItem(ScopedMagnumItem, 500, 1, true);
 	}
 
 	// Weapon support: Weapon_Package_Tier2A
 	if(isObject(BullpupItem))
 	{
-		City_RegisterItem(BullpupItem, 200, 1);
-		City_RegisterItem(TCrossbowItem, 100, 1);
-		City_RegisterItem(MachstilItem, 150, 1);
-		City_RegisterItem(DualSMGsItem, 300, 1);
+		City_RegisterItem(BullpupItem, 200, 1, true);
+		City_RegisterItem(TCrossbowItem, 100, 1, true);
+		City_RegisterItem(MachstilItem, 150, 1, true);
+		City_RegisterItem(DualSMGsItem, 300, 1, true);
 
 		if($Pref::Server::TT::EasterEgg)
+			City_RegisterItem(MatchPistolItem, 200, 1, true);
 			City_RegisterItem(MatchPistolItem, 200, 1);
 	}
 }
@@ -365,9 +368,9 @@ function City_Init_AssembleEvents()
 	}
 
 	registerOutputEvent("fxDTSBrick", "doJobTest", "list NONE 0" @ %doJobTest_List TAB "list NONE 0" @ %doJobTest_List TAB "bool");
-	for(%c = 0; %c <= $CityRPG::guns-1; %c++)
+	for(%c = 0; %c <= $City::ItemCount-1; %c++)
 	{
-		%sellItem_List = %sellItem_List SPC strreplace($CityRPG::prices::weapon::name[%c].uiName, " ", "") SPC %c;
+		%sellItem_List = %sellItem_List SPC strreplace($City::Item::name[%c].uiName, " ", "") SPC %c;
 	}
 	registerOutputEvent("fxDTSBrick", "sellItem", "list" @ %sellItem_List TAB "int 0 500 1");
 	for(%d = 0; %d < ClientGroup.getCount(); %d++)

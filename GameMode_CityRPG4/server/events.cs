@@ -153,13 +153,13 @@ function fxDTSBrick::sellItem(%brick, %item, %markup, %client)
 {
 	if(isObject(%client.player) && !%client.player.serviceOrigin  && isObject(%brick))
 	{
-		%name = $CityRPG::prices::weapon::name[%item].uiName;
+		%name = $City::Item::name[%item].uiName;
 
-		if(CitySO.minerals >= $CityRPG::prices::weapon::mineral[%item])
+		if(CitySO.minerals >= $City::Item::mineral[%item])
 		{
 			%client.player.serviceType = "item";
 			%client.player.serviceItem = %item;
-			%client.player.serviceFee = $CityRPG::prices::weapon::price[%item] + %markup;
+			%client.player.serviceFee = $City::Item::price[%item] + %markup;
 			%client.player.serviceMarkup = %markup;
 			%client.player.serviceOrigin = %brick;
 
@@ -167,7 +167,7 @@ function fxDTSBrick::sellItem(%brick, %item, %markup, %client)
 			commandToClient(%client, 'MessageBoxYesNo', "Purchase", %str, 'yes');
 		}
 		else
-			messageClient(%client, '', '\c6A service is trying to offer you %1 \c3%2\c6, but the city needs \c3%3\c6 more minerals to produce it!', City_DetectVowel(%name), %name, ($CityRPG::prices::weapon::mineral[%item] - CitySO.minerals));
+			messageClient(%client, '', '\c6A service is trying to offer you %1 \c3%2\c6, but the city needs \c3%3\c6 more minerals to produce it!', City_DetectVowel(%name), %name, ($City::Item::mineral[%item] - CitySO.minerals));
 	}
 	else if(%client.player.serviceOrigin && %client.player.serviceOrigin != %brick)
 		messageClient(%client, '', "\c6You already have a charge request from another service! Type \c3/no\c6 to reject it.");
