@@ -329,7 +329,14 @@ function City_Init_Items()
 
 		if($Pref::Server::TT::EasterEgg)
 			City_RegisterItem(MatchPistolItem, 200, 1, true);
-			City_RegisterItem(MatchPistolItem, 200, 1);
+	}
+
+	// Ghost's Mail Mod Support: System_Mail
+	if(isObject(MlbxCardItem))
+	{
+		City_RegisterItem(MlbxLetterItem, 5, 1, false);
+		City_RegisterItem(MlbxCardItem, 10, 1, false);
+		City_RegisterItem(MlbxNoteItem, 1, 1, false);
 	}
 }
 
