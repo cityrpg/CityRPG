@@ -338,7 +338,8 @@ function fxDTSBrick::cityBrickInit(%brick)
 			%brick.color = getClosestPaintColor(ResourceSO.mineral[%seed].color);
 			%brick.setColor(%brick.color);
 		default:
-			if(%brick.getDatablock().getID() == brickVehicleSpawnData.getID() && !%client.isCityAdmin())
+			// TODO wtf, move this!
+			if($LoadingBricks_Client $= "" && %brick.getDatablock().getID() == brickVehicleSpawnData.getID() && !%client.isCityAdmin())
 			{
 				commandToClient(%client, 'centerPrint', "\c6You have paid \c3$" @ mFloor($CityRPG::prices::vehicleSpawn) @ "\c6 to plant this vehicle spawn.", 3);
 
