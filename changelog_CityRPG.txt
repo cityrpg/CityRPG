@@ -1,5 +1,5 @@
 <version:1.0.0>
-	<li>Added simple optional support for the Mail System by [GSF]Ghost. This can be activated by installing and enabling System_Mail. With this add-on enabled, players can sell the letter, note, and postcard items via item shops. These items are not treated</li>
+	<li>Added simple optional support for the Mail System by [GSF]Ghost. This can be activated by installing and enabling System_Mail. With this add-on enabled, players can sell the letter, note, and postcard items via item shops.</li>
 	<li>Lowered the required players for an election to 8 and the required players to impeach the mayor to 6.</li>
 	<li>Fixed menus preventing you from using chat.</li>
 	<li>Fixed being able to delete your lot with /cut.</li>
