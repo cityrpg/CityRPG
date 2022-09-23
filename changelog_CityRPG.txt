@@ -1,3 +1,19 @@
+<version:1.0.0>
+	<li>Added simple optional support for the Mail System by [GSF]Ghost. This can be activated by installing and enabling System_Mail. With this add-on enabled, players can sell the letter, note, and postcard items via item shops. These items are not treated</li>
+	<li>Lowered the required players for an election to 8 and the required players to impeach the mayor to 6.</li>
+	<li>Fixed menus preventing you from using chat.</li>
+	<li>Fixed being able to delete your lot with /cut.</li>
+	<li>Fixed vehicle spawn purchase not deducting money.</li>
+	<li>Fixed "This vendor is not liscensed" typo.</li>
+
+	<b>Hosting Info</b>
+	<li>Lot sales (both unclaimed and player-based) are now logged with the amount of money spent.</li>
+	<li>Fixed the gamemode not configuring tier+tactical ammo correctly when there is no prefs mod.</li>
+
+	<b>Developer Info</b>
+	<li>An additional argument has been added to the `City_RegisterItem` function. This arg allows you to make the item sell-able by any player regardless of their job. This can be used to add items that aren't considered weapons.</li>
+	<li>Renamed $CityRPG::prices::weapon::* namespaces to $City::Item::*.</li>
+</version>
 <version:0.3.2>
 	<ul>
 		<li>Lowered the price of vehicle spawns from $2500 to $1000</li>
