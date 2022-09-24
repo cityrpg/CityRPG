@@ -338,6 +338,12 @@ function City_Init_Items()
 		City_RegisterItem(MlbxCardItem, 10, 1, false);
 		City_RegisterItem(MlbxNoteItem, 1, 1, false);
 	}
+
+	// Tool_ToolGun
+	if(isObject(toolgunItem))
+	{
+		$Pref::Server::City::defaultTools = "toolgunItem";
+	}
 }
 
 // City_Init_AssembleEvents()
