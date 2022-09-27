@@ -126,12 +126,6 @@ $CityRPG::prices::resourcePrice = 1.5;
 //When adding to this index, be sure to add a forceRequiredAddon("Item_Here");
 //in server.cs, or else the item mod will be broken.
 
-// Ticks
-$CityRPG::tick::interest = 1.00;
-$CityRPG::tick::creditInterest = 1.000;
-$CityRPG::tick::interestTick = 999;
-$CityRPG::tick::promotionLevel = 24;
-
 // Demerit Preferences
 $CityRPG::demerits::hittingInnocents = 50;
 $CityRPG::demerits::attemptedMurder = 15;

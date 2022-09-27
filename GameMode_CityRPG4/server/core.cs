@@ -561,14 +561,6 @@ function City_TickLoop(%loop)
 			%client.setGameBottomPrint();
 		}
 
-		if(CalendarSO.date && CalendarSO.date % $CityRPG::tick::interestTick == 0)
-		{
-			CityRPGData.data[%loop].valueBank = mFloor(CityRPGData.data[%loop].valueBank * $CityRPG::tick::interest);
-
-			if(isObject(%client))
-				messageClient(%client, '', "\c6 - The bank is giving interest.");
-		}
-
 		if(getWord(CityRPGData.data[%loop].valueJailData, 1))
 		{
 			CityRPGData.data[%loop].valueJailData = 1 SPC (getWord(CityRPGData.data[%loop].valueJailData, 1) - 1);
