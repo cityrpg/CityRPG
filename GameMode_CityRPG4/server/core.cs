@@ -165,6 +165,10 @@ function CityMenu_Placeholder(%client)
 // Gives demerits to a player. Handles wanted levels and demotions.
 function City_AddDemerits(%blid, %demerits)
 {
+	%client = findClientByBL_ID(%blid);
+
+	%client.cityLot("Add " @ %demerits @ " demerits");
+
 	%demerits = mFloor(%demerits);
 	%currentDemerits = City.get(%blid, "demerits");
 	%maxStars = City_GetMaxStars();
@@ -175,8 +179,6 @@ function City_AddDemerits(%blid, %demerits)
 	{
 		City.set(%blid, "jobid", $City::CivilianJobID);
 		City.set(%blid, "jaildata", 1 SPC 0);
-
-		%client = findClientByBL_ID(%blid);
 
 		if(isObject(%client))
 		{
