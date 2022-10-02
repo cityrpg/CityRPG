@@ -76,7 +76,6 @@ function JobSO::createJob(%so, %file)
 		tools			= $CityRPG::jobs::tools;
 		education		= $CityRPG::jobs::education;
 		db				= $CityRPG::jobs::datablock;
-		hostonly		= $CityRPG::jobs::hostonly;
 		adminonly		= $CityRPG::jobs::adminonly;
 		usepolicecars	= $CityRPG::jobs::usepolicecars;
 		usecrimecars	= $CityRPG::jobs::usecrimecars;
