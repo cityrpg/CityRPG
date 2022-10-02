@@ -313,6 +313,13 @@ function GameConnection::setCityJob(%client, %jobID, %force, %silent)
 	City.set(%client.bl_id, "jobid", %jobObject.id);
 	serverCmdunUseTool(%client);
 	%client.player.giveDefaultEquipment();
+
+	// Outfit
+	if(%jobObject.outfit !$= "")
+	{
+		City.set(%client.bl_id, "outfit", %jobObject.outfit);
+	}
+	
 	%client.applyForcedBodyColors();
 	%client.applyForcedBodyParts();
 	%client.player.setDatablock(%jobObject.db);

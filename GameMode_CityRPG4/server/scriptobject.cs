@@ -440,7 +440,7 @@ if(!isObject(ClothesSO))
 {
 	new scriptObject(ClothesSO) { };
 	ClothesSO.schedule(1, "loadClothes");
-	//ClothesSO.schedule(1, "postEvents");
+	ClothesSO.schedule(1, "postEvents");
 }
 
 // ============================================================

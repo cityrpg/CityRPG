@@ -179,8 +179,6 @@ function gameConnection::applyForcedBodyColors(%client)
 	{
 		if(getWord(City.get(%client.bl_id, "jaildata"), 1) > 0)
 			%outfit = "none none none none jumpsuit jumpsuit skin jumpsuit jumpsuit";
-		else if(%client.getJobSO().outfit !$= "")
-			%outfit = %client.getJobSO().outfit;
 		else
 			%outfit = City.get(%client.bl_id, "outfit");
 	}
@@ -215,8 +213,6 @@ function gameConnection::applyForcedBodyParts(%client)
 	{
 		if(getWord(City.get(%client.bl_id, "jaildata"), 1) > 0)
 			%outfit = "none none none none jumpsuit jumpsuit skin jumpsuit jumpsuit";
-		else if(%client.getJobSO().outfit !$= "")
-			%outfit = %client.getJobSO().outfit;
 		else
 			%outfit = City.get(%client.bl_id, "outfit");
 	}
