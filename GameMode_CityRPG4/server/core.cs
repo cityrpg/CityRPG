@@ -657,11 +657,11 @@ function messageCityRadio(%jobTrack, %msgType, %msgString)
 	for(%i = 0; %i < ClientGroup.getCount(); %i++)
 	{
 		%client = ClientGroup.getObject(%i);
+		%doAdminSnooping = $Pref::Server::City::AdminsAlwaysMonitorChat && %client.isAdmin;
+		%matchingJobTrack = %client.getJobSO().track $= %jobTrack;
+		%isJailed = getWord(City.get(%client.bl_id, "jaildata"), 1);
 
-		if(%client.isCityAdmin() || // Admin job always sees radio..
-		($Pref::Server::City::AdminsAlwaysMonitorChat && %client.isAdmin) || // Or if the pref is enabled, allow admin to snoop...
-		(%client.getJobSO().track $= %jobTrack && // Otherwise, check for a matching job track...
-		!getWord(City.get(%client.bl_id, "jaildata"), 1))) // And exclude convicts from seeing messages in their track.
+		if(%client.isCityAdmin() || %doAdminSnooping || (%matchingJobTrack && !%isJailed))
 		{
 			messageClient(%client, '', "\c3[<color:" @ $City::JobTrackColor[%jobTrack] @ ">" @ %jobTrack @ " Radio\c3]" SPC %msgString);
 		}
