@@ -661,9 +661,26 @@ function messageCityRadio(%jobTrack, %msgType, %msgString)
 		%matchingJobTrack = %client.getJobSO().track $= %jobTrack;
 		%isJailed = getWord(City.get(%client.bl_id, "jaildata"), 1);
 
+		// Same job track only - Override if enabled by pref or the user is in admin mode
 		if(%client.isCityAdmin() || %doAdminSnooping || (%matchingJobTrack && !%isJailed))
 		{
 			messageClient(%client, '', "\c3[<color:" @ $City::JobTrackColor[%jobTrack] @ ">" @ %jobTrack @ " Radio\c3]" SPC %msgString);
 		}
 	}
+}
+
+function messageCityJail(%msgString)
+{
+	for(%i = 0; %i < ClientGroup.getCount();%i++)
+	{
+		%subClient = ClientGroup.getObject(%i);
+		%doAdminSnooping = $Pref::Server::City::AdminsAlwaysMonitorChat && %subClient.isAdmin;
+
+		// Convicts only - Override if enabled by pref or the user is in admin mode
+		if(%subClient.isCityAdmin() || %doAdminSnooping || getWord(City.get(%subClient.bl_id, "jaildata"), 1))
+		{
+			messageClient(%subClient, '', %msgString);
+		}
+	}
+	echo("(Convict Chat)" SPC %client.name @ ":" SPC %text);
 }

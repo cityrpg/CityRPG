@@ -62,7 +62,7 @@ function City_InitPrefs()
 	City_RegisterPref("Game", "Disable tumble on starve", "$Pref::Server::City::DisableHungerTumble", "bool", "", false);
 
 	City_RegisterPref("Server Management", "Logging Enabled", "$Pref::Server::City::loggerEnabled", "bool", "", true);
-	City_RegisterPref("Server Management", "Always show radio chat to admins", "$Pref::Server::City::AdminsAlwaysMonitorChat", "bool", "", false);
+	City_RegisterPref("Server Management", "Always show hidden chat to admins", "$Pref::Server::City::AdminsAlwaysMonitorChat", "bool", "", false);
 
 	City_RegisterPref("Economy", "Economy Relay", "$Pref::Server::City::Economics::Relay", "int", "0 50", 2);
 	City_RegisterPref("Economy", "Max Economy Percentage", "$Pref::Server::City::Economics::Greatest", "int", "-500 500", 100);

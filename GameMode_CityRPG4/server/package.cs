@@ -954,15 +954,7 @@ package CityRPG_MainPackage
 		{
 			if(getWord(City.get(%client.bl_id, "jaildata"), 1))
 			{
-				for(%i = 0; %i < ClientGroup.getCount();%i++)
-				{
-					%subClient = ClientGroup.getObject(%i);
-					if(getWord(City.get(%subClient.bl_id, "jaildata"), 1))
-					{
-						messageClient(%subClient, '', "\c3[<color:777777>Inmate\c3]" SPC %client.name @ "<color:777777>:" SPC %text);
-					}
-				}
-				echo("(Convict Chat)" SPC %client.name @ ":" SPC %text);
+				messageCityJail("\c3[<color:777777>Inmate\c3]" SPC %client.name @ "<color:777777>:" SPC %text);
 			}
 			else
 			{
