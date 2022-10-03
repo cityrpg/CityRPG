@@ -80,6 +80,7 @@ package CityRPG_MainPackage
 	}
 
 	// New Duplicator compatibility
+
 	function ND_Selection::plantBrick(%this, %i, %position, %angleID, %brickGroup, %client, %bl_id)
 	{
 		%brick = Parent::plantBrick(%this, %i, %position, %angleID, %brickGroup, %client, %bl_id);
@@ -115,6 +116,21 @@ package CityRPG_MainPackage
 
 		Parent::ndTrustCheckModify(%obj, %group2, %bl_id, %admin);
 	}
+
+	
+	//Update the bottomprint
+	function GameConnection::ndUpdateBottomPrint(%this)
+	{
+		Parent::ndUpdateBottomPrint(%this);
+
+		if(!%this.ndModeIndex)
+		{
+			%this.cityHUDTimer = $sim::time;
+			%this.setGameBottomPrint();
+		}
+	}
+
+	// Brick stuff
 
 	function fxDTSBrick::onPlant(%brick)
 	{
