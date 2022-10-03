@@ -186,7 +186,7 @@ function fxDTSBrick::sellClothes(%brick, %item, %markup, %client)
 		%vowel = City_DetectVowel(ClothesSO.sellName[%item]);
 		%clothingName = ClothesSO.sellName[%item];
 		%fee = %client.player.serviceFee;
-		%str = "This service is offering to dress you in " @ %vowel SPC %clothingName @ "for $" @ %fee @ ".";
+		%str = "This service is offering to dress you in " @ %vowel SPC %clothingName @ " for $" @ %fee @ ".";
 		commandToClient(%client, 'MessageBoxYesNo', "Purchase", %str, 'yes');
 	}
 	else if(%client.player.serviceOrigin && %client.player.serviceOrigin != %brick)
