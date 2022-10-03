@@ -197,49 +197,46 @@ function ClothesSO::loadClothes(%so)
 	%so.color["none"]		= "1 1 1 1";
 	%so.node["none"]		= "0";
 
+	%o = 0;
+
 	// Outfits
 	// Outfits use index instead of names.
-	// Do not repeat indexes.
 	// This is the order they appear in the GUI.
-	%so.str[1]	= "none none none none whitet whitet skin bluejeans blackshoes default default";
-	%so.uiName[1]	= "Default";
-	%so.sellName[1]	= "Default Suit";
+	%so.str[%o++]		= "none none none none whitet whitet skin bluejeans blackshoes default default";
+	%so.uiName[%o]		= "Default";
+	%so.sellName[%o]	= "Default Suit";
 
-	%so.str[2]	= "none brownhat keep keep greenshirt greenshirt keep greyPants blackshoes default default";
-	%so.uiName[2]	= "Basic";
-	%so.sellName[2]	= "Basic Outfit";
+	%so.str[%o++]	= "none brownhat keep keep greenshirt greenshirt keep greyPants blackshoes default default";
+	%so.uiName[%o]	= "Basic";
+	%so.sellName[%o]	= "Basic Outfit";
 
-	%so.str[3]	= "keep skullcap keep keep blackshirt blackshirt blackgloves blackPants blackshoes default default";
-	%so.uiName[3]	= "Gimp";
-	%so.sellName[3]	= "Gimp Suit";
+	%so.str[%o++]	= "none none none none whitet redsleeve keep brightbluePants blueshoes default default";
+	%so.uiName[%o]	= "Blockhead";
+	%so.sellName[%o]	= "Blockhead Clothes";
 
-	%so.str[4]	= "none none none none whitet redsleeve keep brightbluePants blueshoes default default";
-	%so.uiName[4]	= "Blockhead";
-	%so.sellName[4]	= "Blockhead Clothes";
+	%so.str[%o++]	= "keep keep keep keep greenshirt greenshirt keep brownPants blackshoes default worm-sweater";
+	%so.uiName[%o]	= "Nerd";
+	%so.sellName[%o]	= "Nerd Suit";
 
-	%so.str[5]	= "keep keep keep keep greenshirt greenshirt keep brownPants blackshoes default worm-sweater";
-	%so.uiName[5]	= "Nerd";
-	%so.sellName[5]	= "Nerd Suit";
+	%so.str[%o++]	= "keep keep keep keep blackshirt blackshirt keep blackPants blackshoes default Mod-Suit";
+	%so.uiName[%o]	= "Business";
+	%so.sellName[%o]	= "Business Suit";
 
-	%so.str[6]	= "keep keep keep keep blackshirt blackshirt keep blackPants blackshoes default Mod-Suit";
-	%so.uiName[6]	= "Business";
-	%so.sellName[6]	= "Business Suit";
+	%so.str[%o++]	= "keep keep keep keep blueshirt blueshirt keep bluePants blackshoes default Mod-Suit";
+	%so.uiName[%o]	= "Council";
+	%so.sellName[%o]	= "Council Suit";
 
-	%so.str[7]	= "keep keep keep keep blueshirt blueshirt keep bluePants blackshoes default Mod-Suit";
-	%so.uiName[7]	= "Council";
-	%so.sellName[7]	= "Council Suit";
+	%so.str[%o++]	= "keep keep keep keep skingen skingen skingen skingen skingen default default";
+	%so.uiName[%o]	= "Naked";
+	%so.sellName[%o]	= "B-Day Suit";
 
-	%so.str[8]	= "keep keep keep keep skingen skingen skingen skingen skingen default default";
-	%so.uiName[8]	= "Naked";
-	%so.sellName[8]	= "B-Day Suit";
+	%so.str[%o++]	= "keep keep keep keep blackshirt blackshirt skingen blackpants blackshoes default Mod-Suit";
+	%so.uiName[%o]	= "Suit";
+	%so.sellName[%o]	= "Suit & Tie";
 
-	%so.str[9]	= "keep keep keep keep blackshirt blackshirt skingen blackpants blackshoes default Mod-Suit";
-	%so.uiName[9]	= "Suit";
-	%so.sellName[9]	= "Suit & Tie";
-
-	%so.str[10]	= "DrKleiner DrKleiner DrKleiner DrKleiner whitet whitet brightbluegloves whitet blackshoes DrKleiner DrKleiner";
-	%so.uiName[10]	= "Doctor";
-	%so.sellName[10]	= "Doctor";
+	%so.str[%o++]	= "DrKleiner DrKleiner DrKleiner DrKleiner whitet whitet brightbluegloves whitet blackshoes DrKleiner DrKleiner";
+	%so.uiName[%o]	= "Doctor";
+	%so.sellName[%ow]	= "Doctor";
 
 	// Hats
 	%so.color["brownhat"]	= "0.329 0.196 0.000 1.000";
