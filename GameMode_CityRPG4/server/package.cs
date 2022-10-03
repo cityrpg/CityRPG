@@ -1125,6 +1125,16 @@ package CityRPG_MainPackage
 		%client.cityHUDTimer = $sim::time;
 		%client.setGameBottomPrint();
 	}
+
+	// clearBottomPrint tool switching support
+	// Covers Tier+Tactical weapons
+	function clearBottomPrint(%client)
+	{
+		Parent::clearBottomPrint(%client);
+
+		%client.cityHUDTimer = $sim::time;
+		%client.setGameBottomPrint();
+	}
 };
 deactivatePackage(CityRPG_MainPackage);
 activatepackage(CityRPG_MainPackage);
