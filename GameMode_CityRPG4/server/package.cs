@@ -1116,6 +1116,15 @@ package CityRPG_MainPackage
 	{
 		serverCmdNo(%client);
 	}
+
+	function serverCmdUnUseTool(%client)
+	{
+		Parent::serverCmdUnUseTool(%client);
+
+		// Refresh HUD on tool un-use. This catches ammo HUDs such as Tier+Tactical.
+		%client.cityHUDTimer = $sim::time;
+		%client.setGameBottomPrint();
+	}
 };
 deactivatePackage(CityRPG_MainPackage);
 activatepackage(CityRPG_MainPackage);
