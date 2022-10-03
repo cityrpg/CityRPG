@@ -186,6 +186,12 @@ function CityLots_PurchaseLot(%client, %input, %lotBrick)
 		%client.cityMenuMessage("\c0Lot purchase cancelled.");
 		%client.cityMenuClose();
 	}
+	else if(%lotBrick.getCityLotID() == -1)
+	{
+		%client.cityLog("Attempt to purchase invalid lot", 0, 1);
+		%client.cityMenuMessage("\c0This lot cannot be purchased due to an error. Please talk to an administrator for assistance.");
+		%client.cityMenuClose();
+	}
 	else if(%lotBrick.getCityLotOwnerID() != -1 || %buyerCash < %lotBrick.dataBlock.initialPrice)
 	{
 		%client.cityLog("Lot " @ %lotBrick.getCityLotID() @ " purchase fell through", 0, 1);
@@ -420,6 +426,12 @@ function CityMenu_Lot_PurchasePreowned(%client, %input, %lotBrick)
 
 		// Security check falls through
 		%client.cityMenuMessage("\c0Sorry, you are no-longer able to purchase this lot at this time.");
+		%client.cityMenuClose();
+	}
+	else if(%lotBrick.getCityLotID() == -1)
+	{
+		%client.cityLog("Attempt to purchase invalid lot", 0, 1);
+		%client.cityMenuMessage("\c0This lot cannot be purchased due to an error. Please talk to an administrator for assistance.");
 		%client.cityMenuClose();
 	}
 	else if(%buyerCash >= %lotPrice)
