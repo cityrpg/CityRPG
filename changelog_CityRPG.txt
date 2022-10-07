@@ -1,3 +1,14 @@
+<version:1.1.0>
+	<li>Fixed and brought back the sellClothes event. Changing jobs overrides your outfit with the new job's uniform for now.</li>
+	<li>Fixed health/money HUD being missing after using duplicator.</li>
+	<li>Fixed health/money HUD being missing after using weapons with Tier+Tactical ammo.</li>
+	<li>Fixed being able to buy broken lots for free.</li>
+
+	<b>Hosting Info</b>
+	<li>Demerits incurred are now logged. Logs only include the amount for now, as this is all that the demerits function handles.</li>
+	<li>Added support for the ToolGun (Tool_ToolGun). This item will override the hammer, wrench, and printer as job spawn items when enabled.</li>
+	<li>Removed certain optional add-ons from loading with the game-mode as their handling is initialized after add-ons load. This may affect the load order of your server's add-ons.</li>
+</version>
 <version:1.0.0>
 	<li>Added simple optional support for the Mail System by [GSF]Ghost. This can be activated by installing and enabling System_Mail. With this add-on enabled, players can sell the letter, note, and postcard items via item shops.</li>
 	<li>Lowered the required players for an election to 8 and the required players to impeach the mayor to 6.</li>
