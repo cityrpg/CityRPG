@@ -65,7 +65,7 @@
 	</ul>
 </version>
 <version:0.3.0>
-	<b>Interactions Update</b>
+	Interactions Update
 	<b>Job Improvements</b>
 	The jobs menu and commands have been improved. Job sign-ups now give you more details about the qualifications and perks, and you can now type partial names when signing up for a job.
 
@@ -121,7 +121,7 @@
 	Fixed an exploit where players could "buy" the real estate brick as a lot, granting them ownership of the bricks connected to it.
 </version>
 <version:0.2.0>
-	<b>Job Trees, Radio, & Real Estate Improvements</b>
+	Job Trees, Radio, & Real Estate Improvements
 	<b>Real Estate</b>
 	The real estate office is back. Real estate has been rewritten, hooking into the existing lot system established in Alpha 1. This means quick, seamless lot sales. You can visit the real estate office to view city-wide stats, manage and list your own lots, or purchase someone else's lot listing.
 
