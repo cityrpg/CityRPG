@@ -336,46 +336,7 @@ package CityRPG_Commands
 
 	function serverCmdreset(%client)
 	{
-		if(%client.cityRateLimitCheck())
-		{
-			return;
-		}
-
-		%client.cityLog("/reset");
-
-		if(!isObject(%client.player))
-			return;
-
-		if(City.get(%client.bl_id, "money") - $Pref::Server::City::prices::reset >= 0)
-		{
-			%client.cityMenuMessage("\c6Would you like to reset your CityRPG profile?");
-			%client.cityMenuMessage("\c0WARNING: You are about to reset all of your progress on this server. Are you sure?");
-
-			%menu = "Reset my account." TAB "Cancel.";
-			%functions = CityMenu_Reset_Confirm TAB CityMenu_Close;
-			%client.cityMenuOpen(%menu, %functions, %client, "\c6Your account will not be reset.");
-		}
-		else
-			messageClient(%client, '', "\c6You need at least \c3$" @ $Pref::Server::City::prices::reset SPC "\c6to do that.");
-	}
-
-	function CityMenu_Reset_Confirm(%client)
-	{
-		%client.cityMenuClose(1);
-		
-		%client.cityLog("***Account reset***");
-		messageClient(%client, '', "\c6Your account has been reset.");
-		messageAll('',"\c3"@ %client.name @" \c6has reset their account.");
-		CityRPGData.removeData(%client.bl_id);
-		CityRPGData.addData(%client.bl_id);
-
-		City.set(%client.bl_id, "bank", 100);
-		%client.setCityJob($City::CivilianJobID, 1, 1);
-
-		if(isObject(%client.player))
-		{
-			%client.spawnPlayer();
-		}
+		messageClient(%client, '', "\c6Please ask an admin for help if you want to reset your account.");
 	}
 
 	function serverCmdeducation(%client, %do) {
