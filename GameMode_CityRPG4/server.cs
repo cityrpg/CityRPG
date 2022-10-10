@@ -297,14 +297,4 @@ addExtraResource($City::DataPath @ "ui/location.png");
 addExtraResource($City::DataPath @ "ui/time.png");
 addExtraResource($City::DataPath @ "ui/hunger.png");
 
-// Support_CityRPG_Plus (Optional)
-// This needs to load *after* CityRPG for it to be compatible.
-if($GameModeArg $= "Add-Ons/GameMode_CityRPG4/gamemode.txt")
-{
-  if(isFile("Add-Ons/Support_CityRPG_Plus/server.cs"))
-  {
-  exec("Add-Ons/Support_CityRPG_Plus/server.cs");
-  }
-}
-
 $City::Loaded = 1;
