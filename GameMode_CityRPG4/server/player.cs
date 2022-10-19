@@ -36,7 +36,7 @@ function gameConnection::arrest(%client, %cop)
 
 	if(City.get(%client.bl_id, "totalhunger") < 0)
 	{
-		commandToClient(%client, 'messageBoxOK', "You've been Jailed by" SPC %cop.name @ "!", 'You have been jailed for %1 tick%2.\n\nYou may either wait out your jail time in game and possibly earn money by laboring, or you may leave the server and return when your time is up.\nThe choice is yours.', %ticks, %ticks == 1 ? "" : "s");
+		commandToClient(%client, 'messageBoxOK', "You've been Jailed by" SPC %cop.name @ "!", 'You have been jailed for %1 city day%2.\n\nYou may either wait out your jail time in game and possibly earn money by laboring, or you may leave the server and return when your time is up.\nThe choice is yours.', %ticks, %ticks == 1 ? "" : "s");
 		commandToClient(%cop, 'centerPrint', "\c6You have jailed \c3" @ %client.name SPC "\c6for \c3" @ %ticks SPC"\c6tick" @ ((%ticks == 1) ? "" : "s") @ ". You were rewarded \c3$" @ %reward @ "\c6.", 5);
 	}
 	else
@@ -80,7 +80,7 @@ function gameConnection::arrest(%client, %cop)
 			messageAll('', '\c6With the apprehension of \c3%1-star\c6 criminal \c3%2\c6 by \c3%3\c6, the City returns to a peaceful state.', %ticks, %client.name, %cop.name);
 	}
 	else
-		messageAll('', '\c3%1\c6 was jailed by \c3%2\c6 for \c3%3\c6 ticks.', %client.name, %cop.name, %ticks);
+		messageAll('', '\c3%1\c6 was jailed by \c3%2\c6 for \c3%3\c6 days.', %client.name, %cop.name, %ticks); // TODO: "1 days"?
 }
 
 function gameConnection::buyResources(%client)
