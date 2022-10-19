@@ -55,7 +55,6 @@ function City_InitPrefs()
 	City_RegisterPref("Game", "Disable Default Weapons", "$Pref::Server::City::disabledefaultweps", "bool", "", false, "", "", true);
 	City_RegisterPref("Game", "Max Lots", "$Pref::Server::City::realestate::maxLots", "int", "0 999", 5);
 	City_RegisterPref("Game", "Account Reset Cost (/reset)", "$Pref::Server::City::prices::reset", "int", "0 5000", 100);
-	City_RegisterPref("Game", "Tick Length (minutes)", "$Pref::Server::City::tick::speed", "int", "0 10", 5);
 	City_RegisterPref("Game", "Lot Rules", "$Pref::Server::City::LotRules", "string", "256", "No spam. No excessive FX, emitters, or lights.");
 	City_RegisterPref("Game", "Min Bounty", "$Pref::Server::City::demerits::minBounty", "int", "0 1000", 100);
 	City_RegisterPref("Game", "Max Bounty", "$Pref::Server::City::demerits::maxBounty", "int", "0 1000000", 7500);
@@ -102,6 +101,8 @@ $Pref::Server::City::demerits::pardonCostMultiplier = 5;
 $Pref::Server::City::demerits::reducePerTick = 25;
 
 $Pref::Server::City::defaultTools = "hammerItem wrenchItem printGun";
+
+$Pref::Server::City::tick::speed = 10;
 
 // Education
 $City::EducationCap = 6;
