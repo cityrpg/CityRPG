@@ -1,6 +1,6 @@
 $CityRPG::jobs::name = "Council Member";
 $CityRPG::jobs::initialInvestment = 0;
-$CityRPG::jobs::pay = 25;
+$CityRPG::jobs::pay = 50;
 $CityRPG::jobs::tools = "CityRPGBatonItem";
 $CityRPG::jobs::datablock = Player9SlotJetPlayer;
 $CityRPG::jobs::education = 0;

@@ -1,7 +1,7 @@
 $CityRPG::jobs::name = "Miner";
 $CityRPG::jobs::track = "Labor";
 $CityRPG::jobs::initialInvestment = 25;
-$CityRPG::jobs::pay = 25;
+$CityRPG::jobs::pay = 50;
 $CityRPG::jobs::tools = "CityRPGPickaxeItem";
 $CityRPG::jobs::datablock = Player9SlotPlayer;
 $CityRPG::jobs::education = 0;

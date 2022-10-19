@@ -1,7 +1,7 @@
 $CityRPG::jobs::name = "Store CEO";
 $CityRPG::jobs::track = "Business";
 $CityRPG::jobs::initialInvestment = 125;
-$CityRPG::jobs::pay = 90;
+$CityRPG::jobs::pay = 180;
 $CityRPG::jobs::tools = "";
 $CityRPG::jobs::datablock = Player9SlotPlayer;
 $CityRPG::jobs::education = 8;

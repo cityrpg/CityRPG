@@ -1,7 +1,7 @@
 $CityRPG::jobs::name = "Bounty Hunter";
 $CityRPG::jobs::track = "Bounty Hunter";
 $CityRPG::jobs::initialInvestment = 50;
-$CityRPG::jobs::pay = 25;
+$CityRPG::jobs::pay = 50;
 $CityRPG::jobs::tools = "CityRPGLBItem";
 $CityRPG::jobs::datablock = Player9SlotPlayer;
 $CityRPG::jobs::education = 1;
