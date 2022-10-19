@@ -305,7 +305,7 @@ function City_illegalAttackTest(%atkr, %vctm)
 function City_Tick_Econ()
 {
 	$City::Economics::replayCount = $City::Economics::replayCount + 1;
-	$City::Economics::randomUporDown = getRandom(1,5);
+	$City::Economics::randomUporDown = getRandom(1,15);
 
 	if($Pref::Server::City::Economics::Relay < 1)
 		$Pref::Server::City::Economics::Relay = ClientGroup.getCount();
