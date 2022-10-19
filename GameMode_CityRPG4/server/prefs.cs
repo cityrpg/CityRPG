@@ -98,7 +98,7 @@ $Pref::Server::City::giveDefaultTools = true;
 $Pref::Server::City::moneyDieTime = 9999999999;
 
 $Pref::Server::City::demerits::pardonCostMultiplier = 5;
-$Pref::Server::City::demerits::reducePerTick = 25;
+$Pref::Server::City::demerits::reducePerTick = 50;
 
 $Pref::Server::City::defaultTools = "hammerItem wrenchItem printGun";
 
