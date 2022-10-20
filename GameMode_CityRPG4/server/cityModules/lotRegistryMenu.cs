@@ -154,21 +154,27 @@ function CityMenu_LotRules(%client)
 function CityMenu_LotPurchasePrompt(%client)
 {
 	%lotBrick = %client.cityMenuID;
+	%lotsOwned = getWordCount($City::Cache::LotsOwnedBy[%client.bl_id]);
 
 	%client.cityLog("Lot " @ %lotBrick.getCityLotID() @ " purchase prompt");
 
-	if(City.get(%client.bl_id, "money") >= %lotBrick.dataBlock.initialPrice)
+	if(City.get(%client.bl_id, "money") < %lotBrick.dataBlock.initialPrice)
+	{
+		%client.cityMenuMessage("\c6You need \c3$" @ %lotBrick.dataBlock.initialPrice @ "\c6 on hand to purchase this lot.");
+		%client.cityMenuClose();
+	}
+	else if(%lotsOwned >= $Pref::Server::City::realestate::maxLots)
+	{
+		%client.cityMenuMessage("\c6You cannot buy any more lots. You must sell one to buy another.");
+		%client.cityMenuClose();
+	}
+	else
 	{
 		%client.cityMenuMessage("\c6You are purchasing this lot for \c2$" @ %lotBrick.dataBlock.initialPrice @ "\c6. Make sure you have read the lot rules. Lot sales are final!");
 		%client.cityMenuMessage("\c6Type \c31\c6 to confirm, or leave the lot to cancel.");
 
 		%client.cityMenuFunction = CityLots_PurchaseLot;
 		%client.cityMenuID = %lotBrick;
-	}
-	else
-	{
-		%client.cityMenuMessage("\c6You need \c3$" @ %lotBrick.dataBlock.initialPrice @ "\c6 on hand to purchase this lot.");
-		%client.cityMenuClose();
 	}
 }
 
@@ -381,10 +387,21 @@ function CityMenu_Lot_ListForSale(%client, %input)
 function CityMenu_Lot_PurchasePreownedPrompt(%client)
 {
 	%lotBrick = %client.cityMenuID;
+	%lotsOwned = getWordCount($City::Cache::LotsOwnedBy[%client.bl_id]);
 
 	%client.cityLog("Lot " @ %lotBrick.getCityLotID() @ " pre-owned purchase prompt");
 
-	if(City.get(%client.bl_id, "money") >= %lotBrick.getCityLotPreownedPrice())
+	if(City.get(%client.bl_id, "money") < %lotBrick.getCityLotPreownedPrice())
+	{
+		%client.cityMenuMessage("\c6You need \c3$" @ %lotBrick.getCityLotPreownedPrice() @ "\c6 on hand to purchase this lot.");
+		%client.cityMenuClose();
+	}
+	else if(%lotsOwned >= $Pref::Server::City::realestate::maxLots)
+	{
+		%client.cityMenuMessage("\c6You cannot buy any more lots. You must sell one to buy another.");
+		%client.cityMenuClose();
+	}
+	else
 	{
 		%client.cityMenuMessage("\c6You are purchasing this lot from \c3" @ %lotBrick.getGroup().name @ "\c6 for \c2$" @ %lotBrick.getCityLotPreownedPrice() @ "\c6. Make sure you have read the lot rules. Lot sales are final!");
 		%client.cityMenuMessage("\c6Type \c31\c6 to confirm, or leave the lot to cancel.");
@@ -395,11 +412,6 @@ function CityMenu_Lot_PurchasePreownedPrompt(%client)
 		// Lock in the purchase details -- this is necessary in case they change mid-purchase
 		%client.cityLotPurchasePrice = %lotBrick.getCityLotPreownedPrice();
 		%client.cityLotPurchaseOwner = %lotBrick.getCityLotOwnerID();
-	}
-	else
-	{
-		%client.cityMenuMessage("\c6You need \c3$" @ %lotBrick.getCityLotPreownedPrice() @ "\c6 on hand to purchase this lot.");
-		%client.cityMenuClose();
 	}
 }
 

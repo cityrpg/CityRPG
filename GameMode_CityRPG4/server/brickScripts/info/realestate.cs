@@ -65,6 +65,9 @@ function CityMenu_RealEstate(%client, %input, %brick)
 		%message = %message SPC "There are no pre-owned lots for sale at this time.";
 	}
 
+	%lotsOwned = getWordCount($City::Cache::LotsOwnedBy[%client.bl_id]);
+	%message = %message @ " You own \c3" @ %lotsOwned @ "\c6 lots of \c3" @ $Pref::Server::City::realestate::maxLots @ "\c6 max.";
+
 	%client.cityMenuMessage(%message);
 	%client.cityMenuOpen(%menu, %functions, %brick, "\c6Thanks, come again.", 0, 1, "\c3" @ $Pref::Server::City::name @ "\c3 Real Estate Office");
 }
