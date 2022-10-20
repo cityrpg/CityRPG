@@ -251,13 +251,13 @@ function GameConnection::setCityJob(%client, %jobID, %force, %silent)
 
 		if(%jobID $= City.get(%client.bl_id, "jobid"))
 		{
-			messageClient(%client, '', "\c6- You are already" SPC City_DetectVowel(%jobObject.name) SPC "\c3" @ %jobObject.name @ "\c6!");
+			messageClient(%client, '', "\c6- You are already" SPC City_DetectVowel(%jobObject.name) SPC $c_p @ %jobObject.name @ "\c6!");
 			%jobEligible = 0;
 		}
 
 		if(%jobObject.law && getWord(City.get(%client.bl_id, "jaildata"), 0) == 1)
 		{
-			messageClient(%client, '', "\c6- You do not have a clean criminal record to become" SPC City_DetectVowel(%jobObject.name) SPC "\c3" @ %jobObject.name @ "\c6.");
+			messageClient(%client, '', "\c6- You do not have a clean criminal record to become" SPC City_DetectVowel(%jobObject.name) SPC $c_p @ %jobObject.name @ "\c6.");
 			%jobEligible = 0;
 		}
 
@@ -269,13 +269,13 @@ function GameConnection::setCityJob(%client, %jobID, %force, %silent)
 
 		if(City.get(%client.bl_id, "money") < %jobObject.invest)
 		{
-			messageClient(%client, '', "\c6- It costs \c3$" @ %jobObject.invest SPC "\c6to become" SPC City_DetectVowel(%jobObject.name) SPC %jobObject.name @ "\c6.");
+			messageClient(%client, '', "\c6- It costs " @ $c_p @ "$" @ %jobObject.invest SPC "\c6to become" SPC City_DetectVowel(%jobObject.name) SPC %jobObject.name @ "\c6.");
 			%jobEligible = 0;
 		}
 
 		if(City.get(%client.bl_id, "education") < %jobObject.education)
 		{
-			messageClient(%client, '', "\c6- You need to reach an education level of \c3" @ %jobObject.education @ "\c6 to become" SPC City_DetectVowel(%jobObject.name) SPC %jobObject.name @ "\c6.");
+			messageClient(%client, '', "\c6- You need to reach an education level of " @ $c_p @ %jobObject.education @ "\c6 to become" SPC City_DetectVowel(%jobObject.name) SPC %jobObject.name @ "\c6.");
 			%jobEligible = 0;
 		}
 
@@ -294,7 +294,7 @@ function GameConnection::setCityJob(%client, %jobID, %force, %silent)
 			}
 			else if(%jobObject.education == 0)
 			{
-				messageClient(%client, '', "\c6You have made your own initiative to become" SPC City_DetectVowel(%jobObject.name) SPC "\c3" @ %jobObject.name @ "\c6.");
+				messageClient(%client, '', "\c6You have made your own initiative to become" SPC City_DetectVowel(%jobObject.name) SPC $c_p @ %jobObject.name @ "\c6.");
 			}
 			else
 			{
@@ -359,7 +359,7 @@ function GameConnection::cityJobChangeMessage(%client, %oldJob, %newJob)
 	{
 		%salaryBullet = %newJobObj.pay > %oldJobObj.pay ? %positiveBullet : %negativeBullet;
 
-		messageClient(%client, '', %salaryBullet @ "\c6 Your new salary is \c2$" @ %newJobObj.pay @ "\c6 per day.");
+		messageClient(%client, '', %salaryBullet @ "\c6 Your new salary is " @ $c_p @ "$" @ %newJobObj.pay @ "\c6 per day.");
 	}
 	else
 	{
@@ -419,7 +419,7 @@ function GameConnection::cityJobChangeMessage(%client, %oldJob, %newJob)
 	// If the job track changes, notify about the new radio.
 	if(%oldJobObj.track !$= %newJobObj.track)
 	{
-		messageClient(%client, '', "\c6- You now have access to the \c3" @ %newJobObj.track @ " Radio\c6. You can access it using team chat.");
+		messageClient(%client, '', "\c6- You now have access to the " @ $c_p @ %newJobObj.track @ " Radio\c6. You can access it using team chat.");
 	}
 }
 

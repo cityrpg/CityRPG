@@ -36,7 +36,7 @@ function fxDTSBrick::onChop(%this, %client)
 
 	if(%this.totalHits)
 	{
-		%client.centerPrint("<just:left>\c6" @ %this.name @ ":\c3" SPC %this.totalHits, 3);
+		%client.centerPrint("<just:left>\c6" @ %this.name @ ":" @ $c_p SPC %this.totalHits, 3);
 	}
 	else
 	{

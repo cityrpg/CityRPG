@@ -63,7 +63,7 @@ package CityRPG_Cash
 					}
 
 					City.add(%obj.client.bl_id, "money", %col.value);
-					messageClient(%obj.client, '', "\c6You have picked up \c3$" @ %col.value SPC "\c6off the ground.");
+					messageClient(%obj.client, '', "\c6You have picked up " @ $c_p @ "$" @ %col.value SPC "\c6off the ground.");
 
 					%obj.client.cityLog("Pick up $" @ %col.value);
 
