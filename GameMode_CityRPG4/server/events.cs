@@ -124,7 +124,7 @@ function fxDTSBrick::requestFunds(%brick, %serviceName, %fund, %client)
 	}
 	else if(%client.player.serviceOrigin && %client.player.serviceOrigin != %brick)
 	{
-		messageClient(%client, '', "\c6You already have a charge request from another service! Type \c3/no\c6 to reject it.");
+		messageClient(%client, '', "\c6You already have a charge request from another service! Type " @ $c_p @ "/no\c6 to reject it.");
 	}
 }
 
@@ -146,7 +146,7 @@ function fxDTSBrick::sellFood(%brick, %portion, %food, %markup, %client)
 		commandToClient(%client, 'MessageBoxYesNo', "Purchase", %str, 'yes');
 	}
 	else if(%client.player.serviceOrigin && %client.player.serviceOrigin != %brick)
-		messageClient(%client, '', "\c6You already have a charge request from another service! Type \c3/no\c6 to reject it.");
+		messageClient(%client, '', "\c6You already have a charge request from another service! Type " @ $c_p @ "/no\c6 to reject it.");
 }
 
 function fxDTSBrick::sellItem(%brick, %item, %markup, %client)
@@ -167,10 +167,10 @@ function fxDTSBrick::sellItem(%brick, %item, %markup, %client)
 			commandToClient(%client, 'MessageBoxYesNo', "Purchase", %str, 'yes');
 		}
 		else
-			messageClient(%client, '', '\c6A service is trying to offer you %1 \c3%2\c6, but the city needs \c3%3\c6 more minerals to produce it!', City_DetectVowel(%name), %name, ($City::Item::mineral[%item] - CitySO.minerals));
+			messageClient(%client, '', '\c6A service is trying to offer you %1 @ $c_p @ "%2\c6, but the city needs @ $c_p @ "%3\c6 more minerals to produce it!', City_DetectVowel(%name), %name, ($City::Item::mineral[%item] - CitySO.minerals));
 	}
 	else if(%client.player.serviceOrigin && %client.player.serviceOrigin != %brick)
-		messageClient(%client, '', "\c6You already have a charge request from another service! Type \c3/no\c6 to reject it.");
+		messageClient(%client, '', "\c6You already have a charge request from another service! Type " @ $c_p @ "/no\c6 to reject it.");
 }
 
 function fxDTSBrick::sellClothes(%brick, %item, %markup, %client)
@@ -190,5 +190,5 @@ function fxDTSBrick::sellClothes(%brick, %item, %markup, %client)
 		commandToClient(%client, 'MessageBoxYesNo', "Purchase", %str, 'yes');
 	}
 	else if(%client.player.serviceOrigin && %client.player.serviceOrigin != %brick)
-		messageClient(%client, '', "\c6You already have a charge request from another service! Type \c3/no\c6 to reject it.");
+		messageClient(%client, '', "\c6You already have a charge request from another service! Type " @ $c_p @ "/no\c6 to reject it.");
 }

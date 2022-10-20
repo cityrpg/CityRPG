@@ -30,7 +30,7 @@ function CityMenu_Bounty(%client, %brick)
 	%functions = 	"CityMenu_Bounty_List"
 						TAB "CityMenu_Bounty_PlacePromptA";
 
-	%client.cityMenuOpen(%menu, %functions, %brick, "\c6Thanks, come again.", 0, 0, "\c3Hit Office");
+	%client.cityMenuOpen(%menu, %functions, %brick, "\c6Thanks, come again.", 0, 0, $c_p @ "Hit Office");
 }
 
 function CityMenu_Bounty_List(%client, %brick)
@@ -43,7 +43,7 @@ function CityMenu_Bounty_List(%client, %brick)
 
 		if(City.get(%criminal.bl_id, "bounty") > 0)
 		{
-			messageClient(%client, '', "\c3" @ %criminal.name SPC "\c6- \c3$" @ City.get(%criminal.bl_id, "bounty"));
+			messageClient(%client, '', $c_p @ %criminal.name SPC "\c6- " @ $c_p @ "$" @ City.get(%criminal.bl_id, "bounty"));
 
 			%noCriminals = false;
 		}
@@ -77,7 +77,7 @@ function CityMenu_Bounty_PlacePromptB(%client, %input)
 
 		if(%hunted != %client)
 		{
-			%client.cityMenuMessage("\c6Alright, so you want a hit on \c3" @ %hunted.name @ "\c6.");
+			%client.cityMenuMessage("\c6Alright, so you want a hit on " @ $c_p @ %hunted.name @ "\c6.");
 			%client.cityMenuMessage("\c6How much are you wanting to place?");
 
 			%client.stage["hunted"] = %hunted;
@@ -125,10 +125,10 @@ function CityMenu_Bounty_PlacePromptC(%client, %input)
 
 			%client.cityLog("Place bounty $" @ %bounty @ " on " @ %client.stage["hunted"].bl_id);
 
-			messageAll('', "\c3" @ %client.name @ "\c6 has placed \c3$" @ %bounty @ "\c6 on \c3" @ %client.stage["hunted"].name @"\c6's head!");
+			messageAll('', $c_p @ %client.name @ "\c6 has placed " @ $c_p @ "$" @ %bounty @ "\c6 on " @ $c_p @ %client.stage["hunted"].name @"\c6's head!");
 			if(!%client.getJobSO().bountyOffer)
 			{
-				commandToClient(%client, 'centerPrint', "\c6You have committed a crime. [\c3Placing an Illegal Hit\c6]", 1);
+				commandToClient(%client, 'centerPrint', "\c6You have committed a crime. [" @ $c_p @ "Placing an Illegal Hit\c6]", 1);
 				City_AddDemerits(%client.bl_id, $CityRPG::demerits::bountyPlacing);
 			}
 
@@ -146,7 +146,7 @@ function CityMenu_Bounty_PlacePromptC(%client, %input)
 	}
 	else
 	{
-		%client.cityMenuMessage("\c6Sorry Pal, we don't accept chump-change.\n\c6You need at least \c3$" @ $Pref::Server::City::demerits::minBounty @ "\c6 to place a bounty.");
+		%client.cityMenuMessage("\c6Sorry Pal, we don't accept chump-change.\n\c6You need at least " @ $c_p @ "$" @ $Pref::Server::City::demerits::minBounty @ "\c6 to place a bounty.");
 	}
 }
 

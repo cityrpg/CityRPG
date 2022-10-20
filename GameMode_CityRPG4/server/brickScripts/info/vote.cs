@@ -37,7 +37,7 @@ function CityMenu_Vote(%client, %brick)
 		if($City::Mayor::ID != -1 && $City::Mayor::ID !$= "") {
 			messageClient(%client, '', "\c6City mayor: " @ $City::Mayor::String);
 
-			%menu = "Vote to remove the Mayor from office \c3($" @ $Pref::Server::City::Mayor::ImpeachCost @ ")";
+			%menu = "Vote to remove the Mayor from office " @ $c_p @ "($" @ $Pref::Server::City::Mayor::ImpeachCost @ ")";
 
 			%functions = "CityMayor_VoteImpeach";
 		}
@@ -70,7 +70,7 @@ function CityRPGVoteBrickData::parseData(%this, %brick, %client, %triggerStatus,
 			return;
 		}
 		
-		%client.cityMenuMessage("\c3" @ $Pref::Server::City::name @ " Voting Booth");
+		%client.cityMenuMessage($c_p @ $Pref::Server::City::name @ " Voting Booth");
 
 		CityMenu_Vote(%client, %brick);
 	}

@@ -59,7 +59,7 @@ function fxDTSBrick::onMine(%this, %client)
 		City.set(%client.bl_id, "resources", getWord(%resources, 0) SPC (getWord(%resources, 1) + (%this.BPH * ResourceSO.mineral[%this.id].totalHits)) SPC getWord(%resources, 2));
 		%client.SetInfo();
 
-		messageClient(%client, '', "\c6Mined \c3" @ %this.name @ "\c6.");
+		messageClient(%client, '', "\c6Mined " @ $c_p @ %this.name @ "\c6.");
 		return;
 	}
 	else if(%this.totalHits > 0)
@@ -67,7 +67,7 @@ function fxDTSBrick::onMine(%this, %client)
 		%this.totalHits--;
 
 		%col1 = "\c6";
-		%col2 = "\c3";
+		%col2 = $c_p @ "";
 		%client.centerPrint("<just:left>" @ $CityRPG::MainFont @ %col1 @ %this.name @ %col2 @ ":" SPC %this.totalHits, 3);
 
 		if(getRandom(1, 100) > 100 - (City.get(%client.bl_id, "education") / 2))
@@ -76,7 +76,7 @@ function fxDTSBrick::onMine(%this, %client)
 		if(%gemstone)
 		{
 			%value = getRandom(5, 50);
-			messageClient(%client, '', "\c6Extracted a gem from the rock worth \c3$" @ %value @ "\c6.");
+			messageClient(%client, '', "\c6Extracted a gem from the rock worth " @ $c_p @ "$" @ %value @ "\c6.");
 			City.add(%client.bl_id, "money", %value);
 		}
 	}
