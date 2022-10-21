@@ -36,7 +36,6 @@ function gameConnection::arrest(%client, %cop)
 
 	if(City.get(%client.bl_id, "totalhunger") < 0)
 	{
-		commandToClient(%client, 'messageBoxOK', "You've been Jailed by" SPC %cop.name @ "!", 'You have been jailed for %1 city day%2.\n\nYou may either wait out your jail time in game and possibly earn money by laboring, or you may leave the server and return when your time is up.\nThe choice is yours.', %ticks, %ticks == 1 ? "" : "s");
 		commandToClient(%cop, 'centerPrint', "\c6You have jailed " @ $c_p @ %client.name SPC "\c6for " @ $c_p @ %ticks SPC"\c6tick" @ ((%ticks == 1) ? "" : "s") @ ". You were rewarded " @ $c_p @ "$" @ %reward @ "\c6.", 5);
 	}
 	else
