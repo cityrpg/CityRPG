@@ -71,6 +71,8 @@ function City_InitPrefs()
 	City_RegisterPref("Mayor", "Mayor Run Cost", "$Pref::Server::City::Mayor::Cost", "int", "0 50000", 500);
 	City_RegisterPref("Mayor", "Election Time (minutes)", "$Pref::Server::City::Mayor::Time", "int", "0 30", 10);
 	City_RegisterPref("Mayor", "Mayor Removal Cost", "$Pref::Server::City::Mayor::ImpeachCost", "int", "0 50000", 100);
+
+	City_RegisterPref("Danger Zone", "Allow day/night cycle desync", "$Pref::Server::City::AllowDaycycleDesync", "bool", "", false);
 }
 
 City_InitPrefs();

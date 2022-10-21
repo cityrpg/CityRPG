@@ -1135,6 +1135,27 @@ package CityRPG_MainPackage
 		%client.cityHUDTimer = $sim::time;
 		%client.setGameBottomPrint();
 	}
+
+	// Day/night cycle lockdown
+	function serverCmdEnvGui_SetVar(%client, %var, %val)
+	{
+		//&& (%var $= "" || %var $= ""
+		if(!$Pref::Server::City::AllowDaycycleDesync)
+		{
+			if(%var $= "DayOffset")
+			{
+				commandToClient(%client, 'MessageBoxOK', "Woah there!", "It is strongly recommended that you avoid changing this in CityRPG as it will desynchronize the in-game clock. You can override this with Blockland Glass using the \"Allow day/night cycle desync\" pref. This setting has not changed.");
+				return;
+			}
+			else if(%var $= "DayLength")
+			{
+				// Gentler handling for DayLength because it can be triggered by hitting literally any button in the environment menu, even if you're in a different tab!!!
+				return;
+			}
+		}
+
+		Parent::serverCmdEnvGui_SetVar(%client, %var, %val);
+	}
 };
 deactivatePackage(CityRPG_MainPackage);
 activatepackage(CityRPG_MainPackage);
