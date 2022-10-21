@@ -334,7 +334,7 @@ function City_Tick_Econ()
 	}
 }
 
-function City_Tick(%brick)
+function City_Tick()
 {
 	CalendarSO.date++;
 	CityRPGData.lastTickOn = $Sim::Time;
