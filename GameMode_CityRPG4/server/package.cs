@@ -13,10 +13,10 @@ package CityRPG_MainPackage
 				%client.player.serviceType = "zone";
 				%client.player.serviceOrigin = %brick;
 				%client.player.serviceFee = %brick.getDatablock().CityRPGMatchingLot.initialPrice;
-				messageClient(%client, '', '\c6It costs \c3%1\c6 to build in this zone. Type \c3/yes\c6 to accept and \c3/no\c6 to decline', %client.player.serviceFee);
+				messageClient(%client, '', '\c6It costs @ $c_p @ "%1\c6 to build in this zone. Type " @ $c_p @ "/yes\c6 to accept and " @ $c_p @ "/no\c6 to decline', %client.player.serviceFee);
 			}
 			else if(isObject(%client.player.serviceOrigin) && %client.player.serviceOrigin != %brick)
-				messageClient(%client, '', "\c6You already have an active transfer. Type \c3/no\c6 to decline it.");
+				messageClient(%client, '', "\c6You already have an active transfer. Type " @ $c_p @ "/no\c6 to decline it.");
 		}
 	}
 
@@ -171,7 +171,7 @@ package CityRPG_MainPackage
 						{
 							if(isObject(%brick.getGroup().client))
 							{
-								messageClient(%brick.getGroup().client, '', "\c6Standard users may not spawn a\c3" SPC %vehicle.uiName @ "\c6.");
+								messageClient(%brick.getGroup().client, '', "\c6Standard users may not spawn a" @ $c_p SPC %vehicle.uiName @ "\c6.");
 							}
 							%vehicle = 0;
 							%hasBeenBanned = true;
@@ -328,21 +328,21 @@ package CityRPG_MainPackage
 		else
 		{
 			// "Brief" the player about their status in the game.
-			messageClient(%client, '', "\c6 - Your current job is\c3" SPC %client.getJobSO().name @ "\c6 with an income of \c3$" @ %client.getJobSO().pay @ "\c6.");
+			messageClient(%client, '', "\c6 - Your current job is" @ $c_p SPC %client.getJobSO().name @ "\c6 with an income of " @ $c_p @ "$" @ %client.getJobSO().pay @ "\c6.");
 
 			if(City.get(%client.bl_id, "student") > 0)
 			{
-				messageClient(%client, '', "\c6 - You will complete your education in \c3" @ City.get(%client.bl_id, "student") @ "\c6 days.");
+				messageClient(%client, '', "\c6 - You will complete your education in " @ $c_p @ City.get(%client.bl_id, "student") @ "\c6 days.");
 			}
 
-			messageClient(%client, '', "\c6 - City mayor: \c3" @ $City::Mayor::String);
+			messageClient(%client, '', "\c6 - City mayor: " @ $c_p @ $City::Mayor::String);
 			%client.doCityHungerStatus();
 
 			// Note: Not implemented yet.
 			%earnings = City.get(%client.bl_id, "shopearnings");
 			if(%earnings > 0)
 			{
-				messageClient(%client, '', "\c6 - You earned \c3$" @ %earnings @ "\c6 in sales while you were out.");
+				messageClient(%client, '', "\c6 - You earned " @ $c_p @ "$" @ %earnings @ "\c6 in sales while you were out.");
 				City.set(%client.bl_id, "shopearnings", 0);
 			}
 		}
@@ -497,7 +497,7 @@ package CityRPG_MainPackage
 			{
 				if(!%killer.getJobSO().bountyClaim)
 				{
-					commandToClient(%killer, 'centerPrint', "\c6You have committed a crime. [\c3Claiming a Hit\c6]", 1);
+					commandToClient(%killer, 'centerPrint', "\c6You have committed a crime. [" @ $c_p @ "Claiming a Hit\c6]", 1);
 					City_AddDemerits(%killer.bl_id, $CityRPG::demerits::bountyClaiming);
 				}
 
@@ -510,12 +510,12 @@ package CityRPG_MainPackage
 			{
 				if(%killer.lastKill + 15 >= $sim::time)
 				{
-					commandToClient(%killer, 'centerPrint', "\c6You have committed a crime. [\c3Killing Spree\c6]", 1);
+					commandToClient(%killer, 'centerPrint', "\c6You have committed a crime. [" @ $c_p @ "Killing Spree\c6]", 1);
 					City_AddDemerits(%killer.bl_id, ($CityRPG::demerits::murder * 1.5));
 				}
 				else
 				{
-					commandToClient(%killer, 'centerPrint', "\c6You have committed a crime. [\c3Murder\c6]", 1);
+					commandToClient(%killer, 'centerPrint', "\c6You have committed a crime. [" @ $c_p @ "Murder\c6]", 1);
 					City_AddDemerits(%killer.bl_id, $CityRPG::demerits::murder);
 				}
 				%killer.lastKill = $sim::time;
@@ -556,7 +556,7 @@ package CityRPG_MainPackage
 
 		// Event brick used -> Lot trigger -> Lot brick -> Lot name
 		%lotName = %brick.cityLotTriggerCheck().parent.getCityLotName();
-		messageClient(%client, '', addTaggedString("\c3" @ %lotName @ "\c6 says: \c0" @ %message), %client.getPlayerName(), %client.score);
+		messageClient(%client, '', addTaggedString($c_p @ %lotName @ "\c6 says: \c0" @ %message), %client.getPlayerName(), %client.score);
 	}
 
 	function bottomPrint(%client, %message, %time, %lines)
@@ -601,7 +601,7 @@ package CityRPG_MainPackage
 				{
 					if(City_illegalAttackTest(%atkr, %vctm))
 					{
-						commandToClient(%atkr, 'centerPrint', "\c6You have committed a crime. [\c3Assault\c6]", 1);
+						commandToClient(%atkr, 'centerPrint', "\c6You have committed a crime. [" @ $c_p @ "Assault\c6]", 1);
 
 						if(!%atkr.getWantedLevel())
 							%demerits = $Pref::Server::City::demerits::wantedLevel - %atkr.valueDemerits;
@@ -781,7 +781,7 @@ package CityRPG_MainPackage
 			if(getTrustLevel(%col.brickGroup, %obj.client.brickGroup) > 0)
 			{
 				%col.locked = !%col.locked;
-				commandToClient(%obj.client, 'centerPrint', "\c6The vehicle is now \c3" @ (%col.locked ? "locked" : "unlocked") @ "\c6.", 3);
+				commandToClient(%obj.client, 'centerPrint', "\c6The vehicle is now " @ $c_p @ (%col.locked ? "locked" : "unlocked") @ "\c6.", 3);
 			}
 			else
 				commandToClient(%obj.client, 'centerPrint', "\c6The key does not fit.", 3);
@@ -970,7 +970,7 @@ package CityRPG_MainPackage
 		{
 			if(getWord(City.get(%client.bl_id, "jaildata"), 1))
 			{
-				messageCityJail("\c3[<color:777777>Inmate\c3]" SPC %client.name @ "<color:777777>:" SPC %text);
+				messageCityJail($c_p @ "[<color:777777>Inmate" @ $c_p @ "]" SPC %client.name @ "<color:777777>:" SPC %text);
 			}
 			else
 			{
@@ -1078,7 +1078,7 @@ package CityRPG_MainPackage
 				%client.checkPointBrick = "";
 				%client.checkPointBrickPos = "";
 
-				messageClient(%client, '', '\c3Checkpoint reset');
+				messageClient(%client, '', '" @ $c_p @ "Checkpoint reset');
 
 				// Use serverCmdsuicide so the other hook for /suicide can intercept this if necessary
 				serverCmdsuicide(%client);

@@ -70,7 +70,7 @@ function CityMenu_BankWithdraw(%client, %input)
 	}
 
 	%client.cityLog("Bank withdraw $" @ mFloor(%input));
-	%client.cityMenuMessage("\c6You have withdrawn \c3$" @ mFloor(%input) @ "\c6.");
+	%client.cityMenuMessage("\c6You have withdrawn " @ $c_p @ "$" @ mFloor(%input) @ "\c6.");
 
 	%client.cityMenuClose();
 
@@ -115,7 +115,7 @@ function CityMenu_BankDeposit(%client, %input)
 
 	%client.cityLog("Bank deposit $" @ mFloor(%input));
 
-	%client.cityMenuMessage("\c6You have deposited \c3$" @ mFloor(%input) @ "\c6!");
+	%client.cityMenuMessage("\c6You have deposited " @ $c_p @ "$" @ mFloor(%input) @ "\c6!");
 
 	City.add(%client.bl_id, "bank", mFloor(%input));
 	City.subtract(%client.bl_id, "money", mFloor(%input));
@@ -158,7 +158,7 @@ function CityRPGBankBrickData::parseData(%this, %brick, %client, %triggerStatus,
 			return;
 		}
 
-		%client.cityMenuMessage("\c6Welcome to the " @ $Pref::Server::City::name @ " Bank.<br>Your account balance is \c3$" @ City.get(%client.bl_id, "bank") @ "\c6. Current economy value: \c3" @ %econColor @ $City::Economics::Condition @ "\c6%");
+		%client.cityMenuMessage("\c6Welcome to the " @ $Pref::Server::City::name @ " Bank.<br>Your account balance is " @ $c_p @ "$" @ City.get(%client.bl_id, "bank") @ "\c6. Current economy value: " @ $c_p @ %econColor @ $City::Economics::Condition @ "\c6%");
 
 		CityMenu_Bank(%client, %brick);
 	}

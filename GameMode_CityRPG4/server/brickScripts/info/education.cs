@@ -32,10 +32,10 @@ function CityMenu_Education(%client, %brick)
 		%string = "Level " @ %level @ " Education";
 	}
 
-	%client.cityMenuMessage("\c6Welcome to the " @ $Pref::Server::City::name @ " College of Education. You currently hold a \c3" @ %string @ "\c6.");
+	%client.cityMenuMessage("\c6Welcome to the " @ $Pref::Server::City::name @ " College of Education. You currently hold a " @ $c_p @ %string @ "\c6.");
 
 	if(City.get(%client.bl_id, "student") > 0) {
-		%client.cityMenuMessage("\c6You are currently enrolled. Your education will be complete in \c3" @ City.get(%client.bl_id, "student") @ "\c6 days.");
+		%client.cityMenuMessage("\c6You are currently enrolled. Your education will be complete in " @ $c_p @ City.get(%client.bl_id, "student") @ "\c6 days.");
 	}
 	else if(%level == $City::EducationCap) {
 		%client.cityMenuMessage("\c6Sorry, the department of education is unable to advance you any further.");
@@ -45,7 +45,7 @@ function CityMenu_Education(%client, %brick)
 		%client.cityMenuMessage("\c6You are already far beyond what the department of education can offer.");
 	}
 	else {
-		%menu = "Enroll for \c3$" @ %client.getCityEnrollCost();
+		%menu = "Enroll for " @ $c_p @ "$" @ %client.getCityEnrollCost();
 		%functions = "CityMenu_EducationEnroll";
 
 		%client.cityMenuOpen(%menu, %functions, %brick, "\c6Thanks, come again.", 0, 0, $Pref::Server::City::name @ " College of Education");

@@ -88,7 +88,7 @@ function GameConnection::cityMenuInput(%client, %input)
 
 		if(!isFunction(%function))
 		{
-			messageClient(%client, '', "\c3" @ %input @ "\c6 is not a valid option. Please try again.");
+			messageClient(%client, '', $c_p @ %input @ "\c6 is not a valid option. Please try again.");
 			return false;
 		}
 
@@ -142,7 +142,7 @@ function GameConnection::cityMenuClose(%client, %silent)
 }
 
 // Client.cityMenuClose(silent)
-// msg: (str) Message to display to the client. Accepts color codes (\c3, etc.)
+// msg: (str) Message to display to the client. Accepts color codes (" @ $c_p @ ", etc.)
 function GameConnection::cityMenuMessage(%client, %msg)
 {
 	%client.cityMenuLastMsg = %msg;
@@ -182,7 +182,7 @@ function City_AddDemerits(%blid, %demerits)
 
 		if(isObject(%client))
 		{
-			messageClient(%client, '', "\c6You have been demoted to" SPC City_DetectVowel(JobSO.job[1].name) SPC "\c3" @ JobSO.job[1].name @ "\c6.");
+			messageClient(%client, '', "\c6You have been demoted to" SPC City_DetectVowel(JobSO.job[1].name) SPC $c_p @ JobSO.job[1].name @ "\c6.");
 
 			%client.setInfo();
 
@@ -203,7 +203,7 @@ function City_AddDemerits(%blid, %demerits)
 		if(%ticks && %ticks > %maxStars)
 		{
 			if(%maxStars == 3 || %maxStars == 6)
-				messageAll('', '\c6Criminal \c3%1\c6 has obtained a level \c3%2\c6 wanted level. Police vehicles have upgraded.', %client.name, %ticks);
+				messageAll('', '\c6Criminal @ $c_p @ "%1\c6 has obtained a level @ $c_p @ "%2\c6 wanted level. Police vehicles have upgraded.', %client.name, %ticks);
 		}
 	}
 }
@@ -456,7 +456,7 @@ function City_TickLoop(%loop)
 					if(%daysLeft > 1)
 					%daySuffix = "s";
 
-				messageClient(%client, '', '\c6 - You have \c3%1\c6 day%2 left in Prison.', %daysLeft, %daySuffix);
+				messageClient(%client, '', '\c6 - You have @ $c_p @ "%1\c6 day%2 left in Prison.', %daysLeft, %daySuffix);
 			}
 			if(City.get(%client.bl_id, "hunger") > 3)
 				City.subtract(%client.bl_id, "hunger", 1);
@@ -497,9 +497,9 @@ function City_TickLoop(%loop)
 				City.set(%client.bl_id, "demerits", 3);
 
 			if(calendarSO.getCurrentDay() == 187)
-				messageClient(%client, '', '\c6 - You have had your demerits reduced to \c3%1\c6 due to <a:https://www.youtube.com/watch?v=iq8gfaFqFpI>Statue of Limitations</a>\c6.', City.get(%client.bl_id, "demerits"));
+				messageClient(%client, '', '\c6 - You have had your demerits reduced to @ $c_p @ "%1\c6 due to <a:https://www.youtube.com/watch?v=iq8gfaFqFpI>Statue of Limitations</a>\c6.', City.get(%client.bl_id, "demerits"));
 			else
-				messageClient(%client, '', '\c6 - You have had your demerits reduced to \c3%1\c6 due to <a:en.wikipedia.org/wiki/Statute_of_limitations>Statute of Limitations</a>\c6.', City.get(%client.bl_id, "demerits"));
+				messageClient(%client, '', '\c6 - You have had your demerits reduced to @ $c_p @ "%1\c6 due to <a:en.wikipedia.org/wiki/Statute_of_limitations>Statute of Limitations</a>\c6.', City.get(%client.bl_id, "demerits"));
 
 			%client.setInfo();
 		}
@@ -536,7 +536,7 @@ function City_TickLoop(%loop)
 				{
 					%client.cityLog("Tick pay: " @ %sum);
 					City.add(%client.bl_id, "bank", %sum);
-					messageClient(%client, '', "\c6 - Your paycheck of \c3$" @ %sum @ "\c6 has been deposited into your bank account.");
+					messageClient(%client, '', "\c6 - Your paycheck of " @ $c_p @ "$" @ %sum @ "\c6 has been deposited into your bank account.");
 				}
 			}
 		}
@@ -546,11 +546,11 @@ function City_TickLoop(%loop)
 			if(!City.get(%client.bl_id, "student"))
 			{
 				City.add(%client.bl_id, "education", 1);
-				messageClient(%client, '', "\c6 - \c2You graduated\c6, receiving a level \c3" @ City.get(%client.bl_id, "education") @ "\c6 education!");
+				messageClient(%client, '', "\c6 - \c2You graduated\c6, receiving a level " @ $c_p @ City.get(%client.bl_id, "education") @ "\c6 education!");
 				%client.cityLog("Tick edu +1");
 			}
 			else
-				messageClient(%client, '', "\c6 - You will complete your education in \c3" @ City.get(%client.bl_id, "student") @ "\c6 days.");
+				messageClient(%client, '', "\c6 - You will complete your education in " @ $c_p @ City.get(%client.bl_id, "student") @ "\c6 days.");
 			}
 		}
 
@@ -625,7 +625,7 @@ function City_ResetAllJobs(%client)
 
 	%client.cityLog("Reset all jobs");
 
-	messageAll('',"\c3" @ %client.name @ "\c0 reset all jobs.");
+	messageAll('',$c_p @ %client.name @ "\c0 reset all jobs.");
 
 	for(%i = 0; %i <= CityRPGData.dataCount; %i++)
 	{
@@ -646,8 +646,8 @@ function City_ResetAllJobs(%client)
 
 function GameConnection::messageCityLagNotice(%client)
 {
-	messageClient(%client, '', "\c3Notice: This server has " @ getBrickCount() @ " bricks.");
-	messageClient(%client, '', "\c3If you experience lag, consider turning down your shaders, as well as your draw distance under Advanced options.");
+	messageClient(%client, '', $c_p @ "Notice: This server has " @ getBrickCount() @ " bricks.");
+	messageClient(%client, '', $c_p @ "If you experience lag, consider turning down your shaders, as well as your draw distance under Advanced options.");
 }
 
 function messageCityRadio(%jobTrack, %msgType, %msgString)
@@ -664,7 +664,7 @@ function messageCityRadio(%jobTrack, %msgType, %msgString)
 		// Same job track only - Override if enabled by pref or the user is in admin mode
 		if(%client.isCityAdmin() || %doAdminSnooping || (%matchingJobTrack && !%isJailed))
 		{
-			messageClient(%client, '', "\c3[<color:" @ $City::JobTrackColor[%jobTrack] @ ">" @ %jobTrack @ " Radio\c3]" SPC %msgString);
+			messageClient(%client, '', $c_p @ "[<color:" @ $City::JobTrackColor[%jobTrack] @ ">" @ %jobTrack @ " Radio" @ $c_p @ "]" SPC %msgString);
 		}
 	}
 }

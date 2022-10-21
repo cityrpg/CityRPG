@@ -124,7 +124,7 @@ function CalendarSO::getDateStr(%so, %client)
 		}
 	}
 
-	return "\c3" @ %so.nameOfMonth[%so.getMonth()] SPC %ticks @ %suffix @ "\c6, Year \c3" @ %year;
+	return $c_p @ %so.nameOfMonth[%so.getMonth()] SPC %ticks @ %suffix @ "\c6, Year " @ $c_p @ %year;
 }
 
 function CalendarSO::getMonth(%so)

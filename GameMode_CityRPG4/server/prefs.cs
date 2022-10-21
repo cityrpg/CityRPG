@@ -60,6 +60,8 @@ function City_InitPrefs()
 	City_RegisterPref("Game", "Max Bounty", "$Pref::Server::City::demerits::maxBounty", "int", "0 1000000", 7500);
 	City_RegisterPref("Game", "Disable tumble on starve", "$Pref::Server::City::DisableHungerTumble", "bool", "", false);
 
+	City_RegisterPref("Styling", "Text Color - Primary", "$c_p", "string", "14 ", "\c3"); // $c_p or Color - Primary
+
 	City_RegisterPref("Server Management", "Logging Enabled", "$Pref::Server::City::loggerEnabled", "bool", "", true);
 	City_RegisterPref("Server Management", "Always show hidden chat to admins", "$Pref::Server::City::AdminsAlwaysMonitorChat", "bool", "", false);
 

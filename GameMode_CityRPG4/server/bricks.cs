@@ -341,7 +341,7 @@ function fxDTSBrick::cityBrickInit(%brick)
 			// TODO wtf, move this!
 			if($LoadingBricks_Client $= "" && %brick.getDatablock().getID() == brickVehicleSpawnData.getID() && !%client.isCityAdmin())
 			{
-				commandToClient(%client, 'centerPrint', "\c6You have paid \c3$" @ mFloor($CityRPG::prices::vehicleSpawn) @ "\c6 to plant this vehicle spawn.", 3);
+				commandToClient(%client, 'centerPrint', "\c6You have paid " @ $c_p @ "$" @ mFloor($CityRPG::prices::vehicleSpawn) @ "\c6 to plant this vehicle spawn.", 3);
 
 				City.subtract(%client.bl_id, "money", mFloor($CityRPG::prices::vehicleSpawn));
 				%client.setInfo();
@@ -458,7 +458,7 @@ function fxDTSBrick::cityBrickCheck(%brick)
 
 	if(City.get(%client.bl_id, "money") < mFloor(%brick.getDatablock().initialPrice))
 	{
-		commandToClient(%client, 'centerPrint', "\c6You need at least \c3$" @ mFloor(%brick.getDatablock().initialPrice) SPC "\c6in order to plant this brick!", 3);
+		commandToClient(%client, 'centerPrint', "\c6You need at least " @ $c_p @ "$" @ mFloor(%brick.getDatablock().initialPrice) SPC "\c6in order to plant this brick!", 3);
 		return 0;
 	}
 
@@ -470,7 +470,7 @@ function fxDTSBrick::cityBrickCheck(%brick)
 
 	if(%lotTrigger && %brickData.getID() == brickVehicleSpawnData.getID() && City.get(%client.bl_id, "money") < mFloor($CityRPG::prices::vehicleSpawn))
 	{
-		commandToClient(%client, 'centerPrint', "\c6You need at least \c3$" @ mFloor($CityRPG::prices::vehicleSpawn) SPC "\c6in order to plant this vehicle spawn!", 3);
+		commandToClient(%client, 'centerPrint', "\c6You need at least " @ $c_p @ "$" @ mFloor($CityRPG::prices::vehicleSpawn) SPC "\c6in order to plant this vehicle spawn!", 3);
 		return 0;
 	}
 

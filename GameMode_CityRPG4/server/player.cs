@@ -37,12 +37,12 @@ function gameConnection::arrest(%client, %cop)
 	if(City.get(%client.bl_id, "totalhunger") < 0)
 	{
 		commandToClient(%client, 'messageBoxOK', "You've been Jailed by" SPC %cop.name @ "!", 'You have been jailed for %1 city day%2.\n\nYou may either wait out your jail time in game and possibly earn money by laboring, or you may leave the server and return when your time is up.\nThe choice is yours.', %ticks, %ticks == 1 ? "" : "s");
-		commandToClient(%cop, 'centerPrint', "\c6You have jailed \c3" @ %client.name SPC "\c6for \c3" @ %ticks SPC"\c6tick" @ ((%ticks == 1) ? "" : "s") @ ". You were rewarded \c3$" @ %reward @ "\c6.", 5);
+		commandToClient(%cop, 'centerPrint', "\c6You have jailed " @ $c_p @ %client.name SPC "\c6for " @ $c_p @ %ticks SPC"\c6tick" @ ((%ticks == 1) ? "" : "s") @ ". You were rewarded " @ $c_p @ "$" @ %reward @ "\c6.", 5);
 	}
 	else
 		commandToClient(%client, 'messageBoxOK', "Jailed by" SPC %cop.name @ "!", 'You have been jailed for %1 tick%2.\nYou may either wait out your jail time in game and possibly earn money by laboring, or you may leave the server and return when your time is up.\nThe choice is yours.', %ticks, %ticks == 1 ? "" : "s");
 
-	commandToClient(%cop, 'centerPrint', "\c6You have jailed \c3" @ %client.name SPC "\c6for \c3" @ %ticks SPC"\c6tick" @ ((%ticks == 1) ? "" : "s") @ ". You were rewarded \c3$" @ %reward @ "\c6.", 5);
+	commandToClient(%cop, 'centerPrint', "\c6You have jailed " @ $c_p @ %client.name SPC "\c6for " @ $c_p @ %ticks SPC"\c6tick" @ ((%ticks == 1) ? "" : "s") @ ". You were rewarded " @ $c_p @ "$" @ %reward @ "\c6.", 5);
 	City.set(%client.bl_id, "jaildata", 1 SPC %ticks);
 	City.set(%client.bl_id, "demerits", 0);
 
@@ -50,7 +50,7 @@ function gameConnection::arrest(%client, %cop)
 	%cop.SetInfo();
 	if(%client.getJobSO().law)
 	{
-		messageClient(%client, '', "\c6You have been demoted to" SPC City_DetectVowel(JobSO.job[1].name) SPC "\c3" @ JobSO.job[1].name SPC "\c6due to your jailing.");
+		messageClient(%client, '', "\c6You have been demoted to" SPC City_DetectVowel(JobSO.job[1].name) SPC $c_p @ JobSO.job[1].name SPC "\c6due to your jailing.");
 		City.set(%client.bl_id, "jobid", $City::CivilianJobID);
 	}
 
@@ -75,12 +75,12 @@ function gameConnection::arrest(%client, %cop)
 		%maxWanted = City_GetMostWanted();
 
 		if(%maxWanted)
-			messageAll('', '\c6The \c3%1-star\c6 criminal \c3%2\c6 was arrested by \c3%5\c6, but \c3%3-star\c6 criminal \c3%4\c6 is still at large!', %ticks, %client.name, %maxWanted.getWantedLevel(), %maxWanted.name, %cop.name);
+			messageAll('', '\c6The @ $c_p @ "%1-star\c6 criminal @ $c_p @ "%2\c6 was arrested by @ $c_p @ "%5\c6, but @ $c_p @ "%3-star\c6 criminal @ $c_p @ "%4\c6 is still at large!', %ticks, %client.name, %maxWanted.getWantedLevel(), %maxWanted.name, %cop.name);
 		else
-			messageAll('', '\c6With the apprehension of \c3%1-star\c6 criminal \c3%2\c6 by \c3%3\c6, the City returns to a peaceful state.', %ticks, %client.name, %cop.name);
+			messageAll('', '\c6With the apprehension of @ $c_p @ "%1-star\c6 criminal @ $c_p @ "%2\c6 by @ $c_p @ "%3\c6, the City returns to a peaceful state.', %ticks, %client.name, %cop.name);
 	}
 	else
-		messageAll('', '\c3%1\c6 was jailed by \c3%2\c6 for \c3%3\c6 days.', %client.name, %cop.name, %ticks); // TODO: "1 days"?
+		messageAll('', '@ $c_p @ "%1\c6 was jailed by @ $c_p @ "%2\c6 for @ $c_p @ "%3\c6 days.', %client.name, %cop.name, %ticks);
 }
 
 function gameConnection::buyResources(%client)
@@ -95,13 +95,13 @@ function gameConnection::buyResources(%client)
 			%client.cityLog("Resource sell for " @ %payout);
 
 			City.add(%client.bl_id, "money", %payout);
-			messageClient(%client, '', "\c6The state has bought all of your resources for \c3$" @ %payout @ "\c6.");
+			messageClient(%client, '', "\c6The state has bought all of your resources for " @ $c_p @ "$" @ %payout @ "\c6.");
 		}
 		else
 		{
 			%client.cityLog("Resource sell (jail) for " @ %payout);
 			City.add(%client.bl_id, "bank", %payout);
-			messageClient(%client, '', '\c6The state has set aside \c3$%1\c6 for when you get out of Prison.', %payout);
+			messageClient(%client, '', '\c6The state has set aside " @ $c_p @ "$%1\c6 for when you get out of Prison.', %payout);
 		}
 
 		CitySO.lumber += getWord(City.get(%client.bl_id, "resources"), 0);
@@ -341,7 +341,7 @@ function gameConnection::doReincarnate(%client)
 		%client.spawnPlayer();
 	}
 
-	messageAllExcept(%client, '', '\c3%1\c6 has been reincarnated!', %client.name);
+	messageAllExcept(%client, '', '@ $c_p @ "%1\c6 has been reincarnated!', %client.name);
 	messageClient(%client, '', "\c6You have been reincarnated.");
 }
 
@@ -376,7 +376,7 @@ function gameConnection::sellFood(%client, %sellerID, %servingID, %foodName, %pr
 					default: %eatName = "somehow managed to break";
 				}
 
-				messageClient(%client, '', '\c6You %1 %2 \c3%3\c6 serving of \c3%4\c6.', %eatName, City_DetectVowel(%portionName), %portionName, %foodName);
+				messageClient(%client, '', '\c6You %1 %2 @ $c_p @ "%3\c6 serving of @ $c_p @ "%4\c6.', %eatName, City_DetectVowel(%portionName), %portionName, %foodName);
 				City.add(%client.bl_id, "hunger", %servingID);
 
 				%client.player.setHealth(%client.player.getdataBlock().maxDamage);
@@ -393,7 +393,7 @@ function gameConnection::sellFood(%client, %sellerID, %servingID, %foodName, %pr
 				{
 					if(isObject(%seller = findClientByBL_ID(%sellerID)))
 					{
-						messageClient(%seller, '', '\c6You just gained \c3$%1\c6 for providing \c3%3\c6 to \c3%2\c6.', %profit, %client.name, %foodName);
+						messageClient(%seller, '', '\c6You just gained " @ $c_p @ "$%1\c6 for providing @ $c_p @ "%3\c6 to @ $c_p @ "%2\c6.', %profit, %client.name, %foodName);
 					}
 				}
 
@@ -449,11 +449,11 @@ function gameConnection::sellItem(%client, %sellerID, %itemID, %price, %profit)
 				%client.player.tool[%freeSpot] = $City::Item::name[%itemID].getID();
 				messageClient(%client, 'MsgItemPickup', "", %freeSpot, %client.player.tool[%freeSpot]);
 
-				messageClient(%client, '', "\c6You have accepted the item's fee of \c3$" @ %price @ "\c6!");
+				messageClient(%client, '', "\c6You have accepted the item's fee of " @ $c_p @ "$" @ %price @ "\c6!");
 				%client.setInfo();
 
 				if(%client.player.serviceOrigin.getGroup().client)
-					messageClient(%client.player.serviceOrigin.getGroup().client, '', '\c6You gained \c3$%1\c6 selling \c3%2\c6 an item.', %profit, %client.name);
+					messageClient(%client.player.serviceOrigin.getGroup().client, '', '\c6You gained " @ $c_p @ "$%1\c6 selling @ $c_p @ "%2\c6 an item.', %profit, %client.name);
 
 				%client.player.serviceOrigin.onTransferSuccess(%client);
 			}
@@ -486,7 +486,7 @@ function gameConnection::sellClothes(%client, %sellerID, %brick, %item, %price)
 			{
 				if(isObject(%seller = FindClientByBL_ID(%sellerID)))
 				{
-					messageClient(%seller, '', '\c6You just gained \c3$%1\c6 for selling clothes to \c3%2\c6.', %price, %client.name);
+					messageClient(%seller, '', '\c6You just gained " @ $c_p @ "$%1\c6 for selling clothes to @ $c_p @ "%2\c6.', %price, %client.name);
 				}
 			}
 
@@ -585,14 +585,14 @@ function GameConnection::cityEnroll(%client)
 			// Cost
 			City.subtract(%client.bl_id, "money", %price);
 
-			messageClient(%client, '', "\c6You are now enrolled. You will complete your education in \c3" @ %valueStudent @ "\c6 days.");
+			messageClient(%client, '', "\c6You are now enrolled. You will complete your education in " @ $c_p @ %valueStudent @ "\c6 days.");
 			%client.setInfo();
 
 			%client.cityLog("Enroll for edu worth " @ %price);
 		}
 		else
 		{
-			messageClient(%client, '', "\c6It costs \c3$" @ %price SPC "\c6to get enrolled. You do not have enough money.");
+			messageClient(%client, '', "\c6It costs " @ $c_p @ "$" @ %price SPC "\c6to get enrolled. You do not have enough money.");
 		}
 	}
 }
@@ -672,7 +672,7 @@ function CityMenu_Player_SetSpawnConfirm(%client, %input)
 	}
 	else
 	{
-		%client.cityMenuMessage("\c6Spawn preference set to \c3" @ %selection @ "\c6.");
+		%client.cityMenuMessage("\c6Spawn preference set to " @ $c_p @ %selection @ "\c6.");
 		City.set(%client.bl_id, "spawnPoint", selectionID);
 		%client.cityLog("Set spawn to " @ selectionID);
 		%client.cityMenuClose(1);
