@@ -22,7 +22,7 @@ function GameConnection::cityMenuOpen(%client, %menu, %functions, %menuID, %exit
 		%menuObj = new ScriptObject()
 		{
 			isCenterprintMenu = 1;
-			menuName = %title; // Leave it blank.
+			menuName = $c_p @ %title; // Leave it blank.
 
 			justify = "<just:center>";
 
