@@ -106,7 +106,7 @@ function fxDTSBrick::doJobTest(%brick, %job, %job2, %convicts, %client)
 
 	if(!%job && !%job2 && (%convicts ? (!%convictStatus ? true : false) : true))
 		%brick.onJobTestPass(%client);
-	else if((City.get(%client.bl_id).valueJobID $= %job || City.get(%client.bl_id, "jobid") $= %job2) && (%convicts ? (!%convictStatus ? true : false) : true))
+	else if((City.get(%client.bl_id, "jobid") $= %job || City.get(%client.bl_id, "jobid") $= %job2) && (%convicts ? (!%convictStatus ? true : false) : true))
 		%brick.onJobTestPass(%client);
 	else
 		%brick.onJobTestFail(%client);
@@ -120,12 +120,11 @@ function fxDTSBrick::requestFunds(%brick, %serviceName, %fund, %client)
 		%client.player.serviceFee = %fund;
 		%client.player.serviceType = "service";
 
-		messageClient(%client,'',"\c6Service \"\c3" @ %serviceName @ "\c6\" requests \c3$" @ %fund SPC "\c6.");
-		messageClient(%client,'',"\c6Accept with \c3/yes\c6, decline with \c3/no\c6.");
+		commandToClient(%client, 'MessageBoxYesNo', "Purchase", "Service \"" @ %serviceName @ "\" requests $" @ %fund @ ". Would you like to accept?",'yes');
 	}
 	else if(%client.player.serviceOrigin && %client.player.serviceOrigin != %brick)
 	{
-		messageClient(%client, '', "\c6You already have a charge request from another service! Type \c3/no\c6 to reject it.");
+		messageClient(%client, '', "\c6You already have a charge request from another service! Type " @ $c_p @ "/no\c6 to reject it.");
 	}
 }
 
@@ -140,35 +139,38 @@ function fxDTSBrick::sellFood(%brick, %portion, %food, %markup, %client)
 		%client.player.serviceMarkup = %markup;
 		%client.player.serviceOrigin = %brick;
 
-		messageClient(%client,'','\c6A service is offering to feed you %1 \c3%2\c6 portion of \c3%3\c6 for \c3$%4\c6.', City_DetectVowel($CityRPG::portion[%portion]), strreplace($CityRPG::portion[%portion], "_", " "), %food, %client.player.serviceFee);
-		messageClient(%client,'',"\c6Accept with \c3/yes\c6, decline with \c3/no\c6.");
+		%portionVowel = City_DetectVowel($CityRPG::portion[%portion]);
+		%portion = strreplace($CityRPG::portion[%portion], "_", " ");
+		%fee = %client.player.serviceFee;
+		%str = "This service is offering " @ %portionVowel SPC %portion @ " portion of " @ %food @ " for $" @ %fee @ ".";
+		commandToClient(%client, 'MessageBoxYesNo', "Purchase", %str, 'yes');
 	}
 	else if(%client.player.serviceOrigin && %client.player.serviceOrigin != %brick)
-		messageClient(%client, '', "\c6You already have a charge request from another service! Type \c3/no\c6 to reject it.");
+		messageClient(%client, '', "\c6You already have a charge request from another service! Type " @ $c_p @ "/no\c6 to reject it.");
 }
 
 function fxDTSBrick::sellItem(%brick, %item, %markup, %client)
 {
 	if(isObject(%client.player) && !%client.player.serviceOrigin  && isObject(%brick))
 	{
-		%name = $CityRPG::prices::weapon::name[%item].uiName;
+		%name = $City::Item::name[%item].uiName;
 
-		if(CitySO.minerals >= $CityRPG::prices::weapon::mineral[%item])
+		if(CitySO.minerals >= $City::Item::mineral[%item])
 		{
 			%client.player.serviceType = "item";
 			%client.player.serviceItem = %item;
-			%client.player.serviceFee = $CityRPG::prices::weapon::price[%item] + %markup;
+			%client.player.serviceFee = $City::Item::price[%item] + %markup;
 			%client.player.serviceMarkup = %markup;
 			%client.player.serviceOrigin = %brick;
 
-			messageClient(%client,'',"\c6A service is offering to sell you one \c3" @ %name SPC "\c6for \c3$" @ %client.player.serviceFee SPC "\c6.");
-			messageClient(%client,'',"\c6Accept with \c3/yes\c6, decline with \c3/no\c6.");
+			%str = "This service is offering to sell you one " @ %name SPC "for $" @ %client.player.serviceFee @ ".";
+			commandToClient(%client, 'MessageBoxYesNo', "Purchase", %str, 'yes');
 		}
 		else
-			messageClient(%client, '', '\c6A service is trying to offer you %1 \c3%2\c6, but the city needs \c3%3\c6 more minerals to produce it!', City_DetectVowel(%name), %name, ($CityRPG::prices::weapon::mineral[%item] - CitySO.minerals));
+			messageClient(%client, '', '\c6A service is trying to offer you %1 @ $c_p @ "%2\c6, but the city needs @ $c_p @ "%3\c6 more minerals to produce it!', City_DetectVowel(%name), %name, ($City::Item::mineral[%item] - CitySO.minerals));
 	}
 	else if(%client.player.serviceOrigin && %client.player.serviceOrigin != %brick)
-		messageClient(%client, '', "\c6You already have a charge request from another service! Type \c3/no\c6 to reject it.");
+		messageClient(%client, '', "\c6You already have a charge request from another service! Type " @ $c_p @ "/no\c6 to reject it.");
 }
 
 function fxDTSBrick::sellClothes(%brick, %item, %markup, %client)
@@ -181,9 +183,12 @@ function fxDTSBrick::sellClothes(%brick, %item, %markup, %client)
 		%client.player.serviceMarkup = %markup;
 		%client.player.serviceOrigin = %brick;
 
-		messageClient(%client,'', '\c6A clothing service is offering to dress you in %1 \c3%2 \c6for \c3$%3\c6.', City_DetectVowel(ClothesSO.sellName[%item]), ClothesSO.sellName[%item], %client.player.serviceFee);
-		messageClient(%client,'', "\c6Accept with \c3/yes\c6, decline with \c3/no\c6.");
+		%vowel = City_DetectVowel(ClothesSO.sellName[%item]);
+		%clothingName = ClothesSO.sellName[%item];
+		%fee = %client.player.serviceFee;
+		%str = "This service is offering to dress you in " @ %vowel SPC %clothingName @ " for $" @ %fee @ ".";
+		commandToClient(%client, 'MessageBoxYesNo', "Purchase", %str, 'yes');
 	}
 	else if(%client.player.serviceOrigin && %client.player.serviceOrigin != %brick)
-		messageClient(%client, '', "\c6You already have a charge request from another service! Type \c3/no\c6 to reject it.");
+		messageClient(%client, '', "\c6You already have a charge request from another service! Type " @ $c_p @ "/no\c6 to reject it.");
 }

@@ -52,6 +52,7 @@ function City_InitPrefs()
 	// City Prefs
 	City_RegisterPref("Game", "City name", "$Pref::Server::City::name", "string", "64", "Blocko Town");
 	City_RegisterPref("Game", "Drop Cash on Death", "$Pref::Server::City::misc::cashdrop", "bool", "", true);
+	City_RegisterPref("Game", "Disable Default Weapons", "$Pref::Server::City::disabledefaultweps", "bool", "", false, "", "", true);
 	City_RegisterPref("Game", "Max Lots", "$Pref::Server::City::realestate::maxLots", "int", "0 999", 5);
 	City_RegisterPref("Game", "Account Reset Cost (/reset)", "$Pref::Server::City::prices::reset", "int", "0 5000", 100);
 	City_RegisterPref("Game", "Tick Length (minutes)", "$Pref::Server::City::tick::speed", "int", "0 10", 5);
@@ -60,8 +61,10 @@ function City_InitPrefs()
 	City_RegisterPref("Game", "Max Bounty", "$Pref::Server::City::demerits::maxBounty", "int", "0 1000000", 7500);
 	City_RegisterPref("Game", "Disable tumble on starve", "$Pref::Server::City::DisableHungerTumble", "bool", "", false);
 
+	City_RegisterPref("Styling", "Text Color - Primary", "$c_p", "string", "14 ", "\c3"); // $c_p or Color - Primary
+
 	City_RegisterPref("Server Management", "Logging Enabled", "$Pref::Server::City::loggerEnabled", "bool", "", true);
-	City_RegisterPref("Server Management", "Always show radio chat to admins", "$Pref::Server::City::AdminsAlwaysMonitorChat", "bool", "", false);
+	City_RegisterPref("Server Management", "Always show hidden chat to admins", "$Pref::Server::City::AdminsAlwaysMonitorChat", "bool", "", false);
 
 	City_RegisterPref("Economy", "Economy Relay", "$Pref::Server::City::Economics::Relay", "int", "0 50", 2);
 	City_RegisterPref("Economy", "Max Economy Percentage", "$Pref::Server::City::Economics::Greatest", "int", "-500 500", 100);
@@ -123,64 +126,13 @@ $Pref::Server::City::hack::stealmax									= 1000;
 $Pref::Server::City::hack::revivetime								= 5; //minutes
 
 // Game Prices
-$CityRPG::prices::vehicleSpawn = 2500;
+$CityRPG::prices::vehicleSpawn = 1000;
 $CityRPG::prices::jailingBonus = 100;
 
 $CityRPG::prices::resourcePrice = 1.5;
 
-// Weapon Prices
-$CityRPG::guns = 0;
-
-$CityRPG::prices::weapon::name[$CityRPG::guns] = "gunItem";
-$CityRPG::prices::weapon::price[$CityRPG::guns] = 80;
-$CityRPG::prices::weapon::mineral[$CityRPG::guns++] = 1;
-
-$CityRPG::prices::weapon::name[$CityRPG::guns] = "taserItem";
-$CityRPG::prices::weapon::price[$CityRPG::guns] = 40;
-$CityRPG::prices::weapon::mineral[$CityRPG::guns++] = 1;
-
-$CityRPG::prices::weapon::name[$CityRPG::guns] = "akimboGunItem";
-$CityRPG::prices::weapon::price[$CityRPG::guns] = 150;
-$CityRPG::prices::weapon::mineral[$CityRPG::guns++] = 1;
-
-if(isObject(shotgunItem))
-{
-	$CityRPG::prices::weapon::name[$CityRPG::guns] = "shotgunItem";
-	$CityRPG::prices::weapon::price[$CityRPG::guns] = 260;
-	$CityRPG::prices::weapon::mineral[$CityRPG::guns++] = 1;
-}
-
-if(isObject(sniperRifleItem))
-{
-	$CityRPG::prices::weapon::name[$CityRPG::guns] = "sniperRifleItem";
-	$CityRPG::prices::weapon::price[$CityRPG::guns] = 450;
-	$CityRPG::prices::weapon::mineral[$CityRPG::guns++] = 1;
-}
-
-
-//$CityRPG::prices::weapon::price[$CityRPG::guns] = 30;
-//$CityRPG::prices::weapon::mineral[$CityRPG::guns++] = 1;
-
-$CityRPG::prices::weapon::name[$CityRPG::guns] = "CityRPGLBItem";
-$CityRPG::prices::weapon::price[$CityRPG::guns] = 100;
-$CityRPG::prices::weapon::mineral[$CityRPG::guns++] = 1;
-
-$CityRPG::prices::weapon::name[$CityRPG::guns] = "CityRPGPickaxeItem";
-$CityRPG::prices::weapon::price[$CityRPG::guns] = 25;
-$CityRPG::prices::weapon::mineral[$CityRPG::guns++] = 1;
-
-$CityRPG::prices::weapon::name[$CityRPG::guns] = "CityRPGLumberjackItem";
-$CityRPG::prices::weapon::price[$CityRPG::guns] = 25;
-$CityRPG::prices::weapon::mineral[$CityRPG::guns++] = 1;
-
 //When adding to this index, be sure to add a forceRequiredAddon("Item_Here");
 //in server.cs, or else the item mod will be broken.
-
-// Ticks
-$CityRPG::tick::interest = 1.00;
-$CityRPG::tick::creditInterest = 1.000;
-$CityRPG::tick::interestTick = 999;
-$CityRPG::tick::promotionLevel = 24;
 
 // Demerit Preferences
 $CityRPG::demerits::hittingInnocents = 50;

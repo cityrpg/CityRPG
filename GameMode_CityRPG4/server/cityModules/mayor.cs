@@ -33,19 +33,20 @@ function CityMayor_stopElection()
 	$City::Mayor::Voting = 0;
 	CityMayor_resetCandidates();
 	CityMayor_resetimpeachers();
-	messageAll('', "\c3The election has ended!");
+	messageAll('', $c_p @ "The election has ended!");
 
 	if($City::Mayor::String $= "")
 	{
-		messageAll('', "\c3Nobody won the election. The spot for mayor will remain empty.");
+		messageAll('', $c_p @ "Nobody won the election. The spot for mayor will remain empty.");
 		$City::Mayor::String = "None";
 	}
 	else
 	{
-		messageAll('', "\c3" @ $City::Mayor::String SPC "\c6has won the election!");
+		messageAll('', $c_p @ $City::Mayor::String SPC "\c6has won the election!");
 
 		%client = findClientByBL_ID($City::Mayor::ID);
 		messageClient(%client, '', "\c6Congratulations, you are now the" SPC JobSO.job[$City::MayorJobID].name @ "\c6!");
+		messageClient(%client, '', "\c6You have a set of new powers you can use through the " @ $c_p @ "Actions Menu\c6. You can access them with the [cancel brick] button.");
 		%client.setCityJob($City::MayorJobID, 1);
 
 	}
@@ -95,7 +96,7 @@ function serverCmdvoteElection(%client, %arg2)
 		return;
 	}
 	
-	messageClient(%client, '', "\c6You have voted for\c3" SPC %arg1.name @ "\c6.");
+	messageClient(%client, '', "\c6You have voted for" @ $c_p SPC %arg1.name @ "\c6.");
 	City.set(%client.bl_id, "electionid", $City::Mayor::Mayor::ElectionID);
 	%voteIncrease = getMayor($City::Mayor::Mayor::ElectionID, %arg1.name) + 1;
 	inputMayor($City::Mayor::Mayor::ElectionID, %arg1.name, %voteIncrease);
@@ -131,7 +132,7 @@ function serverCmdMeMayor(%client)
 // Looper
 function CityMayor_refresh()
 {
-	$City::Mayor::Mayor::Requirement = 10;
+	$City::Mayor::Mayor::Requirement = 8;
 	if($Pref::Server::City::Mayor::Active == 0) //if active mayor
 	{
 		if((clientGroup.getCount() >= $City::Mayor::Mayor::Requirement) || ($City::Mayor::Force::Start == 1))
@@ -143,11 +144,11 @@ function CityMayor_refresh()
 		} else {
 			$City::Mayor::ID = -1;
 			$City::Mayor::Voting = 0;
-			$City::Mayor::String = "Required Players: \c3" SPC clientGroup.getCount() @ "\c6/" @ $City::Mayor::Mayor::Requirement;
+			$City::Mayor::String = "Required Players: " @ $c_p SPC clientGroup.getCount() @ "\c6/" @ $City::Mayor::Mayor::Requirement;
 		}
 	} else if($City::Mayor::Voting == 0 && $Pref::Server::City::Mayor::Active == 0) {
 			$City::Mayor::ID = -1;
-			$City::Mayor::String = "Required Players: \c3" SPC clientGroup.getCount() @ "\c6/" @ $City::Mayor::Mayor::Requirement;
+			$City::Mayor::String = "Required Players: " @ $c_p SPC clientGroup.getCount() @ "\c6/" @ $City::Mayor::Mayor::Requirement;
 	}
 }
 
@@ -260,18 +261,18 @@ function CityMayor_getWinner()
 	return %toBeat TAB %toBeatID;
 }
 
+$City::Menu::MayorBaseTxt = "Issue a pardon."
+	TAB "Clear a record."
+	TAB "Go back.";
+
+$City::Menu::MayorBaseFunc = "CityMenu_Mayor_PardonPrompt"
+	TAB "CityMenu_Mayor_ErasePrompt"
+	TAB "CityMenu_Player";
+
 // Menu stuff
 function CityMenu_Mayor(%client)
 {
-	%menu = "Issue a pardon."
-			TAB "Clear a record."
-			TAB "Go back.";
-
-	%functions = "CityMenu_Mayor_PardonPrompt"
-			 TAB "CityMenu_Mayor_ErasePrompt"
-			 TAB "CityMenu_Player";
-
-	%client.cityMenuOpen(%menu, %functions, %client, "\c3Mayor actions menu closed.", 0, 1, "Mayor Actions");
+	%client.cityMenuOpen($City::Menu::MayorBaseTxt, $City::Menu::MayorBaseFunc, %client, $c_p @ "Mayor actions menu closed.", 0, 1, "Mayor Actions");
 }
 
 function CityMenu_Mayor_PardonPrompt(%client)

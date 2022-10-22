@@ -12,11 +12,11 @@ package CityRPG_MainPackage
 			{
 				%client.player.serviceType = "zone";
 				%client.player.serviceOrigin = %brick;
-				%client.player.serviceFee = $Pref::Server::City::lotCost[%brick.getDatablock().CityRPGMatchingLot.getName()];
-				messageClient(%client, '', '\c6It costs \c3%1\c6 to build in this zone. Type \c3/yes\c6 to accept and \c3/no\c6 to decline', %client.player.serviceFee);
+				%client.player.serviceFee = %brick.getDatablock().CityRPGMatchingLot.initialPrice;
+				messageClient(%client, '', '\c6It costs @ $c_p @ "%1\c6 to build in this zone. Type " @ $c_p @ "/yes\c6 to accept and " @ $c_p @ "/no\c6 to decline', %client.player.serviceFee);
 			}
 			else if(isObject(%client.player.serviceOrigin) && %client.player.serviceOrigin != %brick)
-				messageClient(%client, '', "\c6You already have an active transfer. Type \c3/no\c6 to decline it.");
+				messageClient(%client, '', "\c6You already have an active transfer. Type " @ $c_p @ "/no\c6 to decline it.");
 		}
 	}
 
@@ -80,6 +80,7 @@ package CityRPG_MainPackage
 	}
 
 	// New Duplicator compatibility
+
 	function ND_Selection::plantBrick(%this, %i, %position, %angleID, %brickGroup, %client, %bl_id)
 	{
 		%brick = Parent::plantBrick(%this, %i, %position, %angleID, %brickGroup, %client, %bl_id);
@@ -88,6 +89,7 @@ package CityRPG_MainPackage
 		{
 			if(%brick != -1 && %brick.getDataBlock().CityRPGBrickType == $CityBrick_Lot)
 			{
+				cLotDebug("Call init on duplicated brick", %brick);
 				// Force init as a new lot
 				%brick.initNewCityLot();
 			}
@@ -103,6 +105,32 @@ package CityRPG_MainPackage
 
 		return %brick;
 	}
+
+	function ndTrustCheckModify(%obj, %group2, %bl_id, %admin)
+	{
+		%isLot = %obj.getDataBlock().CityRPGBrickType == $CityBrick_Lot;
+		%isAdminMode = City.get(%bl_id, "jobid") $= $City::AdminJobID;
+
+		if(%isLot && !%isAdminMode)
+			return false;
+
+		Parent::ndTrustCheckModify(%obj, %group2, %bl_id, %admin);
+	}
+
+	
+	//Update the bottomprint
+	function GameConnection::ndUpdateBottomPrint(%this)
+	{
+		Parent::ndUpdateBottomPrint(%this);
+
+		if(!%this.ndModeIndex)
+		{
+			%this.cityHUDTimer = $sim::time;
+			%this.setGameBottomPrint();
+		}
+	}
+
+	// Brick stuff
 
 	function fxDTSBrick::onPlant(%brick)
 	{
@@ -143,7 +171,7 @@ package CityRPG_MainPackage
 						{
 							if(isObject(%brick.getGroup().client))
 							{
-								messageClient(%brick.getGroup().client, '', "\c6Standard users may not spawn a\c3" SPC %vehicle.uiName @ "\c6.");
+								messageClient(%brick.getGroup().client, '', "\c6Standard users may not spawn a" @ $c_p SPC %vehicle.uiName @ "\c6.");
 							}
 							%vehicle = 0;
 							%hasBeenBanned = true;
@@ -212,6 +240,7 @@ package CityRPG_MainPackage
 		%this.onCityLoadPlant(%this, %brick);
 	}
 
+	// spawnProjectile event handling - Unused since these events are now disabled anyway
 	function fxDTSBrick::spawnProjectile(%obj, %velocity, %projectileData, %variance, %scale, %client)
 	{
 		// Replace the source client with a generic one that always fails minigameCanDamage.
@@ -299,21 +328,21 @@ package CityRPG_MainPackage
 		else
 		{
 			// "Brief" the player about their status in the game.
-			messageClient(%client, '', "\c6 - Your current job is\c3" SPC %client.getJobSO().name @ "\c6 with an income of \c3$" @ %client.getJobSO().pay @ "\c6.");
+			messageClient(%client, '', "\c6 - Your current job is" @ $c_p SPC %client.getJobSO().name @ "\c6 with an income of " @ $c_p @ "$" @ %client.getJobSO().pay @ "\c6.");
 
 			if(City.get(%client.bl_id, "student") > 0)
 			{
-				messageClient(%client, '', "\c6 - You will complete your education in \c3" @ City.get(%client.bl_id, "student") @ "\c6 days.");
+				messageClient(%client, '', "\c6 - You will complete your education in " @ $c_p @ City.get(%client.bl_id, "student") @ "\c6 days.");
 			}
 
-			messageClient(%client, '', "\c6 - City mayor: \c3" @ $City::Mayor::String);
+			messageClient(%client, '', "\c6 - City mayor: " @ $c_p @ $City::Mayor::String);
 			%client.doCityHungerStatus();
 
 			// Note: Not implemented yet.
 			%earnings = City.get(%client.bl_id, "shopearnings");
 			if(%earnings > 0)
 			{
-				messageClient(%client, '', "\c6 - You earned \c3$" @ %earnings @ "\c6 in sales while you were out.");
+				messageClient(%client, '', "\c6 - You earned " @ $c_p @ "$" @ %earnings @ "\c6 in sales while you were out.");
 				City.set(%client.bl_id, "shopearnings", 0);
 			}
 		}
@@ -379,10 +408,14 @@ package CityRPG_MainPackage
 			schedule(1, 0, messageClient, %client, '', "\c2Type \c6/help starters\c2 to learn more about how to get started in CityRPG.");
 		}
 
-		if($City::DisplayVersionWarning)
+		// Important warning messages for the host.
+		if(%client.bl_id == getNumKeyID())
 		{
-			messageClient(%client, '', $City::VersionWarning);
-			$City::DisplayVersionWarning = 0;
+			if($City::DisplayVersionWarning)
+			{
+				messageClient(%client, '', $City::VersionWarning);
+				$City::DisplayVersionWarning = 0;
+			}
 		}
 	}
 
@@ -464,7 +497,7 @@ package CityRPG_MainPackage
 			{
 				if(!%killer.getJobSO().bountyClaim)
 				{
-					commandToClient(%killer, 'centerPrint', "\c6You have committed a crime. [\c3Claiming a Hit\c6]", 1);
+					commandToClient(%killer, 'centerPrint', "\c6You have committed a crime. [" @ $c_p @ "Claiming a Hit\c6]", 1);
 					City_AddDemerits(%killer.bl_id, $CityRPG::demerits::bountyClaiming);
 				}
 
@@ -477,12 +510,12 @@ package CityRPG_MainPackage
 			{
 				if(%killer.lastKill + 15 >= $sim::time)
 				{
-					commandToClient(%killer, 'centerPrint', "\c6You have committed a crime. [\c3Killing Spree\c6]", 1);
+					commandToClient(%killer, 'centerPrint', "\c6You have committed a crime. [" @ $c_p @ "Killing Spree\c6]", 1);
 					City_AddDemerits(%killer.bl_id, ($CityRPG::demerits::murder * 1.5));
 				}
 				else
 				{
-					commandToClient(%killer, 'centerPrint', "\c6You have committed a crime. [\c3Murder\c6]", 1);
+					commandToClient(%killer, 'centerPrint', "\c6You have committed a crime. [" @ $c_p @ "Murder\c6]", 1);
 					City_AddDemerits(%killer.bl_id, $CityRPG::demerits::murder);
 				}
 				%killer.lastKill = $sim::time;
@@ -496,11 +529,11 @@ package CityRPG_MainPackage
 	function gameConnection::setScore(%client, %score)
 	{
 		if($Score::Type $= "Money")
-			%score = City.get(%client.bl_id).valueMoney + City.get(%client.bl_id, "bank");
+			%score = City.get(%client.bl_id, "money") + City.get(%client.bl_id, "bank");
 		else if($Score::Type $= "Edu")
 			%score = City.get(%client.bl_id, "education");
 		else
-			%score = City.get(%client.bl_id).valueMoney + City.get(%client.bl_id, "bank");
+			%score = City.get(%client.bl_id, "money") + City.get(%client.bl_id, "bank");
 		parent::setScore(%client, %score);
 	}
 
@@ -525,7 +558,7 @@ package CityRPG_MainPackage
 
 		// Event brick used -> Lot trigger -> Lot brick -> Lot name
 		%lotName = %brick.cityLotTriggerCheck().parent.getCityLotName();
-		messageClient(%client, '', addTaggedString("\c3" @ %lotName @ "\c6 says: \c0" @ %message), %client.getPlayerName(), %client.score);
+		messageClient(%client, '', addTaggedString($c_p @ %lotName @ "\c6 says: \c0" @ %message), %client.getPlayerName(), %client.score);
 	}
 
 	function bottomPrint(%client, %message, %time, %lines)
@@ -576,7 +609,7 @@ package CityRPG_MainPackage
 				{
 					if(City_illegalAttackTest(%atkr, %vctm, %damageType))
 					{
-						commandToClient(%atkr, 'centerPrint', "\c6You have committed a crime. [\c3Assault\c6]", 1);
+						commandToClient(%atkr, 'centerPrint', "\c6You have committed a crime. [" @ $c_p @ "Assault\c6]", 1);
 
 						if(!%atkr.getWantedLevel())
 							%demerits = $Pref::Server::City::demerits::wantedLevel - %atkr.valueDemerits;
@@ -756,7 +789,7 @@ package CityRPG_MainPackage
 			if(getTrustLevel(%col.brickGroup, %obj.client.brickGroup) > 0)
 			{
 				%col.locked = !%col.locked;
-				commandToClient(%obj.client, 'centerPrint', "\c6The vehicle is now \c3" @ (%col.locked ? "locked" : "unlocked") @ "\c6.", 3);
+				commandToClient(%obj.client, 'centerPrint', "\c6The vehicle is now " @ $c_p @ (%col.locked ? "locked" : "unlocked") @ "\c6.", 3);
 			}
 			else
 				commandToClient(%obj.client, 'centerPrint', "\c6The key does not fit.", 3);
@@ -777,7 +810,7 @@ package CityRPG_MainPackage
 					%spawn = City_FindSpawn("personalSpawn", %client.bl_id);
 				else
 				{
-					if(City_FindSpawn("jobSpawn", City.get(%client.bl_id).valueJobID) && City.get(%client.bl_id, "jobid") !$= $City::CivilianJobID)
+					if(City_FindSpawn("jobSpawn", City.get(%client.bl_id, "jobid")) && City.get(%client.bl_id, "jobid") !$= $City::CivilianJobID)
 						%spawn = City_FindSpawn("jobSpawn", City.get(%client.bl_id, "jobid"));
 					else
 						%spawn = City_FindSpawn("jobSpawn", $City::CivilianJobID);
@@ -915,7 +948,7 @@ package CityRPG_MainPackage
 	// ============================================================
 	function serverCmdmessageSent(%client, %text)
 	{
-		if(%client.cityMenuOpen)
+		if(%client.cityMenuOpen && getFieldCount(%client.cityMenuFunction) == 1)
 		{
 			%client.cityMenuInput(%text);
 			return;
@@ -945,15 +978,7 @@ package CityRPG_MainPackage
 		{
 			if(getWord(City.get(%client.bl_id, "jaildata"), 1))
 			{
-				for(%i = 0; %i < ClientGroup.getCount();%i++)
-				{
-					%subClient = ClientGroup.getObject(%i);
-					if(getWord(City.get(%subClient.bl_id, "jaildata"), 1))
-					{
-						messageClient(%subClient, '', "\c3[<color:777777>Inmate\c3]" SPC %client.name @ "<color:777777>:" SPC %text);
-					}
-				}
-				echo("(Convict Chat)" SPC %client.name @ ":" SPC %text);
+				messageCityJail($c_p @ "[<color:777777>Inmate" @ $c_p @ "]" SPC %client.name @ "<color:777777>:" SPC %text);
 			}
 			else
 			{
@@ -1061,7 +1086,7 @@ package CityRPG_MainPackage
 				%client.checkPointBrick = "";
 				%client.checkPointBrickPos = "";
 
-				messageClient(%client, '', '\c3Checkpoint reset');
+				messageClient(%client, '', '" @ $c_p @ "Checkpoint reset');
 
 				// Use serverCmdsuicide so the other hook for /suicide can intercept this if necessary
 				serverCmdsuicide(%client);
@@ -1093,6 +1118,30 @@ package CityRPG_MainPackage
 	{
 		messageClient (%client, '', "Can\'t clear bricks in CityRPG. You must clear your lots manually.");
 		return;
+	}
+
+	function serverCmdMessageBoxNo(%client)
+	{
+		serverCmdNo(%client);
+	}
+
+	function serverCmdUnUseTool(%client)
+	{
+		Parent::serverCmdUnUseTool(%client);
+
+		// Refresh HUD on tool un-use. This catches ammo HUDs such as Tier+Tactical.
+		%client.cityHUDTimer = $sim::time;
+		%client.setGameBottomPrint();
+	}
+
+	// clearBottomPrint tool switching support
+	// Covers Tier+Tactical weapons
+	function clearBottomPrint(%client)
+	{
+		Parent::clearBottomPrint(%client);
+
+		%client.cityHUDTimer = $sim::time;
+		%client.setGameBottomPrint();
 	}
 };
 deactivatePackage(CityRPG_MainPackage);

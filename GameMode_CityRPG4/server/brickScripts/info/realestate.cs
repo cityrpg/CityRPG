@@ -38,16 +38,16 @@ function CityMenu_RealEstate(%client, %input, %brick)
 		%client.cityMenuBack = "";
 	}
 
-	%client.cityMenuMessage("\c3" @ $Pref::Server::City::name @ "\c3 Real Estate Office");
+	%client.cityMenuMessage($c_p @ $Pref::Server::City::name @ $c_p @ " Real Estate Office");
 
 	%lotCount = $City::RealEstate::TotalLots || 0;
 	%lotCountUnclaimed = $City::RealEstate::UnclaimedLots || 0;
 	%lotCountSale = $City::RealEstate::LotCountSale;
 
 	if(%lotCountUnclaimed > 0)
-		%message = "\c6" @ $Pref::Server::City::name @ "\c6 has \c3" @ %lotCount @ "\c6 lots, \c3" @ %lotCountUnclaimed @ "\c6 of which are unclaimed lots for sale.";
+		%message = "\c6" @ $Pref::Server::City::name @ "\c6 has " @ $c_p @ %lotCount @ "\c6 lots, " @ $c_p @ %lotCountUnclaimed @ "\c6 of which are unclaimed lots for sale.";
 	else
-		%message = "\c6" @ $Pref::Server::City::name @ "\c6 has \c3" @ %lotCount @ "\c6 total lots. There are no unclaimed lots for sale.";
+		%message = "\c6" @ $Pref::Server::City::name @ "\c6 has " @ $c_p @ %lotCount @ "\c6 total lots. There are no unclaimed lots for sale.";
 
 	%menu = "Manage a lot" TAB "View pre-owned lots for sale";
 
@@ -56,17 +56,20 @@ function CityMenu_RealEstate(%client, %input, %brick)
 	if($City::RealEstate::LotCountSale > 0)
 	{
 		if($City::RealEstate::LotCountSale == 1)
-			%message = %message SPC "\c6There is \c31\c6 pre-owned lot available for sale.";
+			%message = %message SPC "\c6There is " @ $c_p @ "1\c6 pre-owned lot available for sale.";
 		else
-			%message = %message SPC "\c6There are \c3" @ $City::RealEstate::LotCountSale @ "\c6 pre-owned lots for sale.";
+			%message = %message SPC "\c6There are " @ $c_p @ $City::RealEstate::LotCountSale @ "\c6 pre-owned lots for sale.";
 	}
 	else
 	{
 		%message = %message SPC "There are no pre-owned lots for sale at this time.";
 	}
 
+	%lotsOwned = getWordCount($City::Cache::LotsOwnedBy[%client.bl_id]);
+	%message = %message @ " You own " @ $c_p @ %lotsOwned @ "\c6 lots of " @ $c_p @ $Pref::Server::City::realestate::maxLots @ "\c6 max.";
+
 	%client.cityMenuMessage(%message);
-	%client.cityMenuOpen(%menu, %functions, %brick, "\c6Thanks, come again.", 0, 1, "\c3" @ $Pref::Server::City::name @ "\c3 Real Estate Office");
+	%client.cityMenuOpen(%menu, %functions, %brick, "\c6Thanks, come again.", 0, 1, $c_p @ $Pref::Server::City::name @ $c_p @ " Real Estate Office");
 }
 
 // List for sale
@@ -131,7 +134,7 @@ function CityMenu_RealEstate_ViewLotListings(%client, %input, %brick)
 		%client.cityLotIndexCount++;
 		%client.cityLotIndex[%client.cityLotIndexCount] = %lotID;
 
-		%lotStr = %lotBrick.getCityLotName() @ " - \c2$" @ %lotBrick.getCityLotPreownedPrice() @ "\c6 - Owner: \c3" @ %lotBrick.getGroup().name @ "\c6";
+		%lotStr = %lotBrick.getCityLotName() @ " - " @ $c_p @ "$" @ %lotBrick.getCityLotPreownedPrice() @ "\c6 - Owner: " @ $c_p @ %lotBrick.getGroup().name @ "\c6";
 
 		if(%client.cityLotIndexCount == 1)
 		{
@@ -163,7 +166,7 @@ function CityMenu_RealEstate_ViewLotDetail(%client, %input, %brick)
 	%lotBrick = findLotBrickByID(%lotID);
 
 	if(%lotBrick.getCityLotOwnerID() == %client.bl_id) {
-		%client.cityMenuMessage("\c3This is your lot.");
+		%client.cityMenuMessage($c_p @ "This is your lot.");
 	}
 
 	CityMenu_Lot(%client, %input);

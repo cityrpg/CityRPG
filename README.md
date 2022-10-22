@@ -10,15 +10,6 @@ In CityRPG 4, you can explore a range of jobs and opportunities as you work your
 
 ![Banner](https://lakeys.net/cityrpg/media/banner.png)
 
-## Features in 0.2.0
-- The classic gameplay that has been shaped by thousands of players within the Blockland community
-- Overhauled real estate and better lot selling
-- Admin Mode for administrators to more easily moderate and build
-- Job tracks for each type of job: Labor, Business, Bounty Hunter, Police, and Government
-- Improved team chat for players to communicate within their job track
-- Plenty of bugfixes and feature improvements
-- [More on the way](https://trello.com/b/36wGp6ow/cityrpg-4-roadmap)
-
 ## Created by the CityRPG 4 Team
 Development: Lake
 
@@ -52,12 +43,20 @@ Dglider for bugfixes and tips, Sentry for replacing missing assets.
 - **/edithunger** [level 1-10] - Changes hunger to a certain level.
 - **/resetAllJobs** - Resets the job for every profile on the server. Used for changing custom job configurations.
 
+# Optional Integrations
+CityRPG 4 has optional support for the following add-ons. In order to use them, enable both GameMode_CityRPG4 and the desired add-on under Custom in the game-modes menu.
+
+* [Mail System](https://blocklandglass.com/addons/addon.php?id=670) - Players can buy and sell notes, letters, and cards in stores. Selling these items does not require a licensed job like the Arms Dealer.
+* Tier+Tactical Weapons: [Tier 1](https://blocklandglass.com/addons/addon.php?id=1206), [Tier 1A](https://blocklandglass.com/addons/addon.php?id=1207), [Tier 2](https://blocklandglass.com/addons/addon.php?id=1209), [Tier 2A](https://blocklandglass.com/addons/addon.php?id=1210)  - Most items can be sold in stores as weapons, including some of the easter eggs if they are enabled.
+* [doPlayerTeleport Event](https://forum.blockland.us/index.php?topic=253312.0) - The "Relative" checkbox is disabled to prevent abuse (i.e. teleporting into unwanted areas of players' builds)
+* [Zone Events](https://blocklandglass.com/addons/rtb/view.php?id=119) - Events prone to abuse are disabled.
+
 # Developer Documentation
 CityRPG 4 is being built fully open source, and we encourage you to fork the repository and make your own changes. We would love to see your contributions!
 
 Below is an incomplete documentation of key functions in CityRPG 4.
 
-Note that this documentation is applicable to the unstable version, **0.3.0**. For the latest release docs, see here:
+Note that this documentation is applicable to the unstable version. For the latest release docs, see here:
 https://github.com/cityrpg/CityRPG-4/tree/0.2.0
 
 ## Client/GameConnection

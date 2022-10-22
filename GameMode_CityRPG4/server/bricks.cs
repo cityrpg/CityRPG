@@ -73,8 +73,8 @@ datablock fxDTSBrickData(CityRPGSmallLotBrickData : brick16x16FData)
 {
 	iconName = $City::DataPath @ "ui/BrickIcons/16x16LotIcon";
 
-	category = "CityRPG";
-	subCategory = "Lots";
+	category = "Baseplates";
+	subCategory = "CityRPG Lots";
 
 	uiName = "16x16 Lot";
 
@@ -90,8 +90,8 @@ datablock fxDTSBrickData(CityRPGHalfSmallLotBrickData : brick16x32FData)
 {
 	iconName = $City::DataPath @ "ui/BrickIcons/16x32LotIcon";
 
-	category = "CityRPG";
-	subCategory = "Lots";
+	category = "Baseplates";
+	subCategory = "CityRPG Lots";
 
 	uiName = "16x32 Lot";
 
@@ -107,8 +107,8 @@ datablock fxDTSBrickData(CityRPGMediumLotBrickData : brick32x32FData)
 {
 	iconName = $City::DataPath @ "ui/BrickIcons/32x32LotIcon";
 
-	category = "CityRPG";
-	subCategory = "Lots";
+	category = "Baseplates";
+	subCategory = "CityRPG Lots";
 
 	uiName = "32x32 Lot";
 
@@ -125,8 +125,8 @@ datablock fxDTSBrickData(CityRPGHalfLargeLotBrickData)
 	brickFile = $City::DataPath @ "bricks/32x64F.blb";
 	iconName = $City::DataPath @ "ui/BrickIcons/32x64LotIcon";
 
-	category = "CityRPG";
-	subCategory = "Lots";
+	category = "Baseplates";
+	subCategory = "CityRPG Lots";
 
 	uiName = "32x64 Lot";
 
@@ -142,8 +142,8 @@ datablock fxDTSBrickData(CityRPGLargeLotBrickData : brick64x64FData)
 {
 	iconName = $City::DataPath @ "ui/BrickIcons/64x64LotIcon";
 
-	category = "CityRPG";
-	subCategory = "Lots";
+	category = "Baseplates";
+	subCategory = "CityRPG Lots";
 
 	uiName = "64x64 Lot";
 
@@ -328,11 +328,12 @@ function fxDTSBrick::cityBrickInit(%brick)
 			%brick.color = getClosestPaintColor(ResourceSO.mineral[%seed].color);
 			%brick.setColor(%brick.color);
 		default:
-			if(%brick.getDatablock().getID() == brickVehicleSpawnData.getID() && !%client.isCityAdmin())
+			// TODO wtf, move this!
+			if($LoadingBricks_Client $= "" && %brick.getDatablock().getID() == brickVehicleSpawnData.getID() && !%client.isCityAdmin())
 			{
-				commandToClient(%client, 'centerPrint', "\c6You have paid \c3$" @ mFloor($CityRPG::prices::vehicleSpawn) @ "\c6 to plant this vehicle spawn.", 3);
+				commandToClient(%client, 'centerPrint', "\c6You have paid " @ $c_p @ "$" @ mFloor($CityRPG::prices::vehicleSpawn) @ "\c6 to plant this vehicle spawn.", 3);
 
-				City.subtract(%client,bl_id, "money", mFloor($CityRPG::prices::vehicleSpawn));
+				City.subtract(%client.bl_id, "money", mFloor($CityRPG::prices::vehicleSpawn));
 				%client.setInfo();
 			}
 	}
@@ -449,7 +450,7 @@ function fxDTSBrick::cityBrickCheck(%brick)
 
 	if(City.get(%client.bl_id, "money") < mFloor(price))
 	{
-		commandToClient(%client, 'centerPrint', "\c6You need at least \c3$" @ mFloor(%brick.getDatablock().getName()) SPC "\c6in order to plant this brick!", 3);
+		commandToClient(%client, 'centerPrint', "\c6You need at least " @ $c_p @ "$" @ mFloor(%brick.getDatablock().initialPrice) SPC "\c6in order to plant this brick!", 3);
 		return 0;
 	}
 
@@ -461,7 +462,7 @@ function fxDTSBrick::cityBrickCheck(%brick)
 
 	if(%lotTrigger && %brickData.getID() == brickVehicleSpawnData.getID() && City.get(%client.bl_id, "money") < mFloor($CityRPG::prices::vehicleSpawn))
 	{
-		commandToClient(%client, 'centerPrint', "\c6You need at least \c3$" @ mFloor($CityRPG::prices::vehicleSpawn) SPC "\c6in order to plant this vehicle spawn!", 3);
+		commandToClient(%client, 'centerPrint', "\c6You need at least " @ $c_p @ "$" @ mFloor($CityRPG::prices::vehicleSpawn) SPC "\c6in order to plant this vehicle spawn!", 3);
 		return 0;
 	}
 

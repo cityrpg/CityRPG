@@ -30,9 +30,9 @@ package CityRPG_Commands
 		switch$(%strA)
 		{
 			case "":
-				messageClient(%client, '', "\c6Type \c3/help starters\c6 for information to get started in CityRPG");
-				messageClient(%client, '', "\c6Type \c3/help commands\c6 to list the commands in the game");
-				messageClient(%client, '', "\c6More: \c3/help events\c6, \c3/help admin\c6, \c3/stats");
+				messageClient(%client, '', "\c6Type " @ $c_p @ "/help starters\c6 for information to get started in CityRPG");
+				messageClient(%client, '', "\c6Type " @ $c_p @ "/help commands\c6 to list the commands in the game");
+				messageClient(%client, '', "\c6More: " @ $c_p @ "/help events\c6, " @ $c_p @ "/help admin\c6, " @ $c_p @ "/stats");
 
 
 				if($GameModeArg $= "Add-Ons/GameMode_CityRPG4/gamemode.txt")
@@ -41,7 +41,7 @@ package CityRPG_Commands
 				}
 				else
 				{
-					%sentenceStr = "\c6This server is running a \c3custom configuration\c6 of CityRPG 4";
+					%sentenceStr = "\c6This server is running a " @ $c_p @ "custom configuration\c6 of CityRPG 4";
 				}
 
 				if($City::isGitBuild)
@@ -49,7 +49,7 @@ package CityRPG_Commands
 					%suffix = " (Git build)";
 				}
 
-				messageClient(%client, '', %sentenceStr @ " (\c3" @ $City::Version @ "\c6)" @ %suffix);
+				messageClient(%client, '', %sentenceStr @ " (" @ $c_p @ $City::Version @ "\c6)" @ %suffix);
 			case "starters":
 				messageClient(%client, '', "\c6Welcome! To get started, you'll want to explore and familiarize yourself with the map.");
 				messageClient(%client, '', "\c6Some of the places most important to you will include the jobs office, the education office, and the bank.");
@@ -57,24 +57,24 @@ package CityRPG_Commands
 				messageClient(%client, '', "\c6From there, you can invest in education and assets to advance yourself in the city and work your way up the ladder.");
 				messageClient(%client, '', "\c6Good luck!");
 			case "commands":
-				messageClient(%client, '', "\c3/stats\c6 - View your stats");
-				messageClient(%client, '', "\c3/pardon\c6 [player] - Issue a pardon to a player in jail. Can only be used by officials.");
-				messageClient(%client, '', "\c3/eraseRecord\c6 [player] - Erases the record of a player, for a price. Can only be used by officials.");
-				messageClient(%client, '', "\c3/reset\c6 - Reset your in-game account. WARNING: This will clear your save data if typed!");
-				messageClient(%client, '', "\c3/dropmoney\c6 [amount] - Make it rain!");
-				messageClient(%client, '', "\c3/giveMoney\c6 [amount] [player] - Give money to another player");
-				messageClient(%client, '', "\c3/lot\c6 - View information about the lot you are standing on");
+				messageClient(%client, '', $c_p @ "/stats\c6 - View your stats");
+				messageClient(%client, '', $c_p @ "/pardon\c6 [player] - Issue a pardon to a player in jail. Can only be used by officials.");
+				messageClient(%client, '', $c_p @ "/eraseRecord\c6 [player] - Erases the record of a player, for a price. Can only be used by officials.");
+				messageClient(%client, '', $c_p @ "/reset\c6 - Reset your in-game account. WARNING: This will clear your save data if typed!");
+				messageClient(%client, '', $c_p @ "/dropmoney\c6 [amount] - Make it rain!");
+				messageClient(%client, '', $c_p @ "/giveMoney\c6 [amount] [player] - Give money to another player");
+				messageClient(%client, '', $c_p @ "/lot\c6 - View information about the lot you are standing on");
 
 			case "events":
-				messageClient(%client, '', "\c6 - brick -> \c3sellFood\c6 [Food] [Markup] - Feeds a player using the automated sales system.");
-				messageClient(%client, '', "\c6 - brick -> \c3sellItem\c6 [Item] [Markup] - Sells an item using the automated system.");
-				messageClient(%client, '', "\c6 - brick -> \c3requestFunds\c6 [Service] [Price] - Requests $\c3[Price]\c6 for \c3[Service]\c6. Charge money to call events.");
-				messageClient(%client, '', "\c6 - brick -> \c3doJobTest\c6 [Job] [NoConvicts] - Tests if user's job is [Job]. NoConvicts will fail inmates. Calls onJobTestFail and onJobTestPass");
+				messageClient(%client, '', "\c6 - brick -> " @ $c_p @ "sellFood\c6 [Food] [Markup] - Feeds a player using the automated sales system.");
+				messageClient(%client, '', "\c6 - brick -> " @ $c_p @ "sellItem\c6 [Item] [Markup] - Sells an item using the automated system.");
+				messageClient(%client, '', "\c6 - brick -> " @ $c_p @ "requestFunds\c6 [Service] [Price] - Requests $" @ $c_p @ "[Price]\c6 for " @ $c_p @ "[Service]\c6. Charge money to call events.");
+				messageClient(%client, '', "\c6 - brick -> " @ $c_p @ "doJobTest\c6 [Job] [NoConvicts] - Tests if user's job is [Job]. NoConvicts will fail inmates. Calls onJobTestFail and onJobTestPass");
 			case "admin":
-				messageClient(%client, '', "\c6Type \c3/admin\c6 to access the main admin panel.");
-				messageClient(%client, '', "\c6Admin commands: /\c3updateScore\c6, /\c3setMinerals\c6 [\c3value\c6], /\c3setLumber\c6 [\c3value\c6], /\c3editEducation\c6 [\c3level\c6] [\c3player\c6]");
-				messageClient(%client, '', "\c6/\c3clearMoney\c6, \c6/\c3gMoney\c6 [\c3amount\c6] [\c3player\c6], /\c3dMoney\c6 [\c3amount\c6] [\c3player\c6], /\c3cleanse\c6, /\c3editHunger\c6 [\c3level\c6], /\c3manageLot");
-				messageClient(%client, '', "\c6/\c3resetAllJobs\c6");
+				messageClient(%client, '', "\c6Type " @ $c_p @ "/admin\c6 to access the main admin panel.");
+				messageClient(%client, '', "\c6Admin commands: /" @ $c_p @ "updateScore\c6, /" @ $c_p @ "setMinerals\c6 [" @ $c_p @ "value\c6], /" @ $c_p @ "setLumber\c6 [" @ $c_p @ "value\c6], /" @ $c_p @ "editEducation\c6 [" @ $c_p @ "level\c6] [" @ $c_p @ "player\c6]");
+				messageClient(%client, '', "\c6/" @ $c_p @ "clearMoney\c6, \c6/" @ $c_p @ "gMoney\c6 [" @ $c_p @ "amount\c6] [" @ $c_p @ "player\c6], /" @ $c_p @ "dMoney\c6 [" @ $c_p @ "amount\c6] [" @ $c_p @ "player\c6], /" @ $c_p @ "cleanse\c6, /" @ $c_p @ "editHunger\c6 [" @ $c_p @ "level\c6], /" @ $c_p @ "manageLot");
+				messageClient(%client, '', "\c6/" @ $c_p @ "resetAllJobs\c6");
 
 			case "jobs":
 				messageClient(%client, '', "\c6Visit the jobs office to view the available jobs.");
@@ -111,11 +111,11 @@ package CityRPG_Commands
 
 							City.add(%client.player.serviceOrigin.getGroup().bl_id, "bank", %client.player.serviceFee);
 
-							messageClient(%client, '', "\c6You have accepted the service fee of \c3$" @ %client.player.serviceFee @ "\c6!");
+							messageClient(%client, '', "\c6You have accepted the service fee of " @ $c_p @ "$" @ %client.player.serviceFee @ "\c6!");
 							%client.setInfo();
 
 						if(%client.player.serviceOrigin.getGroup().client)
-							messageClient(%client.player.serviceOrigin.getGroup().client, '', "\c3" @ %client.name @ "\c6 has wired you \c3$" @ %client.player.serviceFee @ "\c6 for a service.");
+							messageClient(%client.player.serviceOrigin.getGroup().client, '', $c_p @ %client.name @ "\c6 has wired you " @ $c_p @ "$" @ %client.player.serviceFee @ "\c6 for a service.");
 
 						%client.player.serviceOrigin.onTransferSuccess(%client);
 
@@ -141,10 +141,6 @@ package CityRPG_Commands
 			{
 				messageClient(%client, '', "\c6You are too far away from the service to purchase it!");
 			}
-		}
-		else
-		{
-			messageClient(%client, '', "\c6You have no active tranfers that you may accept!");
 		}
 
 		%client.player.serviceType = "";
@@ -179,8 +175,6 @@ package CityRPG_Commands
 			%client.player.serviceSize = "";
 			%client.player.serviceOrigin = "";
 		}
-		else
-			messageClient(%client, '', "\c6You have no active tranfers that you may decline!");
 	}
 
 	function serverCmddonate(%client, %arg1)
@@ -215,8 +209,8 @@ package CityRPG_Commands
 
 		%amoutPer = %arg1 * 0.15;
 		City.subtract(%client.bl_id, "money", %arg1);
-		messageClient(%client, '', "\c6You've donated \c3$" @ %arg1 SPC "\c6to the economy! (" @ %amoutPer @ "%)");
-		messageAll('',"\c3" @ %client.name SPC "\c6has donated \c3$" @ %arg1 SPC "\c6to the economy! (" @ %amoutPer @ "%)");
+		messageClient(%client, '', "\c6You've donated " @ $c_p @ "$" @ %arg1 SPC "\c6to the economy! (" @ %amoutPer @ "%)");
+		messageAll('',$c_p @ %client.name SPC "\c6has donated " @ $c_p @ "$" @ %arg1 SPC "\c6to the economy! (" @ %amoutPer @ "%)");
 		$City::Economics::Condition = $City::Economics::Condition + %amoutPer;
 		%client.setGameBottomPrint();
 	}
@@ -248,7 +242,7 @@ package CityRPG_Commands
 
 		if(City.get(%client.bl_id, "money") < %cost && !%client.isAdmin)
 		{
-			messageClient(%client, '', "\c6You need at least \c3$" @ %cost SPC "\c6to erase someone's record.");
+			messageClient(%client, '', "\c6You need at least " @ $c_p @ "$" @ %cost SPC "\c6to erase someone's record.");
 			return;
 		}
 
@@ -307,8 +301,8 @@ package CityRPG_Commands
 		}
 
 		%client.cityLog("Give money to " @ %target.bl_id);
-		messageClient(%client, '', "\c6You give \c3$" @ %money SPC "\c6to \c3" @ %target.name @ "\c6.");
-		messageClient(%target, '', "\c3" @ %client.name SPC "\c6has given you \c3$" @ %money @ "\c6.");
+		messageClient(%client, '', "\c6You give " @ $c_p @ "$" @ %money SPC "\c6to " @ $c_p @ %target.name @ "\c6.");
+		messageClient(%target, '', $c_p @ %client.name SPC "\c6has given you " @ $c_p @ "$" @ %money @ "\c6.");
 
 		City.subtract(%client.bl_id, "money", %money);
 		City.add(%target.bl_id, "money", %money);
@@ -342,46 +336,7 @@ package CityRPG_Commands
 
 	function serverCmdreset(%client)
 	{
-		if(%client.cityRateLimitCheck())
-		{
-			return;
-		}
-
-		%client.cityLog("/reset");
-
-		if(!isObject(%client.player))
-			return;
-
-		if(City.get(%client.bl_id, "money") - $Pref::Server::City::prices::reset >= 0)
-		{
-			%client.cityMenuMessage("\c6Would you like to reset your CityRPG profile?");
-			%client.cityMenuMessage("\c0WARNING: You are about to reset all of your progress on this server. Are you sure?");
-
-			%menu = "Reset my account." TAB "Cancel.";
-			%functions = CityMenu_Reset_Confirm TAB CityMenu_Close;
-			%client.cityMenuOpen(%menu, %functions, %client, "\c6Your account will not be reset.");
-		}
-		else
-			messageClient(%client, '', "\c6You need at least \c3$" @ $Pref::Server::City::prices::reset SPC "\c6to do that.");
-	}
-
-	function CityMenu_Reset_Confirm(%client)
-	{
-		%client.cityMenuClose(1);
-		
-		%client.cityLog("***Account reset***");
-		messageClient(%client, '', "\c6Your account has been reset.");
-		messageAll('',"\c3"@ %client.name @" \c6has reset their account.");
-		CityRPGData.removeData(%client.bl_id);
-		CityRPGData.addData(%client.bl_id);
-
-		City.set(%client.bl_id, "bank", 100);
-		%client.setCityJob($City::CivilianJobID, 1, 1);
-
-		if(isObject(%client.player))
-		{
-			%client.spawnPlayer();
-		}
+		messageClient(%client, '', "\c6Please ask an admin for help if you want to reset your account.");
 	}
 
 	function serverCmdeducation(%client, %do) {
@@ -438,18 +393,18 @@ package CityRPG_Commands
 
 		if(%client.isCityAdmin() && %target != %client)
 		{
-			%client.cityMenuMessage("\c6You are about to pardon \c3" @ %target.name @ "\c6 from their \c3" @ %jailTime @ "\c6 remaining days in prison using your magic admin powers.");
-			%client.cityMenuMessage("\c6Type \c31\c6 in chat to confirm, or \c32\c6 to cancel.");
+			%client.cityMenuMessage("\c6You are about to pardon " @ $c_p @ %target.name @ "\c6 from their " @ $c_p @ %jailTime @ "\c6 remaining days in prison using your magic admin powers.");
+			%client.cityMenuMessage("\c6Type " @ $c_p @ "1\c6 in chat to confirm, or " @ $c_p @ "2\c6 to cancel.");
 		}
 		else if(%client.isCityAdmin())
 		{
 			%client.cityMenuMessage("\c6You are about to pardon yourself using your magic admin powers.");
-			%client.cityMenuMessage("\c6Type \c31\c6 in chat to confirm, or \c32\c6 to cancel.");
+			%client.cityMenuMessage("\c6Type " @ $c_p @ "1\c6 in chat to confirm, or " @ $c_p @ "2\c6 to cancel.");
 		}
 		else
 		{
-			%client.cityMenuMessage("\c6You are about to pardon \c3" @ %target.name @ "\c6 from their \c3" @ %jailTime @ "\c6 remaining days in prison.");
-			%client.cityMenuMessage("\c6Proceeding will negatively impact the economy by up to \c0" @ %jailTime * $Pref::Server::City::demerits::pardonCostMultiplier @ "%\c6. Type \c31\c6 in chat to confirm, or \c32\c6 to cancel.");
+			%client.cityMenuMessage("\c6You are about to pardon " @ $c_p @ %target.name @ "\c6 from their " @ $c_p @ %jailTime @ "\c6 remaining days in prison.");
+			%client.cityMenuMessage("\c6Proceeding will negatively impact the economy by up to \c0" @ %jailTime * $Pref::Server::City::demerits::pardonCostMultiplier @ "%\c6. Type " @ $c_p @ "1\c6 in chat to confirm, or " @ $c_p @ "2\c6 to cancel.");
 		}
 
 		%functions = "CityMenu_Pardon";
@@ -484,8 +439,8 @@ package CityRPG_Commands
 
 		if(%target != %client)
 		{
-			messageClient(%client, '', "\c6You have let\c3" SPC %target.name SPC "\c6out of prison.");
-			messageClient(%target, '', "\c3" @ %client.name SPC "\c6has issued you a pardon.");
+			messageClient(%client, '', "\c6You have let" @ $c_p SPC %target.name SPC "\c6out of prison.");
+			messageClient(%target, '', $c_p @ %client.name SPC "\c6has issued you a pardon.");
 		}
 		else
 		{
@@ -536,15 +491,15 @@ package CityRPG_Commands
 		%cost = $Pref::Server::City::demerits::recordShredCost;
 		if(City.get(%client.bl_id, "money") < %cost && !%client.isAdmin)
 		{
-			messageClient(%client, '', "\c6You need at least \c3$" @ %cost SPC "\c6to erase someone's record.");
+			messageClient(%client, '', "\c6You need at least " @ $c_p @ "$" @ %cost SPC "\c6to erase someone's record.");
 			return;
 		}
 
 		City.set(%target.bl_id, "jaildata", "0" SPC getWord(City.get(%target.bl_id, "jaildata"), 1));
 		if(%target != %client)
 		{
-			messageClient(%client, '', "\c6You have ran\c3" SPC %target.name @ "\c6's criminal record through a paper shredder.");
-			messageClient(%target, '', "\c3It seems your criminal record has simply vanished...");
+			messageClient(%client, '', "\c6You have ran" @ $c_p SPC %target.name @ "\c6's criminal record through a paper shredder.");
+			messageClient(%target, '', $c_p @ "It seems your criminal record has simply vanished...");
 
 			if(!%client.BL_ID == getNumKeyID())
 				City.subtract(%client.bl_id, "money", %cost);
@@ -575,7 +530,7 @@ package CityRPG_Commands
 
 		if(%do $= "accept")
 		{
-			if((City.get(%client.bl_id).valueMoney + City.get(%client.bl_id, "bank")) >= 100000)
+			if((City.get(%client.bl_id, "money") + City.get(%client.bl_id, "bank")) >= 100000)
 			{
 				%client.doReincarnate();
 			}
@@ -587,7 +542,7 @@ package CityRPG_Commands
 			messageClient(%client, '', "\c6The perks of doing this are...");
 			messageClient(%client, '', "\c6 - You will start with a level " @ $City::EducationReincarnateLevel @ " education (+" @ $City::EducationReincarnateLevel-$City::EducationCap @ " maximum)");
 			messageClient(%client, '', "\c6 - Your name will be yellow by default and white if you are wanted.");
-			messageClient(%client, '', "\c6Type \c3/reincarnate accept\c6 to start anew!");
+			messageClient(%client, '', "\c6Type " @ $c_p @ "/reincarnate accept\c6 to start anew!");
 		}
 	}
 
@@ -637,7 +592,7 @@ package CityRPG_Commands
 
 		$City::Cache::DroppedCash[%client.bl_id]++;
 
-		messageClient(%client,'',"\c6You drop \c3$" @ %amt @ ".");
+		messageClient(%client,'',"\c6You drop " @ $c_p @ "$" @ %amt @ ".");
 		%client.cityLog("Drop '$" @ %amt @ "'");
 	}
 
@@ -663,7 +618,7 @@ package CityRPG_Commands
 			%job = %target.getJobSo();
 
 			// Career
-			%string = "Career:" SPC "\c3" @ %target.getJobSO().track;
+			%string = "Career:" SPC $c_p @ %target.getJobSO().track;
 
 			// Title
 			if(%job.title !$= "")
@@ -675,10 +630,10 @@ package CityRPG_Commands
 			%string = %string @ "\n" @ "Job:" SPC %job.name;
 
 			// Net worth
-			%string = %string @ "\n" @ "Net worth:" SPC "\c3$" @ (City.get(%target.bl_id, "money") + City.get(%target.bl_id, "bank"));
+			%string = %string @ "\n" @ "Net worth:" SPC $c_p @ "$" @ (City.get(%target.bl_id, "money") + City.get(%target.bl_id, "bank"));
 
 			// Crim record
-			%string = %string @ "\n" @ "Criminal record:" SPC "\c3" @ (getWord(City.get(%target.bl_id, "jaildata"), 0) ? "Yes" : "No");
+			%string = %string @ "\n" @ "Criminal record:" SPC $c_p @ (getWord(City.get(%target.bl_id, "jaildata"), 0) ? "Yes" : "No");
 
 			// Education
 			%level = City.get(%target.bl_id, "education");
@@ -690,7 +645,7 @@ package CityRPG_Commands
 			{
 				%eduString = "Level " @ %level;
 			}
-			%string = %string @ "\n" @ "Education:" SPC "\c3" @ %eduString;
+			%string = %string @ "\n" @ "Education:" SPC $c_p @ %eduString;
 			
 			// Lots visited
 			%lotsVisited = getWordCount(City.get(%target.bl_id, "lotsvisited"));

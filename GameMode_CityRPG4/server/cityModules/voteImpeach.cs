@@ -2,7 +2,7 @@ function CityMayor_VoteImpeach(%client)
 {
 	if(($Pref::Server::City::Mayor::ImpeachCost == 0) || ($Pref::Server::City::Mayor::ImpeachCost $= ""))
 		$Pref::Server::City::Mayor::ImpeachCost = 500;
-	$City::Mayor::ImpeachRequirement = 10;
+	$City::Mayor::ImpeachRequirement = 5;
 	if($City::Mayor::String $= "" || $City::Mayor::String $= "None")
 		messageClient(%client,'',"\c6That person doesn't exist!");
 	else {

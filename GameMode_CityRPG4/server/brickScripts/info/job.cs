@@ -23,7 +23,7 @@ datablock fxDTSBrickData(CityRPGJobBrickData : brick2x4FData)
 function CityMenu_Jobs(%client, %brick)
 {
 	%client.cityMenuClose(1);
-	%client.cityMenuMessage("\c6Your current job is\c3" SPC %client.getJobSO().name @ "\c6 with an income of \c3$" @ %client.getJobSO().pay @ "\c6.");
+	%client.cityMenuMessage("\c6Your current job is" @ $c_p SPC %client.getJobSO().name @ "\c6 with an income of " @ $c_p @ "$" @ %client.getJobSO().pay @ "\c6.");
 
 	%menu =	"View job tracks."
 			TAB "Apply for a job.";
@@ -58,7 +58,7 @@ function CityMenu_Jobs_List(%client, %input, %brick)
 
 	if(!$City::DefaultJobs)
 	{
-	  messageClient(%client, '', "\c3This server is running a customized job tree.");
+	  messageClient(%client, '', $c_p @ "This server is running a customized job tree.");
 	}
 
 	%client.cityMenuOpen(%menu, %functions, %brick, "\c6Thanks, come again.", 0, 0, "Select a job track to view.");
@@ -76,7 +76,7 @@ function CityMenu_Jobs_ViewTrack(%client, %input, %brick)
 		%jobID = getField($City::Jobs[%track], %i);
 		%job = JobSO.job[%jobID];
 
-		%client.cityMenuMessage("\c3" @ %job.name SPC "\c6- Inital Investment: \c3" @ %job.invest SPC "- \c6Pay: \c3" @ %job.pay SPC "- \c6Required Education: \c3" @ %job.education);
+		%client.cityMenuMessage($c_p @ %job.name SPC "\c6- Inital Investment: " @ $c_p @ %job.invest SPC "- \c6Pay: " @ $c_p @ %job.pay SPC "- \c6Required Education: " @ $c_p @ %job.education);
 		%client.cityMenuMessage(%job.helpline);
 
 		if(%job.flavortext !$= "")
@@ -85,7 +85,7 @@ function CityMenu_Jobs_ViewTrack(%client, %input, %brick)
 		}
 	}
 
-	messageClient(%client, '', "\c3Use the Page Up and Page Down keys to scroll through the list of jobs.");
+	messageClient(%client, '', $c_p @ "Use the Page Up and Page Down keys to scroll through the list of jobs.");
 
 	%menu =	"Go back."
 			TAB "Apply for a job.";

@@ -3,7 +3,6 @@
 // ============================================================
 
 // Client.cityMenuOpen(names, functions, exitMsg, autoClose, canOverride)
-// Modular function hook for displaying menus in-game.
 // Utilizes a combination of Conan's center-print menus for selections, and chat inputs for text.
 function GameConnection::cityMenuOpen(%client, %menu, %functions, %menuID, %exitMsg, %autoClose, %canOverride, %title)
 {
@@ -23,7 +22,7 @@ function GameConnection::cityMenuOpen(%client, %menu, %functions, %menuID, %exit
 		%menuObj = new ScriptObject()
 		{
 			isCenterprintMenu = 1;
-			menuName = %title; // Leave it blank.
+			menuName = $c_p @ %title; // Leave it blank.
 
 			justify = "<just:center>";
 
@@ -89,7 +88,7 @@ function GameConnection::cityMenuInput(%client, %input)
 
 		if(!isFunction(%function))
 		{
-			messageClient(%client, '', "\c3" @ %input @ "\c6 is not a valid option. Please try again.");
+			messageClient(%client, '', $c_p @ %input @ "\c6 is not a valid option. Please try again.");
 			return false;
 		}
 
@@ -143,7 +142,7 @@ function GameConnection::cityMenuClose(%client, %silent)
 }
 
 // Client.cityMenuClose(silent)
-// msg: (str) Message to display to the client. Accepts color codes (\c3, etc.)
+// msg: (str) Message to display to the client. Accepts color codes (" @ $c_p @ ", etc.)
 function GameConnection::cityMenuMessage(%client, %msg)
 {
 	%client.cityMenuLastMsg = %msg;
@@ -166,22 +165,24 @@ function CityMenu_Placeholder(%client)
 // Gives demerits to a player. Handles wanted levels and demotions.
 function City_AddDemerits(%blid, %demerits)
 {
+	%client = findClientByBL_ID(%blid);
+
+	%client.cityLot("Add " @ %demerits @ " demerits");
+
 	%demerits = mFloor(%demerits);
 	%currentDemerits = City.get(%blid, "demerits");
 	%maxStars = City_GetMaxStars();
 
 	City.add(%blid, "demerits", %demerits);
 
-	if(City.get(%blid).valueDemerits >= $Pref::Server::City::demerits::demoteLevel && JobSO.job[City.get(%blid, "jobid")].law == true)
+	if(City.get(%blid, "demerits") >= $Pref::Server::City::demerits::demoteLevel && JobSO.job[City.get(%blid, "jobid")].law == true)
 	{
 		City.set(%blid, "jobid", $City::CivilianJobID);
 		City.set(%blid, "jaildata", 1 SPC 0);
 
-		%client = findClientByBL_ID(%blid);
-
 		if(isObject(%client))
 		{
-			messageClient(%client, '', "\c6You have been demoted to" SPC City_DetectVowel(JobSO.job[1].name) SPC "\c3" @ JobSO.job[1].name @ "\c6.");
+			messageClient(%client, '', "\c6You have been demoted to" SPC City_DetectVowel(JobSO.job[1].name) SPC $c_p @ JobSO.job[1].name @ "\c6.");
 
 			%client.setInfo();
 
@@ -202,7 +203,7 @@ function City_AddDemerits(%blid, %demerits)
 		if(%ticks && %ticks > %maxStars)
 		{
 			if(%maxStars == 3 || %maxStars == 6)
-				messageAll('', '\c6Criminal \c3%1\c6 has obtained a level \c3%2\c6 wanted level. Police vehicles have upgraded.', %client.name, %ticks);
+				messageAll('', '\c6Criminal @ $c_p @ "%1\c6 has obtained a level @ $c_p @ "%2\c6 wanted level. Police vehicles have upgraded.', %client.name, %ticks);
 		}
 	}
 }
@@ -458,7 +459,7 @@ function City_TickLoop(%loop)
 					if(%daysLeft > 1)
 					%daySuffix = "s";
 
-				messageClient(%client, '', '\c6 - You have \c3%1\c6 day%2 left in Prison.', %daysLeft, %daySuffix);
+				messageClient(%client, '', '\c6 - You have @ $c_p @ "%1\c6 day%2 left in Prison.', %daysLeft, %daySuffix);
 			}
 			if(City.get(%client.bl_id, "hunger") > 3)
 				City.subtract(%client.bl_id, "hunger", 1);
@@ -499,9 +500,9 @@ function City_TickLoop(%loop)
 				City.set(%client.bl_id, "demerits", 3);
 
 			if(calendarSO.getCurrentDay() == 187)
-				messageClient(%client, '', '\c6 - You have had your demerits reduced to \c3%1\c6 due to <a:https://www.youtube.com/watch?v=iq8gfaFqFpI>Statue of Limitations</a>\c6.', City.get(%client.bl_id, "demerits"));
+				messageClient(%client, '', '\c6 - You have had your demerits reduced to @ $c_p @ "%1\c6 due to <a:https://www.youtube.com/watch?v=iq8gfaFqFpI>Statue of Limitations</a>\c6.', City.get(%client.bl_id, "demerits"));
 			else
-				messageClient(%client, '', '\c6 - You have had your demerits reduced to \c3%1\c6 due to <a:en.wikipedia.org/wiki/Statute_of_limitations>Statute of Limitations</a>\c6.', City.get(%client.bl_id, "demerits"));
+				messageClient(%client, '', '\c6 - You have had your demerits reduced to @ $c_p @ "%1\c6 due to <a:en.wikipedia.org/wiki/Statute_of_limitations>Statute of Limitations</a>\c6.', City.get(%client.bl_id, "demerits"));
 
 			%client.setInfo();
 		}
@@ -538,7 +539,7 @@ function City_TickLoop(%loop)
 				{
 					%client.cityLog("Tick pay: " @ %sum);
 					City.add(%client.bl_id, "bank", %sum);
-					messageClient(%client, '', "\c6 - Your paycheck of \c3$" @ %sum @ "\c6 has been deposited into your bank account.");
+					messageClient(%client, '', "\c6 - Your paycheck of " @ $c_p @ "$" @ %sum @ "\c6 has been deposited into your bank account.");
 				}
 			}
 		}
@@ -548,11 +549,11 @@ function City_TickLoop(%loop)
 			if(!City.get(%client.bl_id, "student"))
 			{
 				City.add(%client.bl_id, "education", 1);
-				messageClient(%client, '', "\c6 - \c2You graduated\c6, receiving a level \c3" @ City.get(%client.bl_id, "education") @ "\c6 education!");
+				messageClient(%client, '', "\c6 - \c2You graduated\c6, receiving a level " @ $c_p @ City.get(%client.bl_id, "education") @ "\c6 education!");
 				%client.cityLog("Tick edu +1");
 			}
 			else
-				messageClient(%client, '', "\c6 - You will complete your education in \c3" @ City.get(%client.bl_id, "student") @ "\c6 days.");
+				messageClient(%client, '', "\c6 - You will complete your education in " @ $c_p @ City.get(%client.bl_id, "student") @ "\c6 days.");
 			}
 		}
 
@@ -563,14 +564,6 @@ function City_TickLoop(%loop)
 		{
 			%client.player.setShapeNameDistance(24);
 			%client.setGameBottomPrint();
-		}
-
-		if(CalendarSO.date && CalendarSO.date % $CityRPG::tick::interestTick == 0)
-		{
-			CityRPGData.data[%loop].valueBank = mFloor(CityRPGData.data[%loop].valueBank * $CityRPG::tick::interest);
-
-			if(isObject(%client))
-				messageClient(%client, '', "\c6 - The bank is giving interest.");
 		}
 
 		if(getWord(CityRPGData.data[%loop].valueJailData, 1))
@@ -635,7 +628,7 @@ function City_ResetAllJobs(%client)
 
 	%client.cityLog("Reset all jobs");
 
-	messageAll('',"\c3" @ %client.name @ "\c0 reset all jobs.");
+	messageAll('',$c_p @ %client.name @ "\c0 reset all jobs.");
 
 	for(%i = 0; %i <= CityRPGData.dataCount; %i++)
 	{
@@ -656,8 +649,8 @@ function City_ResetAllJobs(%client)
 
 function GameConnection::messageCityLagNotice(%client)
 {
-	messageClient(%client, '', "\c3Notice: This server has " @ getBrickCount() @ " bricks.");
-	messageClient(%client, '', "\c3If you experience lag, consider turning down your shaders, as well as your draw distance under Advanced options.");
+	messageClient(%client, '', $c_p @ "Notice: This server has " @ getBrickCount() @ " bricks.");
+	messageClient(%client, '', $c_p @ "If you experience lag, consider turning down your shaders, as well as your draw distance under Advanced options.");
 }
 
 function messageCityRadio(%jobTrack, %msgType, %msgString)
@@ -667,13 +660,30 @@ function messageCityRadio(%jobTrack, %msgType, %msgString)
 	for(%i = 0; %i < ClientGroup.getCount(); %i++)
 	{
 		%client = ClientGroup.getObject(%i);
+		%doAdminSnooping = $Pref::Server::City::AdminsAlwaysMonitorChat && %client.isAdmin;
+		%matchingJobTrack = %client.getJobSO().track $= %jobTrack;
+		%isJailed = getWord(City.get(%client.bl_id, "jaildata"), 1);
 
-		if(%client.isCityAdmin() || // Admin job always sees radio..
-		($Pref::Server::City::AdminsAlwaysMonitorChat && %client.isAdmin) || // Or if the pref is enabled, allow admin to snoop...
-		(%client.getJobSO().track $= %jobTrack && // Otherwise, check for a matching job track...
-		!getWord(City.get(%client.bl_id, "jaildata"), 1))) // And exclude convicts from seeing messages in their track.
+		// Same job track only - Override if enabled by pref or the user is in admin mode
+		if(%client.isCityAdmin() || %doAdminSnooping || (%matchingJobTrack && !%isJailed))
 		{
-			messageClient(%client, '', "\c3[<color:" @ $City::JobTrackColor[%jobTrack] @ ">" @ %jobTrack @ " Radio\c3]" SPC %msgString);
+			messageClient(%client, '', $c_p @ "[<color:" @ $City::JobTrackColor[%jobTrack] @ ">" @ %jobTrack @ " Radio" @ $c_p @ "]" SPC %msgString);
 		}
 	}
+}
+
+function messageCityJail(%msgString)
+{
+	for(%i = 0; %i < ClientGroup.getCount();%i++)
+	{
+		%subClient = ClientGroup.getObject(%i);
+		%doAdminSnooping = $Pref::Server::City::AdminsAlwaysMonitorChat && %subClient.isAdmin;
+
+		// Convicts only - Override if enabled by pref or the user is in admin mode
+		if(%subClient.isCityAdmin() || %doAdminSnooping || getWord(City.get(%subClient.bl_id, "jaildata"), 1))
+		{
+			messageClient(%subClient, '', %msgString);
+		}
+	}
+	echo("(Convict Chat)" SPC %client.name @ ":" SPC %text);
 }

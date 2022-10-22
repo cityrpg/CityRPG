@@ -1,0 +1,3 @@
+Title: My Cool New Jobs Mod
+Author: Anonymous
+An expansion mod for CityRPG 4. A template containing replacers for the default jobs and education values--for easy editing.

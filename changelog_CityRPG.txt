@@ -1,8 +1,127 @@
+<version:1.1.0>
+	<li>Fixed and brought back the sellClothes event. Changing jobs overrides your outfit with the new job's uniform for now.</li>
+	<li>Fixed health/money HUD being missing after using duplicator.</li>
+	<li>Fixed health/money HUD being missing after using weapons with Tier+Tactical ammo.</li>
+	<li>Fixed being able to buy broken lots for free.</li>
+
+	<b>Hosting Info</b>
+	<li>Demerits incurred are now logged. Logs only include the amount for now, as this is all that the demerits function handles.</li>
+	<li>Added support for the ToolGun (Tool_ToolGun). This item will override the hammer, wrench, and printer as job spawn items when enabled.</li>
+	<li>Removed certain optional add-ons from loading with the game-mode as their handling is initialized after add-ons load. This may affect the load order of your server's add-ons.</li>
+</version>
+<version:1.0.0>
+	<li>Added simple optional support for the Mail System by [GSF]Ghost. This can be activated by installing and enabling System_Mail. With this add-on enabled, players can sell the letter, note, and postcard items via item shops.</li>
+	<li>Lowered the required players for an election to 8 and the required players to impeach the mayor to 6.</li>
+	<li>Fixed menus preventing you from using chat.</li>
+	<li>Fixed being able to delete your lot with /cut.</li>
+	<li>Fixed vehicle spawn purchase not deducting money.</li>
+	<li>Fixed "This vendor is not liscensed" typo.</li>
+
+	<b>Hosting Info</b>
+	<li>Lot sales (both unclaimed and player-based) are now logged with the amount of money spent.</li>
+	<li>Fixed the gamemode not configuring tier+tactical ammo correctly when there is no prefs mod.</li>
+
+	<b>Developer Info</b>
+	<li>An additional argument has been added to the `City_RegisterItem` function. This arg allows you to make the item sell-able by any player regardless of their job. This can be used to add items that aren't considered weapons.</li>
+	<li>Renamed $CityRPG::prices::weapon::* namespaces to $City::Item::*.</li>
+</version>
+<version:0.3.2>
+	<ul>
+		<li>Lowered the price of vehicle spawns from $2500 to $1000</li>
+		<li>Moved lots to the Baseplate tab of the bricks menu. This has some helpful side effects such as preventing accidentally supercutting lots</li>
+		<li>Fixed the following issues, which were caused by an internal rework of player data handling done in the Interactions Update (v0.3.0):</li>
+		<li>Fixed being unable to sell lumber</li>
+		<li>Fixed /reincarnate not being able to detect your money</li>
+		<li>Fixed scores in the player list showing the wrong amounts for net worth</li>
+		<li>Fixed not spawning at the correct spawn point for your job</li>
+		<li>Fixed dropping money if killed while in jail</li>
+		<li>Fixed not being demoted for doing crimes as an official (police officer, etc.)</li>
+		<li>Fixed the doJobTest event not matching jobs correctly</li>
+	</ul>
+	
+	<b>Changes for Hosting</b>
+	<ul>
+		<li>Changed the wording of "Open admin menu" to "Lot admin" to reduce confusion with the main admin menu</li>
+		<li>Fixed lots failing to save on server shutdown on a dedicated server</li>
+	</ul>
+</version>
+<version:0.3.1>
+	<ul>
+		<li>Added support for new weapon packs. If enabled, these items are sell-able in-game with the `sellItem` event.</li>
+		<li>Tier+Tactical Tier 1 (Weapon_Package_Tier1)</li>
+		<li>Tier+Tactical Tier 1A (Weapon_Package_Tier1)</li>
+		<li>Tier+Tactical Tier 2 (Weapon_Package_Tier2)</li>
+		<li>Tier+Tactical Tier 2A (Weapon_Package_Tier2A)</li>
+		<li>Replaced the /yes and /no prompts with actual yes/no dialog boxes</li>
+		<li>Fixed warning message meant for the host going to the first person that joins on a dedicated server </li>
+		<li>Fixed issues placing, purchasing and editing lots</li>
+	</ul>
+	
+	<b>Changes for Hosting</b>
+	<ul>
+		<li>Added a new pref, "Disable Default Weapons", that will disable the default game weapons like the Gun from being sold in shops. This is ideal for using custom weapon packs. Beware: This does not prevent jobs from spawning with these weapons. For that, you will need a [custom job pack](https://github.com/cityrpg/CityRPG-4/tree/master/CityRPG_Jobs_Template).</li>
+		<li>While in Admin Mode, you are now shown the ID of any lots you walk over.</li>
+		<li>You can now access an Admin Menu through the actions menu.</li>
+	</ul>
+</version>
+<version:0.3.0>
+	Interactions Update
+	<b>Job Improvements</b>
+	The jobs menu and commands have been improved. Job sign-ups now give you more details about the qualifications and perks, and you can now type partial names when signing up for a job.
+
+	<b>Event Changes</b>
+	<ul>
+		<li>New event: onLotFirstEntered</li>
+		<li>onEnterLot and onLeaveLot events renamed to onLotEntered and onLotLeft</li>
+	</ul>
+
+	<b>Center Print Menus (Experimental)</b>
+	The chat-based menus have migrated to a new experimental menu system. You can now navigate through menus using the build keys to move up and down and select an option. This applies to the bank, real estate, lot menus, and all other in-game menus. For things that require text input, you must still type in chat.
+
+	<b>Actions Menu</b>
+	There is a new, central menu that can be used to access various general functions for CityRPG. This menu allows you to view your stats and access the Mayor menu if you are the mayor. 
+
+	<b>Mayor Menu</b>
+	The mayor now has their own panel that they can access through the player menu. This gives the Mayor easier access to their special powers, pardons and record clearing.
+
+	<b>Full Changelog</b>
+	<ul>
+		<li>Added a "Wrench lot" option to the /lot menu for lot owners. This option pulls up the wrench menu so you can more easily access events for the lot.</li>
+		<li>Renamed the "onEnterLot" and "onLeaveLot" events to "onLotEntered" and "onLotLeft" for clarity.</li>
+		<li>Added the "onLotFirstEntered" input event. This event triggers when someone enters your lot for the first time.</li>
+		<li>The number of unique lots you visit is now tracked under /stats.</li>
+		<li>When you update a lot (i.e. name change, ownership change, list for sale), the new info is now displayed to yourself and anyone on the lot.</li>
+		<li>You can now type in a partial name when signing up for a job.</li>
+		<li>If you attempt to sign up for a job that you are not qualified for, you will now see all of the missing qualifications--rather than only the first one detected by the game.</li>
+		<li>When you change jobs, you will now see a series of messages detailing what changes with your new job.</li>
+		<li>/dropMoney no-longer limits you to a minimum of $50. Instead, there is now a limit to how many cash drops you can have in the world at once.</li>
+		<li>Updated the Arms Dealer job description for clarity.</li>
+		<li>Pardoning players as the Mayor no-longer costs money in the form of direct payment. Instead, there is a cost to the economy, relative to the prisoner's remaining sentence. A prompt is displayed to explain the cost before pardoning.</li>
+		<li>/pardon now requires admin mode to be activated if the player is not the Mayor.</li>
+		<li>Lot management settings (renaming, etc.) have moved to a separate "Lot management" option to reduce clutter.</li>
+	</ul>
+
+	<b>Bugfixes</b>
+	<ul>
+		<li>Fixed the mayor brick not responding if an unknown player name is entered.</li>
+		<li>Fixed the mayor election messages continuing after changing game-modes.</li>
+		<li>Fixed "Unable to find function serverCmdClearImpeach" console errors.</li>
+		<li>Fixed "Your account will not be reset" message after resetting account.</li>
+	</ul>
+
+	<b>Changes for Hosting</b>
+	<ul>
+		<li>The way jobs are set up has been reworked. Any custom jobs mods will need to be updated to use the new functions and standards for jobs in CityRPG 4. All jobs in existing saves will be reset, and players will need to re-sign up for their desired jobs.</li>
+		<li>Added a "Wrench lot" option to the lot admin menu. This is the same option available to lot owners under their management menu.</li>
+		<li>Fixed "Incorrect amount of arguments!" console error on startup.</li>
+		<li>The Sniper and Shotgun are now optional add-ons. They will remain in the Full package for now, however the Minimal package excludes them.</li>
+	</ul>
+</version>
 <version:0.2.1>
 	Fixed an exploit where players could "buy" the real estate brick as a lot, granting them ownership of the bricks connected to it.
 </version>
 <version:0.2.0>
-	<b>Job Trees, Radio, & Real Estate Improvements</b>
+	Job Trees, Radio, & Real Estate Improvements
 	<b>Real Estate</b>
 	The real estate office is back. Real estate has been rewritten, hooking into the existing lot system established in Alpha 1. This means quick, seamless lot sales. You can visit the real estate office to view city-wide stats, manage and list your own lots, or purchase someone else's lot listing.
 

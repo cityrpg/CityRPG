@@ -16,7 +16,7 @@ $City::ScriptPath = "Add-Ons/GameMode_CityRPG4/server/";
 $City::DataPath = "Add-Ons/GameMode_CityRPG4/data/";
 $City::SavePath = "config/server/CityRPG4_A2/";
 
-$City::Version = "0.3.0";
+$City::Version = "1.1.0";
 $City::isGitBuild = !isFile("Add-Ons/GameMode_CityRPG4/README.md");
 
 $City::VersionWarning = "!!!!! WARNING: You are using save data from a different version of CityRPG. You are likely to encounter compatibility issues. To fix this, move or delete the save file located in your Blockland folder:" SPC $City::SavePath;
@@ -193,6 +193,8 @@ else
     // See package.cs for the function arg fix
   }
 
+  // Event_Zones (Optional)
+  // If Event_Zones is enabled, disable events that may be abused.
   if($AddOn__Event_Zones)
   {
     %error = ForceRequiredAddOn("Event_Zones");
@@ -246,7 +248,6 @@ exec($City::ScriptPath @ "cityModules/lotRegistryMenu.cs");
 exec($City::ScriptPath @ "cityModules/cash.cs");
 exec($City::ScriptPath @ "cityModules/voteImpeach.cs");
 exec($City::ScriptPath @ "cityModules/mayor.cs");
-exec($City::ScriptPath @ "cityModules/security.cs");
 
 exec($City::ScriptPath @ "support/spacecasts.cs");
 exec($City::ScriptPath @ "support/extraResources.cs");
@@ -268,6 +269,8 @@ unRegisterOutputEvent("fxDTSBrick", "SetItemDirection");
 unRegisterOutputEvent("fxDTSBrick", "SetItemPosition");
 unRegisterOutputEvent("fxDTSBrick", "SetVehicle");
 unRegisterOutputEvent("fxDTSBrick", "SpawnItem");
+unregisterOutputEvent("fxDTSBrick","spawnProjectile");
+unregisterOutputEvent("fxDTSBrick","spawnExplosion");
 
 unRegisterOutputEvent("Player", "AddHealth");
 unRegisterOutputEvent("Player", "AddVelocity");
@@ -309,15 +312,5 @@ addExtraResource($City::DataPath @ "ui/health.png");
 addExtraResource($City::DataPath @ "ui/location.png");
 addExtraResource($City::DataPath @ "ui/time.png");
 addExtraResource($City::DataPath @ "ui/hunger.png");
-
-// Support_CityRPG_Plus (Optional)
-// This needs to load *after* CityRPG for it to be compatible.
-if($GameModeArg $= "Add-Ons/GameMode_CityRPG4/gamemode.txt")
-{
-  if(isFile("Add-Ons/Support_CityRPG_Plus/server.cs"))
-  {
-  exec("Add-Ons/Support_CityRPG_Plus/server.cs");
-  }
-}
 
 $City::Loaded = 1;
