@@ -302,7 +302,7 @@ function serverCmdaddDemerits(%client, %dems, %name)
         if(isObject(%target = findClientByName(%name)))
         {
           commandToClient(%target, 'centerPrint', "\c6You have committed a crime. [" @ $c_p @ "Angering a Badmin\c6]", 5);
-          messageClient(%client, '', '\c6User @ $c_p @ "%1 \c6was given @ $c_p @ "%2\c6 demerits.', %target.name , %dems);
+          messageClient(%client, '', "\c6User" @ $c_p @ " %1 \c6was given" @ $c_p @ " %2\c6 demerits.", %target.name , %dems);
           City_AddDemerits(%target.bl_id, %dems);
         }
         else
@@ -315,7 +315,7 @@ function serverCmdaddDemerits(%client, %dems, %name)
           if(isObject(%target))
           {
             commandToClient(%target, 'centerPrint', "\c6You have committed a crime. [" @ $c_p @ "Angering a Badmin\c6]", 5);
-            messageClient(%client, '', '\c6User @ $c_p @ "%1 \c6was given @ $c_p @ "%2\c6 demerits.', %target.name , %dems);
+            messageClient(%client, '', "\c6User" @ $c_p @ "%1 \c6was given" @ $c_p @ "%2\c6 demerits.", %target.name , %dems);
             City_AddDemerits(%target.bl_id, %dems);
           }
         }
