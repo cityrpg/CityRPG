@@ -135,4 +135,4 @@ This can be used to create custom jobs without directly editing the game-mode fi
 #### Examples:
 `JobSO.createJob("PdOfficer");` - Adds the job found in `GameMode_CityRPG4/jobs/PdOfficer.cs`
 
-`JobSO.addJobFromFile("Add-Ons/Suport_CityRPG_MyCustomJobs/PdOfficer.cs");` - Adds the job found in `Add-Ons/Suport_CityRPG_MyCustomJobs/PdOfficer.cs`
+`JobSO.createJob("Add-Ons/CityRPG_Jobs_MyCustomJobs/PdOfficer.cs");` - Adds the job found in `Add-Ons/Suport_CityRPG_MyCustomJobs/PdOfficer.cs`
