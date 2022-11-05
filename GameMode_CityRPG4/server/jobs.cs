@@ -54,7 +54,7 @@ function JobSO::createJob(%so, %file)
 	// If there's still nothing, throw an error.
 	if(!isFile(%filePath))
 	{
-		error("JobSO::addJobFromFile - Unable to find the corresponding job file '" @ %file @ "'. This job will not load.");
+		error("JobSO::createJob - Unable to find the corresponding job file '" @ %file @ "'. This job will not load.");
 		return;
 	}
 
