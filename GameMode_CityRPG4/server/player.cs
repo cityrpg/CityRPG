@@ -426,9 +426,10 @@ function gameConnection::sellItem(%client, %sellerID, %itemID, %price, %profit)
 			return;
 		}
 
-		for(%a = 0; %a < %client.player.getDatablock().maxTools; %a++)
+		%player = %client.player;
+		for(%a = 0; %a < %player.getDatablock().maxTools; %a++)
 		{
-			if(!isObject(%obj.tool[%a]) || %obj.tool[%a].getName() !$= $City::Item::name[%itemID])
+			if(!isObject(%player.tool[%a]) || %player.tool[%a].getName() !$= $City::Item::name[%itemID])
 			{
 				if(%freeSpot $= "" && %client.player.tool[%a] $= "")
 				{
@@ -440,8 +441,6 @@ function gameConnection::sellItem(%client, %sellerID, %itemID, %price, %profit)
 				%alreadyOwns = true;
 			}
 		}
-
-		talk(%alreadyOwns SPC %freeSpot);
 
 		if(%alreadyOwns)
 		{
