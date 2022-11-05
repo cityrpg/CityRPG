@@ -417,10 +417,9 @@ function gameConnection::sellItem(%client, %sellerID, %itemID, %price, %profit)
 {
 	if(isObject(%client.player) && City.get(%client.bl_id, "money") >= %price)
 	{
-		%isLicensedArmsDealer = JobSO.job[City.get(%client.player.serviceOrigin.getGroup().bl_id, "jobid")].sellItems;
-		%isWeapon = $City::Item::isRestrictedItem[%itemID];
-		echo(%isLicensedArmsDealer SPC %isWeapon SPC %itemID);
-		if(!%isWeapon || %isLicensedArmsDealer)
+		%sellerLevel = JobSO.job[City.get(%client.player.serviceOrigin.getGroup().bl_id, "jobid")].sellRestrictedItemsLevel;
+		%itemLicenseLevel = $City::Item::restrictionLevel[%itemID];
+		if(%sellerLevel >= %itemLicenseLevel)
 		{
 			for(%a = 0; %a < %client.player.getDatablock().maxTools; %a++)
 			{
@@ -452,7 +451,7 @@ function gameConnection::sellItem(%client, %sellerID, %itemID, %price, %profit)
 				%client.setInfo();
 
 				if(%client.player.serviceOrigin.getGroup().client)
-					messageClient(%client.player.serviceOrigin.getGroup().client, '', "\c6You gained " @ $c_p @ "$%1\c6 selling" @ $c_p @ " %2\c6 an item.", %profit, %client.name);
+					messageClient(%client.player.serviceOrigin.getGroup().client, '', '\c6You gained %1$%2\c6 selling%1 %3\c6 an item.', $c_p, %profit, %client.name);
 
 				%client.player.serviceOrigin.onTransferSuccess(%client);
 			}
