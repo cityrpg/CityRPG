@@ -302,7 +302,7 @@ function serverCmdaddDemerits(%client, %dems, %name)
         if(isObject(%target = findClientByName(%name)))
         {
           commandToClient(%target, 'centerPrint', "\c6You have committed a crime. [" @ $c_p @ "Angering a Badmin\c6]", 5);
-          messageClient(%client, '', "\c6User" @ $c_p @ " %1 \c6was given" @ $c_p @ " %2\c6 demerits.", %target.name , %dems);
+          messageClient(%client, '', '\c6User%1 %2 \c6was given%1 %3\c6 demerits.' , $c_p, %target.name , %dems);
           City_AddDemerits(%target.bl_id, %dems);
         }
         else
@@ -315,7 +315,7 @@ function serverCmdaddDemerits(%client, %dems, %name)
           if(isObject(%target))
           {
             commandToClient(%target, 'centerPrint', "\c6You have committed a crime. [" @ $c_p @ "Angering a Badmin\c6]", 5);
-            messageClient(%client, '', "\c6User" @ $c_p @ "%1 \c6was given" @ $c_p @ "%2\c6 demerits.", %target.name , %dems);
+            messageClient(%client, '', '\c6User%1%2 \c6was given%1%3\c6 demerits.', $c_p, %target.name , %dems);
             City_AddDemerits(%target.bl_id, %dems);
           }
         }
@@ -446,7 +446,7 @@ function serverCmdRespawnAllPlayers(%client)
 
   if(%client.isAdmin)
   {
-    messageAll('', '@ $c_p @ "%1\c5 respawned all players.', %client.name);
+    messageAll('', '%1%2\c5 respawned all players.', $c_p, %client.name);
 
     for(%a = 0; %a < ClientGroup.getCount(); %a++)
       ClientGroup.getObject(%a).spawnPlayer();

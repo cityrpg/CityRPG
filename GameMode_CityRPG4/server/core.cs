@@ -203,7 +203,7 @@ function City_AddDemerits(%blid, %demerits)
 		if(%ticks && %ticks > %maxStars)
 		{
 			if(%maxStars == 3 || %maxStars == 6)
-				messageAll('', "\c6Criminal" @ $c_p @ "%1\c6 has obtained a level" @ $c_p @ "%2\c6 wanted level. Police vehicles have upgraded.", %client.name, %ticks);
+				messageAll('', '\c6Criminal%1%2\c6 has obtained a level%1%3\c6 wanted level. Police vehicles have upgraded.', $c_p, %client.name, %ticks);
 		}
 	}
 }
@@ -456,7 +456,7 @@ function City_TickLoop(%loop)
 					if(%daysLeft > 1)
 					%daySuffix = "s";
 
-				messageClient(%client, '', "\c6 - You have" @ $c_p @ "%1\c6 day%2 left in Prison.", %daysLeft, %daySuffix);
+				messageClient(%client, '', '\c6 - You have%1%2\c6 day%3 left in Prison.', $c_p, %daysLeft, %daySuffix);
 			}
 			if(City.get(%client.bl_id, "hunger") > 3)
 				City.subtract(%client.bl_id, "hunger", 1);
@@ -496,10 +496,11 @@ function City_TickLoop(%loop)
 			else
 				City.set(%client.bl_id, "demerits", 3);
 
+			%dems = City.get(%client.bl_id, "demerits");
 			if(calendarSO.getCurrentDay() == 187)
-				messageClient(%client, '', "\c6 - You have had your demerits reduced to" @ $c_p @ "%1\c6 due to <a:https://www.youtube.com/watch?v=iq8gfaFqFpI>Statue of Limitations</a>\c6.", City.get(%client.bl_id, "demerits"));
+				messageClient(%client, '', '\c6 - You have had your demerits reduced to%1%2\c6 due to <a:https://www.youtube.com/watch?v=iq8gfaFqFpI>Statue of Limitations</a>\c6.', $c_p, %dems);
 			else
-				messageClient(%client, '', "\c6 - You have had your demerits reduced to" @ $c_p @ "%1\c6 due to <a:en.wikipedia.org/wiki/Statute_of_limitations>Statute of Limitations</a>\c6.", City.get(%client.bl_id, "demerits"));
+				messageClient(%client, '', '\c6 - You have had your demerits reduced to%1%2\c6 due to <a:en.wikipedia.org/wiki/Statute_of_limitations>Statute of Limitations</a>\c6.', $c_p, %dems);
 
 			%client.setInfo();
 		}

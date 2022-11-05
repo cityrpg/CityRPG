@@ -74,12 +74,12 @@ function gameConnection::arrest(%client, %cop)
 		%maxWanted = City_GetMostWanted();
 
 		if(%maxWanted)
-			messageAll('', "\c6The" @ $c_p @ " %1-star\c6 criminal" @ $c_p @ "%2\c6 was arrested by" @ $c_p @ "%5\c6, but" @ $c_p @ "%3-star\c6 criminal" @ $c_p @ "%4\c6 is still at large!", %ticks, %client.name, %maxWanted.getWantedLevel(), %maxWanted.name, %cop.name);
+			messageAll('', '\c6The%1 %2-star\c6 criminal%1%3\c6 was arrested by%1%6\c6, but%1%4-star\c6 criminal%1%5\c6 is still at large!', $c_p, %ticks, %client.name, %maxWanted.getWantedLevel(), %maxWanted.name, %cop.name);
 		else
-			messageAll('', "\c6With the apprehension of" @ $c_p @ "%1-star\c6 criminal" @ $c_p @ "%2\c6 by" @ $c_p @ "%3\c6, the City returns to a peaceful state.", %ticks, %client.name, %cop.name);
+			messageAll('', '\c6With the apprehension of%1%2-star\c6 criminal%1%3\c6 by%1%4\c6, the City returns to a peaceful state.', $c_p, %ticks, %client.name, %cop.name);
 	}
 	else
-		messageAll('',$c_p @ "%1\c6 was jailed by" @ $c_p @ " %2\c6 for" @ $c_p @ " %3\c6 ticks.", %client.name, %cop.name, %ticks);
+		messageAll('','%1%2\c6 was jailed by%1 %3\c6 for%1 %4\c6 ticks.', $c_p, %client.name, %cop.name, %ticks);
 }
 
 function gameConnection::buyResources(%client)
@@ -340,7 +340,7 @@ function gameConnection::doReincarnate(%client)
 		%client.spawnPlayer();
 	}
 
-	messageAllExcept(%client, '', '@ $c_p @ "%1\c6 has been reincarnated!', %client.name);
+	messageAllExcept(%client, '', '%1%2\c6 has been reincarnated!', $c_p, %client.name);
 	messageClient(%client, '', "\c6You have been reincarnated.");
 }
 
@@ -375,7 +375,7 @@ function gameConnection::sellFood(%client, %sellerID, %servingID, %foodName, %pr
 					default: %eatName = "somehow managed to break";
 				}
 
-				messageClient(%client, '', "\c6You %1 %2" @ $c_p @ "%3\c6 serving of" @ $c_p @ "%4\c6.", %eatName, City_DetectVowel(%portionName), %portionName, %foodName);
+				messageClient(%client, '', '\c6You %2 %3%1%4\c6 serving of%1%5\c6.', $c_p, %eatName, City_DetectVowel(%portionName), %portionName, %foodName);
 				City.add(%client.bl_id, "hunger", %servingID);
 
 				%client.player.setHealth(%client.player.getdataBlock().maxDamage);
@@ -392,7 +392,7 @@ function gameConnection::sellFood(%client, %sellerID, %servingID, %foodName, %pr
 				{
 					if(isObject(%seller = findClientByBL_ID(%sellerID)))
 					{
-						messageClient(%seller, '', "\c6You just gained " @ $c_p @ "$%1\c6 for providing" @ $c_p @ " %3\c6 to" @ $c_p @ " %2\c6.", %profit, %client.name, %foodName);
+						messageClient(%seller, '', '\c6You just gained %1$%2\c6 for providing%1 %4\c6 to%1 %3\c6.', $c_p, %profit, %client.name, %foodName);
 					}
 				}
 
@@ -484,7 +484,7 @@ function gameConnection::sellClothes(%client, %sellerID, %brick, %item, %price)
 			{
 				if(isObject(%seller = FindClientByBL_ID(%sellerID)))
 				{
-					messageClient(%seller, '', "\c6You just gained " @ $c_p @ "$%1\c6 for selling clothes to" @ $c_p @ "%2\c6.", %price, %client.name);
+					messageClient(%seller, '', '\c6You just gained %1$%2\c6 for selling clothes to%1%3\c6.', $c_p, %price, %client.name);
 				}
 			}
 
