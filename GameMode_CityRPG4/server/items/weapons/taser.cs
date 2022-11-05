@@ -3,7 +3,7 @@
 // ============================================================
 if(!isObject(taserItem))
 {
-	AddDamageType("Taser",   '<bitmap:" @ $City::DataPath @ "ui/ci/taser> %1',    '%2 <bitmap:" @ $City::DataPath @ "ui/ci/taser> %1', 0.5, 1);
+	AddDamageType("Taser",   '<bitmap:' @ $City::DataPath @ 'ui/ci/taser> %1',    '%2 <bitmap:' @ $City::DataPath @ 'ui/ci/taser> %1', 0.5, 1);
 
 	datablock AudioProfile(taserExplosionSound)
 	{
