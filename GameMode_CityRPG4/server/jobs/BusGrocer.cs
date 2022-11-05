@@ -7,7 +7,7 @@ $CityRPG::jobs::datablock = Player9SlotPlayer;
 $CityRPG::jobs::education = 1;
 $CityRPG::jobs::promotions = "BusOwner	BusArmsDealer";
 
-$CityRPG::jobs::sellItems = false;
+$CityRPG::jobs::sellRestrictedItemsLevel = 0;
 $CityRPG::jobs::sellFood = true;
 $CityRPG::jobs::sellServices = false;
 

@@ -6,7 +6,7 @@ $CityRPG::jobs::tools = "CityRPGLumberjackItem";
 $CityRPG::jobs::datablock = Player9SlotPlayer;
 $CityRPG::jobs::education = 0;
 
-$CityRPG::jobs::sellItems = false;
+$CityRPG::jobs::sellRestrictedItemsLevel = 0;
 $CityRPG::jobs::sellFood = false;
 $CityRPG::jobs::sellServices = false;
 

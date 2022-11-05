@@ -239,7 +239,7 @@ function City_Init_Spawns_Tick(%bgi, %bi)
 	$CityRPG::temp::spawnPoints = $CityRPG::temp::spawnPointsTemp;
 }
 
-function City_RegisterItem(%datablock, %cost, %mineral, %isRestrictedItem) {
+function City_RegisterItem(%datablock, %cost, %mineral, %itemRestrictionLevel) {
 	if(!isObject(%datablock)) {
 		warn("GameMode_CityRPG4 - Attempting to register nonexistent item '" @ %datablock @ "'. This might indicate one of your add-ons is a version not supported by CityRPG 4. This item will not be purchase-able.");
 		return;
@@ -248,7 +248,8 @@ function City_RegisterItem(%datablock, %cost, %mineral, %isRestrictedItem) {
 	$City::Item::name[$City::ItemCount] = %datablock;
 	$City::Item::price[$City::ItemCount] = %cost;
 	$City::Item::mineral[$City::ItemCount] = %mineral;
-	$City::Item::isRestrictedItem[$City::ItemCount] = %isRestrictedItem;
+	$City::Item::isRestrictedItem[$City::ItemCount] = %itemRestrictionLevel > 0;
+	$City::Item::restrictionLevel[$City::ItemCount] = %itemRestrictionLevel;
 	$City::ItemCount++;
 }
 
@@ -258,23 +259,23 @@ function City_Init_Items()
 	$City::ItemCount = 0;
 
 	// CityRPG Stuff
-	City_RegisterItem(CityRPGLBItem, 100, 1, true);
-	City_RegisterItem(CityRPGPickaxeItem, 25, 1, true);
-	City_RegisterItem(CityRPGLumberjackItem, 25, 1, true);
-	City_RegisterItem(taserItem, 40, 1, true);
+	City_RegisterItem(CityRPGLBItem, 100, 1, 1);
+	City_RegisterItem(CityRPGPickaxeItem, 25, 1, 0);
+	City_RegisterItem(CityRPGLumberjackItem, 25, 1, 0);
+	City_RegisterItem(taserItem, 40, 1, 1);
 
 	// Default weapons
 	if(!$Pref::Server::City::disabledefaultweps)
 	{
-		City_RegisterItem(gunItem, 80, 1, true);
-		City_RegisterItem(akimboGunItem, 150, 1, true);
+		City_RegisterItem(gunItem, 80, 1, 1);
+		City_RegisterItem(akimboGunItem, 150, 1, 2);
 	}
 
 	if(isObject(shotgunItem))
-		City_RegisterItem(shotgunItem, 260, 1, true);
+		City_RegisterItem(shotgunItem, 260, 1, 2);
 
 	if(isObject(sniperRifleItem))
-		City_RegisterItem(sniperRifleItem, 450, 1, true);
+		City_RegisterItem(sniperRifleItem, 450, 1, 2);
 
 	// Weapon support: Any T+T ammo system weapons
 	if($Pref::Server::TT::Ammo !$= "")
@@ -288,54 +289,54 @@ function City_Init_Items()
 	// Weapon support: Weapon_Package_Tier1
 	if(!$Pref::Server::TT::DisableTier1 && isObject(TTLittleRecoilExplosion) && isObject(SubmachineGunItem))
 	{
-		City_RegisterItem(SubmachineGunItem, 150, 1, true);
-		City_RegisterItem(PumpShotgunItem, 200, 1, true);
-		City_RegisterItem(PistolItem, 80, 1, true);
-		City_RegisterItem(AkimboPistolItem, 160, 1, true);
+		City_RegisterItem(SubmachineGunItem, 150, 1, 2);
+		City_RegisterItem(PumpShotgunItem, 200, 1, 2);
+		City_RegisterItem(PistolItem, 80, 1, 1);
+		City_RegisterItem(AkimboPistolItem, 160, 1, 2);
 	}
 
 	// Weapon support: Weapon_Package_Tier1A
 	if(isObject(SingleShotgunItem))
 	{
-		City_RegisterItem(SingleShotgunItem, 80, 1, true);
-		City_RegisterItem(SnubnoseItem, 150, 1, true);
-		City_RegisterItem(PepperPistolItem, 80, 1, true);
+		City_RegisterItem(SingleShotgunItem, 80, 1, 1);
+		City_RegisterItem(SnubnoseItem, 150, 1, 2);
+		City_RegisterItem(PepperPistolItem, 80, 1, 2);
 
 		if($Pref::Server::TT::EasterEgg)
-			City_RegisterItem(nailgunItem, 150, 1, true);
+			City_RegisterItem(nailgunItem, 150, 1, 2);
 	}
 
 	// Weapon support: Weapon_Package_Tier2
 	if(isObject(TAssaultRifleItem))
 	{
-		City_RegisterItem(TAssaultRifleItem, 200, 1, true);
-		City_RegisterItem(BattleRifleItem, 180, 1, true);
-		City_RegisterItem(MagnumItem, 150, 1, true);
-		City_RegisterItem(MilitarySniperItem, 200, 1, true);
-		City_RegisterItem(CombatShotgunItem, 300, 1, true);
+		City_RegisterItem(TAssaultRifleItem, 200, 1, 2);
+		City_RegisterItem(BattleRifleItem, 180, 1, 2);
+		City_RegisterItem(MagnumItem, 150, 1, 2);
+		City_RegisterItem(MilitarySniperItem, 200, 1, 2);
+		City_RegisterItem(CombatShotgunItem, 300, 1, 2);
 
 		if($Pref::Server::TT::EasterEgg)
-			City_RegisterItem(ScopedMagnumItem, 500, 1, true);
+			City_RegisterItem(ScopedMagnumItem, 500, 1, 2);
 	}
 
 	// Weapon support: Weapon_Package_Tier2A
 	if(isObject(BullpupItem))
 	{
-		City_RegisterItem(BullpupItem, 200, 1, true);
-		City_RegisterItem(TCrossbowItem, 100, 1, true);
-		City_RegisterItem(MachstilItem, 150, 1, true);
-		City_RegisterItem(DualSMGsItem, 300, 1, true);
+		City_RegisterItem(BullpupItem, 200, 1, 1);
+		City_RegisterItem(TCrossbowItem, 100, 1, 2);
+		City_RegisterItem(MachstilItem, 150, 1, 2);
+		City_RegisterItem(DualSMGsItem, 300, 1, 2);
 
 		if($Pref::Server::TT::EasterEgg)
-			City_RegisterItem(MatchPistolItem, 200, 1, true);
+			City_RegisterItem(MatchPistolItem, 200, 1, 2);
 	}
 
 	// Ghost's Mail Mod Support: System_Mail
 	if(isObject(MlbxCardItem))
 	{
-		City_RegisterItem(MlbxLetterItem, 5, 1, false);
-		City_RegisterItem(MlbxCardItem, 10, 1, false);
-		City_RegisterItem(MlbxNoteItem, 1, 1, false);
+		City_RegisterItem(MlbxLetterItem, 5, 1, 0);
+		City_RegisterItem(MlbxCardItem, 10, 1, 0);
+		City_RegisterItem(MlbxNoteItem, 1, 1, 0);
 	}
 
 	// Tool_ToolGun

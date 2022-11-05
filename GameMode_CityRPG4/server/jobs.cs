@@ -62,45 +62,58 @@ function JobSO::createJob(%so, %file)
 	%so.jobsIndex = %so.jobsIndex $= ""? %jobID : %so.jobsIndex TAB %jobID;
 
 	exec(%filePath);
+
+	// sellItems -> sellRestrictedItemsLevel
+	if($CityRPG::jobs::sellItems !$= "") {
+		// legacy support for sellItems (true/false for weapon selling)
+		// Level 0 or 1 based on whether they can sell items.
+		%itemRestrictionLevel = $CityRPG::jobs::sellItems ? 1 : 0;
+		echo("Fuck!" SPC $CityRPG::jobs::sellItems);
+	}
+	else {
+		echo("Shit!" SPC $CityRPG::jobs::sellRestrictedItemsLevel);
+		%itemRestrictionLevel = $CityRPG::jobs::sellRestrictedItemsLevel;
+	}
+
 	%so.job[%jobID] = new scriptObject()
 	{
-		id				= %jobID;
+		id						 = %jobID;
+ 
+		name					 = $CityRPG::jobs::name;
+		track					 = $CityRPG::jobs::track;
+		title					 = $CityRPG::jobs::title;
+		promotions				 = $CityRPG::jobs::promotions;
+ 
+		invest					 = $CityRPG::jobs::initialInvestment;
+		pay						 = $CityRPG::jobs::pay;
+		tools					 = $CityRPG::jobs::tools;
+		education				 = $CityRPG::jobs::education;
+		db						 = $CityRPG::jobs::datablock;
+		adminonly				 = $CityRPG::jobs::adminonly;
+		usepolicecars			 = $CityRPG::jobs::usepolicecars;
+		usecrimecars			 = $CityRPG::jobs::usecrimecars;
+		useparacars				 = $CityRPG::jobs::useparacars;
+		outfit					 = $CityRPG::jobs::outfit;
 
-		name			= $CityRPG::jobs::name;
-		track			= $CityRPG::jobs::track;
-		title			= $CityRPG::jobs::title;
-		promotions		= $CityRPG::jobs::promotions;
+		sellRestrictedItemsLevel = %itemRestrictionLevel;
+		sellFood				 = $CityRPG::jobs::sellFood;
+		sellServices 			 = $CityRPG::jobs::sellServices; // Unused.
+		sellClothes 			 = $CityRPG::jobs::sellClothes;
 
-		invest			= $CityRPG::jobs::initialInvestment;
-		pay				= $CityRPG::jobs::pay;
-		tools			= $CityRPG::jobs::tools;
-		education		= $CityRPG::jobs::education;
-		db				= $CityRPG::jobs::datablock;
-		adminonly		= $CityRPG::jobs::adminonly;
-		usepolicecars	= $CityRPG::jobs::usepolicecars;
-		usecrimecars	= $CityRPG::jobs::usecrimecars;
-		useparacars		= $CityRPG::jobs::useparacars;
-		outfit			= $CityRPG::jobs::outfit;
+		law						 = $CityRPG::jobs::law;
+		canPardon				 = $CityRPG::jobs::canPardon;
 
-		sellItems		= $CityRPG::jobs::sellItems;
-		sellFood		= $CityRPG::jobs::sellFood;
-		sellServices 	= $CityRPG::jobs::sellServices; // Unused.
-		sellClothes 	= $CityRPG::jobs::sellClothes;
+		thief					 = $CityRPG::jobs::thief;
+		hideJobName				 = $CityRPG::jobs::hideJobName;
 
-		law				= $CityRPG::jobs::law;
-		canPardon		= $CityRPG::jobs::canPardon;
+		bountyOffer				 = $CityRPG::jobs::offerer;
+		bountyClaim				 = $CityRPG::jobs::claimer;
 
-		thief			= $CityRPG::jobs::thief;
-		hideJobName		= $CityRPG::jobs::hideJobName;
+		laborer					 = $CityRPG::jobs::labor;
 
-		bountyOffer		= $CityRPG::jobs::offerer;
-		bountyClaim		= $CityRPG::jobs::claimer;
-
-		laborer			= $CityRPG::jobs::labor;
-
-		tmHexColor		= $CityRPG::jobs::tmHexColor;
-		helpline		= $CityRPG::jobs::helpline;
-		flavortext		= $CityRPG::jobs::flavortext;
+		tmHexColor				 = $CityRPG::jobs::tmHexColor;
+		helpline				 = $CityRPG::jobs::helpline;
+		flavortext				 = $CityRPG::jobs::flavortext;
 	};
 
 	%track = $CityRPG::jobs::track;
