@@ -419,49 +419,59 @@ function gameConnection::sellItem(%client, %sellerID, %itemID, %price, %profit)
 	{
 		%sellerLevel = JobSO.job[City.get(%client.player.serviceOrigin.getGroup().bl_id, "jobid")].sellRestrictedItemsLevel;
 		%itemLicenseLevel = $City::Item::restrictionLevel[%itemID];
-		if(%sellerLevel >= %itemLicenseLevel)
+
+		if(%sellerLevel < %itemLicenseLevel)
 		{
-			for(%a = 0; %a < %client.player.getDatablock().maxTools; %a++)
-			{
-				if(!isObject(%obj.tool[%a]) || %obj.tool[%a].getName() !$= $City::Item::name[%itemID])
-				{
-					if(%freeSpot $= "" && %client.player.tool[%a] $= "")
-					{
-						%freeSpot = %a;
-					}
-				}
-				else
-				{
-					%alreadyOwns = true;
-				}
-			}
-
-			if(%freeSpot !$= "" && !%alreadyOwns)
-			{
-				%client.cityLog("Evnt buy item " @ %itemID @ " for " @ %price @ " from " @ %sellerID);
-
-				City.subtract(%client.bl_id, "money", %price);
-				City.add(%sellerID, "bank", %profit);
-				CitySO.minerals -= $City::Item::mineral[%itemID];
-
-				%client.player.tool[%freeSpot] = $City::Item::name[%itemID].getID();
-				messageClient(%client, 'MsgItemPickup', "", %freeSpot, %client.player.tool[%freeSpot]);
-
-				messageClient(%client, '', "\c6You have accepted the item's fee of " @ $c_p @ "$" @ %price @ "\c6!");
-				%client.setInfo();
-
-				if(%client.player.serviceOrigin.getGroup().client)
-					messageClient(%client.player.serviceOrigin.getGroup().client, '', '\c6You gained %1$%2\c6 selling%1 %3\c6 an item.', $c_p, %profit, %client.name);
-
-				%client.player.serviceOrigin.onTransferSuccess(%client);
-			}
-			else if(%alreadyOwns)
-				messageClient(%client, '', "\c6You already have this item.");
-			else if(%freeSpot $= "")
-				messageClient(%client, '', "\c6You don't have enough space to carry this item!");
-		}
-		else
 			messageClient(%client, '', "\c6This vendor is not licensed to sell this item.");
+			return;
+		}
+
+		for(%a = 0; %a < %client.player.getDatablock().maxTools; %a++)
+		{
+			if(!isObject(%obj.tool[%a]) || %obj.tool[%a].getName() !$= $City::Item::name[%itemID])
+			{
+				if(%freeSpot $= "" && %client.player.tool[%a] $= "")
+				{
+					%freeSpot = %a;
+				}
+			}
+			else
+			{
+				%alreadyOwns = true;
+			}
+		}
+
+		talk(%alreadyOwns SPC %freeSpot);
+
+		if(%alreadyOwns)
+		{
+			messageClient(%client, '', "\c6You already have this item.");
+			return;
+		}
+
+		if(%freeSpot $= "") 
+		{
+			messageClient(%client, '', "\c6You don't have enough space to carry this item!");
+			return;
+		}
+
+
+		%client.cityLog("Evnt buy item " @ %itemID @ " for " @ %price @ " from " @ %sellerID);
+
+		City.subtract(%client.bl_id, "money", %price);
+		City.add(%sellerID, "bank", %profit);
+		CitySO.minerals -= $City::Item::mineral[%itemID];
+
+		%client.player.tool[%freeSpot] = $City::Item::name[%itemID].getID();
+		messageClient(%client, 'MsgItemPickup', "", %freeSpot, %client.player.tool[%freeSpot]);
+
+		messageClient(%client, '', "\c6You have accepted the item's fee of " @ $c_p @ "$" @ %price @ "\c6!");
+		%client.setInfo();
+
+		if(%client.player.serviceOrigin.getGroup().client)
+			messageClient(%client.player.serviceOrigin.getGroup().client, '', '\c6You gained %1$%2\c6 selling%1 %3\c6 an item.', $c_p, %profit, %client.name);
+
+		%client.player.serviceOrigin.onTransferSuccess(%client);
 	}
 }
 
