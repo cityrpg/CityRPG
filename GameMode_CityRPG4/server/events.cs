@@ -154,20 +154,48 @@ function fxDTSBrick::sellItem(%brick, %item, %markup, %client)
 	if(isObject(%client.player) && !%client.player.serviceOrigin  && isObject(%brick))
 	{
 		%name = $City::Item::name[%item].uiName;
-
-		if(CitySO.minerals >= $City::Item::mineral[%item])
-		{
-			%client.player.serviceType = "item";
-			%client.player.serviceItem = %item;
-			%client.player.serviceFee = $City::Item::price[%item] + %markup;
-			%client.player.serviceMarkup = %markup;
-			%client.player.serviceOrigin = %brick;
-
-			%str = "This service is offering to sell you one " @ %name SPC "for $" @ %client.player.serviceFee @ ".";
-			commandToClient(%client, 'MessageBoxYesNo', "Purchase", %str, 'yes');
-		}
+		%lotTrigger = %brick.cityLotTriggerCheck();
+		if(isObject(%lotTrigger))
+			%lotName = %lotTrigger.parent.getCityLotName();
 		else
-			messageClient(%client, '', '\c6A service is trying to offer you %2%1%3\c6, but the city needs%1%4\c6 more minerals to produce it!', $c_p, City_DetectVowel(%name), %name, ($City::Item::mineral[%item] - CitySO.minerals));
+			%lotName = "\c0(Unknown lot)";
+		%vendorBLID = %brick.getGroup().bl_id;
+
+		if(CitySO.minerals < $City::Item::mineral[%item])
+		{
+			messageClient(%client, '', '\c6A service is trying to offer you %2 %1%3\c6, but the city needs %1%4\c6 more minerals to produce it!', $c_p, City_DetectVowel(%name), %name, ($City::Item::mineral[%item] - CitySO.minerals));
+			return;
+		}
+
+		%sellerLevel = JobSO.job[City.get(%vendorBLID, "jobid")].sellRestrictedItemsLevel;
+		%itemLicenseLevel = $City::Item::restrictionLevel[%item];
+
+		if(%sellerLevel < %itemLicenseLevel)
+		{
+			%vowel = City_DetectVowel(%name);
+			if(%sellerLevel == 0 && %itemLicenseLevel == 1)
+				messageClient(%client, '', '\c6This vendor cannot sell you %2 %1%3\c6 because they are not licensed to sell weapon-class items.', $c_p, %vowel, %name);
+			else //if(%sellerLevel >= 1 && %itemLicenseLevel > 0)
+				messageClient(%client, '', '\c6This vendor cannot sell you %2 %1%3\c6 because they are not licensed to sell this type of item.', $c_p, %vowel, %name);
+
+			// Warn the vendor if they are online
+			%vendorClient = findClientByBL_ID(%vendorBLID);
+			if(isObject(%vendorClient))
+			{
+				messageClient(%vendorClient, '', '%1%2\c6 tried to buy %3 %1%4\c6 from %1%5\c6, but you are not licensed to sell it.', $c_p, %client.name, %vowel, %name, %lotName);
+			}
+
+			return;
+		}
+
+		%client.player.serviceType = "item";
+		%client.player.serviceItem = %item;
+		%client.player.serviceFee = $City::Item::price[%item] + %markup;
+		%client.player.serviceMarkup = %markup;
+		%client.player.serviceOrigin = %brick;
+
+		%str = "This service is offering to sell you one " @ %name SPC "for $" @ %client.player.serviceFee @ ".";
+		commandToClient(%client, 'MessageBoxYesNo', "Purchase", %str, 'yes');
 	}
 	else if(%client.player.serviceOrigin && %client.player.serviceOrigin != %brick)
 		messageClient(%client, '', "\c6You already have a charge request from another service! Type " @ $c_p @ "/no\c6 to reject it.");

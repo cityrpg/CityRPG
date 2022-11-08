@@ -420,9 +420,10 @@ function gameConnection::sellItem(%client, %sellerID, %itemID, %price, %profit)
 		%sellerLevel = JobSO.job[City.get(%client.player.serviceOrigin.getGroup().bl_id, "jobid")].sellRestrictedItemsLevel;
 		%itemLicenseLevel = $City::Item::restrictionLevel[%itemID];
 
+		// Security check - this can happen if the seller changes jobs during the prompt
 		if(%sellerLevel < %itemLicenseLevel)
 		{
-			messageClient(%client, '', "\c6This vendor is not licensed to sell this item.");
+			messageClient(%client, '', "You are no-longer able to buy this item at this time.");
 			return;
 		}
 
