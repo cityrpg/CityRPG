@@ -339,6 +339,16 @@ function fxDTSBrick::cityBrickInit(%brick)
 	}
 }
 
+function fxDTSBrick::cityGetBoxSize(%brick)
+{
+	if(mFloor(getWord(%brick.rotation, 3)) == 90)
+		%boxSize = getWord(%brick.getDatablock().brickSizeY, 1) / 2.5 SPC getWord(%brick.getDatablock().brickSizeX, 0) / 2.5 SPC getWord(%brick.getDatablock().brickSizeZ, 2) / 2.5;
+	else
+		%boxSize = getWord(%brick.getDatablock().brickSizeX, 1) / 2.5 SPC getWord(%brick.getDatablock().brickSizeY, 0) / 2.5 SPC getWord(%brick.getDatablock().brickSizeZ, 2) / 2.5;
+
+	return %boxSize;
+}
+
 // Brick::getCityLotTrigger(this/brick)
 // Returns the lot trigger containing the brick. Caches the value on %brick.cityLotTrigger.
 // If the brick overlaps in multiple lots, the first trigger found is returned.
@@ -350,10 +360,7 @@ function fxDTSBrick::cityLotTriggerCheck(%brick)
 	}
 
 	// If not already cached, determine the lot trigger.
-	if(mFloor(getWord(%brick.rotation, 3)) == 90)
-		%boxSize = getWord(%brick.getDatablock().brickSizeY, 1) / 2.5 SPC getWord(%brick.getDatablock().brickSizeX, 0) / 2.5 SPC getWord(%brick.getDatablock().brickSizeZ, 2) / 2.5;
-	else
-		%boxSize = getWord(%brick.getDatablock().brickSizeX, 1) / 2.5 SPC getWord(%brick.getDatablock().brickSizeY, 0) / 2.5 SPC getWord(%brick.getDatablock().brickSizeZ, 2) / 2.5;
+	%boxSize = %brick.cityGetBoxSize();
 
 	initContainerBoxSearch(%brick.getWorldBoxCenter(), %boxSize, $typeMasks::triggerObjectType);
 
@@ -367,16 +374,15 @@ function fxDTSBrick::cityLotTriggerCheck(%brick)
 	}
 }
 
-// Brick::getCityBrickUnstable(this/brick, lotTrigger)
-function fxDTSBrick::getCityBrickUnstable(%brick, %lotTrigger)
+// Brick::getCityBrickUnstable(this)
+function fxDTSBrick::getCityBrickUnstable(%brick)
 {
-	%lotTriggerMinX = getWord(%lotTrigger.getWorldBox(), 0);
-	%lotTriggerMinY = getWord(%lotTrigger.getWorldBox(), 1);
-	%lotTriggerMinZ = getWord(%lotTrigger.getWorldBox(), 2);
-
-	%lotTriggerMaxX = getWord(%lotTrigger.getWorldBox(), 3);
-	%lotTriggerMaxY = getWord(%lotTrigger.getWorldBox(), 4);
-	%lotTriggerMaxZ = getWord(%lotTrigger.getWorldBox(), 5);
+	// What these shenanigans are for, in short:
+	// We need to determine if any part of this brick is outside the bounds of any lot zones. This includes having, but allow it to overlap between zones. The solution:
+	// 1. Calculate the brick's volume (lengh*width*height... stellar maths)
+	// 2. Using a container box search, find each zone that the brick falls within.
+	// 3. For each zone, calculate the volume of the brick, clamped to the bounds of the zone.
+	// 4. If the sum of all the clamped volumes != the brick's actual volume, it's out of bounds (return true).
 
 	%brickMinX = getWord(%brick.getWorldBox(), 0) + 0.0016;
 	%brickMinY = getWord(%brick.getWorldBox(), 1) + 0.0013;
@@ -386,12 +392,58 @@ function fxDTSBrick::getCityBrickUnstable(%brick, %lotTrigger)
 	%brickMaxY = getWord(%brick.getWorldBox(), 4) - 0.0013;
 	%brickMaxZ = getWord(%brick.getWorldBox(), 5) - 0.00126;
 
-	if(%brickMinX < %lotTriggerMinX || %brickMinY < %lotTriggerMinY || %brickMinZ < %lotTriggerMinZ || %brickMaxX > %lotTriggerMaxX || %brickMaxY > %lotTriggerMaxY || %brickMaxZ > %lotTriggerMaxZ)
+	%brickSizeX = mAbs(%brickMaxX-%brickMinX);
+	%brickSizeY = mAbs(%brickMaxY-%brickMinY);
+	%brickSizeZ = mAbs(%brickMaxZ-%brickMinZ);
+
+	%brickVol = %brickSizeX * %brickSizeY * %brickSizeZ;
+
+	%boxSize = %brick.cityGetBoxSize();
+
+	%totalTriggerVol = 0;
+	initContainerBoxSearch(%brick.getWorldBoxCenter(), %boxSize, $typeMasks::triggerObjectType);
+	while(isObject(%trigger = containerSearchNext()))
 	{
-		return 1;
+		if(%trigger.getDatablock() != CityRPGLotTriggerData.getID()) continue;
+
+		// This will assign the first trigger found as the brick's "official" lot for cases where the brick is in the bounds of multiple lots
+		if(%brick.cityLotTrigger $= "") %brick.cityLotTrigger = %trigger;
+
+		%worldBox = %trigger.getWorldBox();
+		%triggerMinX = getWord(%worldBox, 0);
+		%triggerMinY = getWord(%worldBox, 1);
+		%triggerMinZ = getWord(%worldBox, 2);
+
+		%triggerMaxX = getWord(%worldBox, 3);
+		%triggerMaxY = getWord(%worldBox, 4);
+		%triggerMaxZ = getWord(%worldBox, 5);
+
+		// Get the size of the brick clamped to the bounds of the zone
+		%brickMinClampedX = %brickMinX <= %triggerMinX ? %triggerMinX : %brickMinX;
+		%brickMinClampedY = %brickMinY <= %triggerMinY ? %triggerMinY : %brickMinY;
+		%brickMinClampedZ = %brickMinZ <= %triggerMinZ ? %triggerMinZ : %brickMinZ;
+
+		%brickMaxClampedX = %brickMaxX > %triggerMaxX ? %triggerMaxX : %brickMaxX;
+		%brickMaxClampedY = %brickMaxY > %triggerMaxY ? %triggerMaxY : %brickMaxY;
+		%brickMaxClampedZ = %brickMaxZ > %triggerMaxZ ? %triggerMaxZ : %brickMaxZ;
+
+		%brickSizeClampedX = mAbs(%brickMaxClampedX-%brickMinClampedX);
+		%brickSizeClampedY = mAbs(%brickMaxClampedY-%brickMinClampedY);
+		%brickSizeClampedZ = mAbs(%brickMaxClampedZ-%brickMinClampedZ);
+
+		// Record the clamped volume of the brick based on each trigger
+		%brickVolClamped[%trigger] = %brickSizeClampedX * %brickSizeClampedY * %brickSizeClampedZ;
+		%totalTriggerVol += %brickVolClamped[%trigger];
+
+		echo(%brickSizeClampedX SPC %brickSizeClampedY SPC %brickSizeClampedZ);
+		echo("Calculated vol by" SPC %trigger SPC %brickVolClamped[%trigger]);
+
+		
 	}
 
-	return 0;
+	// Check if the volume values match
+	if(atof(%totalTriggerVol) != atof(%brickVol)) return 1;
+	else return 0;
 }
 
 // Brick::cityBrickCheck(this/brick)
