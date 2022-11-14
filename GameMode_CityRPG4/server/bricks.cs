@@ -434,11 +434,6 @@ function fxDTSBrick::getCityBrickUnstable(%brick)
 		// Record the clamped volume of the brick based on each trigger
 		%brickVolClamped[%trigger] = %brickSizeClampedX * %brickSizeClampedY * %brickSizeClampedZ;
 		%totalTriggerVol += %brickVolClamped[%trigger];
-
-		echo(%brickSizeClampedX SPC %brickSizeClampedY SPC %brickSizeClampedZ);
-		echo("Calculated vol by" SPC %trigger SPC %brickVolClamped[%trigger]);
-
-		
 	}
 
 	// Check if the volume values match
