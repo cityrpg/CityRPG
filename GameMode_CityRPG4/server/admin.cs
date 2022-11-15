@@ -315,7 +315,7 @@ function serverCmdaddDemerits(%client, %dems, %name)
           if(isObject(%target))
           {
             commandToClient(%target, 'centerPrint', "\c6You have committed a crime. [" @ $c_p @ "Angering a Badmin\c6]", 5);
-            messageClient(%client, '', '\c6User%1%2 \c6was given%1%3\c6 demerits.', $c_p, %target.name , %dems);
+            messageClient(%client, '', '\c6User %1%2 \c6was given %1%3\c6 demerits.', $c_p, %target.name , %dems);
             City_AddDemerits(%target.bl_id, %dems);
           }
         }
