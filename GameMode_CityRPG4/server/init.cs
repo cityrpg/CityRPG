@@ -1,3 +1,8 @@
+// City_OnInitData(obj) - Called when CityRPGData is initialized.
+// obj - The CityRPGData object.
+// Package this to add new values to the saver.
+function City_OnDataInit(%obj) { }
+
 // City_Init()
 // Initializes the game-mode.
 function City_Init()
@@ -46,6 +51,8 @@ function City_Init()
 		CityRPGData.addValue("ElectionID", "0");
 		CityRPGData.addValue("lotsVisited", "-1");
 		CityRPGData.addValue("spawnPoint", "");
+
+		City_OnDataInit(CityRPGData);
 		
 		if(CityRPGData.loadedSaveFile)
 		{
