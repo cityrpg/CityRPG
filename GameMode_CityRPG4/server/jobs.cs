@@ -68,10 +68,8 @@ function JobSO::createJob(%so, %file)
 		// legacy support for sellItems (true/false for weapon selling)
 		// Level 0 or 1 based on whether they can sell items.
 		%itemRestrictionLevel = $CityRPG::jobs::sellItems ? 1 : 0;
-		echo("Fuck!" SPC $CityRPG::jobs::sellItems);
 	}
 	else {
-		echo("Shit!" SPC $CityRPG::jobs::sellRestrictedItemsLevel);
 		%itemRestrictionLevel = $CityRPG::jobs::sellRestrictedItemsLevel;
 	}
 
