@@ -425,7 +425,8 @@ function GameConnection::doCityHungerEffects(%client)
 	%rand = getRandom(1,6);
 
 	if(isObject(%client.player) && %rand != 1 && City.get(%client.bl_id, "hunger") < 3) {
-		messageClient(%client, '', "\c6 - Hunger cramps seize hold of your body...");
+		// Hunger cramps sieze hold of your body...
+		messageClient(%client, '', "\c0You're starving to death!");
 		%player = %client.player;
 
 		if(!$Pref::Server::City::DisableHungerTumble)
