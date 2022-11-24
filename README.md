@@ -58,9 +58,6 @@ CityRPG 4 is being built fully open source, and we encourage you to fork the rep
 
 Below is an incomplete documentation of key functions in CityRPG 4.
 
-Note that this documentation is applicable to the unstable version. For the latest release docs, see here:
-https://github.com/cityrpg/CityRPG-4/tree/0.2.0
-
 ## Client/GameConnection
 
 ### GameConnection::cityMenuOpen(names, functions, exitMsg, autoClose, canOverride)
