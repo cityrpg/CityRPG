@@ -20,17 +20,24 @@ datablock fxDTSBrickData(CityRPGBankBrickData : brick2x4FData)
 // Menu
 // ============================================================
 // Initial menu
+$City::Menu::BankBaseTxt =	
+		"Withdraw money."
+	TAB "Deposit money."
+	TAB "Deposit all money."
+	TAB "Donate to the economy.";
+
+// We can call directly on the same prompt that the bank uses.
+$City::Menu::BankBaseFunc =
+	"CityMenu_BankWithdrawPrompt"
+	TAB "CityMenu_BankDepositPrompt"
+	TAB "CityMenu_BankDepositAll"
+	TAB "CityMenu_BankDonatePrompt";
+
 function CityMenu_Bank(%client, %brick)
 {
-	%menu =	"Withdraw money."
-			TAB "Deposit money."
-			TAB "Deposit all money."
-			TAB "Donate to the economy.";
+	%menu =	$City::Menu::BankBaseTxt;
 
-	%functions = 	"CityMenu_BankWithdrawPrompt"
-						TAB "CityMenu_BankDepositPrompt"
-						TAB "CityMenu_BankDepositAll"
-						TAB "CityMenu_BankDonatePrompt";
+	%functions = $City::Menu::BankBaseFunc;
 
 	%client.cityLog("Enter bank");
 
