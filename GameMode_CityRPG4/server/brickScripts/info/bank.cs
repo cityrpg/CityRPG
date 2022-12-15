@@ -26,7 +26,6 @@ $City::Menu::BankBaseTxt =
 	TAB "Deposit all money."
 	TAB "Donate to the economy.";
 
-// We can call directly on the same prompt that the bank uses.
 $City::Menu::BankBaseFunc =
 	"CityMenu_BankWithdrawPrompt"
 	TAB "CityMenu_BankDepositPrompt"
