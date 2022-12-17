@@ -840,6 +840,11 @@ package CityRPG_MainPackage
 			cancel($City::Mayor::Schedule);
 		}
 
+		if(isEventPending($City::HUD::Schedule))
+		{
+			cancel($City::HUD::Schedule);
+		}
+
 		if(CityRPGData.datacount > 0)
 		{
 			CityRPGData.saveData();

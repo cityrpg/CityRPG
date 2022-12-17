@@ -1,4 +1,5 @@
 $City::StartingCash = 250;
+$City::ClockOffset = 8;
 
 // Spawn preference list
 $City::SpawnPreferences = "Personal Spawn";
@@ -126,10 +127,60 @@ function gameConnection::setInfo(%client)
 	}
 }
 
+function City_BottomPrintLoop()
+{
+	%hourTime = $Pref::Server::City::tick::speed*60000; // Min to MS
+
+	for(%i = 0; %i < ClientGroup.getCount(); %i++)
+    {
+      ClientGroup.getObject(%i).setInfo();
+    }
+
+	$City::HUD::Schedule = schedule((%hourTime/24)/2, 0, City_BottomPrintLoop);
+}
+
+function City_GetClock()
+{
+	%currTime = getSimTime();
+	%citySimTime =  %currTime - $City::ClockStart;
+	%tickLengthSec = $Pref::Server::City::tick::speed * 60;
+
+	%tickSecondsElapsed = (%citySimTime / 1000) % 300;
+
+	%hour = ((%tickSecondsElapsed % 300) / 12 + $City::ClockOffset) % 24;
+
+	echo(%currTime SPC %citySimTime SPC %tickSecondsElapsed SPC %hour);
+	return %hour;
+}
+
 function gameConnection::setGameBottomPrint(%client)
 {
-	if(%client.cityHUDTimer > $sim::time) {
+	if(%client.cityHUDTimer > $sim::time)
+	{
 		return;
+	}
+
+	%time = City_GetClock();
+
+	if(%time == 12)
+	{
+		%time12Hr = 12;
+		%timeUnit = "PM";
+	}
+	else if(%time > 12)
+	{
+		%time12hr = %time-12;
+		%timeUnit = "PM";
+	}
+	else if(%time == 0)
+	{
+		%time12Hr = 12;
+		%timeUnit = "AM";
+	}
+	else
+	{
+		%time12hr = %time;
+		%timeUnit = "AM";
 	}
 
 	%mainFont = "<font:palatino linotype:24>";
@@ -149,7 +200,7 @@ function gameConnection::setGameBottomPrint(%client)
 	//%client.CityRPGPrint = %client.CityRPGPrint @ "   <bitmap:" @ $City::DataPath @ "ui/hunger.png>\c6 Hunger: Well-fed";
 
 	// Placeholder
-	//%client.CityRPGPrint = %client.CityRPGPrint @ "<just:right>\c6Day";
+	%client.CityRPGPrint = %client.CityRPGPrint @ "<just:right>\c6" @ %time12hr SPC %timeUnit;
 
 	//IMPORTANT: Wanted level must be last because it shows up on a new line
 	if(City.get(%client.bl_id, "demerits") >= $Pref::Server::City::demerits::wantedLevel)

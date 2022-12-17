@@ -72,6 +72,7 @@ function City_Init()
 		CalendarSO.date = 0;
 		CityRPGData.lastTickOn = $Sim::Time;
 		CityRPGData.scheduleTick = schedule($Pref::Server::City::tick::speed * 60000, false, "City_Tick");
+		$City::ClockStart = getSimTime();
 	}
 
 	// Generic client to handle checks for external utilities as the host.

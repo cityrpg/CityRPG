@@ -445,6 +445,8 @@ function City_TickLoop(%loop)
 	// Each tick loop applies to one client.
 	%time = (($Pref::Server::City::tick::speed * 60000) / CityRPGData.dataCount);
 
+	$City::Hour = (%loop)%24;
+
 	%client = findClientByBL_ID(CityRPGData.data[%loop].ID);
 
 	if(isObject(%client))
