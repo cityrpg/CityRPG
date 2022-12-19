@@ -27,10 +27,13 @@ function GameConnection::refreshCityDemeritCosts(%client)
 // ============================================================
 // Menu
 // ============================================================
+$City::Menu::PoliceBaseTxt = "View active criminals";
+$City::Menu::PoliceBaseFunc = "CityMenu_Police_ViewCrims";
+
 function CityMenu_Police(%client, %brick)
 {
-	%menu =	"View active criminals";
-	%functions = "CityMenu_Police_ViewCrims";
+	%menu =	$City::Menu::PoliceBaseTxt;
+	%functions = $City::Menu::PoliceBaseFunc;
 
 	%client.cityLog("Enter police");
 
