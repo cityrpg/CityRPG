@@ -311,6 +311,7 @@ function fxDTSBrick::getCityLotID(%brick)
 
 	if(%nameRaw $= "")
 	{
+		warn("Attempting to retrieve a lot from a brick '" @ %brick @ "' with no NT object name");
 		// No name
 		return -1;
 	}
