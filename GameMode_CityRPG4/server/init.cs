@@ -73,6 +73,8 @@ function City_Init()
 		CityRPGData.lastTickOn = $Sim::Time;
 		CityRPGData.scheduleTick = schedule($Pref::Server::City::tick::speed * 60000, false, "City_Tick");
 		$City::ClockStart = getSimTime();
+
+		City_BottomPrintLoop();
 	}
 
 	// Generic client to handle checks for external utilities as the host.
