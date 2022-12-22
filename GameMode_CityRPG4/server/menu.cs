@@ -157,3 +157,6 @@ function CityMenu_Placeholder(%client)
 {
 	%client.cityMenuMessage("\c6Sorry, this feature is currently not available. Please try again later.");
 }
+
+// Generic menu options
+$City::Menu::GenericYNTxt = "Yes." TAB "No.";

@@ -443,7 +443,11 @@ function messageAllOfJob(%job, %type, %message)
 	return (%sent !$= "" ? %sent : 0);
 }
 
-// TODO
+$City::Menu::ResetAllJobsBaseTxt = $City::Menu::GenericYNTxt;
+$City::Menu::ResetAllJobsBaseFunc = 
+	"City_ResetAllJobs"
+	TAB "CityMenu_Close";
+
 function CityMenu_ResetAllJobsPrompt(%client)
 {
 	%client.cityMenuMessage("\c6Are you sure you want to reset all jobs? This action will affect every player on the server, online and offline.");
@@ -451,13 +455,7 @@ function CityMenu_ResetAllJobsPrompt(%client)
 
 	%client.cityLog("Reset all jobs prompt");
 
-	%menu =	"Yes"
-			TAB "No";
-
-	%functions = 	"City_ResetAllJobs"
-						TAB "CityMenu_Close";
-
-	%client.cityMenuOpen(%menu, %functions, %brick, "\c6Job reset cancelled.");
+	%client.cityMenuOpen($City::Menu::ResetAllJobsBaseTxt, $City::Menu::ResetAllJobsBaseFunc, %client, "\c6Job reset cancelled.", 0, 0, "WARNING: Are you sure? See chat for details.");
 
 }
 
