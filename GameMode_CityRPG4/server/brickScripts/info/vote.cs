@@ -20,19 +20,23 @@ datablock fxDTSBrickData(CityRPGVoteBrickData : brick2x4FData)
 // ============================================================
 // Menu
 // ============================================================
+$City::Menu::VoteBaseTxt =	
+	"Apply for Mayor. (Costs: $" @ $Pref::Server::City::Mayor::Cost @ ")"
+	TAB "View candidates"
+	TAB "View scores";
+
+$City::Menu::VoteBaseFunc =
+	"serverCmdRegisterCandidates"
+	TAB "CityMenu_Vote_VotePrompt"
+	TAB "CityMayor_getCandidates"
+	TAB "serverCmdtopC";
+
 function CityMenu_Vote(%client, %brick)
 {
 	if($City::Mayor::Voting == 1)
 	{
-		%menu = "Apply for Mayor. (Costs: $" @ $Pref::Server::City::Mayor::Cost @ ")"
-				TAB "Vote"
-				TAB "View candidates"
-				TAB "View scores";
-
-		%functions =	"serverCmdRegisterCandidates"
-							TAB "CityMenu_Vote_VotePrompt"
-							TAB "CityMayor_getCandidates"
-							TAB "serverCmdtopC";
+		%menu = $City::Menu::VoteBaseTxt;
+		%functions = $City::Menu::VoteBaseFunc;
 	} else {
 		if($City::Mayor::ID != -1 && $City::Mayor::ID !$= "") {
 			messageClient(%client, '', "\c6City mayor: " @ $City::Mayor::String);
