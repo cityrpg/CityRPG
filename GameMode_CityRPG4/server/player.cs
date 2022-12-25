@@ -711,12 +711,11 @@ function CityMenu_Player_ManageLot(%client)
 	serverCmdLot(%client);
 }
 
+$City::Menu::PlyrSetSpawnBaseTxt = $City::SpawnPreferences;
+$City::Menu::PlyrSetSpawnBaseFunc =  "CityMenu_Player_SetSpawnConfirm";
 function CityMenu_Player_SetSpawn(%client)
 {
-	%menu = $City::SpawnPreferences;
-	%function = "CityMenu_Player_SetSpawnConfirm";
-
-	%client.cityMenuOpen(%menu, %function, %client, -1, 0, 1);
+	%client.cityMenuOpen($City::Menu::PlyrSetSpawnBaseTxt, $City::Menu::PlyrSetSpawnBaseFunc, %client, -1, 0, 1);
 }
 
 function CityMenu_Player_SetSpawnConfirm(%client, %input)
