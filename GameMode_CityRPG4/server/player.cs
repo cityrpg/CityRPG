@@ -149,7 +149,6 @@ function City_GetClock()
 
 	%hour = ((%tickSecondsElapsed % 300) / 12 + $City::ClockOffset) % 24;
 
-	echo(%currTime SPC %citySimTime SPC %tickSecondsElapsed SPC %hour);
 	return %hour;
 }
 
