@@ -478,6 +478,22 @@ function CityMenu_Lot_PurchasePreowned(%client, %input, %lotBrick)
 }
 
 // ## Functions for admins ## //
+$City::Menu::LotAdminBaseTxt =	
+	"Force rename."
+	TAB "Transfer lot to the city."
+	TAB "Transfer lot to a player."
+	//TAB "Link lot."
+	TAB "Wrench lot."
+	TAB "Go back.";
+
+$City::Menu::LotAdminBaseFunc =
+	"CityMenu_LotAdmin_SetNamePrompt"
+	TAB "CityMenu_LotAdmin_TransferCity"
+	TAB "CityMenu_LotAdmin_TransferPlayerPrompt"
+	//TAB "CityMenu_LotAdmin_LinkPrompt"
+	TAB "CityMenu_LotWrench"
+	TAB "CityMenu_Lot";
+
 function CityMenu_LotAdmin(%client)
 {
 	%lotBrick = %client.CityMenuID;
@@ -496,22 +512,8 @@ function CityMenu_LotAdmin(%client)
 	{
 		%client.cityMenuMessage("\c6Lot is owned by the city.");
 	}
-	
-	%menu = "Force rename."
-			TAB "Transfer lot to the city."
-			TAB "Transfer lot to a player."
-			//TAB "Link lot."
-			TAB "Wrench lot."
-			TAB "Go back.";
 
-	%functions =	"CityMenu_LotAdmin_SetNamePrompt"
-						TAB "CityMenu_LotAdmin_TransferCity"
-						TAB "CityMenu_LotAdmin_TransferPlayerPrompt"
-						//TAB "CityMenu_LotAdmin_LinkPrompt"
-						TAB "CityMenu_LotWrench"
-						TAB "CityMenu_Lot";
-
-	%client.cityMenuOpen(%menu, %functions, %lotBrick, $c_p @ "Lot menu closed.", 0, 1);
+	%client.cityMenuOpen($City::Menu::LotAdminBaseTxt, $City::Menu::LotAdminBaseFunc, %lotBrick, $c_p @ "Lot menu closed.", 0, 1);
 }
 
 function CityMenu_LotAdmin_SetNamePrompt(%client)
