@@ -23,6 +23,13 @@ function fxDTSBrick::cityLotDisplayRefresh(%lotBrick)
 	}
 }
 
+$City::Menu::LotBaseTxt = 
+	"View lot rules.";
+	//TAB "View warning log."
+$City::Menu::LotBaseFunc = 
+	"CityMenu_LotRules";
+	//TAB "CityMenu_Placeholder"
+
 function CityMenu_Lot(%client, %input)
 {
 	if(%client.cityMenuBack $= %client.getID())
@@ -88,11 +95,8 @@ function CityMenu_Lot(%client, %input)
 	}
 
 	// ## Options for all lots ## //
-	%menu = "View lot rules.";
-			//TAB "View warning log."
-
-	%functions =	"CityMenu_LotRules";
-						//TAB "CityMenu_Placeholder"
+	%menu = $City::Menu::LotBaseTxt;
+	%functions = $City::Menu::LotBaseFunc;
 
 	// ## Options for unclaimed lots ## //
 	if(%lotBrick.getCityLotOwnerID() == -1)
