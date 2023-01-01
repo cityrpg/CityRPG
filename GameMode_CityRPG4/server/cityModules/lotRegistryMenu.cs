@@ -232,6 +232,13 @@ function CityLots_PurchaseLot(%client, %input, %lotBrick)
 	}
 }
 
+$City::Menu::LotOwnerBaseTxt = 
+	"Rename lot."
+	TAB "Wrench lot.";
+$City::Menu::LotOwnerBaseFunc = 
+	"CityMenu_LotSetNamePrompt"
+	TAB "CityMenu_LotWrench";
+
 // ## Functions for lot owners ## //
 function CityMenu_LotOwnerManagement(%client)
 {
@@ -240,11 +247,8 @@ function CityMenu_LotOwnerManagement(%client)
 	%ownerID = %lotBrick.getCityLotOwnerID();
 	%client.cityMenuBack = %lotBrick;
 
-	%menu = "Rename lot."
-			TAB "Wrench lot.";
-
-	%functions = "CityMenu_LotSetNamePrompt"
-			 TAB "CityMenu_LotWrench";
+	%menu = $City::Menu::LotOwnerBaseTxt;
+	%functions = $City::Menu::LotOwnerBaseFunc;
 
 	if(%lotBrick.getCityLotPreownedPrice() == -1)
 	{
