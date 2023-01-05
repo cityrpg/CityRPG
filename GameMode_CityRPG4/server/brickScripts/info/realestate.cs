@@ -23,6 +23,14 @@ datablock fxDTSBrickData(CityRPGRealEstateBrickData : brick2x4FData)
 // These are menus for the real estate brick.
 // Most of this simply refers to the menus in cityModules/lotRegistryMenu.cs
 
+$City::Menu::RealEstateBaseTxt =
+		"Manage a lot"
+	TAB "View pre-owned lots for sale";
+
+$City::Menu::RealEstateBaseFunc =
+		"CityMenu_RealEstate_ViewLotsOwned"
+	TAB "CityMenu_RealEstate_ViewLotListings";
+
 function CityMenu_RealEstate(%client, %input, %brick)
 {
 	// Note that %brick doubles as the menu's identifier.
@@ -49,9 +57,8 @@ function CityMenu_RealEstate(%client, %input, %brick)
 	else
 		%message = "\c6" @ $Pref::Server::City::name @ "\c6 has " @ $c_p @ %lotCount @ "\c6 total lots. There are no unclaimed lots for sale.";
 
-	%menu = "Manage a lot" TAB "View pre-owned lots for sale";
-
-	%functions = "CityMenu_RealEstate_ViewLotsOwned" TAB "CityMenu_RealEstate_ViewLotListings";
+	%menu = $City::Menu::RealEstateBaseTxt;
+	%functions = $City::Menu::RealEstateBaseFunc;
 
 	if($City::RealEstate::LotCountSale > 0)
 	{
