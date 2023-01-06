@@ -1,6 +1,7 @@
 if(!isObject(CityRPGPickaxeItem))
 {
-	AddDamageType("Pickaxe",   "<bitmap:" @ $City::DataPath @ 'ui/ci/pickaxe> %1',    '%2 <bitmap:' @ $City::DataPath @ 'ui/ci/pickaxe> %1', 0.5, 1);
+	// Used tagged string function so we can follow the data path var
+	AddDamageType("Pickaxe", addTaggedString("<bitmap:" @ $City::DataPath @ "ui/ci/Pickaxe> %1"), addTaggedString("%2 <bitmap:" @ $City::DataPath @ "ui/ci/Pickaxe> %1"), 0.5, 1);
 
 	// Pickaxe Datablocks
 	datablock ProjectileData(CityRPGPickaxeProjectile)
