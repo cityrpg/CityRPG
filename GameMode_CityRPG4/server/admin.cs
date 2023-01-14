@@ -21,6 +21,11 @@ function CityMenu_Admin(%client)
 // ============================================================
 function serverCmdAdminMode(%client)
 {
+  if(!%client.isAdmin)
+  {
+    return;
+  }
+
   %client.cityMenuClose();
 
   %jobRevert = City.get(%client.bl_id, "jobRevert");
