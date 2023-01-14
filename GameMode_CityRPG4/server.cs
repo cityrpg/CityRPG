@@ -16,7 +16,7 @@ $City::ScriptPath = "Add-Ons/GameMode_CityRPG4/server/";
 $City::DataPath = "Add-Ons/GameMode_CityRPG4/data/";
 $City::SavePath = "config/server/CityRPG4_A2/";
 
-$City::Version = "1.1.0";
+$City::Version = "1.1.1";
 $City::isGitBuild = !isFile("Add-Ons/GameMode_CityRPG4/README.md");
 
 $City::VersionWarning = "!!!!! WARNING: You are using save data from a different version of CityRPG. You are likely to encounter compatibility issues. To fix this, move or delete the save file located in your Blockland folder:" SPC $City::SavePath;

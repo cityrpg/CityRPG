@@ -1,5 +1,5 @@
 Live, build, and thrive in a city made of blocks.
-1.1.0 - Best for 8-32 players.
+1.1.1 - Best for 8-32 players.
 <font:Arial:14>
 Created by the CityRPG 4 Team
 Development: Lake

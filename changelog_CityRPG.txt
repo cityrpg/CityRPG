@@ -1,3 +1,6 @@
+<version:1.1.1>
+	<li>Fixed being able to trigger admin mode as a non-admin.</li>
+</version>
 <version:1.1.0>
 	<li>Fixed and brought back the sellClothes event. Changing jobs overrides your outfit with the new job's uniform for now.</li>
 	<li>Fixed health/money HUD being missing after using duplicator.</li>
