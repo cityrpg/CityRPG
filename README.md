@@ -58,6 +58,18 @@ CityRPG 4 is being built fully open source, and we encourage you to fork the rep
 
 Below is an incomplete documentation of key functions in CityRPG 4.
 
+## Quick Start
+
+### How updates are handled
+Semantic versioning is used here. A major version increase (i.e. 1.x.x -> 2.x.x) means something important has changed that is likely to break some mods. Key changes are outlined under "Developer info" in the changelog for each update.
+
+### How to add jobs
+There is an example add-on in the CityRPG_Jobs_Template folder. This is an add-on that you can drop into your game, rename, and edit as you like.
+
+From scratch, the short version: Package the JobSO::loadJobFiles function. You can overwrite it or simply add onto it (`Parent::JobSO::loadJobFiles(%this)`). Add JobSO::createJob(%file) calls leading to your job files. Your job files shold follow the same format as jobs/ or CityRPG_Jobs_Template/
+
+See also: [JobSO and Custom Jobs](#JobSO-and-Custom-Jobs)
+
 ## Client/GameConnection
 
 ### GameConnection::cityMenuOpen(names, functions, exitMsg, autoClose, canOverride)
@@ -108,15 +120,11 @@ Shares the same arguments as the CityRPGBatonImage::onHitObject function.
 See CityRPGBatonImage::onCityPlayerHit
 
 ### gameConnection::arrest(client, cop)
-**Deprecated**
-
 Called when `client` is arrested by `cop`.
 
 ## Misc
 
 ### City_illegalAttackTest(atkr, victim)
-**Deprecated**
-
 Called when players are attacked, determines if an attack is to incur demerits as an assault. Returns `false `
 
 ## JobSO and Custom Jobs
