@@ -8,7 +8,7 @@ $CityRPG::jobs::datablock = Player9SlotPlayer;
 $CityRPG::jobs::education = 3;
 $CityRPG::jobs::promotions = "PdChief";
 
-$CityRPG::jobs::sellItems = false;
+$CityRPG::jobs::sellRestrictedItemsLevel = 0;
 $CityRPG::jobs::sellFood = false;
 $CityRPG::jobs::sellServices = false;
 

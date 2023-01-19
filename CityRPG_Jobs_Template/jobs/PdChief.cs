@@ -7,7 +7,7 @@ $CityRPG::jobs::tools = "CityRPGBatonItem gunItem taserItem TacticalVestItem Dou
 $CityRPG::jobs::datablock = Player9SlotPlayer;
 $CityRPG::jobs::education = 8;
 
-$CityRPG::jobs::sellItems = false;
+$CityRPG::jobs::sellRestrictedItemsLevel = 0;
 $CityRPG::jobs::sellFood = false;
 $CityRPG::jobs::sellServices = false;
 
