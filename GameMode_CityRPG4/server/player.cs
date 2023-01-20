@@ -1,5 +1,5 @@
 $City::StartingCash = 250;
-$City::ClockOffset = 8;
+$City::ClockOffset = 6;
 
 // Spawn preference list
 $City::SpawnPreferences = "Personal Spawn";
