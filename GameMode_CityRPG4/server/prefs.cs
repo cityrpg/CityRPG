@@ -62,7 +62,7 @@ function City_InitPrefs()
 	City_RegisterPref("Game", "Disable tumble on starve", "$Pref::Server::City::DisableHungerTumble", "bool", "", false);
 
 	City_RegisterPref("Styling", "Text Color - Primary", "$c_p", "string", "14 ", "\c3"); // $c_p or Color - Primary
-	City_RegisterPref("Styling", "Clock on HUD", "$Pref::Server::City::HUDShowClock", "bool", "", true);
+	City_RegisterPref("Styling", "Clock on HUD (Experimental)", "$Pref::Server::City::HUDShowClock", "bool", "", false);
 
 	City_RegisterPref("Server Management", "Logging Enabled", "$Pref::Server::City::loggerEnabled", "bool", "", true);
 	City_RegisterPref("Server Management", "Always show hidden chat to admins", "$Pref::Server::City::AdminsAlwaysMonitorChat", "bool", "", false);
