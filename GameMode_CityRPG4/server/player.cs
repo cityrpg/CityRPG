@@ -159,27 +159,30 @@ function gameConnection::setGameBottomPrint(%client)
 		return;
 	}
 
-	%time = City_GetClock();
+	if($Pref::Server::City::HUDShowClock)
+	{
+		%time = City_GetClock();
 
-	if(%time == 12)
-	{
-		%time12Hr = 12;
-		%timeUnit = "PM";
-	}
-	else if(%time > 12)
-	{
-		%time12hr = %time-12;
-		%timeUnit = "PM";
-	}
-	else if(%time == 0)
-	{
-		%time12Hr = 12;
-		%timeUnit = "AM";
-	}
-	else
-	{
-		%time12hr = %time;
-		%timeUnit = "AM";
+		if(%time == 12)
+		{
+			%time12Hr = 12;
+			%timeUnit = "PM";
+		}
+		else if(%time > 12)
+		{
+			%time12hr = %time-12;
+			%timeUnit = "PM";
+		}
+		else if(%time == 0)
+		{
+			%time12Hr = 12;
+			%timeUnit = "AM";
+		}
+		else
+		{
+			%time12hr = %time;
+			%timeUnit = "AM";
+		}
 	}
 
 	%mainFont = "<font:palatino linotype:24>";
@@ -198,8 +201,10 @@ function gameConnection::setGameBottomPrint(%client)
 	// TODO: Move wanted level to center print so this doesn't cut off the bottom HUD
 	//%client.CityRPGPrint = %client.CityRPGPrint @ "   <bitmap:" @ $City::DataPath @ "ui/hunger.png>\c6 Hunger: Well-fed";
 
-	// Placeholder
-	%client.CityRPGPrint = %client.CityRPGPrint @ "<just:right>\c6" @ %time12hr SPC %timeUnit;
+	if($Pref::Server::City::HUDShowClock)
+	{
+		%client.CityRPGPrint = %client.CityRPGPrint @ "<just:right>\c6" @ %time12hr SPC %timeUnit;
+	}
 
 	//IMPORTANT: Wanted level must be last because it shows up on a new line
 	if(City.get(%client.bl_id, "demerits") >= $Pref::Server::City::demerits::wantedLevel)
