@@ -58,7 +58,23 @@ CityRPG 4 is being built fully open source, and we encourage you to fork the rep
 
 Below is an incomplete documentation of key functions in CityRPG 4.
 
-## Quick Start
+## Quick Start Guides
+
+### General dev tips - Running from a folder
+
+You can develop the game-mode and/or extensions for it straight out of your add-ons folder. Simply extract the desired add-on for development into a folder, and *delete* the .zip. You should be left with a folder named after the add-on, i.e. `GameMode_CityRPG4`. The game will see it as an add-on just like it would a normal .zip.
+
+### General dev tips - Reloading the game-mode
+For developing and testing features, you can make changes and then re-load the game-mode through the "Game-Mode >>" button in the admin menu. This allows you to restart only the server, and not your whole game.
+
+This does not work if you are adding completely new files.
+
+### General dev tips - Hot-reloading
+You can reload a script to change things without closing the game at all by executing the desired script. A couple ways you can do this:
+- Run `exec(...);` in your console with the path to the file. For example: `exec("add-ons/gamemode_cityrpg4/")
+- An easier alternative: Use [Jincux's Development Tools](https://blocklandglass.com/addons/addon.php?id=252) add-on. See ["devtools.cs"](https://github.com/cityrpg/CityRPG/blob/master/devtools.cs) in the root folder of this repository. It covers most of CityRPG's important scripts, and you can add your own in-game.
+
+Note - If the script contains a package, you may encounter unexplained issues due to the package load order changing. If this happens, you may still need to reload from the game-mode menu or restart the game.
 
 ### How updates are handled
 Semantic versioning is used here. A major version increase (i.e. 1.x.x -> 2.x.x) means something important has changed that is likely to break some mods. Key changes are outlined under "Developer info" in the changelog for each update.
