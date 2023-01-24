@@ -43,6 +43,40 @@ Dglider for bugfixes and tips, Sentry for replacing missing assets.
 - **/edithunger** [level 1-10] - Changes hunger to a certain level.
 - **/resetAllJobs** - Resets the job for every profile on the server. Used for changing custom job configurations.
 
+## Preferences
+
+### Game
+* City name
+* Drop Cash on Death
+* Disable Default Weapons
+* Max Lots
+* Account Reset Cost (/reset)
+* Tick Length (minutes)
+* Lot Rules
+* Min Bounty
+* Max Bounty
+* Disable tumble on starve
+
+### Styling
+* Text Color - Primary
+* Clock on HUD (Experimental)
+
+### Server Management
+* Logging Enabled
+* Always show hidden chat to admins
+
+### Economy
+* Economy Relay
+* Max Economy Percentage
+* Economy Cap
+* Lot Cost - For each lot
+
+### Mayor
+* Election Active
+* Mayor Run Cost
+* Election Time (minutes)
+* Mayor Removal Cost
+
 # Optional Integrations
 CityRPG 4 has optional support for the following add-ons. In order to use them, enable both GameMode_CityRPG4 and the desired add-on under Custom in the game-modes menu.
 
