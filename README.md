@@ -46,16 +46,16 @@ Dglider for bugfixes and tips, Sentry for replacing missing assets.
 ## Preferences
 
 ### Game
-* City name
-* Drop Cash on Death
-* Disable Default Weapons
-* Max Lots
-* Account Reset Cost (/reset)
-* Tick Length (minutes)
-* Lot Rules
-* Min Bounty
-* Max Bounty
-* Disable tumble on starve
+* **City name** - The name of the city that will be shown in various in-game messages.
+* **Drop Cash on Death** - Whether players drop all of their cash when they die.
+* **Disable Default Weapons** - Restart required. Disables default weapons from being sold in shops. Recommended if you are using a custom weapons pack.
+* **Max Lots** - The max number of lots that a player can own.
+* **Account Reset Cost (/reset)** - Cost to reset a player's account. This is to deter players from resetting their account repeatedly as a way of cheesing the game.
+* **Tick Length (minutes)** - *Use caution*. How much time passes between ticks. Paychecks and other gameplay elements will *not* be balanced for different lengths of time. The day/night cycle will also not sync unless you do so manually.
+* **Lot Rules** - A short text input for what your server's building rules are. Players can read this in the menu when viewing a lot. This can be a brief description or an instruction on how to read more i.e. "See the rules board at spawn for building rules."
+* **Min Bounty** - Minimum amount players can place on other players as a bounty. Players can only access this if you or an admin places a bounty brick in the city.
+* **Max Bounty** - Maximum amount players can place on other players as a bounty.  Players can only access this if you or an admin places a bounty brick in the city.
+* **Disable tumble on starve** - Disable the tumble effect for starving players.
 
 ### Styling
 * Text Color - Primary
