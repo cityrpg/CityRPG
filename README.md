@@ -58,12 +58,12 @@ Dglider for bugfixes and tips, Sentry for replacing missing assets.
 * **Disable tumble on starve** - Disable the tumble effect for starving players.
 
 ### Styling
-* Text Color - Primary
-* Clock on HUD (Experimental)
+* Text Color - Primary - The primary color used in chat and print messages from the game-mode. Do /colortest for a list of color codes.
+* Clock on HUD (Experimental) - Whether to display an in-game clock on the HUD.
 
 ### Server Management
-* Logging Enabled
-* Always show hidden chat to admins
+* Logging Enabled - Whether to log player actions relating to CityRPG. Logs can be used to assist in moderating your server. Logs are stored in `config\server\CityRPG4_A2\Logs` with one file for player, named by Blockland ID.
+* Always show hidden chat to admins - When enabled, admins can spy on "radio" chats for specific job tracks. If disabled, admins will only see these chats while in admin mode.
 
 ### Economy
 * Economy Relay
