@@ -378,19 +378,19 @@ function fxDTSBrick::cityLotTriggerCheck(%brick)
 function fxDTSBrick::getCityBrickUnstable(%brick)
 {
 	// What these shenanigans are for, in short:
-	// We need to determine if any part of this brick is outside the bounds of any lot zones. This includes having, but allow it to overlap between zones. The solution:
+	// We need to determine if any part of this brick is outside the bounds of any lot zones. The solution:
 	// 1. Calculate the brick's volume (lengh*width*height... stellar maths)
 	// 2. Using a container box search, find each zone that the brick falls within.
 	// 3. For each zone, calculate the volume of the brick, clamped to the bounds of the zone.
 	// 4. If the sum of all the clamped volumes != the brick's actual volume, it's out of bounds (return true).
 
-	%brickMinX = getWord(%brick.getWorldBox(), 0) + 0.0016;
-	%brickMinY = getWord(%brick.getWorldBox(), 1) + 0.0013;
-	%brickMinZ = getWord(%brick.getWorldBox(), 2) + 0.00126;
+	%brickMinX = getWord(%brick.getWorldBox(), 0);
+	%brickMinY = getWord(%brick.getWorldBox(), 1);
+	%brickMinZ = getWord(%brick.getWorldBox(), 2);
 
-	%brickMaxX = getWord(%brick.getWorldBox(), 3) - 0.0016;
-	%brickMaxY = getWord(%brick.getWorldBox(), 4) - 0.0013;
-	%brickMaxZ = getWord(%brick.getWorldBox(), 5) - 0.00126;
+	%brickMaxX = getWord(%brick.getWorldBox(), 3);
+	%brickMaxY = getWord(%brick.getWorldBox(), 4);
+	%brickMaxZ = getWord(%brick.getWorldBox(), 5);
 
 	%brickSizeX = mAbs(%brickMaxX-%brickMinX);
 	%brickSizeY = mAbs(%brickMaxY-%brickMinY);
@@ -398,7 +398,7 @@ function fxDTSBrick::getCityBrickUnstable(%brick)
 
 	%brickVol = %brickSizeX * %brickSizeY * %brickSizeZ;
 
-	%boxSize = %brick.cityGetBoxSize();
+	%boxSize = %brickSizeX SPC %brickSizeY SPC %brickSizeZ;
 
 	%totalTriggerVol = 0;
 	initContainerBoxSearch(%brick.getWorldBoxCenter(), %boxSize, $typeMasks::triggerObjectType);
