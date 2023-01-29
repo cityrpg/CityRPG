@@ -68,7 +68,6 @@ function City_InitPrefs()
 	City_RegisterPref("Server Management", "Always show hidden chat to admins", "$Pref::Server::City::AdminsAlwaysMonitorChat", "bool", "", false);
 
 	City_RegisterPref("Economy", "Economy Relay", "$Pref::Server::City::Economics::Relay", "int", "0 50", 2);
-	City_RegisterPref("Economy", "Max Economy Percentage", "$Pref::Server::City::Economics::Greatest", "int", "-500 500", 100);
 	City_RegisterPref("Economy", "Economy Cap", "$Pref::Server::City::Economics::Cap", "int", "-5000 5000", 150);
 
 	City_RegisterPref("Economy", "Lot Cost - 16x16", "$Pref::Server::City::lotCost" @ "CityRPGSmallLotBrickData", "int", "0 999999", 500);
