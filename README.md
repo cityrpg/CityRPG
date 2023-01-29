@@ -69,7 +69,7 @@ Dglider for bugfixes and tips, Sentry for replacing missing assets.
 * Economy Relay
 * Max Economy Percentage
 * Economy Cap
-* Lot Cost - For each lot
+* Lot Cost
 
 ### Mayor
 * Election Active
