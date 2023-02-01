@@ -66,10 +66,9 @@ Dglider for bugfixes and tips, Sentry for replacing missing assets.
 * Always show hidden chat to admins - When enabled, admins can spy on "radio" chats for specific job tracks. If disabled, admins will only see these chats while in admin mode.
 
 ### Economy
-* Economy Relay
-* Max Economy Percentage
-* Economy Cap
-* Lot Cost
+* Economy Relay - How many ticks it takes for the economy value to change.
+* Economy Cap - Highest percentage that the economy can reach. Higher economy percentages yield higher paycheck bonuses.
+* Lot Cost (for each lot size) - The cost to buy an unclaimed lot for each lot size.
 
 ### Mayor
 * Election Active
