@@ -71,10 +71,10 @@ Dglider for bugfixes and tips, Sentry for replacing missing assets.
 * Lot Cost (for each lot size) - The cost to buy an unclaimed lot for each lot size.
 
 ### Mayor
-* Election Active
-* Mayor Run Cost
-* Election Time (minutes)
-* Mayor Removal Cost
+* Election Active - When enabled, silently forces the election to be active.
+* Mayor Run Cost - The cost to run for Mayor.
+* Election Time (minutes) - How long an election lasts.
+* Mayor Removal Cost - Cost, per player, to vote to remove the Mayor.
 
 # Optional Integrations
 CityRPG 4 has optional support for the following add-ons. In order to use them, enable both GameMode_CityRPG4 and the desired add-on under Custom in the game-modes menu.
