@@ -115,7 +115,7 @@ Semantic versioning is used here. A major version increase (i.e. 1.x.x -> 2.x.x)
 ### How to add jobs
 There is an example add-on in the CityRPG_Jobs_Template folder. This is an add-on that you can drop into your game, rename, and edit as you like.
 
-From scratch, the short version: Package the JobSO::loadJobFiles function. You can overwrite it or simply add onto it (`Parent::JobSO::loadJobFiles(%this)`). Add JobSO::createJob(%file) calls leading to your job files. Your job files shold follow the same format as jobs/ or CityRPG_Jobs_Template/
+From scratch, the short version: Package the JobSO::loadJobFiles function. You can overwrite it or simply add onto it (`Parent::JobSO::loadJobFiles(%this)`). Add JobSO::createJob(%file) calls leading to your job files. Your job files should follow the same format as jobs/ or CityRPG_Jobs_Template/
 
 See also: [JobSO and Custom Jobs](#JobSO-and-Custom-Jobs)
 
