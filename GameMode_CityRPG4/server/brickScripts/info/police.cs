@@ -80,9 +80,9 @@ function CityMenu_Police_ViewCrims(%client)
 	{
 		%criminal = clientGroup.getObject(%a);
 
-		if(City.get(%client.bl_id, "demerits") >= $Pref::Server::City::demerits::wantedLevel)
+		if(City.get(%criminal.bl_id, "demerits") >= $Pref::Server::City::demerits::wantedLevel)
 		{
-			%client.cityMenuMessage($c_p @ %criminal.name SPC "\c6- " @ $c_p @ City.get(%client.bl_id, "demerits"));
+			%client.cityMenuMessage($c_p @ %criminal.name SPC "\c6- " @ $c_p @ City.get(%criminal.bl_id, "demerits"));
 
 			%noCriminals = false;
 		}
