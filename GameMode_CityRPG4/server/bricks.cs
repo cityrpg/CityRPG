@@ -401,9 +401,12 @@ function fxDTSBrick::getCityBrickUnstable(%brick)
 	%boxSize = %brickSizeX SPC %brickSizeY SPC %brickSizeZ;
 
 	%totalTriggerVol = 0;
+	%triggerCount = 0;
 	initContainerBoxSearch(%brick.getWorldBoxCenter(), %boxSize, $typeMasks::triggerObjectType);
 	while(isObject(%trigger = containerSearchNext()))
 	{
+		%triggerCount++;
+
 		if(%trigger.getDatablock() != CityRPGLotTriggerData.getID()) continue;
 
 		// This will assign the first trigger found as the brick's "official" lot for cases where the brick is in the bounds of multiple lots
@@ -433,6 +436,15 @@ function fxDTSBrick::getCityBrickUnstable(%brick)
 
 		// Record the clamped volume of the brick based on each trigger
 		%brickVolClamped[%trigger] = %brickSizeClampedX * %brickSizeClampedY * %brickSizeClampedZ;
+
+		// Single-trigger only if unstable building is disabled.
+		// This needs to be paired with a volume check because placing a brick directly next to a lot (but not actually on it) can still cause that lot to be added to the box search.
+		if(!$Pref::Server::City::lotReg::unstableBuilding && %triggerCount > 1 && %brickVolClamped[%trigger] > 0)
+		{
+			return 1;
+		}
+
+
 		%totalTriggerVol += %brickVolClamped[%trigger];
 	}
 

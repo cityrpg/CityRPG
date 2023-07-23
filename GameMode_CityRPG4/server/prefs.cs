@@ -67,6 +67,8 @@ function City_InitPrefs()
 	City_RegisterPref("Server Management", "Logging Enabled", "$Pref::Server::City::loggerEnabled", "bool", "", true);
 	City_RegisterPref("Server Management", "Always show hidden chat to admins", "$Pref::Server::City::AdminsAlwaysMonitorChat", "bool", "", false);
 
+	City_RegisterPref("Lot Management", "Allow building between lots (warning, can cause issues when selling)", "$Pref::Server::City::lotReg::unstableBuilding", "bool", "", false);
+
 	City_RegisterPref("Economy", "Economy Relay", "$Pref::Server::City::Economics::Relay", "int", "0 50", 2);
 	City_RegisterPref("Economy", "Economy Cap", "$Pref::Server::City::Economics::Cap", "int", "-5000 5000", 150);
 
