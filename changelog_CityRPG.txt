@@ -1,3 +1,20 @@
+<version:1.2.0>
+	<li>You no-longer need to be an Arms Dealer to sell axes and pickaxes.</li>
+	<li>Certain weapons now have higher restriction levels. By default, this only applies to Guns Akimbo, which is considered "highly restricted". Such items cannot be sold by Arms Dealers, only Store Managers and CEOs (higher edu. levels).</li>
+	<li>Shop owners now get notifications if someone tries to buy an item they are not licensed to sell.</li>
+	<li>If you try to buy an item that the seller is not licensed to sell, you now get the "not licensed" message immediately, instead of prompting you and having to click "yes".</li>
+	<li>Added a pref, **"Allow building between lots"**, that allows players to build in-between lots that they own. This is disabled by default because it can cause brick ownership "pollution" if a player attempts to sell a lot with in-between bricks.</li>
+	<li>Lot limits are now enforced when buying new or pre-owned lots. You can see how many you own and the max at the real estate office. [921145c]</li>
+	<li>Fixed being able to buy an item you already have in your inventory at a shop. [698639f]</li>
+	<li>Fixed Grocer and Arms Dealer not being able to sell clothes. [1b2c2bf]</li>
+	<li>Fixed criminals not showing properly at the police brick. Fix contributed by @slowtahoe on GitHub. [93d8421]</li>
+
+	<b>Hosting Info</b>
+	<li>Added a new pref section and pref: Styling -> Text Color - Primary. This pref lets you change the accent/highlighting color for all messages coming from CityRPG.</li>
+	<li>You can now change the starting price for unclaimed lots under "Economy" in server prefs.</li>
+	<li>Fixed various console warnings when the gamemode loads.</li>
+	<li>Removed the unused "Max Economy Percentage" pref.</li>
+</version>
 <version:1.1.1>
 	<li>Fixed being able to trigger admin mode as a non-admin.</li>
 </version>
